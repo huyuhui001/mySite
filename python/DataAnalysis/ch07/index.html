@@ -1,0 +1,1597 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://example.com/python/DataAnalysis/ch07/">
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.9">
+    
+    
+      
+        <title>Ch07 - My Docs</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.2b4465f4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.e6a45f82.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#2094f3">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="blue" data-md-color-accent="deep-blue">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#_1" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="My Docs" class="md-header__button md-logo" aria-label="My Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            My Docs
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Ch07
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="My Docs" class="md-nav__button md-logo" aria-label="My Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    My Docs
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../about/" class="md-nav__link">
+        About
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    处理缺失值
+  </a>
+  
+    <nav class="md-nav" aria-label="处理缺失值">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    过滤缺失值
+  </a>
+  
+    <nav class="md-nav" aria-label="过滤缺失值">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#series" class="md-nav__link">
+    处理Series
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dataframe" class="md-nav__link">
+    处理DataFrame
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    补全缺失值
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    数据转换
+  </a>
+  
+    <nav class="md-nav" aria-label="数据转换">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    删除重复值
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    使用函数或映射进行数据转换
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    替代值
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    重命名轴索引
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    离散化和分箱
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_10" class="md-nav__link">
+    检测和过滤异常值
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_11" class="md-nav__link">
+    置换和随机抽样
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_12" class="md-nav__link">
+    计算指标/虚拟变量
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_13" class="md-nav__link">
+    字符串操作
+  </a>
+  
+    <nav class="md-nav" aria-label="字符串操作">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_14" class="md-nav__link">
+    字符串对象方法
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_15" class="md-nav__link">
+    正则表达式
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pandas" class="md-nav__link">
+    pandas中的向量化字符串函数
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+
+  <h1>Ch07</h1>
+
+<h3 id="_1">处理缺失值</h3>
+<p>import pandas as pd
+import numpy as np
+from numpy import nan as NA</p>
+<p>对于数值型数据，pandas使用浮点值NaN（Not a Number来表示缺失值）。\
+在pandas中，采用了R语言中的编程惯例，将缺失值成为NA，意思是notavailable（不可用）。\
+Python内建的None值在对象数组中也被当作NA处理。\
+NA处理方法：
+* dropna:根据每个标签的值是否是确实数据来筛选轴标签，并根据允许丢失的数据量来确定阈值
+* fillna:用某些值填充确实的数据或使用插值方法，如ffill或bfill
+* isnull:返回表明哪些值是缺失值的布尔值
+* notnull:是isnull的反函数</p>
+<pre><code>string_data = pd.Series(['aardvark', 'artichoke', np.nan, 'avocado'])
+print(string_data)
+# 0     aardvark
+# 1    artichoke
+# 2          NaN
+# 3      avocado
+# dtype: object
+print(string_data.isnull())
+# 0    False
+# 1    False
+# 2     True
+# 3    False
+# dtype: bool
+
+string_data[0] = None
+print(string_data.isnull())
+# 0     True
+# 1    False
+# 2     True
+# 3    False
+# dtype: bool
+</code></pre>
+<h4 id="_2">过滤缺失值</h4>
+<h5 id="series">处理Series</h5>
+<p>在Series上使用dropna，它会返回Series中所有的非空数据及其索引值</p>
+<pre><code>data = pd.Series([1, NA, 3.5, NA, 7])
+print(data.dropna())
+# 0    1.0
+# 2    3.5
+# 4    7.0
+# dtype: float64
+print(data[data.notnull()])  # 与上面等价
+# 0    1.0
+# 2    3.5
+# 4    7.0
+# dtype: float64
+</code></pre>
+<h5 id="dataframe">处理DataFrame</h5>
+<pre><code>data = pd.DataFrame(
+    [[1., 6.5, 3.],
+     [1., NA, NA],
+     [NA, NA, NA],
+     [NA, 6.5, 3.]]
+)
+print(data)
+#      0    1    2
+# 0  1.0  6.5  3.0
+# 1  1.0  NaN  NaN
+# 2  NaN  NaN  NaN
+# 3  NaN  6.5  3.0
+cleaned = data.dropna()  # dropna默认情况下会删除包含缺失值的行
+print(cleaned)
+#      0    1    2
+# 0  1.0  6.5  3.0
+cleaned = data.dropna(how='all')  # 传入how='all’时，将删除所有值均为NA的行
+print(cleaned)
+#      0    1    2
+# 0  1.0  6.5  3.0
+# 1  1.0  NaN  NaN
+# 3  NaN  6.5  3.0
+
+data[4] = NA
+print(data)
+#      0    1    2   4
+# 0  1.0  6.5  3.0 NaN
+# 1  1.0  NaN  NaN NaN
+# 2  NaN  NaN  NaN NaN
+# 3  NaN  6.5  3.0 NaN
+cleaned = data.dropna(axis=1, how='all')  # 删除全NA的列
+print(cleaned)
+#      0    1    2
+# 0  1.0  6.5  3.0
+# 1  1.0  NaN  NaN
+# 2  NaN  NaN  NaN
+# 3  NaN  6.5  3.0
+
+df = pd.DataFrame(np.random.randn(7, 3))
+print(df)
+#           0         1         2
+# 0 -1.069771 -0.777921  0.181956
+# 1 -0.399504 -0.641737 -0.946327
+# 2 -1.013920 -0.247588 -0.760146
+# 3  1.076946 -1.263203  0.494077
+# 4  0.460985 -1.241870  0.283006
+# 5  1.168149  1.033752  0.900095
+# 6 -1.208514 -1.049546 -0.783680
+
+df.iloc[:4, 1] = NA  # 标签1，前4个元素
+df.iloc[:2, 2] = NA  # 标签2，前2个元素
+print(df)
+#           0         1         2
+# 0 -1.069771       NaN       NaN
+# 1 -0.399504       NaN       NaN
+# 2 -1.013920       NaN -0.760146
+# 3  1.076946       NaN  0.494077
+# 4  0.460985 -1.241870  0.283006
+# 5  1.168149  1.033752  0.900095
+# 6 -1.208514 -1.049546 -0.783680
+
+cleaned = df.dropna()
+print(cleaned)
+#           0         1         2
+# 4  0.033663  0.291886  0.736448
+# 5 -0.433380  0.397104  1.252005
+# 6 -1.999018  0.303866  1.430109
+
+cleaned = df.dropna(thresh=2)  # 保留2行含NA的观察值
+print(cleaned)
+#           0         1         2
+# 2 -1.413976       NaN  0.222274
+# 3 -0.644266       NaN  0.324180
+# 4 -0.122160 -2.244880 -0.406562
+# 5 -0.140326  0.101133 -0.764048
+# 6 -1.809141  0.139091 -0.819175
+</code></pre>
+<h4 id="_3">补全缺失值</h4>
+<p>fillna函数参数：
+* value：标量值或字典型对象用于填充缺失值
+* method：插值方法，如果没有其他参数，默认是'ffill'
+* axis：需要填充的轴，默认axis=0
+* inplace：修改被调用对象，而不是生成一个备份
+* limit：用于前向或后向填充时最大的填充范围</p>
+<pre><code>df = pd.DataFrame(np.random.randn(7, 3))
+df.iloc[:4, 1] = NA  # 标签1，前4个元素
+df.iloc[:2, 2] = NA  # 标签2，前2个元素
+print(df)
+#           0         1         2
+# 0 -0.181196       NaN       NaN
+# 1 -1.657668       NaN       NaN
+# 2 -0.053454       NaN  0.391461
+# 3 -0.539307       NaN -0.668400
+# 4 -0.433439  0.839713 -0.295273
+# 5  0.749930  1.661641 -0.495165
+# 6  0.591810  1.017372  0.932367
+
+result = df.fillna(0)  # 调用fillna时，可以使用一个常数来替代缺失值
+print(result)
+#           0         1         2
+# 0 -0.430926  0.000000  0.000000
+# 1  0.448061  0.000000  0.000000
+# 2 -0.059910  0.000000 -1.532646
+# 3 -0.315793  0.000000 -0.196546
+# 4 -0.546106  0.135108 -0.332309
+# 5  1.083075  0.346070 -0.773104
+# 6 -0.186511  1.055337 -1.168303
+
+result = df.fillna({1: 0.5, 2: 0})  # 调用fillna时使用字典，可以为不同列设定不同的填充值
+print(result)
+#           0         1         2
+# 0 -0.794344  0.500000  0.000000
+# 1 -0.960917  0.500000  0.000000
+# 2  1.494351  0.500000  0.100878
+# 3 -0.554765  0.500000  1.118801
+# 4 -0.866117  0.523615  1.217478
+# 5 -0.706966 -0.681776  0.797690
+# 6 -1.456366  1.205518 -0.402432
+</code></pre>
+<p>fillna返回的是一个新的对象，但也可以修改已经存在的对象</p>
+<pre><code>_ = df.fillna(0, inplace=True)  # inplace=True指定在已有对象上直接修改
+print(df)
+#           0         1         2
+# 0 -1.176124  0.000000  0.000000
+# 1  0.120458  0.000000  0.000000
+# 2 -1.206408  0.000000  0.551693
+# 3  0.224563  0.000000  1.145156
+# 4 -0.557836  0.081135 -0.075282
+# 5  2.378837 -0.876145  1.430386
+# 6 -0.152662  1.278364  0.479686
+
+df = pd.DataFrame(np.random.randn(6, 3))
+df.iloc[2:, 1] = NA  # 标签1，前4个元素
+df.iloc[4:, 2] = NA  # 标签2，前2个元素
+print(df)
+#           0         1         2
+# 0  1.154788  0.033949 -0.122807
+# 1  0.258684 -0.580244  1.636514
+# 2  1.503756       NaN -1.224203
+# 3  0.824049       NaN -0.364345
+# 4 -1.247609       NaN       NaN
+# 5 -1.019980       NaN       NaN
+
+result = df.fillna(method='ffill')  # 向后填充
+print(result)
+#           0         1         2
+# 0  2.082449  0.398874  0.359772
+# 1  0.233129  0.385347  1.953533
+# 2  0.396555  0.385347  0.592784
+# 3 -0.957249  0.385347  0.169815
+# 4  0.854452  0.385347  0.169815
+# 5 -0.105982  0.385347  0.169815
+
+result = df.fillna(method='ffill', limit=3)  # 每列最多填3个
+print(result)
+
+
+result = df.fillna(df[0].max())  # 用0列的最大值填充所有的NA
+print(result)
+#           0         1         2
+# 0 -0.377697 -0.852891 -0.705489
+# 1 -0.611759 -0.013237 -0.295764
+# 2 -0.389974  1.057881  1.041957
+# 3 -0.016845  1.057881 -1.149954
+# 4  1.057881  1.057881  1.057881
+# 5 -0.463471  1.057881  1.057881
+</code></pre>
+<h3 id="_4">数据转换</h3>
+<pre><code>import pandas as pd
+import numpy as np
+from numpy import nan as NA
+</code></pre>
+<h4 id="_5">删除重复值</h4>
+<pre><code>data = pd.DataFrame(
+    {
+        'k1': ['one', 'two'] * 3 + ['two'],
+        'k2': [1, 1, 2, 3, 4, 4, 4]
+     }
+)
+
+print(data)  # 重复出现2次的记录：two   4
+#     k1  k2
+# 0  one   1
+# 1  two   1
+# 2  one   2
+# 3  two   3
+# 4  one   4
+# 5  two   4
+# 6  two   4
+</code></pre>
+<p>DataFrame的duplicated方法返回的是一个布尔值Series，这个Series反映的是每一行是否存在重复（与之前出现过的行相同）情况 \
+默认是对列进行操作</p>
+<pre><code>print(data.duplicated())
+# 0    False
+# 1    False
+# 2    False
+# 3    False
+# 4    False
+# 5    False
+# 6     True
+# dtype: bool
+</code></pre>
+<p>drop_duplicates返回的是DataFrame，内容是duplicated返回数组中为False的部分 \
+默认是对列进行操作</p>
+<pre><code>print(data.drop_duplicates())
+#     k1  k2
+# 0  one   1
+# 1  two   1
+# 2  one   2
+# 3  two   3
+# 4  one   4
+# 5  two   4
+</code></pre>
+<p>可以指定数据的任何子集来检测是否有重复。\
+假设我们有一个额外的列，并想基于’k1’列去除重复值</p>
+<pre><code>data['v1'] = range(7)
+print(data)
+#     k1  k2  v1
+# 0  one   1   0
+# 1  two   1   1
+# 2  one   2   2
+# 3  two   3   3
+# 4  one   4   4
+# 5  two   4   5
+# 6  two   4   6
+print(data.drop_duplicates(['k1']))  # 保留第一个观测到的one和two，其余丢弃
+#     k1  k2  v1
+# 0  one   1   0
+# 1  two   1   1
+</code></pre>
+<p>duplicated和drop_duplicates默认都是保留第一个观测到的值。\
+传入参数keep='last’将会返回最后一个。</p>
+<pre><code>print(data.drop_duplicates(['k1'], keep='last'))  # 保留最后一个观测到的one和two
+#     k1  k2  v1
+# 4  one   4   4
+# 6  two   4   6
+</code></pre>
+<h4 id="_6">使用函数或映射进行数据转换</h4>
+<p>使用map是一种可以便捷执行按元素转换及其他清洗相关操作的方法。</p>
+<pre><code>data = pd.DataFrame(
+    {
+        'food': ['bacon', 'pulled pork', 'bacon',
+                 'Pastrami', 'corned beef', 'Bacon',
+                 'pastrami', 'honey ham', 'nova lox'],
+        'ounces': [4, 3, 12, 6, 7.5, 8, 3, 5, 6]
+    }
+)
+
+print(data)
+#           food  ounces
+# 0        bacon     4.0
+# 1  pulled pork     3.0
+# 2        bacon    12.0
+# 3     Pastrami     6.0
+# 4  corned beef     7.5
+# 5        Bacon     8.0
+# 6     pastrami     3.0
+# 7    honey ham     5.0
+# 8     nova lox     6.0
+</code></pre>
+<p>添加一列用于表明每种食物的动物肉类型。先创建一个食物和肉类的映射</p>
+<pre><code>meat_to_animal = {
+    'bacon': 'pig',
+    'pulled pork': 'pig',
+    'pastrami': 'cow',
+    'corned beef': 'cow',
+    'honey ham': 'pig',
+    'nova lox': 'salmon'
+}
+
+lowercased = data['food'].str.lower()  # 使用Series的str.lower方法将food的每个值都转换为小写
+print(lowercased)
+# 0          bacon
+# 1    pulled pork
+# 2          bacon
+# 3       pastrami
+# 4    corned beef
+# 5          bacon
+# 6       pastrami
+# 7      honey ham
+# 8       nova lox
+# Name: food, dtype: object
+
+
+data['animal'] = lowercased.map(meat_to_animal)
+print(data)
+#           food  ounces  animal
+# 0        bacon     4.0     pig
+# 1  pulled pork     3.0     pig
+# 2        bacon    12.0     pig
+# 3     Pastrami     6.0     cow
+# 4  corned beef     7.5     cow
+# 5        Bacon     8.0     pig
+# 6     pastrami     3.0     cow
+# 7    honey ham     5.0     pig
+# 8     nova lox     6.0  salmon
+</code></pre>
+<p>也可以传入一个函数，完成上面所有功能</p>
+<pre><code>data = pd.DataFrame(
+    {
+        'food': ['bacon', 'pulled pork', 'bacon',
+                 'Pastrami', 'corned beef', 'Bacon',
+                 'pastrami', 'honey ham', 'nova lox'],
+        'ounces': [4, 3, 12, 6, 7.5, 8, 3, 5, 6]
+    }
+)
+
+result = data['food'].map(lambda x: meat_to_animal[x.lower()])
+print(result)
+# 0       pig
+# 1       pig
+# 2       pig
+# 3       cow
+# 4       cow
+# 5       pig
+# 6       cow
+# 7       pig
+# 8    salmon
+# Name: food, dtype: object
+</code></pre>
+<h4 id="_7">替代值</h4>
+<p>使用fillna填充缺失值是通用值替换的特殊案例。\
+map可以用来修改一个对象中的子集的值，但是replace提供了更为简单灵活的实现\
+data.replace方法与data.str.replace方法是不同的，data.str.replace是对字符串进行按元素替代的。\
+\
+下面的Series，-999可能是缺失值的标识。\
+如果要使用NA来替代这些值，可以使用replace方法生成新的Series（除非传入了inplace=True）</p>
+<pre><code>data = pd.Series([1., -999., 2., -999., -1000., 3.])
+print(data)
+# 0       1.0
+# 1    -999.0
+# 2       2.0
+# 3    -999.0
+# 4   -1000.0
+# 5       3.0
+# dtype: float64
+
+result = data.replace(-999, np.nan)
+print(result)
+# 0       1.0
+# 1       NaN
+# 2       2.0
+# 3       NaN
+# 4   -1000.0
+# 5       3.0
+# dtype: float64
+</code></pre>
+<p>要将不同的值替换为不同的值，可以传入替代值的列表</p>
+<pre><code>result = data.replace([-999, -1000], [np.nan, 0])
+print(result)
+# 0    1.0
+# 1    NaN
+# 2    2.0
+# 3    NaN
+# 4    0.0
+# 5    3.0
+# dtype: float64
+</code></pre>
+<p>也可以传入替代值的字典</p>
+<pre><code>result = data.replace({-999: np.nan, -1000: 0})
+print(result)
+# 0    1.0
+# 1    NaN
+# 2    2.0
+# 3    NaN
+# 4    0.0
+# 5    3.0
+# dtype: float64
+</code></pre>
+<h4 id="_8">重命名轴索引</h4>
+<p>和Series中值替换类似，可以通过函数或映射对轴标签进行类似的转换，生成新的且带有不同标签的对象</p>
+<pre><code>data = pd.DataFrame(
+    np.arange(12).reshape((3, 4)),
+    index=['Ohio', 'Colorado', 'New York'],
+    columns=['one', 'two', 'three', 'four']
+)
+print(data)
+#           one  two  three  four
+# Ohio        0    1      2     3
+# Colorado    4    5      6     7
+# New York    8    9     10    11
+</code></pre>
+<p>与Series类似，轴索引也有一个map方法</p>
+<pre><code>transform = lambda x: x[:4].upper()  # 截取index的前四位并转化为大写格式
+result = data.index.map(transform)
+print(result)
+# Index(['OHIO', 'COLO', 'NEW '], dtype='object')
+</code></pre>
+<p>赋值给index，修改DataFrame</p>
+<pre><code>data.index = data.index.map(transform)
+print(data)
+#       one  two  three  four
+# OHIO    0    1      2     3
+# COLO    4    5      6     7
+# NEW     8    9     10    11
+</code></pre>
+<p>创建数据集转换后的版本，并且不修改原有的数据集，一个有用的方法是rename</p>
+<pre><code>result = data.rename(index=str.title, columns=str.upper)
+print(result)
+#       ONE  TWO  THREE  FOUR
+# Ohio    0    1      2     3
+# Colo    4    5      6     7
+# New     8    9     10    11
+print(data)  # 原有的数据集未被修改
+#       one  two  three  four
+# OHIO    0    1      2     3
+# COLO    4    5      6     7
+# NEW     8    9     10    11
+</code></pre>
+<p>rename可以结合字典型对象使用，为轴标签的子集提供新的值</p>
+<pre><code>result = data.rename(index={'OHIO': 'INDIANA'}, columns={'three': 'peekaboo'})
+print(result)
+#          one  two  peekaboo  four
+# INDIANA    0    1         2     3
+# COLO       4    5         6     7
+# NEW        8    9        10    11
+</code></pre>
+<p>如果要修改原有的数据集，传入inplace=True</p>
+<pre><code>data.rename(index={'OHIO': 'INDIANA'}, columns={'three': 'peekaboo'}, inplace=True)
+print(data)
+#          one  two  peekaboo  four
+# INDIANA    0    1         2     3
+# COLO       4    5         6     7
+# NEW        8    9        10    11
+</code></pre>
+<h4 id="_9">离散化和分箱</h4>
+<p>连续值经常需要离散化，或者分离成”箱子“进行分析。\
+\
+假设有一组人群的数据，想将他们进行分组，放入离散的年龄框中。</p>
+<pre><code>ages = [20, 22, 25, 27, 21, 23, 37, 31, 61, 45, 41, 32]
+</code></pre>
+<p>将这些年龄分为18～25、26～35、36～60以及61及以上等若干组，使用pandas中的cut。</p>
+<pre><code>bins = [18, 25, 35, 60, 100]
+cats = pd.cut(ages, bins)
+print(cats)
+# [(18, 25], (18, 25], (18, 25], (25, 35], (18, 25], ..., (25, 35], (60, 100], (35, 60], (35, 60], (25, 35]]
+# Length: 12
+# Categories (4, interval[int64, right]): [(18, 25] &lt; (25, 35] &lt; (35, 60] &lt; (60, 100]]
+</code></pre>
+<p>pandas返回的对象是一个特殊的Categorical对象。\
+你看到的输出描述了由pandas.cut计算出的箱。\
+你可以将它当作一个表示箱名的字符串数组；它在内部包含一个categories（类别）数组，它指定了不同的类别名称以及codes属性中的ages（年龄）数据标签 </p>
+<pre><code>print(cats.categories)  # 四个区间组
+# IntervalIndex([(18, 25], (25, 35], (35, 60], (60, 100]], dtype='interval[int64, right]')
+print(cats.codes)  # 61岁落在第3组（组编号从0开始）
+# [0 0 0 1 0 0 2 1 3 2 2 1]
+</code></pre>
+<p>注意，pd.value_counts(cats)是对pandas.cut的结果中的箱数量的计数</p>
+<pre><code>result = pd.value_counts(cats)
+print(result)
+# (18, 25]     5
+# (25, 35]     3
+# (35, 60]     3
+# (60, 100]    1
+# dtype: int64
+</code></pre>
+<p>与区间的数学符号一致，小括号表示边是开放的，中括号表示它是封闭的（包括边）。\
+可以通过传递right=False来改变哪一边是封闭的。默认right=True。</p>
+<pre><code>result = pd.cut(ages, [18, 26, 36, 61, 100], right=False)
+print(result)
+# [[18, 26), [18, 26), [18, 26), [26, 36), [18, 26), ..., [26, 36), [61, 100), [36, 61), [36, 61), [26, 36)]
+# Length: 12
+# Categories (4, interval[int64, left]): [[18, 26) &lt; [26, 36) &lt; [36, 61) &lt; [61, 100)]
+</code></pre>
+<p>通过向labels选项传递一个列表或数组来传入自定义的箱名</p>
+<pre><code>group_name = ['Youth', 'YoungAdult', 'MiddleAged', 'Senior']
+result = pd.cut(ages, bins, labels=group_name)
+print(result)
+# ['Youth', 'Youth', 'Youth', 'YoungAdult', 'Youth', ..., 'YoungAdult', 'Senior', 'MiddleAged', 'MiddleAged', 'YoungAdult']
+# Length: 12
+# Categories (4, object): ['Youth' &lt; 'YoungAdult' &lt; 'MiddleAged' &lt; 'Senior']
+
+result = pd.value_counts(pd.cut(ages, bins, labels=group_name))  # 标签输出
+print(result)
+# Youth         5
+# YoungAdult    3
+# MiddleAged    3
+# Senior        1
+# dtype: int64
+
+result = pd.value_counts(pd.cut(ages, bins))  # 区间输出
+print(result)
+# (18, 25]     5
+# (25, 35]     3
+# (35, 60]     3
+# (60, 100]    1
+# dtype: int64
+</code></pre>
+<p>如果传给cut整数个的箱来代替显式的箱边，pandas将根据数据中的最小值和最大值计算出等长的箱。\
+下面的例子是考虑一些均匀分布的数据被切成四份的情况。</p>
+<pre><code>data = np.random.rand(20)
+result = pd.cut(data, 4, precision=2)  # precision=2的选项将十进制精度限制在两位。
+print(result)
+# [(0.44, 0.66], (0.0063, 0.23], (0.23, 0.44], (0.0063, 0.23], (0.23, 0.44], ..., (0.23, 0.44], (0.0063, 0.23], (0.23, 0.44], (0.66, 0.88], (0.23, 0.44]]
+# Length: 20
+# Categories (4, interval[float64, right]): [(0.0063, 0.23] &lt; (0.23, 0.44] &lt; (0.44, 0.66] &lt; (0.66, 0.88]]
+</code></pre>
+<p>qcut是一个与分箱密切相关的函数，它基于样本分位数进行分箱。\
+取决于数据的分布，使用cut通常不会使每个箱具有相同数据量的数据点。\
+由于qcut使用样本的分位数，你可以通过qcut获得等长的箱</p>
+<pre><code>data = np.random.randn(1000)  # 正态分布
+cats = pd.qcut(data, 4)  # 切成4份
+print(cats)
+# [(-0.00329, 0.644], (-0.00329, 0.644], (-0.659, -0.00329], (-0.659, -0.00329], (0.644, 3.468], ..., (0.644, 3.468], (-3.9619999999999997, -0.659], (-3.9619999999999997, -0.659], (-0.00329, 0.644], (-0.00329, 0.644]]
+# Length: 1000
+# Categories (4, interval[float64, right]): [(-3.9619999999999997, -0.659] &lt; (-0.659, -0.00329] &lt; (-0.00329, 0.644] &lt; (0.644, 3.468]]
+result = pd.value_counts(cats)
+print(result)
+# (-3.9619999999999997, -0.659]    250
+# (-0.659, -0.00329]               250
+# (-0.00329, 0.644]                250
+# (0.644, 3.468]                   250
+# dtype: int64
+</code></pre>
+<p>与cut类似，可以传入自定义的分位数（0和1之间的数据，包括边）</p>
+<pre><code>result = pd.qcut(data, [0, 0.1, 0.5, 0.9, 1.])
+print(result)
+# [(-0.00329, 1.234], (-0.00329, 1.234], (-1.321, -0.00329], (-1.321, -0.00329], (-0.00329, 1.234], ..., (-0.00329, 1.234], (-1.321, -0.00329], (-1.321, -0.00329], (-0.00329, 1.234], (-0.00329, 1.234]]
+# Length: 1000
+# Categories (4, interval[float64, right]): [(-3.9619999999999997, -1.321] &lt; (-1.321, -0.00329] &lt; (-0.00329, 1.234] &lt; (1.234, 3.468]]
+</code></pre>
+<h4 id="_10">检测和过滤异常值</h4>
+<p>过滤或转换异常值在很大程度上是应用数组操作的事情。\
+\
+考虑一个具有正态分布数据的DataFrame</p>
+<pre><code>data = pd.DataFrame(np.random.randn(1000, 4))
+print(data.describe())
+#                  0            1            2            3
+# count  1000.000000  1000.000000  1000.000000  1000.000000
+# mean      0.008124    -0.008050    -0.013403    -0.008261
+# std       0.979236     0.992982     0.998819     1.038760
+# min      -3.231914    -3.441270    -3.345210    -4.320565
+# 25%      -0.634801    -0.599852    -0.656481    -0.677611
+# 50%      -0.033252     0.000060    -0.040634    -0.015463
+# 75%       0.649340     0.644312     0.678101     0.683849
+# max       3.292099     2.758754     2.911447     3.371729
+</code></pre>
+<p>找出一列中绝对值大于三的值</p>
+<pre><code>col = data[2]
+result = col[np.abs(col) &gt; 3]
+print(result)
+# 519   -3.035355
+# 536   -3.345210
+# Name: 2, dtype: float64
+</code></pre>
+<p>选出所有值大于3或小于-3的行，可以对布尔值DataFrame使用any方法</p>
+<pre><code>result = data[(np.abs(data) &gt; 3).any(1)]
+print(result)
+#             0         1         2         3
+# 116 -0.080907 -3.441270 -0.163263  0.392800
+# 139 -1.294440  1.828397  1.178897 -3.469466
+# 241 -0.486292  0.150443  0.264172 -3.013440
+# 295  3.292099 -0.339284  0.732829 -0.475202
+# 355  0.307577 -3.053322  0.967497  0.896363
+# 359  3.264981 -1.172096  0.207622 -0.281803
+# 519 -0.448987  1.623843 -3.035355 -0.436833
+# 533 -1.022616 -0.212597  1.030969  3.371729
+# 536  1.067598 -1.306839 -3.345210  0.620834
+# 541 -0.952760 -2.157970 -0.403199 -4.320565
+# 690  0.006821 -3.104117  0.484881 -0.132613
+# 750 -3.231914  1.017712  0.070430  0.631447
+# 771 -3.007622  0.257960 -0.118179 -1.283365
+# 976  1.684760 -0.003295 -0.249843  3.169371
+</code></pre>
+<p>根据这些标准来设置来限定值，下面代码限制了-3到3之间的数值 \
+语句np.sign(data)根据数据中的值的正负分别生成1和-1的数值</p>
+<pre><code>result = data[(np.abs(data) &gt; 3)] = np.sign(data) * 3
+print(result.describe())
+#                  0            1            2            3
+# count  1000.000000  1000.000000  1000.000000  1000.000000
+# mean     -0.036000     0.000000    -0.084000    -0.048000
+# std       3.001285     3.001501     3.000324     3.001117
+# min      -3.000000    -3.000000    -3.000000    -3.000000
+# 25%      -3.000000    -3.000000    -3.000000    -3.000000
+# 50%      -3.000000     0.000000    -3.000000    -3.000000
+# 75%       3.000000     3.000000     3.000000     3.000000
+# max       3.000000     3.000000     3.000000     3.000000
+print(result.head())
+#      0    1    2    3
+# 0 -3.0  3.0 -3.0 -3.0
+# 1 -3.0 -3.0 -3.0 -3.0
+# 2  3.0  3.0 -3.0  3.0
+# 3  3.0 -3.0  3.0 -3.0
+# 4  3.0 -3.0 -3.0 -3.0
+</code></pre>
+<h4 id="_11">置换和随机抽样</h4>
+<p>使用numpy.random.permutation对DataFrame中的Series或行进行置换（随机重排序）。\
+在调用permutation时根据你想要的轴长度可以产生一个表示新顺序的整数数组</p>
+<pre><code>df = pd.DataFrame(np.arange(5 * 4).reshape((5, 4)))
+sampler = np.random.permutation(5)
+print(sampler)  # 返回array
+# [1 4 3 0 2]
+print(df)
+#     0   1   2   3
+# 0   0   1   2   3
+# 1   4   5   6   7
+# 2   8   9  10  11
+# 3  12  13  14  15
+# 4  16  17  18  19
+</code></pre>
+<p>上面返回的sampler整数数组[1 4 3 0 2]用在基于iloc的索引或等价的take函数中，重新排列行顺序</p>
+<pre><code>print(df.take(sampler))
+#     0   1   2   3
+# 1   4   5   6   7
+# 4  16  17  18  19
+# 3  12  13  14  15
+# 0   0   1   2   3
+# 2   8   9  10  11
+</code></pre>
+<p>选出一个不含有替代值的随机子集，可以使用Series和DataFrame的sample方法</p>
+<pre><code>result = df.sample(n=3)
+print(result)
+#    0  1   2   3
+# 0  0  1   2   3
+# 2  8  9  10  11
+# 1  4  5   6   7
+</code></pre>
+<p>要生成一个带有替代值的样本（允许有重复选择），将replace=True传入sample方法</p>
+<pre><code>choice = pd.Series([5, 7, -1, 6, 4])
+draws = choice.sample(n=10, replace=True)
+print(choice)
+# 0    5
+# 1    7
+# 2   -1
+# 3    6
+# 4    4
+# dtype: int64
+print(draws)
+# 4    4
+# 0    5
+# 0    5
+# 3    6
+# 4    4
+# 0    5
+# 1    7
+# 3    6
+# 2   -1
+# 0    5
+# dtype: int64
+</code></pre>
+<h4 id="_12">计算指标/虚拟变量</h4>
+<p>将分类变量转换为“虚拟”或“指标”矩阵是另一种用于统计建模或机器学习的转换操作。\
+如果DataFrame中的一列有k个不同的值，则可以衍生一个k列的值为1和0的矩阵或DataFrame。\
+pandas有一个get_dummies函数用于实现该功能</p>
+<pre><code>df = pd.DataFrame(
+    {
+        'key': ['b', 'b', 'a', 'c', 'a', 'b'],
+        'data1': range(6)
+    }
+)
+
+print(df)
+#   key  data1
+# 0   b      0
+# 1   b      1
+# 2   a      2
+# 3   c      3
+# 4   a      4
+# 5   b      5
+</code></pre>
+<p>在指标DataFrame的列上加入前缀，然后与其他数据合并。在get_dummies方法中有一个前缀参数用于实现该功能 \
+通过get_dummies方法，把上面df数据按照key进行了分组，并通过不同列来展现分组后的对应关系。例如，key列的a，对应值2和4</p>
+<pre><code>dummies = pd.get_dummies(df['key'], prefix='key')
+print(dummies)
+#    key_a  key_b  key_c
+# 0      0      1      0
+# 1      0      1      0
+# 2      1      0      0
+# 3      0      0      1
+# 4      1      0      0
+# 5      0      1      0
+df_with_dummy = df[['data1']].join(dummies)
+print(df_with_dummy)
+#    data1  key_a  key_b  key_c
+# 0      0      0      1      0
+# 1      1      0      1      0
+# 2      2      1      0      0
+# 3      3      0      0      1
+# 4      4      1      0      0
+# 5      5      0      1      0
+</code></pre>
+<p>更为复杂的情况，DataFrame中的一行属于多个类别。
+以MovieLens的1M数据集为例。
+增加参数 encoding='unicode_escape'避免出现下面的错误：
+* UnicodeDecodeError: 'utf-8' codec can't decode byte 0xe9 in position 3114: invalid continuation byte
+增加参数 engine='python'避免出现下面的错误：
+* ParserWarning: Falling back to the 'python' engine because the 'c' engine does not support regex separators
+* (separators &gt; 1 char and different from '\s+' are interpreted as regex);
+* you can avoid this warning by specifying engine='python'.</p>
+<pre><code>mnames = ['movie_id', 'title', 'genres']
+movies = pd.read_table(
+    '../datasets/movielens/movies.dat',
+    sep='::',
+    header=None,
+    names=mnames,
+    encoding='unicode_escape',
+    engine='python'
+)
+print(movies[:10])
+#    movie_id                               title                        genres
+# 0         1                    Toy Story (1995)   Animation|Children's|Comedy
+# 1         2                      Jumanji (1995)  Adventure|Children's|Fantasy
+# 2         3             Grumpier Old Men (1995)                Comedy|Romance
+# 3         4            Waiting to Exhale (1995)                  Comedy|Drama
+# 4         5  Father of the Bride Part II (1995)                        Comedy
+# 5         6                         Heat (1995)         Action|Crime|Thriller
+# 6         7                      Sabrina (1995)                Comedy|Romance
+# 7         8                 Tom and Huck (1995)          Adventure|Children's
+# 8         9                 Sudden Death (1995)                        Action
+# 9        10                    GoldenEye (1995)     Action|Adventure|Thriller
+</code></pre>
+<p>为每个电影流派添加指标变量需要进行一些数据处理。 \
+首先，我们从数据集中提取出所有不同的流派的列表。</p>
+<pre><code>all_genres = []
+for x in movies.genres:
+    all_genres.extend(x.split('|'))
+genres = pd.unique(all_genres)
+print(genres)
+# ['Animation' &quot;Children's&quot; 'Comedy' 'Adventure' 'Fantasy' 'Romance' 'Drama'
+#  'Action' 'Crime' 'Thriller' 'Horror' 'Sci-Fi' 'Documentary' 'War'
+#  'Musical' 'Mystery' 'Film-Noir' 'Western']
+</code></pre>
+<p>使用全0的DataFrame是构建指标DataFrame的一种方式</p>
+<pre><code>zero_matrix = np.zeros((len(movies), len(genres)))
+dummies = pd.DataFrame(zero_matrix, columns=genres)
+print(zero_matrix)
+# [[0. 0. 0. ... 0. 0. 0.]
+#  [0. 0. 0. ... 0. 0. 0.]
+#  [0. 0. 0. ... 0. 0. 0.]
+#  ...
+#  [0. 0. 0. ... 0. 0. 0.]
+#  [0. 0. 0. ... 0. 0. 0.]
+#  [0. 0. 0. ... 0. 0. 0.]]
+print(dummies.head(n=10))
+#    Animation  Children's  Comedy  ...  Mystery  Film-Noir  Western
+# 0        0.0         0.0     0.0  ...      0.0        0.0      0.0
+# 1        0.0         0.0     0.0  ...      0.0        0.0      0.0
+# 2        0.0         0.0     0.0  ...      0.0        0.0      0.0
+# 3        0.0         0.0     0.0  ...      0.0        0.0      0.0
+# 4        0.0         0.0     0.0  ...      0.0        0.0      0.0
+# 5        0.0         0.0     0.0  ...      0.0        0.0      0.0
+# 6        0.0         0.0     0.0  ...      0.0        0.0      0.0
+# 7        0.0         0.0     0.0  ...      0.0        0.0      0.0
+# 8        0.0         0.0     0.0  ...      0.0        0.0      0.0
+# 9        0.0         0.0     0.0  ...      0.0        0.0      0.0
+#
+# [10 rows x 18 columns]
+</code></pre>
+<p>遍历每一部电影，将dummies每一行的条目设置为1。\
+使用dummies.columns来计算每一个流派的列指标</p>
+<pre><code>gen = movies.genres[0]
+print(gen.split('|'))
+# ['Animation', &quot;Children's&quot;, 'Comedy']
+result = dummies.columns.get_indexer(gen.split('|'))
+print(result)
+# [0 1 2]
+</code></pre>
+<p>使用.loc根据这些指标来设置值</p>
+<pre><code>for i, gen in enumerate(movies.genres):
+    indices = dummies.columns.get_indexer(gen.split('|'))
+    dummies.iloc[i, indices] = 1
+</code></pre>
+<p>将结果与movies进行合并</p>
+<pre><code>movies_windic = movies.join(dummies.add_prefix('Genre_'))
+print(movies_windic.iloc[0])
+# movie_id                                       1
+# title                           Toy Story (1995)
+# genres               Animation|Children's|Comedy
+# Genre_Animation                              1.0
+# Genre_Children's                             1.0
+# Genre_Comedy                                 1.0
+# Genre_Adventure                              0.0
+# Genre_Fantasy                                0.0
+# Genre_Romance                                0.0
+# Genre_Drama                                  0.0
+# Genre_Action                                 0.0
+# Genre_Crime                                  0.0
+# Genre_Thriller                               0.0
+# Genre_Horror                                 0.0
+# Genre_Sci-Fi                                 0.0
+# Genre_Documentary                            0.0
+# Genre_War                                    0.0
+# Genre_Musical                                0.0
+# Genre_Mystery                                0.0
+# Genre_Film-Noir                              0.0
+# Genre_Western                                0.0
+# Name: 0, dtype: object
+</code></pre>
+<p>对于更大的数据，上面这种使用多成员构建指标变量并不是特别快速。\
+更好的方法是写一个直接将数据写为NumPy数组的底层函数，然后将结果封装进DataFrame。\
+将get_dummies与cut等离散化函数结合使用是统计应用的一个有用方法。</p>
+<pre><code>np.random.seed(12345)  # 使用numpy.random.seed来设置随机种子以确保示例的确定性
+values = np.random.rand(10)
+print(values)
+# [0.92961609 0.31637555 0.18391881 0.20456028 0.56772503 0.5955447
+#  0.96451452 0.6531771  0.74890664 0.65356987]
+bins = [0, 0.2, 0.4, 0.6, 0.8, 1]
+result = pd.get_dummies(pd.cut(values, bins))
+print(result)
+#    (0.0, 0.2]  (0.2, 0.4]  (0.4, 0.6]  (0.6, 0.8]  (0.8, 1.0]
+# 0           0           0           0           0           1
+# 1           0           1           0           0           0
+# 2           1           0           0           0           0
+# 3           0           1           0           0           0
+# 4           0           0           1           0           0
+# 5           0           0           1           0           0
+# 6           0           0           0           0           1
+# 7           0           0           0           1           0
+# 8           0           0           0           1           0
+# 9           0           0           0           1           0
+</code></pre>
+<h3 id="_13">字符串操作</h3>
+<pre><code>import re
+</code></pre>
+<p>pandas允许将字符串和正则表达式简洁地应用到整个数据数组上，此外还能处理数据缺失。</p>
+<h4 id="_14">字符串对象方法</h4>
+<p>字串拆分合并方法\
+在很多字符串处理和脚本应用中，内建的字符串方法是足够的。\
+例如，一个逗号分隔的字符串可以使用split方法拆分成多块。</p>
+<pre><code>import numpy as np
+import pandas as pd
+
+val = 'a, b, guido'
+result = val.split(',')
+print(result)
+# ['a', ' b', ' guido']
+</code></pre>
+<p>count：返回子字符串在字符串中的非重叠出现次数</p>
+<pre><code>result = val.count(',')
+print(result)  # 2
+</code></pre>
+<p>endswith：如果字符串以后缀结尾则返回True\
+startswith：如果字符串以后缀结尾则返回True</p>
+<pre><code>result = val.endswith('b')
+print(result)  # False
+result = val.endswith('o')
+print(result)  # True
+result = val.startswith('a')
+print(result)  # True
+</code></pre>
+<p>split常和strip一起使用，用于清除空格（包括换行）\
+split：使用分隔符讲字符串拆分成子字符串的列表\
+strip，rstrip，lstrip：修剪空白，包括换行符；相当于对每个元素进行x.strip()(以及rstrip，lstrip)</p>
+<pre><code>pieces = [x.strip() for x in val.split(',')]
+print(pieces)
+# ['a', 'b', 'guido']
+</code></pre>
+<p>这些子字符串可以使用加法与两个冒号分隔符连接在一起</p>
+<pre><code>first, second, third = pieces
+result = first + '::' + second + '::' + third
+print(result)
+# a::b::guido
+</code></pre>
+<p>但是这并不是一个实用的通用方法。\
+在字符串’ : : ’的join方法中传入一个列表或元组是一种更快且更加Pythonic（Python风格化）的方法\
+join: 使用字符串座位间隔符，用于粘合其他字符串的序列</p>
+<pre><code>result = '::'.join(pieces)
+print(result)
+# a::b::guido
+</code></pre>
+<p>定位子字符串的方法。\
+使用Python的in关键字是检测子字符串的最佳方法，尽管index和find也能实现同样的功能</p>
+<pre><code>result = 'guido' in val
+print(result)
+# True
+</code></pre>
+<p>index：如果在字符串中找到，则返回子字符串中第一个字符的位置，如果找不到则触发一个ValueError\
+find：返回字符串中第一个出现子字符的第一个字符的位置，类似index，如果没有找到，则返回-1\
+rfind：返回字符串中子字符最后一次出现时第一个字符的位置，如果没有找到，则返回-1</p>
+<pre><code>result = val.index(',')
+print(result)  # 1
+result = val.find(',')
+print(result)  # 1
+# result = val.index(':')
+print(result)  # ValueError: substring not found
+result = val.find(':')
+print(result)  # -1
+result = val.rfind(',')
+print(result)  # 4
+</code></pre>
+<p>replace将用一种模式替代另一种模式。它也用于传入空字符串来删除某个模式</p>
+<pre><code>result = val.replace(',', '::')
+print(result)
+# a:: b:: guido
+result = val.replace(', ', '')
+print(result)
+# abguido
+result = val.replace(',', '')
+print(result)
+# a b guido
+</code></pre>
+<p>lower：将大写字母转换为小写字母\
+upper：将小写字母转换为大写字母</p>
+<pre><code>uppers = val.upper()
+print(uppers)
+# A, B, GUIDO
+</code></pre>
+<p>casefold：和lower类似，将字符串中的元素变成小写，lower函数只支持ascill表中的字符，casefold支持很多不同种类的语言</p>
+<pre><code>str1 = &quot;Jan Weiβ@cN上海&quot;
+result = str1.casefold()
+print(result)  # jan weiβ@cn上海
+result = str1.lower()
+print(result)  # jan weiβ@cn上海
+</code></pre>
+<p>ljust，rjust：左对齐或者右对齐；用空格或者其它一些字符填充字符串的相反侧，以返回具有最小宽度的字符串</p>
+<pre><code>str1 = 'https://docs.python.org/3/'
+str2 = 'https://packagehub.suse.com/package-categories/python/'
+print(str1.ljust(60, '*'))
+print(str2.ljust(60, '*'))
+# https://docs.python.org/3/**********************************
+# https://packagehub.suse.com/package-categories/python/******
+
+print(str1.rjust(60, '*'))
+print(str2.rjust(60, '*'))
+# **********************************https://docs.python.org/3/
+# ******https://packagehub.suse.com/package-categories/python/
+
+print(str1.rjust(60))
+print(str2.rjust(60))
+</code></pre>
+<h4 id="_15">正则表达式</h4>
+<p>Python内建的re模块是用于将正则表达式应用到字符串上的库。\
+re模块主要有三个主题：模式匹配、替代、拆分。
+\
+看一个简单的示例：假设我们想将含有多种空白字符（制表符、空格、换行符）的字符串拆分开。\
+描述一个或多个空白字符的正则表达式是\s+\ 
+当调用re.split('\s+', text)，正则表达式首先会被编译，然后正则表达式的split方法在传入文本上被调用。</p>
+<pre><code>text = &quot;foo      bar\t baz    \tqux&quot;
+result = re.split('\s+', text)
+print(result)
+# ['foo', 'bar', 'baz', 'qux']
+</code></pre>
+<p>可以使用re.compile自行编译，形成一个可复用的正则表达式对象</p>
+<pre><code>regex = re.compile('\s+')
+result = regex.split(text)
+print(result)
+# ['foo', 'bar', 'baz', 'qux']
+</code></pre>
+<p>如果想获得的是一个所有匹配正则表达式的模式的列表，你可以使用findall方法</p>
+<pre><code>result = regex.findall(text)
+print(result)
+# ['      ', '\t ', '    \t']
+</code></pre>
+<p>为了在正则表达式中避免转义符\的影响，可以使用原生字符串语法，比如r'C:\x'或者用等价的'C:\x'\
+如果需要将相同的表达式应用到多个字符串上，推荐使用re.compile创建一个正则表达式对象，这样做有利于节约CPU周期。\
+\
+match和search与findall相关性很大。\
+findall返回的是字符串中所有的匹配项，而search返回的仅仅是第一个匹配项。\
+match更为严格，它只在字符串的起始位置进行匹配。</p>
+<pre><code>text = &quot;&quot;&quot;Dave dave@google.com
+Steve steve@gmail.com
+Rob rob@gmail.com
+Ryan ryan@yahoo.com
+&quot;&quot;&quot;
+pattern = r'[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}'
+regex = re.compile(pattern, flags=re.IGNORECASE)  # flags=re.IGNORECASE 使正则表达式不区分大小写
+
+m = regex.findall(text)  # findall会生成一个电子邮件地址的列表
+print(m)
+# ['dave@google.com', 'steve@gmail.com', 'rob@gmail.com', 'ryan@yahoo.com']
+</code></pre>
+<p>search返回的是文本中第一个匹配到的电子邮件地址。\
+对于前面提到的正则表达式，匹配对象只能告诉我们模式在字符串中起始和结束的位置</p>
+<pre><code>m = regex.search(text)
+print(m)
+# &lt;re.Match object; span=(5, 20), match='dave@google.com'&gt;
+print(text[m.start():m.end()])
+# dave@google.com
+</code></pre>
+<p>regex.match只在模式出现于字符串起始位置时进行匹配，如果没有匹配到，返回None</p>
+<pre><code>m = regex.match(text)
+print(m)
+# None
+m = regex.match('rob@gmail.com')
+print(m)
+# &lt;re.Match object; span=(0, 13), match='rob@gmail.com'&gt;
+print(m.group())
+# rob@gmail.com
+print(m.groups())
+# ()
+</code></pre>
+<p>regex.sub会返回一个新的字符串，原字符串中的模式会被一个新的字符串替代</p>
+<pre><code>m = regex.sub('REDACTED', text)
+print(m)
+# Dave REDACTED
+# Steve REDACTED
+# Rob REDACTED
+# Ryan REDACTED
+</code></pre>
+<p>查找电子邮件地址，并将每个地址分为三个部分：用户名，域名和域名后缀。要实现这一点，可以用括号将pattern包起来\
+修改后的正则表达式产生的匹配对象的groups方法，返回的是模式组件的元组</p>
+<pre><code>text = &quot;&quot;&quot;Dave dave@google.com
+Steve steve@gmail.com
+Rob rob@gmail.com
+Ryan ryan@yahoo.com
+&quot;&quot;&quot;
+pattern = r'([A-Z0-9._%+-]+)@([A-Z0-9.-]+)\.([A-Z]{2,4})'
+regex = re.compile(pattern, flags=re.IGNORECASE)
+
+m = regex.findall(text)  # 当pattern可以分组时，findall返回的是包含元组的列表
+print(m)
+# [('dave', 'google', 'com'), ('steve', 'gmail', 'com'), ('rob', 'gmail', 'com'), ('ryan', 'yahoo', 'com')]
+
+m = regex.search(text)
+print(m)
+# &lt;re.Match object; span=(5, 20), match='dave@google.com'&gt;
+print(text[m.start():m.end()])
+# dave@google.com
+m = regex.match('rob@gmail.com')
+print(m)
+# &lt;re.Match object; span=(0, 13), match='rob@gmail.com'&gt;
+print(m.group())
+# rob@gmail.com
+print(m.groups())
+# ('rob', 'gmail', 'com')
+m = regex.sub('REDACTED', text)
+print(m)
+# Dave REDACTED
+# Steve REDACTED
+# Rob REDACTED
+# Ryan REDACTED
+m = regex.sub(r'Username: \1, Domain: \2, Suffix: \3', text)
+print(m)
+# Dave Username: dave, Domain: google, Suffix: com
+# Steve Username: steve, Domain: gmail, Suffix: com
+# Rob Username: rob, Domain: gmail, Suffix: com
+# Ryan Username: ryan, Domain: yahoo, Suffix: com
+</code></pre>
+<h4 id="pandas">pandas中的向量化字符串函数</h4>
+<p>清理杂乱的数据集用于分析通常需要大量的字符串处理和正则化。</p>
+<pre><code>data = {
+    'Dave': 'dave@gmail.com',
+    'Steve': 'steve@gmail.com',
+    'Rob': 'rob@gmail.com',
+    'Wes': np.nan
+}
+data = pd.Series(data)
+print(data)
+# Dave      dave@gmail.com
+# Steve    steve@gmail.com
+# Rob        rob@gmail.com
+# Wes                  NaN
+# dtype: object
+
+print(data.isnull())
+# Dave     False
+# Steve    False
+# Rob      False
+# Wes       True
+# dtype: bool
+</code></pre>
+<p>可以使用data.map将字符串和有效的正则表达式方法（以lambda或其他函数的方式传递）应用到每个值上，但是在NA（null）值上会失败。\
+为了解决这个问题，Series有面向数组的方法用于跳过NA值的字符串操作。这些方法通过Series的str属性进行调用。\
+\
+例如，可以通过str.contains来检查每个电子邮件地址是否含有’gmail'</p>
+<pre><code>m = data.str.contains('gmail')
+print(m)
+# Dave     True
+# Steve    True
+# Rob      True
+# Wes       NaN
+# dtype: object
+</code></pre>
+<p>正则表达式也可以结合任意的re模块选项使用，例如IGNORECASE</p>
+<pre><code>print(pattern)
+# ([A-Z0-9._%+-]+)@([A-Z0-9.-]+)\.([A-Z]{2,4})
+
+m = data.str.findall(pattern, flags=re.IGNORECASE)
+print(m)
+# Dave      [(dave, gmail, com)]
+# Steve    [(steve, gmail, com)]
+# Rob        [(rob, gmail, com)]
+# Wes                        NaN
+# dtype: object
+</code></pre>
+<p>使用str.get或在str属性内部索引，进行向量化的元素检索。</p>
+<pre><code>m = data.str.match(pattern, flags=re.IGNORECASE)
+print(m)
+# Dave     True
+# Steve    True
+# Rob      True
+# Wes       NaN
+# dtype: object
+
+
+m = data.str.findall(pattern, flags=re.IGNORECASE)
+print(m.str.get(1))
+# Dave    NaN
+# Steve   NaN
+# Rob     NaN
+# Wes     NaN
+# dtype: float64
+print(m.str[0])
+# Dave      (dave, gmail, com)
+# Steve    (steve, gmail, com)
+# Rob        (rob, gmail, com)
+# Wes                      NaN
+# dtype: object
+</code></pre>
+<p>使用字符串切片的类似语法进行向量化切片</p>
+<pre><code>print(data.str[:])
+# Dave      dave@gmail.com
+# Steve    steve@gmail.com
+# Rob        rob@gmail.com
+# Wes                  NaN
+# dtype: object
+print(data.str[:5])
+# Dave     dave@
+# Steve    steve
+# Rob      rob@g
+# Wes        NaN
+# dtype: object
+</code></pre>
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../../assets/javascripts/workers/search.22074ed6.min.js"}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.960e086b.min.js"></script>
+      
+    
+  </body>
+</html>

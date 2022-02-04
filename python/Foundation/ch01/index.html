@@ -1,0 +1,1811 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://example.com/python/Foundation/ch01/">
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.9">
+    
+    
+      
+        <title>Python语言基础 - My Docs</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.2b4465f4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.e6a45f82.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#2094f3">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="blue" data-md-color-accent="deep-blue">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#python" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="My Docs" class="md-header__button md-logo" aria-label="My Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            My Docs
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Python语言基础
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="My Docs" class="md-nav__button md-logo" aria-label="My Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    My Docs
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../about/" class="md-nav__link">
+        About
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-python6" class="md-nav__link">
+    1. Python数据类型（6个）
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Python数据类型（6个）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-number" class="md-nav__link">
+    1.1 数值型（number）
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-string" class="md-nav__link">
+    1.2 字符型（string）
+  </a>
+  
+    <nav class="md-nav" aria-label="1.2 字符型（string）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    字符串常用方法
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    转义字符
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    可迭代性
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#f-string" class="md-nav__link">
+    f-string
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#14-list" class="md-nav__link">
+    1.4 列表（list）
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#15-dictionary" class="md-nav__link">
+    1.5 字典（dictionary）
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#16-set" class="md-nav__link">
+    1.6 集合（set）
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#17-tuple" class="md-nav__link">
+    1.7 元组（tuple）
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    2. 动态引用、强类型
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    3. 二元运算符和比较运算
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    4. 标量类型
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5" class="md-nav__link">
+    5. 三元表达式
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+
+<h1 id="python">Python语言基础</h1>
+<h2 id="1-python6">1. Python数据类型（6个）</h2>
+<ul>
+<li>数值型（number）：表示数据组成为数字</li>
+<li>整型（int）<ul>
+<li>十进制</li>
+<li>八进制</li>
+<li>十六进制</li>
+</ul>
+</li>
+<li>浮点型（float）</li>
+<li>布尔型（bool）</li>
+<li>复数性（complex）</li>
+<li>字符型（string）：表示数据组成是字符</li>
+<li>列表（list）：用来表示一组有序元素，后期数据可以修改  ['A','B','C']</li>
+<li>元组（tuple）：用来表示一组有序元素，后期数据不可修改  ('A','B','C','1')</li>
+<li>集合（set）：一组数据无序不重复元素  set([1,2,3,4])</li>
+<li>字典（dictionary）：用键值对的形式保存一组元素  {'A':7,'B':1,'C':9}</li>
+</ul>
+<p>可迭代对象（Iterable）</p>
+<blockquote>
+<p>An object capable of returning its members one at a time. Examples of iterables include all sequence types (such as list, str, and tuple) and some non-sequence types like dict, file objects, and objects of any classes you define with an iter() method or with a getitem() method that implements Sequence semantics.</p>
+</blockquote>
+<p>序列（Sequence）</p>
+<blockquote>
+<p>An iterable which supports efficient element access using integer indices via the getitem() special method and defines a len() method that returns the length of the sequence. Some built-in sequence types are list, str, tuple, and bytes. Note that dict also supports getitem() and len(), but is considered a mapping rather than a sequence because the lookups use arbitrary immutable keys rather than integers.</p>
+</blockquote>
+<p>迭代器（Iterator）</p>
+<blockquote>
+<p>An object representing a stream of data. Repeated calls to the iterator’s next() method (or passing it to the built-in function next()) return successive items in the stream. When no more data are available a StopIteration exception is raised instead. At this point, the iterator object is exhausted and any further calls to its next() method just raise StopIteration again. Iterators are required to have an iter() method that returns the iterator object itself so every iterator is also iterable and may be used in most places where other iterables are accepted. One notable exception is code which attempts multiple iteration passes. A container object (such as a list) produces a fresh new iterator each time you pass it to the iter() function or use it in a for loop. Attempting this with an iterator will just return the same exhausted iterator object used in the previous iteration pass, making it appear like an empty container.</p>
+</blockquote>
+<p>可变数据（immutable）：
+列表（list），字典（dictionary），集合（set）。</p>
+<p>不可变数据（immutable）：
+数字（number），字符（string），元组（tuple）。</p>
+<p>可迭代（iterable）：
+字符（string），元组（tuple），列表（list），字典（dictionary），集合（set）</p>
+<p>序列：
+* 有序序列：字符（string），元组（tuple），列表（list）
+* 无序序列：字典（dictionary），集合（set）</p>
+<h3 id="11-number">1.1 数值型（number）</h3>
+<p>例子：</p>
+<pre><code>a, b, c, d = 20, 5.5, True, 4+3j
+
+print(a, b, c, d)
+# 20 5.5 True (4+3j)
+
+print(type(a), type(b), type(c), type(d))
+# &lt;class 'int'&gt; &lt;class 'float'&gt; &lt;class 'bool'&gt; &lt;class 'complex'&gt;
+</code></pre>
+<p>Python也可以这样赋值：</p>
+<pre><code>a = b = c = d = 1
+print(a, b, c, d)
+# 1 1 1 1
+</code></pre>
+<p>进制转换：</p>
+<pre><code>a = -15
+print(f'{a}对应的十进制是{a}, 二进制是{a:b}, 八进制是{a:o}, 十六进制是{a:x}')
+</code></pre>
+<h3 id="12-string">1.2 字符型（string）</h3>
+<p>单引号：内容中包含大量双引号</p>
+<p>双引号：内容中包含大量单引号</p>
+<p>三引号：内容中同时包含单双引号，三个单引号比较好。</p>
+<pre><code>a = 'string is &quot;special&quot;'
+
+b = &quot;string's value&quot;
+
+c = '''string's value is 
+&quot;special&quot;'''
+
+d = &quot;&quot;&quot;string's 
+context
+&quot;&quot;&quot;
+</code></pre>
+<h4 id="_1">字符串常用方法</h4>
+<ul>
+<li>字符串切片</li>
+</ul>
+<pre><code>s = 'Python is very good'
+
+print(s[2:4])
+# th
+print(s[5])
+# n
+print(s[-1])
+# d
+print(s[-3:-1])
+# oo
+
+# 非迭代型，不可修改
+s[3] = 'b'
+# Traceback (most recent call last):
+#   File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+# TypeError: 'str' object does not support item assignment
+</code></pre>
+<ul>
+<li>字符串合并</li>
+</ul>
+<pre><code>print(s + '!!!')
+# Python is very good!!!
+</code></pre>
+<ul>
+<li>replace( a,b 将字符串中的 a 替换成 b</li>
+</ul>
+<pre><code>print(s.replace('is', 'we'))
+# Python we very good
+</code></pre>
+<ul>
+<li>find(str) : 返回 str 出现的索引位置，如果找不到该值，则 find() 方法将返回 -1。</li>
+</ul>
+<pre><code>print(s.find('a'))
+# -1
+
+print(s.find('s'))
+# 8
+</code></pre>
+<ul>
+<li>str.index(a): 查找指定值的首次出现。如果找不到该值，index() 方法将引发异常。</li>
+</ul>
+<pre><code>print(s.index('s'))
+# 8
+
+print(s.index('a'))
+# Traceback (most recent call last):
+#   File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+# ValueError: substring not found
+</code></pre>
+<ul>
+<li>str.count(a): 统计字符串中 a 出现的次数</li>
+</ul>
+<pre><code>print(s.count('a'))
+# 0
+print(s.count('o'))
+# 3
+</code></pre>
+<ul>
+<li>split: 对字符串进行分割。如果参数 num 有指定值，则分隔 num+1 个子字符串。</li>
+</ul>
+<pre><code># 按空格分割
+print(s.split(' '))
+# ['Python', 'is', 'very', 'good']
+
+# 按空格分割成2个子字符串
+print(s.split(' ', 1))
+# ['Python', 'is very good']
+</code></pre>
+<ul>
+<li>strip: 移除字符串首尾指定的字符 默认为空格。该方法只能删除开头或是结尾的字符，不能删除中间部分的字符。</li>
+</ul>
+<pre><code>print(s)
+# Python is very good
+
+# 移除末尾字符d
+print(s.strip('d'))
+# Python is very goo
+</code></pre>
+<ul>
+<li>endswith (str): 判断字符串是否以 str 结尾</li>
+</ul>
+<pre><code>print(s.endswith('d'))
+# True
+
+print(s.endswith('a'))
+# False
+</code></pre>
+<ul>
+<li>startswith (str): 判断字符串是否以 str 开头</li>
+</ul>
+<pre><code>print(s.startswith('p'))
+# False
+
+print(s.startswith('P'))
+# True
+</code></pre>
+<ul>
+<li>isdigit ：判断字符串是否全为数字</li>
+</ul>
+<pre><code>d = '+86-123'
+
+print(d.isdigit())
+# False
+
+d = '86123'
+print(d.isdigit())
+# True
+</code></pre>
+<ul>
+<li>isalpha ：判断字符串是否全为字母</li>
+</ul>
+<pre><code>b = 'Ab?'
+
+print(b.isalpha())
+# False
+
+c = 'Ab'
+print()c.isalpha()
+# True
+</code></pre>
+<h4 id="_2">转义字符</h4>
+<p>使用反斜杠\表示转义字符。反斜杠前面加r代表原始字符。</p>
+<pre><code>a = 'str\ning'
+print(a)
+# str
+# ing
+
+a = r'str\ning'
+print(a)
+# str\ning
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>转义符</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>\在行尾</td>
+<td>续行符</td>
+</tr>
+<tr>
+<td>\\</td>
+<td>反斜杠符号\</td>
+</tr>
+<tr>
+<td>\'</td>
+<td>单引号</td>
+</tr>
+<tr>
+<td>\b</td>
+<td>退格(Backspace)</td>
+</tr>
+<tr>
+<td>\000</td>
+<td>空</td>
+</tr>
+<tr>
+<td>\n</td>
+<td>换行</td>
+</tr>
+<tr>
+<td>\v</td>
+<td>纵向制表符</td>
+</tr>
+<tr>
+<td>\t</td>
+<td>横向制表符</td>
+</tr>
+<tr>
+<td>\r</td>
+<td>回车，将 \r 后面的内容移到字符串开头，并逐一替换开头部分的字符，直至将 \r 后面的内容完全替换完成。</td>
+</tr>
+<tr>
+<td>\yyy</td>
+<td>八进制数，y 代表 0~7 的字符</td>
+</tr>
+<tr>
+<td>\xyy</td>
+<td>十六进制数，以 \x 开头，y 代表的字符</td>
+</tr>
+</tbody>
+</table>
+<h4 id="_3">可迭代性</h4>
+<p>字符串是可迭代的。索引值从0开始，-1代表从末尾开始。索引区间是左闭右开。</p>
+<pre><code>a = 'string is &quot;special&quot;'
+print(a[2:4])
+'ri'
+print(a[-4:-1])
+# ial
+</code></pre>
+<h4 id="f-string">f-string</h4>
+<p>f-string是Python3.6推出的新功能。看下面的例子，对比传统表示方法和f-string的方法。</p>
+<pre><code>age = 32
+name = 'Tom'
+fstring = f'My name is {name} and I am {age} years old.'
+print(fstring)
+# My name is Tom and I am 32 years old.
+</code></pre>
+<p>在f-string中使用表达式。</p>
+<pre><code>height = 2
+base = 3
+fstring = f'The area of the triangle is {base*height/2}.'
+print(fstring)
+# The area of the triangle is 3.0.
+</code></pre>
+<p>通过f-string对字典进行操作。</p>
+<pre><code>person1 = {
+    'name': 'Tom',
+    'age': 20,
+    'gender': 'male'
+}
+
+person2 = {
+    'name': 'Jerry',
+    'age': 20,
+    'gender': 'female'
+}
+
+# 读取字典
+fstring = f'{person1.get(&quot;name&quot;)} is {person1.get(&quot;age&quot;)} and is {person1.get(&quot;ender&quot;)}'
+print(fstring)
+# Tom is 20 and is None
+
+# 遍历字典
+people = [person1, person2]
+
+for person in people:
+    fstring = f'{person.get(&quot;name&quot;)} is {person.get(&quot;age&quot;)} and is {person.get(&quot;ender&quot;)}'
+    print(fstring)
+
+# Tom is 20 and is None
+# Jerry is 20 and is None
+</code></pre>
+<p>在f-string中使用条件。</p>
+<pre><code>person1 = {
+    'name': 'Tom',
+    'age': 20,
+    'gender': 'male'
+}
+
+person2 = {
+    'name': 'Jerry',
+    'age': 20,
+    'gender': 'female'
+}
+
+people = [person1, person2]
+
+for person in people:
+    fstring = f'{&quot;She&quot; if person.get(&quot;gender&quot;) == &quot;female&quot; else &quot;He&quot;} is watching TV.'
+    print(fstring)
+
+# He is watching TV.
+# She is watching TV.
+</code></pre>
+<p>使用f-string格式化输出。
+* 左对齐：&lt;
+* 右对齐：&gt; 
+* 居中对齐：^</p>
+<pre><code>print(f'{&quot;apple&quot;: &gt;30}')
+print(f'{&quot;apple&quot;: ^30}')
+print(f'{&quot;apple&quot;: &lt;30}')
+#                          apple
+#             apple             
+# apple
+</code></pre>
+<p>使用f-string格式化数字。</p>
+<pre><code>number = 0.9124325345
+
+# 百分比
+fstring = f'Percentage format for number with two decimal places: {number:.2%}'
+print(fstring)
+# Percentage format for number with two decimal places: 91.24%
+
+# 保留小数点后3位
+fstring = f'Fixed point format for number with three decimal places: {number:.3f}'
+print(fstring)
+# Fixed point format for number with three decimal places: 0.912
+
+# 科学计数法表示
+fstring = f'Exponent format for number: {number:e}'
+print(fstring)
+# Exponent format for number: 9.124325e-01
+
+# 带货币符号
+number = 123456.78921
+fstring = f'Currency format for number with two decimal places: ${number:.2f}'
+print(fstring)
+# Currency format for number with two decimal places: $123456.79
+
+# 带货币符号和千分位
+number = 123456.78921
+fstring = f'Currency format for number with two decimal places and comma seperators: ${number:,.2f}'
+print(fstring)
+# Currency format for number with two decimal places and comma seperators: $123,456.79
+
+# 输出数值带正负符合
+numbers = [1, -3, 5]
+
+for number in numbers:
+    fstring = f'The number is {number:+}'
+    print(fstring)
+
+# The number is +1
+# The number is -3
+# The number is +5
+
+
+# Debug调试
+number = 2
+print(f'{number = }')
+# number = 2
+</code></pre>
+<h3 id="14-list">1.4 列表（list）</h3>
+<p>列表是 Python 内置的一种数据结构，是一种有序的集合，用来存储一连串元素的容器。列表中元素类型可以不相同，它支持数字、字符串等。</p>
+<p>列表的每个值都有对应的索引值，索引值从0开始。</p>
+<p>列表切片：</p>
+<p>使用切片符号可以对大多数序列类型选取其子集。</p>
+<p>起始位置start的索引是包含的，而结束位置stop的索引并不包含（左闭右开）。</p>
+<p>步进值step可以在第二个冒号后面使用，意思是每隔多少个数取一个值 。</p>
+<pre><code>color = ['red', 'green', 'blue', 'yellow', 'white', 'black']
+
+# 从0开始统计，读取第1，2位
+print(color[1: 3])
+# ['green', 'blue']
+
+# 从0开始统计，读取从第1位到倒数第3位
+print(color[1: -2])
+# ['green', 'blue', 'yellow']
+
+# 从0开始统计，读取从倒数第4位到倒数第3位
+print(color[-4: -2])
+# ['blue', 'yellow']
+
+# 如果写成下面这样，则无输出。
+print(color[-2: -4])
+# []
+
+print(color[::2])
+# ['red', 'blue', 'white']
+</code></pre>
+<p>列表常用方法：</p>
+<table>
+<thead>
+<tr>
+<th>方法名称</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a.index()</td>
+<td>返回a中首个匹配项的位置</td>
+</tr>
+<tr>
+<td>a.pop()</td>
+<td>删除指定位置的元素</td>
+</tr>
+<tr>
+<td>a.insert()</td>
+<td>向指定位置插入元素</td>
+</tr>
+<tr>
+<td>a.reverse()</td>
+<td>反向排序</td>
+</tr>
+<tr>
+<td>a.append()</td>
+<td>向末尾添加元素</td>
+</tr>
+<tr>
+<td>a.sort()</td>
+<td>对列表进行排序</td>
+</tr>
+<tr>
+<td>a.remove()</td>
+<td>删除首个匹配项的元素</td>
+</tr>
+<tr>
+<td>a.extend()</td>
+<td>将一个列表扩展至另一个列表</td>
+</tr>
+<tr>
+<td>a.count()</td>
+<td>统计某个元素出现的次数</td>
+</tr>
+</tbody>
+</table>
+<p>创建列表list</p>
+<pre><code>a = [1, 2, 3, 4, 5]
+
+print(a)
+# [1, 2, 3, 4, 5]
+
+b = list('12345')
+
+print(b)
+# ['1', '2', '3', '4', '5']
+
+c = list(12345)
+# Traceback (most recent call last):
+#   File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+# TypeError: 'int' object is not iterable
+</code></pre>
+<p>列表切片（从0开始，左闭右开）：</p>
+<pre><code>print(a[2:3])
+# [3]
+
+print(a[:3])
+# [1, 2, 3]
+
+print(a[::-1])
+# [5, 4, 3, 2, 1]
+
+print(a[::])
+# [1, 2, 3, 4, 5]
+
+print(a[::1])
+[1, 2, 3, 4, 5]
+</code></pre>
+<p>列表是可修改的：</p>
+<pre><code>print(a[1])
+# 2
+
+a[1] = 'one'
+
+print(a)
+@ [1, 'one', 3, 4, 5]
+</code></pre>
+<p>列表追加和插入。insert与append相比，计算代价更高。因为子序列元素需要在内部移动为新元素提供空间。</p>
+<pre><code>a.append(6)  # 注意，直接修改原列表，不是创建副本。
+
+print(a)
+# [1, 'one', 3, 4, 5, 6]
+
+a.extend([7, 8, 9])
+
+print(a)
+# [1, 'one', 3, 4, 5, 6, 7, 8, 9]
+
+a.insert(0, 'Italy')
+
+print(a)
+# ['Italy', 1, 3, 5, 6, 7, 8]
+</code></pre>
+<p>列表删除元素，默认删除最后一个。insert的反操作是pop。</p>
+<pre><code>a.pop()
+# 9
+
+print(a)
+# [1, 'one', 3, 4, 5, 6, 7, 8]
+
+a.pop(3)
+# 4
+
+print(a)
+# [1, 'one', 3, 5, 6, 7, 8]
+</code></pre>
+<p>删除列表中某个元素。</p>
+<pre><code>print(a[1])
+# one
+
+del a[1]
+
+print(a)
+[1, 3, 5, 6, 7, 8]
+</code></pre>
+<p>删除列表中某个元素。remove方法会定位第一个符合要求的值并移除</p>
+<pre><code>a.remove('Italy')
+
+print(a)
+# [1, 3, 5, 6, 7, 8]
+</code></pre>
+<p>统计某个元素出现的次数。</p>
+<pre><code>print(a.count(1))
+# 1
+</code></pre>
+<p>返回列表中匹配项的索引位置。匹配不到抛出异常。</p>
+<pre><code>print(a.index(2))
+# Traceback (most recent call last):
+#   File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+# ValueError: 2 is not in list
+
+print(a.index(3))
+# 1
+</code></pre>
+<p>判断元素是否存在于列表。</p>
+<pre><code>print(3 in a)
+# True
+
+print('3' in a)
+# False
+</code></pre>
+<p>反向输出列表。</p>
+<pre><code>a.reverse()
+
+print(a)
+# [8, 7, 6, 5, 3, 1]
+</code></pre>
+<p>取列表中最大值、最小值。</p>
+<pre><code>print(min(a))
+# 1
+
+print(max(a))
+# 78
+</code></pre>
+<p>计算列表长度。</p>
+<pre><code>print(len(a))
+# 6
+</code></pre>
+<p>列表扩展：</p>
+<pre><code>a = [1, 2, 3]
+b = [4, 5, 6]
+
+print(a + b)
+# [1, 2, 3, 4, 5, 6]
+
+a.extend(b)  # a列表被修改
+print(a)
+# [1, 2, 3, 4, 5, 6]
+
+print(b)
+# [4, 5, 6]
+</code></pre>
+<p>使用extend添加元素比使用加号（+）连接效率更高。因为使用加号（+）连接过程中创建了新列表，并且还要复制对象。</p>
+<pre><code>a_list = [4, None, 'foo']
+b_list = [7, 8, (2, 3)]
+print(a_list + b_list)  # [4, None, 'foo', 7, 8, (2, 3)]  使用+号连接
+a_list.extend(b_list)
+print(a_list)  # [4, None, 'foo', 7, 8, (2, 3)]
+</code></pre>
+<p>列表复制</p>
+<pre><code>c = list('Python')
+
+print(a + c)
+# [1, 2, 3, 4, 5, 6, 'P', 'y', 't', 'h', 'o', 'n']
+
+print(a * 3)
+# [1, 2, 3, 4, 5, 6, 1, 2, 3, 4, 5, 6, 1, 2, 3, 4, 5, 6]
+</code></pre>
+<p>双端队列，collections.deque，可以满足列表头尾部都增加的要求。</p>
+<pre><code>from collections import deque
+
+d = deque([1, 2, 3])
+d.extendleft(['a', 'b', 'c'])  # 注意插入顺序
+print(d)  # deque(['c', 'b', 'a', 1, 2, 3])
+print(len(d))  # 6
+print(d[-2])  # 2
+print(d.count('a'))  # 1
+print(d.index('a'))  # 2
+d.insert(0, 1)  # 第0位插入数字1
+print(d)  # deque([1, 'c', 'b', 'a', 1, 2, 3])
+d.rotate(2)  # 把右边2个元素放到左边，注意顺序，和extendleft不一样
+print(d)  # deque([2, 3, 1, 'c', 'b', 'a', 1])
+d.rotate(-2)
+print(d)  # deque([1, 'c', 'b', 'a', 1, 2, 3])
+</code></pre>
+<p>列表排序。排序对列表元素的数据类型是有要求的</p>
+<pre><code>a_list = [4, None, 'foo', 7, 8, (2, 3)]
+a_list.sort() 
+# Traceback (most recent call last):
+#   File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+# TypeError: '&lt;' not supported between instances of 'NoneType' and 'int'
+
+b_list = [7, 8, (2, 3)]
+b_list.sort()
+# Traceback (most recent call last):
+#   File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+# TypeError: '&lt;' not supported between instances of 'tuple' and 'int'
+
+a_list = [7, 2, 5, 1, 3]
+a_list.sort()  # 按数值大小排序
+print(a_list)  # [1, 2, 3, 5, 7]
+
+b_list = ['saw', 'small', 'He', 'foxes', 'six']
+b_list.sort(key=len)  # 通过字符串的长度进行排序
+print(b_list)  # ['He', 'saw', 'six', 'small', 'foxes']
+</code></pre>
+<p>列表二分搜索和已排序列表的维护
+* bisect 返回要插入元素在列表中的下标。假定列表是有序的。
+* bisect_left 与 bisect 类似，只不过其默认将元素插到左边，所以返回的是插入到左边的下标
+* bisect_right与 bisect_left 相反。</p>
+<p>以上方法若列表无序，那么会返回插入到列表最后一个合适的位置。</p>
+<p>insort 会在列表中插入元素到正确位置，假定列表有序。如果列表无序，那么会返回空。默认插入到右边。</p>
+<p>insort_left 和insort_right 类似。</p>
+<pre><code>import bisect
+
+c = [1, 2, 3, 4, 7]
+print(bisect.bisect(c, 2))  # 2 bisect会找到第一个2,并把新的2插入它后面
+
+bisect.insort(c, 2)  # [1, 2, 2, 3, 4, 7]
+print(bisect.bisect(c, 5))  # 5 bisect会找到第一个4,并把新的5插入它后面
+
+bisect.insort(c, 5)
+print(bisect.bisect(c, 6))  # 6 bisect会找到第一个5,并把新的6插入它后面
+
+bisect.insort(c, 6)
+print(c)  # [1, 2, 2, 3, 4, 5, 6, 7]
+</code></pre>
+<h3 id="15-dictionary">1.5 字典（dictionary）</h3>
+<p>字典(dict)是使用键-值（key-value）存储，键是不可变对象，且不允许重复。</p>
+<p>dict（字典）更为常用的名字是哈希表或者是关联数组。 字典是拥有灵活尺寸的键值对集合，不是通过位置进行索引，其中键和值都是Python对象。用大括号{}是创建字典的一种方式，在字典中用逗号将键值对分隔。</p>
+<p><strong>字典常用方法</strong></p>
+<table>
+<thead>
+<tr>
+<th>方法名称</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a.items()</td>
+<td>返回a中所有键值对</td>
+</tr>
+<tr>
+<td>a.values()</td>
+<td>返回a中所有值</td>
+</tr>
+<tr>
+<td>a.keys()</td>
+<td>返回a中所有键</td>
+</tr>
+<tr>
+<td>a.get()</td>
+<td>通过键来查值，返回对应的值</td>
+</tr>
+<tr>
+<td>a.clear()</td>
+<td>清空字典a的值</td>
+</tr>
+<tr>
+<td>a.setdefault</td>
+<td>通过键值来查找值，找不到则插入</td>
+</tr>
+<tr>
+<td>a.update()</td>
+<td>键和值更新到新的字典</td>
+</tr>
+<tr>
+<td>a.pop()</td>
+<td>删除指定位置的元素</td>
+</tr>
+</tbody>
+</table>
+<p>生成一个字典</p>
+<pre><code>dict_a = {'name': 'Ming', 'id': 1001, 'age': 35}
+
+print(type(dict_a))
+# &lt;class 'dict'&gt;
+
+dict_b = dict(city='Shanghai', strict='Xuhui', zip='200000')
+
+print(type(dict_b))
+# &lt;class 'dict'&gt;
+</code></pre>
+<p>通过键查询值，查询不到抛出异常</p>
+<pre><code>print(dict_a['name'])
+# Ming
+
+print(dict_a['Name'])
+# Traceback (most recent call last):
+#   File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+# KeyError: 'Name'
+</code></pre>
+<p>插入新的键值对</p>
+<pre><code>dict_a['city'] = 'Chengdu'
+
+print(dict_a)
+# {'name': 'Ming', 'id': 1001, 'city': 'Chengdu'}
+</code></pre>
+<p>删除某个键值对。pop方法会在删除的同时返回被删的值，并删除键。</p>
+<pre><code>dict_a.pop('city')
+# Chengdu
+
+print(dict_a)
+# {'name': 'Ming', 'id': 1001}
+</code></pre>
+<p>另一种方式删除某个键值对 </p>
+<pre><code>del dict_a['age']
+# Traceback (most recent call last):
+#   File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+# KeyError: 'age'
+
+del dict_a['id']
+
+print(dict_a)
+# {'name': 'Ming'}
+</code></pre>
+<p>判断键是否存在</p>
+<pre><code>dict_a[23] = 'Hello World'
+
+print(dict_a)
+# {'name': 'Ming', 23: 'Hello World'}
+
+print(23 in dict_a)
+# True
+
+print(35 in dict_a)
+# False
+</code></pre>
+<p>通过键查询值的另一种方式，查询不到不抛异常</p>
+<pre><code>dict_a.get('hai')
+
+dict_a.get('hai', 1)
+# 1
+
+dict_a.get('name', 1)
+# Ming
+
+dict_a['hai']
+# Traceback (most recent call last):
+#   File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+# KeyError: 'hai'
+</code></pre>
+<p>通过键查询值的另一种方式，查询不到则添加</p>
+<pre><code>dict_a.setdefault('name')
+# Ming
+
+dict_a.setdefault('hai', 1)
+# 1
+
+print(dict_a)
+# {'name': 'Ming', 23: 'Hello World', 'hai': 1}
+
+dict_a.setdefault('go')
+print(dict_a)
+# {'name': 'Ming', 23: 'Hello World', 'hai': 1, 'go': None}
+</code></pre>
+<p>读取字典所有键值对，返回的是列表形式</p>
+<pre><code>print(dict_a.items())
+# dict_items([('name', 'Ming'), (23, 'Hello World'), ('hai', 1), ('go', None)])
+</code></pre>
+<p>读取字典的键</p>
+<pre><code>print(dict_a.keys())
+# dict_keys(['name', 23, 'hai', 'go'])
+</code></pre>
+<p>读取字典的值</p>
+<pre><code>print(dict_a.values())
+# dict_values(['Ming', 'Hello World', 1, None])
+</code></pre>
+<p>将字典值转化成列表</p>
+<pre><code>print(list(dict_a.values()))
+# ['Ming', 'Hello World', 1, None]
+
+for key in dict_a.keys():
+    print(dict_a[key])
+
+# Ming
+# Hello World
+# 1
+# None
+</code></pre>
+<p>清空字典</p>
+<pre><code>dict_a.clear()
+
+print(dict_a)
+# {}
+
+print(len(dict_a))
+# 0
+</code></pre>
+<p>对于任何原字典中已经存在的键，如果传给update方法的数据也含有相同的键，则它的值将会被覆盖。</p>
+<pre><code>dict_a = {'name': 'Ming', 'id': 1001, 'age': 35}
+dict_b = dict(city='Shanghai', id=2001, zip='200000')
+
+dict_a.update(dict_b)
+
+print(dict_a)
+# {'name': 'Ming', 'id': 2001, 'age': 35, 'city': 'Shanghai', 'zip': '200000'}
+</code></pre>
+<p><strong>从列表生成字典</strong></p>
+<p>字典本质上是2-元组（含有2个元素的元组）的集合，字典是可以接受一个2-元组的列表作为参数的。</p>
+<pre><code># 方法1
+mapping = {}
+key_list = list(range(5))
+value_list = list(reversed(range(5)))
+
+for key, value in zip(key_list, value_list):
+    mapping[key] = value
+
+print(mapping)  
+# {0: 4, 1: 3, 2: 2, 3: 1, 4: 0}
+
+# 方法2。
+mapping = {}
+key_list = list(range(5))
+value_list = list(reversed(range(5)))
+
+mapping = dict(zip(key_list, value_list))  
+print(mapping)  # {0: 4, 1: 3, 2: 2, 3: 1, 4: 0}
+</code></pre>
+<p><strong>字典默认值</strong></p>
+<p>下面的例子，实现了将一个单词组成的列表，转换成单词首字母和单词为键值对的字典。</p>
+<p>先用传统方法实现，再用字典的setdefault方法进行改写。</p>
+<pre><code>words = ['apple', 'bat', 'bar', 'atom', 'book']
+
+by_letter = {}
+
+for word in words:
+    letter = word[0]  # word[0]把列表words的每个元素列表化，并取首字母。输出的是a, b, b, a, b这5个列表元素的首字母
+    if letter not in by_letter:
+        # 生成第一个键值对
+        print(letter)
+        by_letter[letter] = [word]  # 对比[word]和word[]的用法
+        print(by_letter)
+        # a
+        # {'a': ['apple']}
+        # b
+        # {'a': ['apple'], 'b': ['bat']}
+    else:
+        # append其他键值对
+        print(letter)
+        by_letter[letter].append(word)
+        print(by_letter)
+        # b
+        # {'a': ['apple'], 'b': ['bat', 'bar']}
+        # a
+        # {'a': ['apple', 'atom'], 'b': ['bat', 'bar']}
+        # b
+        # {'a': ['apple', 'atom'], 'b': ['bat', 'bar', 'book']}
+
+print(by_letter)  
+# {'a': ['apple', 'atom'], 'b': ['bat', 'bar', 'book']}
+</code></pre>
+<p>用字典的setdefault方法，上述的for循环语句可以被写为。</p>
+<pre><code>words = ['apple', 'bat', 'bar', 'atom', 'book']
+
+by_letter = {}
+
+for word in words:
+    letter = word[0]  # word[0]的输出依然是5个列表元素的首字母a, b, b, a, b
+    by_letter.setdefault(letter, ['a']).append(word)  # 如果letter不在[]则通过append添加word
+
+print(by_letter)  
+# {'a': ['apple', 'atom'], 'b': ['bat', 'bar', 'book']}
+</code></pre>
+<p>如果改为<code>by_letter.setdefault(letter, ['a']).append(word)</code> ，则输出<code>by_letter</code>是 <code>{'a': ['a', 'apple', 'atom'], 'b': ['a', 'bat', 'bar', 'book']}</code>。</p>
+<p>体会setdefault()的注释“Insert key with a value of default if key is not in the dictionary. Return the value for key if key is in the dictionary, else default.”</p>
+<p>通过defaultdict类使得上述目的实现更为简单。</p>
+<pre><code>from collections import defaultdict
+
+by_letter = defaultdict(list)  # list是内置的可变序列(Built-in mutable sequence)
+
+print(dict(by_letter))  
+# {}
+
+for word in words:
+    by_letter[word[0]].append(word)
+
+print(by_letter)  
+# defaultdict(&lt;class 'list'&gt;, {'a': ['apple', 'atom'], 'b': ['bat', 'bar', 'book']})
+
+print(dict(by_letter))  
+# {'a': ['apple', 'atom'], 'b': ['bat', 'bar', 'book']}
+</code></pre>
+<p><strong>有效的字典键类型</strong></p>
+<p>尽管字典的值可以是任何Python对象，但键必须是不可变的对象，比如标量类型（整数、浮点数、字符串）或元组（且元组内对象也必须是不可变对象）。</p>
+<p>通过hash函数可以检查一个对象是否可以哈希化（即是否可以用作字典的键），术语叫作哈希化。</p>
+<pre><code>print(hash('string'))  
+# -4368784820203065343
+
+print(hash((1, 2, (2, 3))))  
+# -9209053662355515447
+
+print(hash((1, 2, [2, 3])))  
+# TypeError: unhashable type: 'list'
+
+print(hash((1, 2, tuple([2, 3]))))  
+# -9209053662355515447  为了将列表作为键，一种方式就是将其转换为元组
+</code></pre>
+<h3 id="16-set">1.6 集合（set）</h3>
+<p>集合(set)是一种无序且元素唯一的序列。</p>
+<p>和字典类似，集合的元素是不可变的。可以认为集合也像字典，但是只有键没有值。基本功能是进行成员关系测试和删除重复元素。所以集合另一个用途是去重复。</p>
+<p>集合可以有两种创建方式：通过set()函数或者{}来创建</p>
+<p>集合不属于序列类数据， 集合不支持通过索引访问指定元素，但可以增加和删除元素。</p>
+<p>集合支持数学上的集合操作，例如并集、交集、差集、对称差集。</p>
+<table>
+<thead>
+<tr>
+<th>方法名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>add()</td>
+<td>为集合添加元素</td>
+</tr>
+<tr>
+<td>update()</td>
+<td>给集合添加元素</td>
+</tr>
+<tr>
+<td>clear()</td>
+<td>移除集合中的所有元素</td>
+</tr>
+<tr>
+<td>copy()</td>
+<td>拷贝一个集合</td>
+</tr>
+<tr>
+<td>remove()</td>
+<td>移除指定元素</td>
+</tr>
+<tr>
+<td>pop()</td>
+<td>随机移除元素</td>
+</tr>
+<tr>
+<td>discard()</td>
+<td>删除集合中指定的元素</td>
+</tr>
+<tr>
+<td>&lt; 或者issubset()</td>
+<td>判断指定集合是否为该方法参数集合的子集</td>
+</tr>
+<tr>
+<td>| 或者union()</td>
+<td>返回两个集合的并集</td>
+</tr>
+<tr>
+<td>&amp; 或者intersection()</td>
+<td>返回集合的交集</td>
+</tr>
+<tr>
+<td>intersection_update()</td>
+<td>返回集合的交集</td>
+</tr>
+<tr>
+<td>- 或者difference()</td>
+<td>返回多个集合的差集</td>
+</tr>
+<tr>
+<td>difference_update()</td>
+<td>移除集合中的元素，该元素在指定的集合也存在</td>
+</tr>
+<tr>
+<td>^ 或者symmetric_difference()</td>
+<td>返回两个集合中不重复的元素集合(两集合除去交集部分的元素)</td>
+</tr>
+<tr>
+<td>symmetric_difference_update()</td>
+<td>移除当前集合中在另外一个指定集合相同的元素，并将另外一个指定集合中不同的元素插入到当前集合中</td>
+</tr>
+<tr>
+<td>isdisjoint()</td>
+<td>判断两个集合是否包含相同的元素，如果没有返回 True，否则返回 False</td>
+</tr>
+<tr>
+<td>issuperset()</td>
+<td>判断该方法的参数集合是否为指定集合的子集</td>
+</tr>
+</tbody>
+</table>
+<p>举例</p>
+<pre><code>a = {'a', 'b', 'c', 1, 2}
+b = {1, 'c', 'd'}
+</code></pre>
+<p>并集(a和b中的所有不同元素)</p>
+<pre><code>print(a.union(b))  # {'c', 1, 2, 'd', 'a', 'b'}
+print(a | b)  # {'c', 1, 2, 'd', 'a', 'b'}
+</code></pre>
+<p>交集(a、b中同时包含的元素)</p>
+<pre><code>print(a.intersection(b))  # {'c', 1}
+print(a &amp; b)  # {'c', 1}
+</code></pre>
+<p>将a的内容设置为a和b的交集</p>
+<pre><code>a = {'a', 'b', 'c', 1, 2}
+b = {1, 'c', 'd'}
+a.intersection_update(b)
+print(a)  # {1, 'c'}
+</code></pre>
+<p>在a不在b的元素</p>
+<pre><code>print(a.difference(b))  # {'a', 2, 'b'}
+print(a - b)  # {2, 'a', 'b'}
+</code></pre>
+<p>将a的内容设为在a不在b的元素</p>
+<pre><code>a = {'a', 'b', 'c', 1, 2}
+b = {1, 'c', 'd'}
+a.difference_update(b)
+print(a)  # {2, 'b', 'a'}
+a = {'a', 'b', 'c', 1, 2}
+b = {1, 'c', 'd'}
+a -= b
+print(a)  # {2, 'a', 'b'}
+</code></pre>
+<p>将元素加入集合a</p>
+<pre><code>a.add(7)
+print(a)  # {1, 2, 'c', 7, 'a', 'b'} 每次输出的顺序是不一样的
+</code></pre>
+<p>从集合a移除某个元素</p>
+<pre><code>a.remove(7)
+print(a)  # {1, 2, 'c', 'a', 'b'}  如果a被清空，则报错 KeyError: 7
+</code></pre>
+<p>所有在a或b中，但不是同时在a、b中的元素</p>
+<pre><code>print(a.symmetric_difference(b))  # {2, 'd', 'b', 'a'}
+print(a ^ b)  # {2, 'd', 'b', 'a'}
+</code></pre>
+<p>将a的内容设为所有在a或b中，但不是同时在a、b中的元素</p>
+<pre><code>a = {'a', 'b', 'c', 1, 2}
+b = {1, 'c', 'd'}
+a.symmetric_difference_update(b)
+print(a)  # {'a', 2, 'd', 'b'}
+a = {'a', 'b', 'c', 1, 2}
+b = {1, 'c', 'd'}
+a ^= b
+print(a)  # {2, 'd', 'a', 'b'}
+</code></pre>
+<p>如果a包含于b，返回Ture</p>
+<pre><code>print(a.issubset(b))  # False
+</code></pre>
+<p>将a的内容设置为a和b的并集</p>
+<pre><code>print(a)  # {'a', 2, 'd', 'b'}
+a = {'a', 'b', 'c', 1, 2}
+a.update(b)
+print(a)  # {1, 2, 'a', 'b', 'd', 'c'}
+</code></pre>
+<p>移除任意元素，如果集合是空的，抛出keyError</p>
+<pre><code>a.pop()  # 随机移除某个元素，没有输入变量，如果集合是空的，抛出KeyError: 'pop from an empty set'
+print(a)  # {2, 1, 'd', 'b', 'a'}
+</code></pre>
+<p>将集合重置为空，清空所有元素</p>
+<pre><code>a.clear()
+print(a)  # set()
+</code></pre>
+<p>集合的元素必须是不可变的，如果想要包含列表型的元素，必须先转换为元组</p>
+<pre><code>my_data1 = [1, 2, 3, 4]
+my_data2 = [3, 4, 5, 6]
+my_set = {tuple(my_data1), tuple(my_data2)}
+print(my_set)  # {(1, 2, 3, 4), (3, 4, 5, 6)}
+</code></pre>
+<h3 id="17-tuple">1.7 元组（tuple）</h3>
+<p>Python 的元组与列表类似，不同之处在于元组的元素不能修改。</p>
+<p>元组使用小括号( )，列表使用方括号[ ]。</p>
+<p>元组中只包含一个元素时，需要在元素后面添加逗号 ，否则括号会被当作运算符使用。</p>
+<p>元组可以使用下标索引来访问元组中的值。</p>
+<p>元组中的元素值是不允许修改的，但我们可以对元组进行连接组合。</p>
+<p>元组中的元素值是不允许删除的，但我们可以使用del语句来删除整个元组。</p>
+<pre><code># 此处括号被解析为运算符，需要在后面加上逗号才会被解释为元组
+tup1 = (10)
+print(type(tup1))
+# &lt;class 'int'&gt;
+tup1 = (10,)
+print(type(tup1))
+# &lt;class 'tuple'&gt;
+</code></pre>
+<p>创建元组最简单的办法就是用逗号分隔序列值。元组对数据类型没有一致性要求。</p>
+<pre><code>tup = 4, 5, 6
+print(tup)  # (4, 5, 6)
+
+nested_tup = (4, 5, 6), (7, 8)
+print(nested_tup)  # # ((4, 5, 6), (7, 8))
+
+tup = ('a', 'b', {'one': 1})
+print(type(tup))
+# &lt;class 'tuple'&gt;
+</code></pre>
+<p>使用加号（+）进行元组连接合并。</p>
+<pre><code>tup = tuple((4, None, 'fool') + (6, 0) + ('bar',))
+print(tup)  # (4, None, 'fool', 6, 0, 'bar')
+</code></pre>
+<p>元组的不可变指的是元组所指向的内存中的内容不可变。</p>
+<pre><code>tup = ('h', 'e', 'l', 'l', 'o')
+print(id(tup))
+# 139820353350208
+
+tup = (1, 2, 3, 4, 5)
+print(id(tup))
+# 139820353298896
+
+tup[0] = 'x'
+# Traceback (most recent call last):
+#   File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+# TypeError: 'tuple' object does not support item assignment
+</code></pre>
+<p>将元组乘以整数，则会和列表一样，生成含有多份拷贝的元组。对象自身并没有复制，只是指向它们的引用进行了复制。</p>
+<pre><code>tup = tuple(('fool', 'bar') * 4)
+print(tup)  # ('fool', 'bar', 'fool', 'bar', 'fool', 'bar', 'fool', 'bar')
+</code></pre>
+<p>如果元组中的一个对象是可变的，例如列表，你可以在它内部进行修改</p>
+<pre><code>tup = tuple(['foo', [4, 5, 6], True])
+tup[1].append(0)
+print(tup)  # ('foo', [4, 5, 6, 0], True)
+tup[1].append([9])
+print(tup)  # ('foo', [4, 5, 6, 0, [9]], True)
+</code></pre>
+<p>使用tuple函数将任意序列或迭代器转换为元组</p>
+<pre><code>tup = tuple([4, 5, 6])
+print(tup)  # (4, 5, 6)
+tup = tuple('string')
+print(tup)  # ('s', 't', 'r', 'i', 'n', 'g')
+print(tup[2])  # r  # 元组的元素可以通过中括号[]来获取
+</code></pre>
+<p>如果要将元组型的表达式赋值给变量，Python会对等号右边的值进行<a href="../ch03/">拆包</a></p>
+<pre><code>tup = (9, 5, (8, 7))
+a, b, c = tup
+print(a)  # 9
+print(b)  # 5
+print(c)  # (8, 7)
+a, b, (c, d) = tup
+print(a)  # 9
+print(b)  # 5
+print(c)  # 8
+print(d)  # 7
+
+tup = (9, 5, (8, 7))
+a, b, c = tup
+c, a = a, c  # 利用拆包实现交换
+print(a)  # (8, 7)
+print(b)  # 5
+print(c)  # 9
+</code></pre>
+<p>利用拆包实现遍历元组或列表组成的序列</p>
+<pre><code>seq = [(1, 2, 3), (4, 5, 6), (7, 8, 9)]
+for a, b, c in seq:
+    print('a={0}, b={0}, c={0}'.format(a, b, c))  # 列表每个元素的取值顺序
+    # a=1, b=1, c=1
+    # a=4, b=4, c=4
+    # a=7, b=7, c=7
+    print('a={0}, b={1}, c={2}'.format(a, b, c))
+    # a=1, b=2, c=3
+    # a=4, b=5, c=6
+    # a=7, b=8, c=9
+    print('a={2}, b={0}, c={1}'.format(a, b, c))
+    # a=3, b=1, c=2
+    # a=6, b=4, c=5
+    # a=9, b=7, c=8
+</code></pre>
+<p>元组拆包功能还包括特殊的语法*rest。很多Python编程者会使用下划线（_）来表示不想要的变量 </p>
+<pre><code>values = 1, 2, 3, 4, 5
+a, b, *rest = values
+print(a)  # 1
+print(b)  # 2
+print(*rest)  # 3 4 5
+a, b, *_ = values
+print(*_)  # 3 4 5
+</code></pre>
+<h2 id="2">2. 动态引用、强类型</h2>
+<p>星号 * 的参数会以元组(tuple)的形式导入，存放所有未命名的变量参数</p>
+<pre><code>def printinfo(arg1, *vartuple):
+    print(&quot;输出任何传入的参数: &quot;)
+    print(arg1)
+    print(vartuple)
+
+    for var in vartuple:
+        print(var)
+    return
+
+printinfo(10)
+# 10
+# ()
+
+printinfo(70, 60, 50)
+# 70
+# (60, 50)
+# 60
+# 50
+</code></pre>
+<p>两个星号 ** 的参数会以字典的形式导入</p>
+<pre><code>def printinfo(arg1, **vardict):
+    print(&quot;输出任何传入的参数: &quot;)
+    print(arg1)
+    print(vardict)
+
+printinfo(1, a=2, b=3)
+# 1
+# {'a': 2, 'b': 3}  字典格式输出
+</code></pre>
+<p>Python中的对象引用并不涉及类型。变量对于对象来说只是特定命名空间中的名称；类型信息是存储在对象自身之中。</p>
+<pre><code>a = 5
+print(type(a))  
+# &lt;class 'int'&gt;
+
+a = 'foo'
+print(type(a))  
+# &lt;class 'str'&gt;
+</code></pre>
+<p>Python是强类型语言，所有的对象都拥有一个指定的类型（或类），隐式的转换只在某些特定、明显的情况下发生。</p>
+<pre><code>a = 4.5
+b = 2
+print('a is {0}, b is {1}'.format(type(a), type(b)))  
+# a is &lt;class 'float'&gt;, b is &lt;class 'int'&gt; 字串格式化，用于后续访问
+
+print(a / b)  
+# 2.25
+</code></pre>
+<p>使用isinstance函数来检查一个对象是否是特定类型的实例。isinstance接受一个包含类型的元组，可以检查对象的类型是否在元组中的类型中。</p>
+<pre><code>a = 5
+b = 4.5
+c = 'foo'
+print(isinstance(a, int))  
+# True
+print(isinstance(b, str))  
+# False
+print(isinstance(c, (str, int)))  
+# True
+print(isinstance(c, (float, int)))  
+# False
+</code></pre>
+<p>属性和方法也可以通过getattr函数获得。在其他的语言中，通过变量名访问对象通常被称为“反射”。</p>
+<pre><code>b = 'foo'
+print(getattr(b, 'split'))  
+# &lt;built-in method split of str object at 0x7f1d603ba430&gt;
+</code></pre>
+<h2 id="3">3. 二元运算符和比较运算</h2>
+<p>检查两个引用是否指向同一个对象，可以使用is关键字。</p>
+<p>is和is not的常用之处是检查一个变量是否为None，因为None只有一个实例。</p>
+<pre><code>a = [1, 2, 3]
+b = a
+c = list(a)  # list函数总是创建一个新的Python列表（即一份拷贝）
+
+print(a is b)  
+# True
+
+print(a is not c)  
+# True 
+
+print(a == c)  
+# True
+
+d = None
+print(d is None)  
+# True   
+</code></pre>
+<p>Python中的大部分对象，例如列表、字典、NumPy数组都是可变对象，大多数用户定义的类型（类）也是可变的。</p>
+<p>可变对象中包含的对象和值是可以被修改的。还有其他一些对象是不可变的，比如字符串、元组。</p>
+<pre><code>a_list = ['foo', 2, [4, 5]]  # 列表
+a_list[2] = (3, 4)
+
+print(a_list)  # ['foo', 2, (3, 4)]
+a_tuple = (3, 5, (4, 5))  # 元组
+
+a_tuple[1] = 'four'  
+# TypeError: 'tuple' object does not support item assignment 不可被修改
+
+print(a_tuple)  
+# (3, 5, (4, 5))
+</code></pre>
+<h2 id="4">4. 标量类型</h2>
+<p>Python标量类型：None, str, bytes, float, bool, int</p>
+<p>数值类型。</p>
+<p>基础的Python数字类型就是int和float。int可以存储任意大小数字。浮点数在Python中用float表示，每一个浮点数都是双精度64位数值。</p>
+<pre><code>ival = 17338971
+print(ival ** 6)  
+# 27173145946003847721495630081806010734757321
+
+fval = 17338971.0
+print(fval ** 6)  
+# 2.7173145946003847e+43
+
+print(3 / 2)  
+# 1.5
+print(3 // 2)  
+# 1
+</code></pre>
+<p>字符串。</p>
+<p>Python的字符串是不可变的。</p>
+<pre><code>a = 5.6
+s = str(a)
+
+print(s)  
+# 5.6
+
+b = 'python'
+print(list(b))  
+# ['p', 'y', 't', 'h', 'o', 'n']
+
+print(b[2])  
+# t
+
+b[2] = 'f'  
+# TypeError: 'str' object does not support item assignment 字符串是不可变的
+</code></pre>
+<p>反斜杠符号\是一种转义符号，它用来指明特殊符号。</p>
+<p>如果你有一个不含特殊符号但含有大量反斜杠的字符串时，可以在字符串前面加一个前缀符号r，表明这些字符是原生字符，r是raw的简写，表示原生的。</p>
+<pre><code>x = '12\\34'
+y = r'this\has\no\special\characters'
+print(x)  # 12\34
+print(y)  # this\has\no\special\characters
+</code></pre>
+<p>字符串格式化
+{0:.2f}表示将第一个参数格式化为2位小数的浮点数
+{1:s}表示将第二个参数格式化为字符串
+{2:d}表示将第三个参数格式化整数
+参考Python官方文档 https://docs.python.org/3.6/library/string.html</p>
+<pre><code>template = '{0:.2f} {1:s} are worth US${2:d}'
+print(template.format(4.5560, 'Argentine Pesos', 1))  # 4.56 Argentine Pesos are worth US$1
+</code></pre>
+<p>日期和时间</p>
+<pre><code>from datetime import datetime, date, time
+
+dt = datetime(2011, 10, 29, 20, 30, 21)
+
+print(dt.day)  
+# 29
+print(dt.minute)  
+# 30
+print(dt.date())  
+# 2011-10-29
+print(dt.time())  
+# 20:30:21
+print(dt.replace(minute=0, second=0))  
+# 2011-10-29 20:00:00  将分钟、秒替换为0
+print(datetime.strptime('20091021', '%Y%m%d'))  
+# 2009-10-21 00:00:00 字符串可以通过 strptime 函数转换为datetime对象
+
+dt2 = datetime(2011, 11, 15, 22, 30)
+delta = dt2 - dt
+print(delta)  
+# 17 days, 1:59:39
+print(dt + delta)  
+# 2011-11-15 22:30:00
+</code></pre>
+<p>range函数返回一个迭代器，该迭代器生成一个等差整数序列。</p>
+<pre><code>print(range(10))  
+# range(0, 10)
+
+print(list(range(10)))  
+# [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+print(list(range(0, 20, 2)))  
+# [0, 2, 4, 6, 8, 10, 12, 14, 16, 18]
+</code></pre>
+<h2 id="5">5. 三元表达式</h2>
+<p>value = true-expr if condition else false-expr</p>
+<pre><code>x = 5
+print('non-negative' if x &gt;= 0 else 'negative')  # non-negative
+</code></pre>
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../../assets/javascripts/workers/search.22074ed6.min.js"}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.960e086b.min.js"></script>
+      
+    
+  </body>
+</html>

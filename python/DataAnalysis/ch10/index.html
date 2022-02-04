@@ -1,0 +1,1863 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://example.com/python/DataAnalysis/ch10/">
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.9">
+    
+    
+      
+        <title>Ch10 - My Docs</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.2b4465f4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.e6a45f82.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#2094f3">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="blue" data-md-color-accent="deep-blue">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#groupby" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="My Docs" class="md-header__button md-logo" aria-label="My Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            My Docs
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Ch10
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="My Docs" class="md-nav__button md-logo" aria-label="My Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    My Docs
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../about/" class="md-nav__link">
+        About
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#groupby" class="md-nav__link">
+    GroupBy机制
+  </a>
+  
+    <nav class="md-nav" aria-label="GroupBy机制">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    分组机制
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    遍历各分组
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    选择一列或所有列的子集
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#series" class="md-nav__link">
+    使用字典和Series分组
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    使用函数分组
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    根据索引层级分组
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    数据聚合
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    逐列及多函数应用
+  </a>
+  
+    <nav class="md-nav" aria-label="逐列及多函数应用">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    返回不含行索引的聚合数据
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-" class="md-nav__link">
+    应用：通用拆分-应用-联合
+  </a>
+  
+    <nav class="md-nav" aria-label="应用：通用拆分-应用-联合">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    压缩分组键
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_10" class="md-nav__link">
+    分位数与桶分析
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_11" class="md-nav__link">
+    示例：使用指定分组值填充缺失值
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_12" class="md-nav__link">
+    示例：随机采样与排列
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_13" class="md-nav__link">
+    示例：分组加权平均和相关性
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_14" class="md-nav__link">
+    示例：逐组线性回归
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_15" class="md-nav__link">
+    数据透视表与交叉表
+  </a>
+  
+    <nav class="md-nav" aria-label="数据透视表与交叉表">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_16" class="md-nav__link">
+    数据透视表
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#crosstab" class="md-nav__link">
+    交叉表：crosstab
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+
+  <h1>Ch10</h1>
+
+<h4 id="groupby">GroupBy机制</h4>
+<pre><code>import pandas as pd
+import numpy as np
+</code></pre>
+<h5 id="_1">分组机制</h5>
+<p>分组操作第一步，数据包含在pandas对象中，可以是Series、DataFrame或其他数据结构。\
+之后根据你提供的一个或多个键分离到各个组中。分组键可是多种形式的，并且键不一定是完全相同的类型(注意后面介绍的三个方法是可以产生用于分隔对象的值数组的快捷方式)：
+* 与需要分组的轴向长度一致的值列表或值数组。默认情况下，groupby在axis=0的轴向上分组。
+* DataFrame的列名的值。
+* 可以将分组轴向上的值和分组名称相匹配的字典或Series。
+* 可以在轴索引或索引中的单个标签上调用的函数。</p>
+<p>请注意，分组键中的任何缺失值将被排除在结果之外。\
+分离操作是在数据对象的特定轴向上进行的。例如，DataFrame可以在它的行方向（axis=0）或列方向（axis=1）进行分组。\
+分组操作后，一个函数就可以应用到各个组中，产生新的值。\
+最终，所有函数的应用结果会联合为一个结果对象。</p>
+<pre><code>df = pd.DataFrame(
+    {
+        'key1': ['a', 'a', 'b', 'b', 'a'],
+        'key2': ['one', 'two', 'one', 'two', 'one'],
+        'data1': [1, 3, 5, 7, 9],
+        'data2': [2, 4, 6, 8, 10]
+    }
+)
+</code></pre>
+<p>根据key1标签计算data1列的均值，方法一，访问data1并使用key1列（它是一个Series）调用groupby方法：</p>
+<pre><code>grouped = df['data1'].groupby(df['key1'])
+print(grouped)  # &lt;pandas.core.groupby.generic.SeriesGroupBy object at 0x7fdd2cb01430&gt;
+</code></pre>
+<p>grouped变量现在是一个GroupBy对象，它实际上还没有进行任何计算，拥有一些关于分组键df['key1']的一些中间数据的信息</p>
+<p>下面对grouped对象做一些操作：</p>
+<pre><code>result = grouped.mean()  # 计算平均值
+print(result)
+# key1
+# a    4.333333
+# b    6.000000
+# Name: data1, dtype: float64
+grouped_means = df['data1'].groupby([df['key1'], df['key2']]).mean()
+print(grouped_means)
+# key1  key2
+# a     one     5.0
+#       two     3.0
+# b     one     5.0
+#       two     7.0
+# Name: data1, dtype: float64
+</code></pre>
+<p>上面例子使用了两个键对数据进行分组，并且结果Series现在拥有一个包含唯一键对的多层索引</p>
+<p>下面对计算的平均值（mean）进行重塑（unstack）</p>
+<pre><code>print(grouped_means.unstack())
+# key2  one  two
+# key1
+# a     5.0  3.0
+# b     5.0  7.0
+</code></pre>
+<p>分组信息通常包含在同一个DataFrame中。在这种情况下，可以传递列名（无论那些列名是字符串、数字或其他Python对象）作为分组键：</p>
+<p>下面例子中df.groupby('key1').mean()的结果里并没有key2列。这是因为df['key2']并不是数值数据，即df['key2']是一个冗余列，因此被排除在结果之外</p>
+<pre><code>result = df.groupby('key1').mean()
+print(result)
+#          data1     data2
+# key1
+# a     4.333333  5.333333
+# b     6.000000  7.000000
+
+result = df.groupby(['key1', 'key2']).mean()
+print(result)
+#            data1  data2
+# key1 key2
+# a    one     5.0    6.0
+#      two     3.0    4.0
+# b    one     5.0    6.0
+#      two     7.0    8.0
+
+result = df.groupby(['key1', 'key2']).size()
+print(result)
+# key1  key2https://zhuanlan.zhihu.com/p/126206923
+# a     one     2
+#       two     1
+# b     one     1
+#       two     1
+# dtype: int64
+</code></pre>
+<h5 id="_2">遍历各分组</h5>
+<p>GroupBy对象支持迭代，会生成一个包含组名和数据块的2维元组序列。</p>
+<pre><code>df = pd.DataFrame(
+    {
+        'key1': ['a', 'a', 'b', 'b', 'a'],
+        'key2': ['one', 'two', 'one', 'two', 'one'],
+        'data1': [1, 3, 5, 7, 9],
+        'data2': [2, 4, 6, 8, 10]
+    }
+)
+</code></pre>
+<p>单个分组键的情况:</p>
+<pre><code>for name, group in df.groupby('key1'):
+    print(name)
+    print(group)
+# a
+#   key1 key2  data1  data2
+# 0    a  one      1      2
+# 1    a  two      3      4
+# 4    a  one      9     10
+# b
+#   key1 key2  data1  data2
+# 2    b  one      5      6
+# 3    b  two      7      8
+</code></pre>
+<p>多个分组键的情况: 元组中的第一个元素是键值的元组</p>
+<pre><code>for (k1, k2), group in df.groupby(['key1', 'key2']):
+    print((k1, k2))
+    print(group)
+# ('a', 'one')
+#   key1 key2  data1  data2
+# 0    a  one      1      2
+# 4    a  one      9     10
+# ('a', 'two')
+#   key1 key2  data1  data2
+# 1    a  two      3      4
+# ('b', 'one')
+#   key1 key2  data1  data2
+# 2    b  one      5      6
+# ('b', 'two')
+#   key1 key2  data1  data2
+# 3    b  two      7      8
+
+result = dict(list(df.groupby('key1')))
+print(result)
+# df.groupby('key1')的结果是一个对象
+# &lt;pandas.core.groupby.generic.DataFrameGroupBy object at 0x7f240fe058b0&gt;
+# list(df.groupby('key1'))的结果是包含FrameData的结构的列表list:
+# [
+#     ('a',   key1 key2  data1  data2
+#           0    a  one      1      2
+#           1    a  two      3      4
+#           4    a  one      9     10),
+#     ('b',   key1 key2  data1  data2
+#           2    b  one      5      6
+#           3    b  two      7      8)
+# ]
+# dict(list(df.groupby('key1')))的结果是包含FrameData的结构的字典dict
+# {
+#     'a':   key1 key2  data1  data2
+#          0    a  one      1      2
+#          1    a  two      3      4
+#          4    a  one      9     10,
+#     'b':   key1 key2  data1  data2
+#          2    b  one      5      6
+#          3    b  two      7      8
+# }
+print(result['b'])
+#   key1 key2  data1  data2
+# 2    b  one      5      6
+# 3    b  two      7      8
+</code></pre>
+<p>默认情况下，groupby在axis=0的轴向上分组，也可以在其他任意轴向上进行分组。</p>
+<pre><code>print(df.dtypes)
+# key1     object
+# key2     object
+# data1     int64
+# data2     int64
+# dtype: object
+
+grouped = df.groupby(df.dtypes, axis=1)
+print(grouped)  # &lt;pandas.core.groupby.generic.DataFrameGroupBy object at 0x7f4f6636df70&gt;
+print(list(grouped))
+# [
+#     (dtype('int64'),    data1  data2
+#                      0      1      2
+#                      1      3      4
+#                      2      5      6
+#                      3      7      8
+#                      4      9     10),
+#     (dtype('O'),   key1 key2
+#                  0    a  one
+#                  1    a  two
+#                  2    b  one
+#                  3    b  two
+#                  4    a  one)
+# ]
+</code></pre>
+<p>打印各分组如下：</p>
+<pre><code>for dtype, group in grouped:
+    print(dtype)
+    print(group)
+# int64
+#       data1  data2
+# 0         1      2
+# 1         3      4
+# 2         5      6
+# 3         7      8
+# 4         9     10
+# object
+#        key1   key2
+# 0         a    one
+# 1         a    two
+# 2         b    one
+# 3         b    two
+# 4         a    one
+</code></pre>
+<h5 id="_3">选择一列或所有列的子集</h5>
+<p>对于从DataFrame创建的GroupBy对象，用列名称或列名称数组进行索引时，会产生用于聚合的列子集的效果\
+如果传递的是列表或数组，则此索引操作返回的对象是分组的DataFrame；\
+如果只有单个列名作为标量传递，则为分组的Series；</p>
+<p>对比下面4句： </p>
+<pre><code>result = df.groupby('key1')['data1']  # 单个列名
+print(result)  # &lt;pandas.core.groupby.generic.SeriesGroupBy object at 0x7fa988609040&gt;
+for key, data in result:
+    print(key)
+    print(data)
+result = df['data1'].groupby(df['key1'])  # 单个列名
+print(result)  # &lt;pandas.core.groupby.generic.SeriesGroupBy object at 0x7fa988609910&gt;
+for key, data in result:
+    print(key)
+    print(data)
+# a
+# 0    1
+# 1    3
+# 4    9
+# Name: data1, dtype: int64
+# b
+# 2    5
+# 3    7
+# Name: data1, dtype: int64
+result = df.groupby('key1')[['data1']]  # 列表或数组
+print(result)  # &lt;pandas.core.groupby.generic.DataFrameGroupBy object at 0x7f32666176a0&gt;
+for key, data in result:
+    print(key)
+    print(data)
+# a
+#   key1 key2  data1  data2
+# 0    a  one      1      2
+# 1    a  two      3      4
+# 4    a  one      9     10
+# b
+#   key1 key2  data1  data2
+# 2    b  one      5      6
+# 3    b  two      7      8
+result = df[['data1']].groupby(df['key1'])  # 列表或数组
+print(result)  # &lt;pandas.core.groupby.generic.DataFrameGroupBy object at 0x7f32666171f0&gt;
+for key, data in result:
+    print(key)
+    print(data)
+# a
+#    data1
+# 0      1
+# 1      3
+# 4      9
+# b
+#    data1
+# 2      5
+# 3      7
+</code></pre>
+<h5 id="series">使用字典和Series分组</h5>
+<p>分组信息可能会以非数组形式存在。</p>
+<p>生成一个示例DataFrame</p>
+<pre><code>people = pd.DataFrame(
+    [[1, 3, 5, 7, 9],
+     [0, 2, 4, 6, 8],
+     [0, 2, 4, 6, 8],
+     [1, 3, 5, 7, 9],
+     [1, 2, 3, 4, 5]],
+    columns=['a', 'b', 'c', 'd', 'e'],
+    index=['Joe', 'Steve', 'Wes', 'Jim', 'Travis']
+)
+</code></pre>
+<p>添加一些NA值</p>
+<pre><code>people.iloc[2:3, [1, 2]] = np.nan
+print(people)
+#         a    b    c  d  e
+# Joe     1  3.0  5.0  7  9
+# Steve   0  2.0  4.0  6  8
+# Wes     0  NaN  NaN  6  8
+# Jim     1  3.0  5.0  7  9
+# Travis  1  2.0  3.0  4  5
+</code></pre>
+<p>假设有如下各列的分组对应关系，并且想把各列按组累加：</p>
+<pre><code>mapping = {
+    'a': 'red',
+    'b': 'red',
+    'c': 'blue',
+    'd': 'blue',
+    'e': 'red',
+    'f': 'orange'  # 注意：健f虽然没有被用到，但不影响在这里定义。
+}
+</code></pre>
+<p>把mapping这个字典传给groupby()</p>
+<pre><code>by_column = people.groupby(mapping, axis=1)
+print(by_column.sum())
+#         blue   red
+# Joe     12.0  13.0
+# Steve   10.0  10.0
+# Wes      6.0   8.0
+# Jim     12.0  13.0
+# Travis   7.0   8.0
+</code></pre>
+<p>Series也有相同的功能，可以视为固定大小的映射：</p>
+<pre><code>map_services = pd.Series(mapping)
+print(map_services)
+# a       red
+# b       red
+# c      blue
+# d      blue
+# e       red
+# f    orange
+# dtype: object
+result = people.groupby(map_services, axis=1).count()
+print(result)
+#         blue  red
+# Joe        2    3
+# Steve      2    3
+# Wes        1    2
+# Jim        2    3
+# Travis     2    3
+</code></pre>
+<h5 id="_4">使用函数分组</h5>
+<p>与使用字典或Series分组相比，使用Python函数是定义分组关系的一种更为通用的方式。\
+作为分组键传递的函数将会按照每个索引值调用一次，同时返回值会被用作分组名称。注意：函数是作用在索引上。</p>
+<pre><code>result = people.groupby(len).sum()  # 人的名字是索引值，根据名字的长度来进行分组
+print(result)
+#    a    b     c   d   e
+# 3  2  6.0  10.0  20  26
+# 5  0  2.0   4.0   6   8
+# 6  1  2.0   3.0   4   5
+</code></pre>
+<p>可以将函数与数组、字典或Series进行混合，所有的对象都会在内部转换为数组</p>
+<pre><code>key_list = ['one', 'one', 'one', 'two', 'two']
+result = people.groupby([len, key_list]).min()
+print(result)
+#        a    b    c  d  e
+# 3 one  0  3.0  5.0  6  8
+#   two  1  3.0  5.0  7  9
+# 5 one  0  2.0  4.0  6  8
+# 6 two  1  2.0  3.0  4  5
+</code></pre>
+<h5 id="_5">根据索引层级分组</h5>
+<p>根据层级分组时，将层级数值或层级名称传递给level关键字：</p>
+<pre><code>columns = pd.MultiIndex.from_arrays(
+    [['US', 'US', 'US', 'JP', 'JP'],
+     [1, 3, 5, 1, 3]],
+    names=['cty', 'tenor']
+)
+hier_df = pd.DataFrame(
+    [[1, 3, 5, 7, 9],
+     [0, 2, 4, 6, 8],
+     [1, 3, 5, 7, 9],
+     [1, 2, 3, 4, 5]],
+    columns=columns
+)
+print(hier_df)
+# cty   US       JP
+# tenor  1  3  5  1  3
+# 0      1  3  5  7  9
+# 1      0  2  4  6  8
+# 2      1  3  5  7  9
+# 3      1  2  3  4  5
+
+result = hier_df.groupby(level='cty', axis=1).count()
+print(result)
+# cty  JP  US
+# 0     2   3
+# 1     2   3
+# 2     2   3
+# 3     2   3
+</code></pre>
+<h4 id="_6">数据聚合</h4>
+<p>聚合是指所有根据数组产生标量值的数据转换过程，比如：mean、count、min和sum等一些聚合操作。</p>
+<pre><code>import pandas as pd
+import numpy as np
+</code></pre>
+<p>预备知识：\
+分位数（Quantile），也称分位点，是指将一个随机变量的概率分布范围分为几个等份的数值点，分析其数据变量的趋势。\
+常用的分位数有 中位数、四分位数、百分位数等。\
+中位数（Medians）是一个统计学的专有名词，代表一个样本、种群或概率分布中的一个数值，可以将数值集合划分为相等的两部分。\</p>
+<p>利用pandas库计算data = [6, 47, 49, 15, 42, 41, 7, 39, 43, 40, 36]的分位数。\
+确定p分位数位置的两种方法(n为数据的总个数，p为0-1之间的值)。在python中计算分位数位置的方案采用position=1+(n-1)<em>p\
+* position = (n+1)</em>p
+* position = 1 + (n-1)*p</p>
+<p>案例1</p>
+<pre><code>data = pd.Series(np.array([6, 47, 49, 15, 42, 41, 7, 39, 43, 40, 36]))
+print(&quot;数据格式：&quot;)
+print(np.sort(data))  # 必须要排序
+print('Q1:', data.quantile(.25))
+print('Q2:', data.quantile(.5))
+print('Q3:', data.quantile(.75))
+# 数据格式：
+# [ 6  7 15 36 39 40 41 42 43 47 49]
+# Q1: 25.5
+# Q2: 40.0
+# Q3: 42.5
+# 手算计算结果：
+# Q1的p分位数(0.25)位置position = 1+(11-1)*0.25 = 3.5(取第3位) (p=0.25) Q1=15+(36-15)*0.5=25.5 (第3、4位的差乘以余数0.5)
+# Q2的p分位数(0.5)位置position = 1+(11-1)*0.5 = 6 (p=0.5) Q2=40
+# Q3的p分位数(0.75)位置position = 1+(11-1)*0.75 = 9 (p=0.75) Q3=42+(43-42)*0.5=42.5
+# IQR = Q3 - Q1 = 17
+</code></pre>
+<p>案例2</p>
+<pre><code>df = pd.DataFrame(np.array([[1, 1], [2, 10], [3, 100], [4, 100]]), columns=['a', 'b'])
+print(&quot;数据原始格式：&quot;)
+print(df)
+print(&quot;计算p=0.1时，a列和b列的分位数&quot;)
+print(df.quantile(.1))
+# 数据原始格式：
+#    a    b
+# 0  1    1
+# 1  2   10
+# 2  3  100
+# 3  4  100
+# 计算p=0.1时，a列和b列的分位数
+# a    1.3
+# b    3.7
+# Name: 0.1, dtype: float64
+# 手算计算结果：
+# 计算a列
+# position=1+(4-1)*0.1=1.3 (取第1位)
+# Q1=1+(2-1)*0.3=1.3  (第1、2位的差乘以余数0.3)
+# 计算b列
+# position=1+(4-1)*0.1=1.3 (取第1位)
+# Q1=1+(10-1)*0.3=3.7  (第1、2位的差乘以余数0.3)
+</code></pre>
+<p>优化的groupby方法：
+* count: 分组中非NA值的数量
+* sum: 非NA值的累加和
+* mean: 非NA值的平均值
+* median: 非NA值的算术中位数
+* std, var: 无偏的(n-1分母)标准差和方差
+* min, max: 非NA值的最小值、最大值
+* prod: 非NA值的乘积
+* first, last: 非NA值的第一个、最后一个值</p>
+<pre><code>df = pd.DataFrame(
+    {
+        'key1': ['a', 'a', 'b', 'b', 'a'],
+        'key2': ['one', 'two', 'one', 'two', 'one'],
+        'data1': [1, 3, 5, 7, 9],
+        'data2': [2, 4, 6, 8, 10]
+    }
+)
+
+print(df)
+#   key1 key2  data1  data2
+# 0    a  one      1      2
+# 1    a  two      3      4
+# 2    b  one      5      6
+# 3    b  two      7      8
+# 4    a  one      9     10
+
+grouped = df.groupby('key1')
+result = grouped['data1']
+for i in result:
+    print(i)
+# ('a', 0    1
+#       1    3
+#       4    9
+#       Name: data1, dtype: int64)
+# ('b', 2    5
+#       3    7
+#       Name: data1, dtype: int64)
+result = grouped['data1'].quantile(0.9)  # quantile分位数
+print(result)
+# key1
+# a    7.8
+# b    6.8
+# Name: data1, dtype: float64
+# 手算计算结果：
+# 计算a列
+# position=1+(3-1)*0.9=2.8
+# Q1=3+(9-3)*0.8=7.8
+# 计算b列
+# position=1+(2-1)*0.9=1.9
+# Q1=5+(7-5)*0.9=6.8
+</code></pre>
+<p>使用自行制定的聚合，并再调用已经在分组对象上定义好的方法。</p>
+<pre><code>def peak_to_peak(arr):
+    return arr.max() - arr.min()
+
+
+result = grouped.agg(peak_to_peak)
+print(result)
+#       data1  data2
+# key1
+# a         8      8
+# b         2      2
+
+result = grouped.describe()
+print(result)
+#      data1                                ... data2
+#      count      mean       std  min  25%  ...   min  25%  50%  75%   max
+# key1                                      ...
+# a      3.0  4.333333  4.163332  1.0  2.0  ...   2.0  3.0  4.0  7.0  10.0
+# b      2.0  6.000000  1.414214  5.0  5.5  ...   6.0  6.5  7.0  7.5   8.0
+</code></pre>
+<h4 id="_7">逐列及多函数应用</h4>
+<pre><code>tips = pd.read_csv('../examples/tips.csv')
+tips['tip_pct'] = tips['tip'] / (tips['total_bill'] - tips['tip'])
+print(tips.head(5))
+#    total_bill   tip smoker  day    time  size   tip_pct
+# 0       16.99  1.01     No  Sun  Dinner     2  0.063204
+# 1       10.34  1.66     No  Sun  Dinner     3  0.191244
+# 2       21.01  3.50     No  Sun  Dinner     3  0.199886
+# 3       23.68  3.31     No  Sun  Dinner     2  0.162494
+# 4       24.59  3.61     No  Sun  Dinner     4  0.172069
+</code></pre>
+<p>根据各列同时使用多个函数进行聚合</p>
+<pre><code>grouped = tips.groupby(['day', 'smoker'])
+# for i in grouped:
+#     print(i)
+# (('Fri', 'No'),      total_bill   tip smoker  day    time  size   tip_pct
+#                 91        22.49  3.50     No  Fri  Dinner     2  0.184308
+#                 ......
+#                 223       15.98  3.00     No  Fri   Lunch     3  0.231125)
+# (('Fri', 'Yes'),      total_bill   tip smoker  day    time  size   tip_pct
+#                  90        28.97  3.00    Yes  Fri  Dinner     2  0.115518
+#                  ......
+#                  226       10.09  2.00    Yes  Fri   Lunch     2  0.247219)
+# ......
+
+grouped_pct = grouped['tip_pct']
+for i in grouped_pct:
+    print(i)
+# (('Fri', 'No'), 91     0.184308
+#                 94     0.166667
+#                 ......
+# Name: tip_pct, dtype: float64)
+# (('Fri', 'Yes'), 90     0.115518
+#                  92     0.210526
+#                  ......
+# Name: tip_pct, dtype: float64)
+# ......
+</code></pre>
+<p>将函数名以字符串形式传递</p>
+<pre><code>result = grouped_pct.agg('mean')
+print(result)
+# day   smoker
+# Fri   No        0.179740
+#       Yes       0.216293
+# Sat   No        0.190412
+#       Yes       0.179833
+# Sun   No        0.193617
+#       Yes       0.322021
+# Thur  No        0.193424
+#       Yes       0.198508
+# Name: tip_pct, dtype: float64
+</code></pre>
+<p>如果传递的是函数或者函数名的列表，会得到一个列名是这些函数名的DataFrame。
+下面传递了聚合函数的列表给agg方法，这些函数会各自运用于数据分组。</p>
+<pre><code>result = grouped_pct.agg(['mean', 'std', peak_to_peak])
+print(result)
+#                  mean       std  peak_to_peak
+# day  smoker
+# Fri  No      0.179740  0.039458      0.094263
+#      Yes     0.216293  0.077530      0.242219
+# Sat  No      0.190412  0.058626      0.352192
+#      Yes     0.179833  0.089496      0.446137
+# Sun  No      0.193617  0.060302      0.274897
+#      Yes     0.322021  0.538061      2.382107
+# Thur No      0.193424  0.056065      0.284273
+#      Yes     0.198508  0.057170      0.219047
+</code></pre>
+<p>如果传递的是(name, function)元组的列表，每个元组的第一个元素将作为DataFrame的列名（可以认为二元元组的列表是一种有序的对应关系）：</p>
+<pre><code>result = grouped_pct.agg([('foo', 'mean'), ('bar', np.std)])  # foo是mean值的列名
+print(result)
+#                   foo       bar
+# day  smoker
+# Fri  No      0.179740  0.039458
+#      Yes     0.216293  0.077530
+# Sat  No      0.190412  0.058626
+#      Yes     0.179833  0.089496
+# Sun  No      0.193617  0.060302
+#      Yes     0.322021  0.538061
+# Thur No      0.193424  0.056065
+#      Yes     0.198508  0.057170
+</code></pre>
+<p>可以指定应用到所有列上的函数列表或每一列上要应用的不同函数。\
+下面产生的DataFrame拥有分层列，与分别聚合每一列，再以列名作为keys参数使用concat将结果拼接在一起的结果相同。</p>
+<pre><code>functions = ['count', 'mean', 'max']
+result = grouped[['tip_pct', 'total_bill']].agg(functions)
+print(result)
+#             tip_pct                     total_bill
+#               count      mean       max      count       mean    max
+# day  smoker
+# Fri  No           4  0.179740  0.231125          4  18.420000  22.75
+#      Yes         15  0.216293  0.357737         15  16.813333  40.17
+# Sat  No          45  0.190412  0.412409         45  19.661778  48.33
+#      Yes         42  0.179833  0.483092         42  21.276667  50.81
+# Sun  No          57  0.193617  0.338101         57  20.506667  48.17
+#      Yes         19  0.322021  2.452381         19  24.120000  45.35
+# Thur No          45  0.193424  0.362976         45  17.113111  41.19
+#      Yes         17  0.198508  0.317965         17  19.190588  43.11
+# 把['tip_pct', 'total_bill']改成[['tip_pct', 'total_bill']]，就可以避免报错
+# FutureWarning: Indexing with multiple keys (implicitly converted to a tuple of keys) will be deprecated, use a list instead.
+# result = grouped['tip_pct', 'total_bill'].agg(functions)
+print(result['tip_pct'])
+#              count      mean       max
+# day  smoker
+# Fri  No          4  0.179740  0.231125
+#      Yes        15  0.216293  0.357737
+# Sat  No         45  0.190412  0.412409
+#      Yes        42  0.179833  0.483092
+# Sun  No         57  0.193617  0.338101
+#      Yes        19  0.322021  2.452381
+# Thur No         45  0.193424  0.362976
+#      Yes        17  0.198508  0.317965
+</code></pre>
+<p>也同样可以传递具有自定义名称的元组列表：</p>
+<pre><code>ftuples = [('Durchschnitt', 'mean'), ('Abweichung', np.var)]
+result = grouped[['tip_pct', 'total_bill']].agg(ftuples)
+print(result)
+#                  tip_pct              total_bill
+#             Durchschnitt Abweichung Durchschnitt  Abweichung
+# day  smoker
+# Fri  No         0.179740   0.001557    18.420000   25.596333
+#      Yes        0.216293   0.006011    16.813333   82.562438
+# Sat  No         0.190412   0.003437    19.661778   79.908965
+#      Yes        0.179833   0.008010    21.276667  101.387535
+# Sun  No         0.193617   0.003636    20.506667   66.099980
+#      Yes        0.322021   0.289509    24.120000  109.046044
+# Thur No         0.193424   0.003143    17.113111   59.625081
+#      Yes        0.198508   0.003268    19.190588   69.808518
+</code></pre>
+<p>要将不同的函数应用到一个或多个列上，需要将含有列名与函数对应关系的字典传递给agg：</p>
+<pre><code>result = grouped.agg({'tip': np.max, 'size': 'sum'})
+print(result)
+#                tip  size
+# day  smoker
+# Fri  No       3.50     9
+#      Yes      4.73    31
+# Sat  No       9.00   115
+#      Yes     10.00   104
+# Sun  No       6.00   167
+#      Yes      6.50    49
+# Thur No       6.70   112
+#      Yes      5.00    40
+result = grouped.agg({'tip_pct': ['min', 'max', 'mean', 'std']})
+print(result)
+#               tip_pct
+#                   min       max      mean       std
+# day  smoker
+# Fri  No      0.136861  0.231125  0.179740  0.039458
+#      Yes     0.115518  0.357737  0.216293  0.077530
+# Sat  No      0.060217  0.412409  0.190412  0.058626
+#      Yes     0.036955  0.483092  0.179833  0.089496
+# Sun  No      0.063204  0.338101  0.193617  0.060302
+#      Yes     0.070274  2.452381  0.322021  0.538061
+# Thur No      0.078704  0.362976  0.193424  0.056065
+#      Yes     0.098918  0.317965  0.198508  0.057170
+</code></pre>
+<p>只有多个函数应用于至少一个列时，DataFrame才具有分层列。</p>
+<h5 id="_8">返回不含行索引的聚合数据</h5>
+<p>在前面所有的例子中，聚合数据返回时都是带有索引的，有时索引是分层的，由唯一的分组键联合形成。\
+因为不是所有的情况下都需要索引，所以在大多数情况下可以通过向groupby传递as_index=False来禁用分组键作为索引的行为：</p>
+<pre><code>result = tips.groupby(['day', 'smoker'], as_index=False).mean()
+print(result)
+#     day smoker  total_bill       tip      size   tip_pct
+# 0   Fri     No   18.420000  2.812500  2.250000  0.179740
+# 1   Fri    Yes   16.813333  2.714000  2.066667  0.216293
+# 2   Sat     No   19.661778  3.102889  2.555556  0.190412
+# 3   Sat    Yes   21.276667  2.875476  2.476190  0.179833
+# 4   Sun     No   20.506667  3.167895  2.929825  0.193617
+# 5   Sun    Yes   24.120000  3.516842  2.578947  0.322021
+# 6  Thur     No   17.113111  2.673778  2.488889  0.193424
+# 7  Thur    Yes   19.190588  3.030000  2.352941  0.198508
+</code></pre>
+<p>通过在结果上调用reset_index也可以获得同样的结果。使用as_index=False可以避免一些不必要的计算。</p>
+<pre><code>result = tips.groupby(['day', 'smoker']).mean()
+print(result.reset_index())
+#     day smoker  total_bill       tip      size   tip_pct
+# 0   Fri     No   18.420000  2.812500  2.250000  0.179740
+# 1   Fri    Yes   16.813333  2.714000  2.066667  0.216293
+# 2   Sat     No   19.661778  3.102889  2.555556  0.190412
+# 3   Sat    Yes   21.276667  2.875476  2.476190  0.179833
+# 4   Sun     No   20.506667  3.167895  2.929825  0.193617
+# 5   Sun    Yes   24.120000  3.516842  2.578947  0.322021
+# 6  Thur     No   17.113111  2.673778  2.488889  0.193424
+# 7  Thur    Yes   19.190588  3.030000  2.352941  0.198508
+print(result)
+#              total_bill       tip      size   tip_pct
+# day  smoker
+# Fri  No       18.420000  2.812500  2.250000  0.179740
+#      Yes      16.813333  2.714000  2.066667  0.216293
+# Sat  No       19.661778  3.102889  2.555556  0.190412
+#      Yes      21.276667  2.875476  2.476190  0.179833
+# Sun  No       20.506667  3.167895  2.929825  0.193617
+#      Yes      24.120000  3.516842  2.578947  0.322021
+# Thur No       17.113111  2.673778  2.488889  0.193424
+#      Yes      19.190588  3.030000  2.352941  0.198508
+</code></pre>
+<h4 id="-">应用：通用拆分-应用-联合</h4>
+<pre><code>import pandas as pd
+import numpy as np
+import statsmodels.api as sm
+</code></pre>
+<p>GroupBy方法最常见的目的是apply（应用）。apply将对象拆分成多块，然后在每一块上调用传递的函数，之后尝试将每一块拼接到一起。</p>
+<p>根据下面的小费数据集，按组选出小费百分比（tip-pct）最高的五组。</p>
+<pre><code>tips = pd.read_csv('../examples/tips.csv')
+tips['tip_pct'] = tips['tip'] / (tips['total_bill'] - tips['tip'])
+</code></pre>
+<p>样本数据</p>
+<pre><code>print(tips.head(5))
+#    total_bill   tip smoker  day    time  size   tip_pct
+# 0       16.99  1.01     No  Sun  Dinner     2  0.063204
+# 1       10.34  1.66     No  Sun  Dinner     3  0.191244
+# 2       21.01  3.50     No  Sun  Dinner     3  0.199886
+# 3       23.68  3.31     No  Sun  Dinner     2  0.162494
+# 4       24.59  3.61     No  Sun  Dinner     4  0.172069
+</code></pre>
+<p>首先，写一个可以在特定列中选出最大值所在行的函数：\
+添加了升序，结果输出最后5行（最后的5行也是最大的5个tip_tcp记录）</p>
+<pre><code>def top(df, n=5, column='tip_pct'):
+    return df.sort_values(by=column, ascending=True)[-n:]
+
+
+result = top(tips, n=6)
+print(result)
+# 等价方式：
+# result = tips.sort_values('tip_pct')[-6:]
+# print(result)
+#      total_bill   tip smoker  day    time  size   tip_pct
+# 109       14.31  4.00    Yes  Sat  Dinner     2  0.387973
+# 183       23.17  6.50    Yes  Sun  Dinner     4  0.389922
+# 232       11.61  3.39     No  Sat  Dinner     2  0.412409
+# 67         3.07  1.00    Yes  Sat  Dinner     1  0.483092
+# 178        9.60  4.00    Yes  Sun  Dinner     2  0.714286
+# 172        7.25  5.15    Yes  Sun  Dinner     2  2.452381
+</code></pre>
+<p>如果按照smoker进行分组，之后调用apply，会得到以下结果：\
+top函数在DataFrame的每一行分组上被调用，之后使用pandas.concat将函数结果粘贴在一起，并使用分组名作为各组的标签。\
+因此结果包含一个分层索引，该分层索引的内部层级包含原DataFrame的索引值。</p>
+<pre><code>result = tips.groupby('smoker').apply(top)
+print(result)
+#             total_bill   tip smoker   day    time  size   tip_pct
+# smoker
+# No     88        24.71  5.85     No  Thur   Lunch     2  0.310180
+#        185       20.69  5.00     No   Sun  Dinner     5  0.318674
+#        51        10.29  2.60     No   Sun  Dinner     2  0.338101
+#        149        7.51  2.00     No  Thur   Lunch     2  0.362976
+#        232       11.61  3.39     No   Sat  Dinner     2  0.412409
+# Yes    109       14.31  4.00    Yes   Sat  Dinner     2  0.387973
+#        183       23.17  6.50    Yes   Sun  Dinner     4  0.389922
+#        67         3.07  1.00    Yes   Sat  Dinner     1  0.483092
+#        178        9.60  4.00    Yes   Sun  Dinner     2  0.714286
+#        172        7.25  5.15    Yes   Sun  Dinner     2  2.452381
+</code></pre>
+<p>如果除了向apply传递函数，还传递其他参数或关键字的话，你可以把这些放在函数后进行传递</p>
+<pre><code>result = tips.groupby('smoker').apply(top, n=1, column='total_bill')
+print(result)
+# 这2行都是smoker是yes和no时最大total_bill值所在行。
+#             total_bill   tip smoker  day    time  size   tip_pct
+# smoker
+# No     212       48.33   9.0     No  Sat  Dinner     4  0.228833
+# Yes    170       50.81  10.0    Yes  Sat  Dinner     3  0.245038
+</code></pre>
+<p>在GroupBy对象上调用describe方法</p>
+<pre><code>result = tips.groupby('smoker')['tip_pct'].describe()
+print(result)
+#         count      mean       std  ...       50%       75%       max
+# smoker                             ...
+# No      151.0  0.192237  0.057665  ...  0.184308  0.227015  0.412409
+# Yes      93.0  0.218176  0.254295  ...  0.181818  0.242326  2.452381
+# [2 rows x 8 columns]
+print(result.unstack('smoker'))  # 类似于转置
+#        smoker
+# count  No        151.000000
+#        Yes        93.000000
+# mean   No          0.192237
+#        Yes         0.218176
+# std    No          0.057665
+#        Yes         0.254295
+# min    No          0.060217
+#        Yes         0.036955
+# 25%    No          0.158622
+#        Yes         0.119534
+# 50%    No          0.184308
+#        Yes         0.181818
+# 75%    No          0.227015
+#        Yes         0.242326
+# max    No          0.412409
+#        Yes         2.452381
+# dtype: float64
+</code></pre>
+<p>在GroupBy对象的内部，当调用像describe这样的方法时，实际上是以下代码的简写：</p>
+<pre><code>grouped = tips.groupby(['smoker'])
+f = lambda x: x.describe()
+result = grouped.apply(f)
+print(result)
+#               total_bill         tip        size     tip_pct
+# smoker
+# No     count  151.000000  151.000000  151.000000  151.000000
+#        mean    19.188278    2.991854    2.668874    0.192237
+#        std      8.255582    1.377190    1.017984    0.057665
+#        min      7.250000    1.000000    1.000000    0.060217
+#        25%     13.325000    2.000000    2.000000    0.158622
+#        50%     17.590000    2.740000    2.000000    0.184308
+#        75%     22.755000    3.505000    3.000000    0.227015
+#        max     48.330000    9.000000    6.000000    0.412409
+# Yes    count   93.000000   93.000000   93.000000   93.000000
+#        mean    20.756344    3.008710    2.408602    0.218176
+#        std      9.832154    1.401468    0.810751    0.254295
+#        min      3.070000    1.000000    1.000000    0.036955
+#        25%     13.420000    2.000000    2.000000    0.119534
+#        50%     17.920000    3.000000    2.000000    0.181818
+#        75%     26.860000    3.680000    3.000000    0.242326
+#        max     50.810000   10.000000    5.000000    2.452381
+</code></pre>
+<h5 id="_9">压缩分组键</h5>
+<p>在前面的例子中所得到的对象，都具有分组键所形成的分层索引以及每个原始对象的索引。\
+也可以通过向groupby传递group_keys=False来禁用这个功能。</p>
+<pre><code>result = tips.groupby('smoker', group_keys=True).apply(top)
+print(result)
+#             total_bill   tip smoker   day    time  size   tip_pct
+# smoker
+# No     88        24.71  5.85     No  Thur   Lunch     2  0.310180
+#        185       20.69  5.00     No   Sun  Dinner     5  0.318674
+#        51        10.29  2.60     No   Sun  Dinner     2  0.338101
+#        149        7.51  2.00     No  Thur   Lunch     2  0.362976
+#        232       11.61  3.39     No   Sat  Dinner     2  0.412409
+# Yes    109       14.31  4.00    Yes   Sat  Dinner     2  0.387973
+#        183       23.17  6.50    Yes   Sun  Dinner     4  0.389922
+#        67         3.07  1.00    Yes   Sat  Dinner     1  0.483092
+#        178        9.60  4.00    Yes   Sun  Dinner     2  0.714286
+#        172        7.25  5.15    Yes   Sun  Dinner     2  2.452381
+result = tips.groupby('smoker', group_keys=False).apply(top)
+print(result)
+#      total_bill   tip smoker   day    time  size   tip_pct
+# 88        24.71  5.85     No  Thur   Lunch     2  0.310180
+# 185       20.69  5.00     No   Sun  Dinner     5  0.318674
+# 51        10.29  2.60     No   Sun  Dinner     2  0.338101
+# 149        7.51  2.00     No  Thur   Lunch     2  0.362976
+# 232       11.61  3.39     No   Sat  Dinner     2  0.412409
+# 109       14.31  4.00    Yes   Sat  Dinner     2  0.387973
+# 183       23.17  6.50    Yes   Sun  Dinner     4  0.389922
+# 67         3.07  1.00    Yes   Sat  Dinner     1  0.483092
+# 178        9.60  4.00    Yes   Sun  Dinner     2  0.714286
+# 172        7.25  5.15    Yes   Sun  Dinner     2  2.452381
+</code></pre>
+<h5 id="_10">分位数与桶分析</h5>
+<p>第8章中，pandas有一些工具，尤其是cut和qcut，用于将数据按照你选择的箱位或样本分位数进行分桶。\
+与groupby方法一起使用这些函数可以对数据集更方便地进行分桶或分位分析。</p>
+<p>复习：\
+机械学习中的分箱处理\
+在机械学习中经常会对数据进行分箱处理的操作， 也就是把一段连续的值切分成若干段，每一段的值看成一个分类。这个把连续值转换成离散值的过程，我们叫做分箱处理。\
+比如，把年龄按15岁划分成一组，0-15岁叫做少年，16-30岁叫做青年，31-45岁叫做壮年。在这个过程中，我们把连续的年龄分成了三个类别，“少年”，“青年”和“壮年”就是各个类别的名称，或者叫做标签。\
+在pandas中，cut和qcut函数都可以进行分箱处理操作。
+* cut()按照变量的值对变量进行分割，每个分组里数据的个数并不一样。
+* qcut()是按变量的数量来对变量进行分割，并且尽量保证每个分组里变量的个数相同。</p>
+<p>考虑下面一个简单的随机数据集和一个使用cut的等长桶分类： </p>
+<pre><code>df = pd.DataFrame(
+    {
+        'data1': np.random.randn(1000),
+        'data2': np.random.randn(1000)
+    }
+)
+quartiles = pd.cut(df.data1, 4)  # 按照data1值由小到大的顺序将数据分成4份，并且使每组值的范围大致相等。
+print(quartiles[:10])
+# 0     (-0.0743, 1.729]
+# 1     (-0.0743, 1.729]
+# 2     (-0.0743, 1.729]
+# 3     (-0.0743, 1.729]
+# 4    (-1.877, -0.0743]
+# 5     (-0.0743, 1.729]
+# 6     (-0.0743, 1.729]
+# 7     (-0.0743, 1.729]
+# 8    (-1.877, -0.0743]
+# 9     (-0.0743, 1.729]
+# Name: data1, dtype: category
+# Categories (
+#     4,
+#     interval[float64, right]): [
+#         (-3.687, -1.877] &lt; (-1.877, -0.0743] &lt; (-0.0743, 1.729] &lt; (1.729, 3.531]
+#     ]
+</code></pre>
+<p>上面cut返回的Categorical对象可以直接传递给groupby。利用它计算出data2列的一个统计值集合，如下：</p>
+<pre><code>def get_stats(group):
+    return {
+        'min': group.min(),
+        'max': group.max(),
+        'count': group.count(),
+        'mean': group.mean()
+    }
+grouped = df.data2.groupby(quartiles)
+for i in grouped:
+    print(i)
+result = grouped.apply(get_stats).unstack()
+print(result)
+#                        min       max  count      mean
+# data1
+# (-3.145, -1.424] -1.759377  2.484321   77.0 -0.127900
+# (-1.424, 0.29]   -3.142344  2.830654  524.0 -0.081931
+# (0.29, 2.005]    -3.557136  3.261635  376.0  0.015715
+# (2.005, 3.719]   -2.829458  1.766352   23.0 -0.198780
+</code></pre>
+<p>使用qcut，根据样本分位数计算出等大小的桶，就是等长桶。通过传递labels=False来获得分位数数值。</p>
+<pre><code>grouping = pd.qcut(df.data1, 10, labels=False)
+grouped = df.data2.groupby(grouping)
+result = grouped.apply(get_stats).unstack()
+print(result)
+#             min       max  count      mean
+# data1
+# 0     -3.678934  3.022862  100.0  0.029658
+# 1     -2.319813  2.646502  100.0  0.094035
+# 2     -2.873727  2.470840  100.0  0.023866
+# 3     -2.196701  2.042251  100.0  0.021232
+# 4     -2.154161  2.020809  100.0  0.110834
+# 5     -2.723061  2.415626  100.0  0.057365
+# 6     -2.291470  2.536159  100.0  0.020866
+# 7     -2.064083  1.799356  100.0 -0.081025
+# 8     -3.405679  1.792581  100.0 -0.009705
+# 9     -2.469285  2.600849  100.0 -0.061721
+</code></pre>
+<h5 id="_11">示例：使用指定分组值填充缺失值</h5>
+<p>在清除缺失值时，有时会使用dropna来去除缺失值，有时使用修正值或来自于其他数据的值来输入（填充）到null值（NA）。\
+fillna是一个可以使用的正确工具。\
+例如下面例子中使用使用平均值来填充NA值：</p>
+<pre><code>data = (100, 110, 120, 130, 140, 150)
+s = pd.Series(data)
+print(s)
+# 0    100
+# 1    110
+# 2    120
+# 3    130
+# 4    140
+# 5    150
+# dtype: float64
+</code></pre>
+<p>将数据中的一些值设置为缺失值：</p>
+<pre><code>s[::2] = np.nan
+print(s)
+# 0      NaN
+# 1    110.0
+# 2      NaN
+# 3    130.0
+# 4      NaN
+# 5    150.0
+# dtype: float64
+result = s.fillna(s.mean())  # 110, 130, 150的平均值是130
+print(result)
+# 0    130.0
+# 1    110.0
+# 2    130.0
+# 3    130.0
+# 4    130.0
+# 5    150.0
+# dtype: float64
+</code></pre>
+<p>下面的例子是按组填充NA值
+* 方法1,对数据分组后使用apply。
+* 方法2,在每个数据块上都调用fillna的函数。</p>
+<pre><code>data = (100, 110, 120, 130, 140, 150, 160, 170)
+states = ['Ohio', 'New York', 'Vermont', 'Florida', 'Oregon', 'Nevada', 'California', 'Idaho']
+group_key = ['East'] * 4 + ['West'] * 4  # 4个East和4个West拼接的列表list
+
+s = pd.Series(data, index=states)
+print(s)
+# Ohio          100
+# New York      110
+# Vermont       120
+# Florida       130
+# Oregon        140
+# Nevada        150
+# California    160
+# Idaho         170
+# dtype: int64
+</code></pre>
+<p>将数据中的一些值设置为缺失值：</p>
+<pre><code>s[['Vermont', 'Nevada', 'Idaho']] = np.nan
+print(s)
+# Ohio          100.0
+# New York      110.0
+# Vermont         NaN
+# Florida       130.0
+# Oregon        140.0
+# Nevada          NaN
+# California    160.0
+# Idaho           NaN
+# dtype: float64
+
+result = s.groupby(group_key).mean()
+print(result)
+# East    113.333333
+# West    150.000000
+# dtype: float64
+</code></pre>
+<p>用上面得出的分组平均值来填充NA</p>
+<pre><code>fill_mean = lambda g: g.fillna(g.mean())
+result = s.groupby(group_key).apply(fill_mean)
+print(result)
+# Ohio          100.000000
+# New York      110.000000
+# Vermont       113.333333
+# Florida       130.000000
+# Oregon        140.000000
+# Nevada        150.000000
+# California    160.000000
+# Idaho         150.000000
+# dtype: float64
+</code></pre>
+<p>如果已经在代码中为每个分组预定义了填充值，可以利用每个分组都有的内置的name属性，实现填充NA。</p>
+<pre><code>fill_value = {'East': 0.5, 'West': -1}
+fill_func = lambda g: g.fillna(fill_value[g.name])
+result = s.groupby(group_key).apply(fill_func)
+print(result)
+# Ohio          100.0
+# New York      110.0
+# Vermont         0.5
+# Florida       130.0
+# Oregon        140.0
+# Nevada         -1.0
+# California    160.0
+# Idaho          -1.0
+# dtype: float64
+</code></pre>
+<h5 id="_12">示例：随机采样与排列</h5>
+<p>假设想从大数据集中抽取随机样本（有或没有替换）以用于蒙特卡罗模拟目的或某些其他应用程序。\
+有很多方法来执行“抽取”，这里使用Series的sample方法。\
+为了演示，这里介绍一种构造一副英式扑克牌的方法：</p>
+<pre><code># 梅花clubs、方块diamonds、红桃hearts、黑桃spades。
+suits = ['H', 'S', 'C', 'D']
+card_val = (list(range(1, 11)) + [10] * 3) * 4
+# card_val [
+#     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10,
+#     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10,
+#     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10,
+#     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10
+#     ]
+base_names = ['A'] + list(range(2, 11)) + ['J', 'K', 'Q']
+# base_names： ['A', 2, 3, 4, 5, 6, 7, 8, 9, 10, 'J', 'K', 'Q']
+</code></pre>
+<p>生成了一个长度为52的Series, Series的索引包含了牌名，Series的值可以用游戏（为了保持简单，让’A’为1 ）：</p>
+<pre><code>cards = []
+for suit in ['H', 'S', 'C', 'D']:
+    cards.extend(str(num) + suit for num in base_names)
+
+deck = pd.Series(card_val, index=cards)
+print(deck)
+# AH      1
+# 2H      2
+# 3H      3
+# 4H      4
+# 5H      5
+# 6H      6
+# 7H      7
+# 8H      8
+# 9H      9
+# 10H    10
+# JH     10
+# KH     10
+# QH     10
+# AS      1
+# 2S      2
+# 3S      3
+# 4S      4
+# 5S      5
+# 6S      6
+# 7S      7
+# 8S      8
+# 9S      9
+# 10S    10
+# JS     10
+# KS     10
+# QS     10
+# AC      1
+# 2C      2
+# 3C      3
+# 4C      4
+# 5C      5
+# 6C      6
+# 7C      7
+# 8C      8
+# 9C      9
+# 10C    10
+# JC     10
+# KC     10
+# QC     10
+# AD      1
+# 2D      2
+# 3D      3
+# 4D      4
+# 5D      5
+# 6D      6
+# 7D      7
+# 8D      8
+# 9D      9
+# 10D    10
+# JD     10
+# KD     10
+# QD     10
+# dtype: int64
+</code></pre>
+<p>从这副牌中拿出五张牌可以写成：</p>
+<pre><code>def draw(_deck, n=5):
+    return _deck.sample(n)
+
+
+print(draw(deck))
+# KD    10
+# 2S     2
+# 5C     5
+# 6C     6
+# QD    10
+# dtype: int64
+</code></pre>
+<p>假设要从每个花色中随机抽取两张牌。由于花色是牌名的最后两个字符，可以基于这点进行分组，并使用apply：</p>
+<pre><code>get_suit = lambda card: card[-1]  # 最后一个字母是花色
+result = deck.groupby(get_suit).apply(draw, n=2)
+print(result)
+# C  10C    10
+#    3C      3
+# D  KD     10
+#    AD      1
+# H  5H      5
+#    7H      7
+# S  3S      3
+#    5S      5
+# dtype: int64
+</code></pre>
+<p>或者也可以写成：</p>
+<pre><code>result = deck.groupby(get_suit, group_keys=False).apply(draw, n=2)
+print(result)
+# JC     10
+# 8C      8
+# QD     10
+# 4D      4
+# 10H    10
+# 6H      6
+# 7S      7
+# KS     10
+# dtype: int64
+</code></pre>
+<h5 id="_13">示例：分组加权平均和相关性</h5>
+<p>在groupby的拆分-应用-联合的范式下，DataFrame的列间操作或两个Seriese之间的操作，例如实现分组加权平均。\
+下面例子，使用一个包含分组键和权重值的数据集：</p>
+<pre><code>dt = np.random.randn(8)
+wt = np.random.randn(8)
+df = pd.DataFrame(
+    {
+        'category': ['a', 'a', 'a', 'a', 'b', 'b', 'b', 'b'],
+        'data': dt,
+        'weight': wt
+    }
+)
+print(df)
+#   category      data    weight
+# 0        a -0.250764 -0.085285
+# 1        a  0.167155 -1.361254
+# 2        a  0.399306  1.755542
+# 3        a -0.514477  0.270124
+# 4        b -0.005558  0.886514
+# 5        b  0.607596 -1.384315
+# 6        b -1.029627 -0.845340
+# 7        b -0.294204  1.253965
+</code></pre>
+<p>通过category进行分组加权平均如下：</p>
+<pre><code>grouped = df.groupby('category')
+get_wavg = lambda g: np.average(g['data'], weights=g['weight'])
+result = grouped.apply(get_wavg)
+print(result)
+# category
+# a    0.614499
+# b    3.863947
+# dtype: float64
+</code></pre>
+<p>另一个例子，一个从雅虎财经上获得的数据集，该数据集包含一些标普500 （SPX符号）和股票的收盘价：</p>
+<pre><code>close_px = pd.read_csv('../examples/stock_px_2.csv', parse_dates=True, index_col=0)
+
+print(close_px.info())
+# &lt;class 'pandas.core.frame.DataFrame'&gt;
+# DatetimeIndex: 2214 entries, 2003-01-02 to 2011-10-14
+# Data columns (total 4 columns):
+#  #   Column  Non-Null Count  Dtype
+# ---  ------  --------------  -----
+#  0   AAPL    2214 non-null   float64
+#  1   MSFT    2214 non-null   float64
+#  2   XOM     2214 non-null   float64
+#  3   SPX     2214 non-null   float64
+# dtypes: float64(4)
+# memory usage: 86.5 KB
+# None
+
+print(close_px[-4:])
+#               AAPL   MSFT    XOM      SPX
+# 2011-10-11  400.29  27.00  76.27  1195.54
+# 2011-10-12  402.19  26.96  77.16  1207.25
+# 2011-10-13  408.43  27.18  76.37  1203.66
+# 2011-10-14  422.00  27.27  78.11  1224.58
+</code></pre>
+<p>目标任务：计算一个DataFrame，它包含标普指数（SPX）每日收益的年度相关性（通过百分比变化计算）。</p>
+<p>首先创建一个计算每列与’SPX’列成对关联的函数：</p>
+<pre><code>spx_corr = lambda x: x.corrwith(x['SPX'])
+</code></pre>
+<p>之后，使用pct_change计算close-px百分比的变化：</p>
+<pre><code>rets = close_px.pct_change().dropna()  # Percentage change between the current and a prior element.
+print(rets)
+#                 AAPL      MSFT       XOM       SPX
+# 2003-01-03  0.006757  0.001421  0.000684 -0.000484
+# 2003-01-06  0.000000  0.017975  0.024624  0.022474
+# ...              ...       ...       ...       ...
+# 2011-10-14  0.033225  0.003311  0.022784  0.017380
+# [2213 rows x 4 columns]
+</code></pre>
+<p>最后，按年对百分比变化进行分组，可以使用单行函数从每个行标签中提取每个datetime标签的year属性：</p>
+<pre><code>get_year = lambda x: x.year
+by_year = rets.groupby(get_year)
+result = by_year.apply(spx_corr)
+print(result)
+#           AAPL      MSFT       XOM  SPX
+# 2003  0.541124  0.745174  0.661265  1.0
+# 2004  0.374283  0.588531  0.557742  1.0
+# 2005  0.467540  0.562374  0.631010  1.0
+# 2006  0.428267  0.406126  0.518514  1.0
+# 2007  0.508118  0.658770  0.786264  1.0
+# 2008  0.681434  0.804626  0.828303  1.0
+# 2009  0.707103  0.654902  0.797921  1.0
+# 2010  0.710105  0.730118  0.839057  1.0
+# 2011  0.691931  0.800996  0.859975  1.0
+</code></pre>
+<p>可以计算内部列相关性。这里计算了苹果和微软的年度相关性：</p>
+<pre><code>result = by_year.apply(lambda g: g['AAPL'].corr(g['MSFT']))
+print(result)
+# 2003    0.480868
+# 2004    0.259024
+# 2005    0.300093
+# 2006    0.161735
+# 2007    0.417738
+# 2008    0.611901
+# 2009    0.432738
+# 2010    0.571946
+# 2011    0.581987
+# dtype: float64
+</code></pre>
+<h5 id="_14">示例：逐组线性回归</h5>
+<p>定义以下regress（回归）函数（使用statsmodels计量经济学库），该函数对每个数据块执行普通最小二乘（OLS）回归：</p>
+<pre><code>def regress(data, yvar, xvars):
+    Y = data[yvar]
+    X = data[xvars]
+    X['intercept'] = 1.
+    result = sm.OLS(Y, X).fit()
+    return result.params
+</code></pre>
+<p>现在要计算AAPL在SPX回报上的年度线性回归：</p>
+<pre><code>result = by_year.apply(regress, 'AAPL', ['SPX'])
+print(result)
+#            SPX  intercept
+# 2003  1.195406   0.000710
+# 2004  1.363463   0.004201
+# 2005  1.766415   0.003246
+# 2006  1.645496   0.000080
+# 2007  1.198761   0.003438
+# 2008  0.968016  -0.001110
+# 2009  0.879103   0.002954
+# 2010  1.052608   0.001261
+# 2011  0.806605   0.001514
+</code></pre>
+<h4 id="_15">数据透视表与交叉表</h4>
+<h5 id="_16">数据透视表</h5>
+<p>数据透视表是电子表格程序和其他数据分析软件中常见的数据汇总工具。\
+它根据一个或多个键聚合一张表的数据，将数据在矩形格式中排列，其中一些分组键是沿着行的，另一些是沿着列的。</p>
+<p>Python中的pandas透视表是通过本章所介绍的groupby工具以及使用分层索引的重塑操作实现的。\
+DataFrame拥有一个pivot_table方法，并且还有还一个顶层的pandas.pivot_table函数。\
+除了为groupby提供一个方便接口，pivot_table还可以添加部分总计，也称作边距。</p>
+<pre><code>import pandas as pd
+import numpy as np
+</code></pre>
+<p>根据下面的小费数据集，计算一张在行方向上按day和smoker排列的分组平均值（默认的pivot_table聚合类型）的表。</p>
+<p>pivot_table选项：
+* values: 需要聚合的列名，默认情况下聚合所有数值型的列。
+* index: 在结果透视表的行上进行分组的列名或者其他分组键。</p>
+<pre><code>tips = pd.read_csv('../examples/tips.csv')
+tips['tip_pct'] = tips['tip'] / (tips['total_bill'] - tips['tip'])
+</code></pre>
+<p>样本数据</p>
+<pre><code>print(tips.head(5))
+#    total_bill   tip smoker  day    time  size   tip_pct
+# 0       16.99  1.01     No  Sun  Dinner     2  0.063204
+# 1       10.34  1.66     No  Sun  Dinner     3  0.191244
+# 2       21.01  3.50     No  Sun  Dinner     3  0.199886
+# 3       23.68  3.31     No  Sun  Dinner     2  0.162494
+# 4       24.59  3.61     No  Sun  Dinner     4  0.172069
+</code></pre>
+<p>计算在行方向上按day和smoker排列的分组平均值。也可以直接使用groupby实现</p>
+<pre><code>result = tips.pivot_table(index=['day', 'smoker'])
+print(result)
+#                  size       tip   tip_pct  total_bill
+# day  smoker
+# Fri  No      2.250000  2.812500  0.179740   18.420000
+#      Yes     2.066667  2.714000  0.216293   16.813333
+# Sat  No      2.555556  3.102889  0.190412   19.661778
+#      Yes     2.476190  2.875476  0.179833   21.276667
+# Sun  No      2.929825  3.167895  0.193617   20.506667
+#      Yes     2.578947  3.516842  0.322021   24.120000
+# Thur No      2.488889  2.673778  0.193424   17.113111
+#      Yes     2.352941  3.030000  0.198508   19.190588
+</code></pre>
+<p>在tip_pct和size上进行聚合，并根据time分组。我将把smoker放入表的列，而将day放入表的行：</p>
+<pre><code>result = tips.pivot_table(
+    ['tip_pct', 'size'],
+    index=['time', 'day'],
+    columns='smoker'
+)
+print(result)
+#                  size             tip_pct
+# smoker             No       Yes        No       Yes
+# time   day
+# Dinner Fri   2.000000  2.222222  0.162612  0.202545
+#        Sat   2.555556  2.476190  0.190412  0.179833
+#        Sun   2.929825  2.578947  0.193617  0.322021
+#        Thur  2.000000       NaN  0.190114       NaN
+# Lunch  Fri   3.000000  1.833333  0.231125  0.236915
+#        Thur  2.500000  2.352941  0.193499  0.198508
+</code></pre>
+<p>通过传递margins=True来扩充这个表来包含部分总计。\
+这会添加All行和列标签，其中相应的值是单层中所有数据的分组统计值：\
+这里All的值是均值，且该均值是不考虑吸烟者与非吸烟者（All列）或行分组中任何两级的（All行）。</p>
+<pre><code>result = tips.pivot_table(
+    ['tip_pct', 'size'],
+    index=['time', 'day'],
+    columns='smoker',
+    margins=True
+)
+print(result)
+#                  size                       tip_pct
+# smoker             No       Yes       All        No       Yes       All
+# time   day
+# Dinner Fri   2.000000  2.222222  2.166667  0.162612  0.202545  0.192562
+#        Sat   2.555556  2.476190  2.517241  0.190412  0.179833  0.185305
+#        Sun   2.929825  2.578947  2.842105  0.193617  0.322021  0.225718
+#        Thur  2.000000       NaN  2.000000  0.190114       NaN  0.190114
+# Lunch  Fri   3.000000  1.833333  2.000000  0.231125  0.236915  0.236088
+#        Thur  2.500000  2.352941  2.459016  0.193499  0.198508  0.194895
+# All          2.668874  2.408602  2.569672  0.192237  0.218176  0.202123
+</code></pre>
+<p>要使用不同的聚合函数时，将函数传递给aggfunc。\
+例如，'count’或者len将给出一张分组大小的交叉表（计数或出现频率）：</p>
+<pre><code>result = tips.pivot_table(
+    ['tip_pct', 'size'],
+    index=['time', 'day'],
+    columns='smoker',
+    aggfunc=len,
+    margins=True
+)
+print(result)
+#               size            tip_pct
+# smoker          No   Yes  All      No   Yes  All
+# time   day
+# Dinner Fri     3.0   9.0   12     3.0   9.0   12
+#        Sat    45.0  42.0   87    45.0  42.0   87
+#        Sun    57.0  19.0   76    57.0  19.0   76
+#        Thur    1.0   NaN    1     1.0   NaN    1
+# Lunch  Fri     1.0   6.0    7     1.0   6.0    7
+#        Thur   44.0  17.0   61    44.0  17.0   61
+# All          151.0  93.0  244   151.0  93.0  244
+</code></pre>
+<p>对于空值NA，传递一个fill_value</p>
+<pre><code>result = tips.pivot_table(
+    ['tip_pct', 'size'],
+    index=['time', 'day'],
+    columns='smoker',
+    aggfunc='mean',
+    fill_value=0,
+    margins=True
+)
+print(result)
+#                  size                       tip_pct
+# smoker             No       Yes       All        No       Yes       All
+# time   day
+# Dinner Fri   2.000000  2.222222  2.166667  0.162612  0.202545  0.192562
+#        Sat   2.555556  2.476190  2.517241  0.190412  0.179833  0.185305
+#        Sun   2.929825  2.578947  2.842105  0.193617  0.322021  0.225718
+#        Thur  2.000000  0.000000  2.000000  0.190114  0.000000  0.190114
+# Lunch  Fri   3.000000  1.833333  2.000000  0.231125  0.236915  0.236088
+#        Thur  2.500000  2.352941  2.459016  0.193499  0.198508  0.194895
+# All          2.668874  2.408602  2.569672  0.192237  0.218176  0.202123
+</code></pre>
+<h5 id="crosstab">交叉表：crosstab</h5>
+<p>交叉表（简写为crosstab）是数据透视表的一个特殊情况，计算的是分组中的频率。\
+crosstab的前两个参数可是数组、Series或数组的列表。</p>
+<pre><code>sample = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+nationality = ['USA', 'Japan', 'USA', 'Japan', 'Japan', 'Japan', 'USA', 'USA', 'Japan', 'USA']
+handedness = ['Right-handed', 'Left-handed', 'Right-handed', 'Right-handed', 'Left-handed', 'Right-handed',
+              'Right-handed', 'Left-handed', 'Right-handed', 'Right-handed']
+df = pd.DataFrame(
+    {
+        'sample': sample,
+        'nationality': nationality,
+        'handedness': handedness
+    }
+)
+print(df)
+#    sample nationality    handedness
+# 0       1         USA  Right-handed
+# 1       2       Japan   Left-handed
+# 2       3         USA  Right-handed
+# 3       4       Japan  Right-handed
+# 4       5       Japan   Left-handed
+# 5       6       Japan  Right-handed
+# 6       7         USA  Right-handed
+# 7       8         USA   Left-handed
+# 8       9       Japan  Right-handed
+# 9      10         USA  Right-handed
+</code></pre>
+<p>按照国籍和惯用性来总结这些数据，可以使用pivot_table来实现这个功能，但是pandas.crosstable函数更为方便：</p>
+<pre><code>result = pd.crosstab(df.nationality, df.handedness, margins=True)
+print(result)
+# handedness   Left-handed  Right-handed  All
+# nationality
+# Japan                  2             3    5
+# USA                    1             4    5
+# All                    3             7   10
+</code></pre>
+<p>在小费数据中可以这么做：</p>
+<pre><code>result = pd.crosstab(['tips.time', tips.day], tips.smoker, margins=True)
+print(result)
+# smoker           No  Yes  All
+# row_0     day
+# tips.time Fri     4   15   19
+#           Sat    45   42   87
+#           Sun    57   19   76
+#           Thur   45   17   62
+# All             151   93  244
+</code></pre>
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../../assets/javascripts/workers/search.22074ed6.min.js"}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.960e086b.min.js"></script>
+      
+    
+  </body>
+</html>

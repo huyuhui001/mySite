@@ -1,0 +1,876 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://example.com/python/Pythonic90Rules/Rule06/">
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.9">
+    
+    
+      
+        <title>第6条 把数据结构直接拆分到多个变量里，不要专门通过下标访问 - My Docs</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.2b4465f4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.e6a45f82.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#2094f3">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="blue" data-md-color-accent="deep-blue">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#6" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="My Docs" class="md-header__button md-logo" aria-label="My Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            My Docs
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              第6条　把数据结构直接拆分到多个变量里，不要专门通过下标访问
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="My Docs" class="md-nav__button md-logo" aria-label="My Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    My Docs
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../about/" class="md-nav__link">
+        About
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#packing-and-unpacking-in-python" class="md-nav__link">
+    拓展：Packing and Unpacking in Python
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#enumerate" class="md-nav__link">
+    拓展：enumerate
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+
+<h1 id="6">第6条　把数据结构直接拆分到多个变量里，不要专门通过下标访问</h1>
+<p>Python内置的元组（tuple）类型可以创建不可变的序列，把许多元素依次保存起来。 可以用整数作下标，通过下标来访问元组里面对应的元素。但不能通过下标给元素赋新值。</p>
+<pre><code>&gt;&gt;&gt; snack_calories = {
+...     'chips': 140,
+...     'popcorn': 80,
+...     'nuts': 190
+... }
+
+&gt;&gt;&gt; items = tuple(snack_calories.items())
+
+&gt;&gt;&gt; type(snack_calories)
+&lt;class 'dict'&gt;
+&gt;&gt;&gt; type(items)
+&lt;class 'tuple'&gt;
+
+&gt;&gt;&gt; snack_calories
+{'chips': 140, 'popcorn': 80, 'nuts': 190}
+&gt;&gt;&gt; items
+(('chips', 140), ('popcorn', 80), ('nuts', 190))
+
+&gt;&gt;&gt; items[2]
+('nuts', 190)
+
+&gt;&gt;&gt; items[1] = ('apple', 200)
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+TypeError: 'tuple' object does not support item assignment
+</code></pre>
+<p>Python还有一种写法，叫作拆分（unpacking）。这种写法让我们只用一条语句，就可以把元组里面的元素分别赋给多个变量，不用再通过下标去访问。 元组的元素本身不能修改，但是那些被赋值的变量是可以修改的。
+通过unpacking来赋值要比通过下标去访问元组内的元素更清晰，而且这种写法所需的代码量通常比较少。当然，赋值操作的左边除了可以罗列单个变量，也可以写成列表、序列或任意深度的可迭代对象（iterable）。</p>
+<pre><code>&gt;&gt;&gt; favorite_snacks = {
+...     'salty': ('pretzels', 100),
+...     'sweet': ('cookies', 280),
+...     'veggie': ('carrots', 20)
+... }
+
+&gt;&gt;&gt; (
+...     (type1, (name1, cals1)),
+...     (type2, (name2, cals2)),
+...     (type3, (name3, cals3)),
+... ) = favorite_snacks.items()
+
+&gt;&gt;&gt; print(f'Favorite {type1} is {name1} with {cals1} calories')
+Favorite salty is pretzels with 100 calories
+
+&gt;&gt;&gt; print(f'Favorite {type2} is {name2} with {cals2} calories')
+Favorite sweet is cookies with 280 calories
+
+&gt;&gt;&gt; print(f'Favorite {type3} is {name3} with {cals3} calories')
+Favorite veggie is carrots with 20 calories
+</code></pre>
+<p>可以通过unpacking原地交换两个变量，而不用专门创建临时变量。</p>
+<pre><code>&gt;&gt;&gt; def bubble_sort(a):
+...     for _ in range(len(a)):
+...         for i in range(1, len(a)):
+...             if a[i] &lt; a[i - 1]:
+...                 temp = a[i]
+...                 a[i] = a[i - 1]
+...                 a[i - 1] = temp
+... 
+&gt;&gt;&gt; names = ['pretzels', 'carrots', 'arugula', 'bacon']
+&gt;&gt;&gt; bubble_sort(names)
+&gt;&gt;&gt; names
+['arugula', 'bacon', 'carrots', 'pretzels']
+</code></pre>
+<pre><code>&gt;&gt;&gt; def bubble_sort(a):
+...     for _ in range(len(a)):
+...         for i in range(1, len(a)):
+...             if a[i] &lt; a[i - 1]:
+...                 a[i], a[i - 1] = a[i - 1], a[i]
+... 
+&gt;&gt;&gt; names = ['pretzels', 'carrots', 'arugula', 'bacon']
+&gt;&gt;&gt; bubble_sort(names)
+&gt;&gt;&gt; names
+['arugula', 'bacon', 'carrots', 'pretzels']
+</code></pre>
+<p>原理分析：</p>
+<p>Python处理赋值操作的时候，要先对=号右侧求值，于是，它会新建一个临时的元组，把<code>a[i]</code>与<code>a[i-1]</code>这两个元素放到这个元组里面。例如，第一次进入内部的for循环时，这两个元素分别是<code>'carrots'</code>与<code>'pretzels</code>'，于是，系统就会创建出<code>('carrots','pretzels')</code>这样一个临时的元组。</p>
+<p>然后，Python会对这个临时的元组做unpacking，把它里面的两个元素分别放到=号左侧的那两个地方，于是，<code>'carrots'</code>就会把<code>a[i-1]</code>里面原有的<code>'pretzels'</code>换掉，<code>'pretzels'</code>也会把<code>a[i]</code>里面原有的<code>'carrots'</code>换掉。</p>
+<p>现在，出现在<code>a[0]</code>这个位置上面的字符串就是<code>'carrots'</code>了，出现在<code>a[1]</code>这个位置上面的字符串则是<code>'pretzels'</code>。</p>
+<p>做完unpacking后，系统会扔掉这个临时的元组。</p>
+<p>unpacking机制还有一个特别重要的用法，就是可以在for循环或者类似的结构里面，把复杂的数据拆分到相关的变量之中。</p>
+<pre><code>&gt;&gt;&gt; snacks = [('bacon', 350), ('donut', 240), ('muffin', 190)]
+&gt;&gt;&gt; for i in range(len(snacks)):
+...     item = snacks[i]
+...     name = item[0]
+...     calories = item[1]
+...     print(f'#{i+1}: {name} has {calories} calories')
+... 
+#1: bacon has 350 calories
+#2: donut has 240 calories
+#3: muffin has 190 calories
+</code></pre>
+<p>上面这段代码虽然没错，但看起来很乱，因为snacks结构本身并不是一份简单的列表，它的每个元素都是一个元组， 所以必须逐层访问才能查到最为具体的数据，也就是每种零食的名称（name）及卡路里（calories）。</p>
+<p>下面换一种写法，首先调用内置的enumerate函数（参见第7条）获得当前要迭代的元组， 然后针对这个元组做unpacking，这样就可以直接得到具体的name与calories值了。</p>
+<p>这才是符合Python风格的写法（Pythonic式的写法）。</p>
+<pre><code>&gt;&gt;&gt; for rank, (name, calories) in enumerate(snacks, 1):
+...     print(f'#{rank}: {name} has {calories} calories')
+... 
+#1: bacon has 350 calories
+#2: donut has 240 calories
+#3: muffin has 190 calories
+</code></pre>
+<p>Python的unpacking机制可以用在许多方面，例如构建列表（Rule13）、给函数设计参数列表（Rule22）、传递关键字参数（Rule23）、接收多个返回值（Rule19条）等。</p>
+<p>要点：</p>
+<ul>
+<li>unpacking是一种特殊的Python语法，只需要一行代码，就能把数据结构里面的多个值分别赋给相应的变量。</li>
+<li>unpacking在Python中应用广泛，凡是可迭代的对象都能拆分，无论它里面还有多少层迭代结构。</li>
+<li>尽量通过unpacking来拆解序列之中的数据，而不要通过下标访问，这样可以让代码更简洁、更清晰。</li>
+</ul>
+<h2 id="packing-and-unpacking-in-python">拓展：Packing and Unpacking in Python</h2>
+<p>Python allows a tuple (or list) of variables to appear on the left side of an assignment operation.</p>
+<p>Each variable in the tuple can receive one value (or more, if we use the * operator) from an iterable on the right side
+of the assignment. Unpacking in Python refers to an operation that consists of assigning an iterable of values to a
+tuple (or list) of variables in a single assignment statement.</p>
+<p>In Python, we can put a tuple of variables on the left side of an assignment operator (=) and a tuple of values on the
+right side. The values on the right will be automatically assigned to the variables on the left according to their
+position in the tuple. This is commonly known as tuple unpacking in Python. Check out the following example:</p>
+<pre><code>&gt;&gt;&gt; (a, b, c) = (1, 2, 3)
+&gt;&gt;&gt; a
+1
+&gt;&gt;&gt; b
+2
+&gt;&gt;&gt; c
+3
+&gt;&gt;&gt; birthday = ('April', 5, 2001)
+&gt;&gt;&gt; month, day, year = birthday
+&gt;&gt;&gt; month
+'April'
+&gt;&gt;&gt; day
+5
+&gt;&gt;&gt; year
+2001
+</code></pre>
+<p>The tuple unpacking feature got so popular among Python developers that the syntax was extended to work with any
+iterable object. The only requirement is that the iterable yields exactly one item per variable in the receiving tuple (
+or list).</p>
+<p>Check out the following examples of how iterable unpacking works in Python:</p>
+<pre><code>&gt;&gt;&gt; # Unpackage strings
+&gt;&gt;&gt; a, b, c = '123'
+&gt;&gt;&gt; a
+'1'
+&gt;&gt;&gt; b
+'2'
+&gt;&gt;&gt; c
+'3'
+&gt;&gt;&gt; # Unpackaging strings
+&gt;&gt;&gt; a, b, c = '123'
+&gt;&gt;&gt; a
+'1'
+&gt;&gt;&gt; b
+'2'
+&gt;&gt;&gt; c
+'3'
+&gt;&gt;&gt; # Unpacking lists
+&gt;&gt;&gt; a, b, c = [1, 2, 3]
+&gt;&gt;&gt; a
+1
+&gt;&gt;&gt; b
+2
+&gt;&gt;&gt; c
+3
+&gt;&gt;&gt; # Unpacking generators
+&gt;&gt;&gt; gen = (i ** 2 for i in range(3))
+&gt;&gt;&gt; a, b, c = gen
+&gt;&gt;&gt; a
+0
+&gt;&gt;&gt; b
+1
+&gt;&gt;&gt; c
+4
+&gt;&gt;&gt; # Upacking dictionaries (keys, values, and items)
+&gt;&gt;&gt; my_dict = {'one': 1, 'two': 2, 'three': 3}
+&gt;&gt;&gt; a, b, c = my_dict
+&gt;&gt;&gt; a
+'one'
+&gt;&gt;&gt; b
+'two'
+&gt;&gt;&gt; c
+'three'
+&gt;&gt;&gt; a, b, c = my_dict.values()
+&gt;&gt;&gt; a
+1
+&gt;&gt;&gt; b
+2
+&gt;&gt;&gt; c
+3
+&gt;&gt;&gt; a, b, c = my_dict.items()
+&gt;&gt;&gt; a
+('one', 1)
+&gt;&gt;&gt; b
+('two', 2)
+&gt;&gt;&gt; c
+('three', 3)
+&gt;&gt;&gt; # Use a tuple on the right side of assignment statement
+&gt;&gt;&gt; [a, b, c] = 1, 2, 3
+&gt;&gt;&gt; a
+1
+&gt;&gt;&gt; b
+2
+&gt;&gt;&gt; c
+3
+&gt;&gt;&gt; # Use range() iterator
+&gt;&gt;&gt; x, y, z = range(3)
+&gt;&gt;&gt; x
+0
+&gt;&gt;&gt; y
+1
+&gt;&gt;&gt; z
+2
+</code></pre>
+<p>As a complement, the term packing can be used when we collect several values in a single variable using the iterable
+unpacking operator.</p>
+<p>The * operator is known, in this context, as the tuple (or iterable) unpacking operator. It extends the unpacking
+functionality to allow us to collect or pack multiple values in a single variable.</p>
+<p>In the following example, we pack a tuple of values into a single variable by using the * operator:</p>
+<pre><code>&gt;&gt;&gt; *a, = 1, 2
+&gt;&gt;&gt; a
+[1, 2]
+</code></pre>
+<p>For this code to work, the left side of the assignment must be a tuple (or a list). That's why we use a trailing comma.
+This tuple can contain as many variables as we need. However, it can only contain one starred expression.</p>
+<pre><code>&gt;&gt;&gt; # Packing trailing values
+&gt;&gt;&gt; a, *b = 1, 2, 3
+&gt;&gt;&gt; a
+1
+&gt;&gt;&gt; b
+[2, 3]
+&gt;&gt;&gt; *a, b, c = 1, 2, 3
+&gt;&gt;&gt; a
+[1]
+&gt;&gt;&gt; b
+2
+&gt;&gt;&gt; c
+3
+&gt;&gt;&gt; *a, b, c, d, e = 1, 2, 3
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+ValueError: not enough values to unpack (expected at least 4, got 3)
+&gt;&gt;&gt; *a, b, c, d = 1, 2, 3
+&gt;&gt;&gt; a
+[]
+&gt;&gt;&gt; b
+1
+&gt;&gt;&gt; c
+2
+&gt;&gt;&gt; d
+3
+&gt;&gt;&gt; 
+&gt;&gt;&gt; seq = [1, 2, 3, 4]
+&gt;&gt;&gt; first, *body, last = seq
+&gt;&gt;&gt; first, body, last
+(1, [2, 3], 4)
+&gt;&gt;&gt; first, body, *last = seq
+&gt;&gt;&gt; first, body, last
+(1, 2, [3, 4])
+&gt;&gt;&gt; ran = range(10)
+&gt;&gt;&gt; *r, = ran
+&gt;&gt;&gt; r
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+</code></pre>
+<p>Using Packing and Unpacking in Practice</p>
+<pre><code>&gt;&gt;&gt; employee = ['John Doe', '40', 'Software Engineer']
+&gt;&gt;&gt; name = employee[0]
+&gt;&gt;&gt; age = employee[1]
+&gt;&gt;&gt; job = employee[2]
+&gt;&gt;&gt; name
+'John Doe'
+&gt;&gt;&gt; age
+'40'
+&gt;&gt;&gt; job
+'Software Engineer'
+&gt;&gt;&gt; 
+&gt;&gt;&gt; name, age, job = ['John Doe', '40', 'Software Engineer']
+&gt;&gt;&gt; name
+'John Doe'
+&gt;&gt;&gt; age
+'40'
+&gt;&gt;&gt; job
+'Software Engineer'
+&gt;&gt;&gt; 
+&gt;&gt;&gt; a = 100
+&gt;&gt;&gt; b = 200
+&gt;&gt;&gt; a, b = b, a
+&gt;&gt;&gt; a
+200
+&gt;&gt;&gt; b
+100
+</code></pre>
+<p>Dropping Unneeded Values With *</p>
+<pre><code>&gt;&gt;&gt; a, b, *_ = 1, 2, 0, 0, 0, 0
+&gt;&gt;&gt; a
+1
+&gt;&gt;&gt; b
+2
+&gt;&gt;&gt; _
+[0, 0, 0, 0]
+
+</code></pre>
+<p>The rest of the information is stored in the dummy variable _, which can be ignored by our program.</p>
+<p>By default, the underscore character _ is used by the Python interpreter to store the resulting value of the statements
+we run in an interactive session. So, in this context, the use of this character to identify dummy variables can be
+ambiguous.</p>
+<p>Returning Tuples in Functions</p>
+<pre><code>&gt;&gt;&gt; def powers(num):
+...     return num, num ** 2, num ** 3
+... 
+&gt;&gt;&gt; # Packaging returned values in a tuple
+&gt;&gt;&gt; result = powers(3)
+&gt;&gt;&gt; result
+(3, 9, 27)
+&gt;&gt;&gt; # Unpacking returned values to multiple variables
+&gt;&gt;&gt; number, square, cube = powers(3)
+&gt;&gt;&gt; number
+3
+&gt;&gt;&gt; square
+9
+&gt;&gt;&gt; cube
+27
+&gt;&gt;&gt; *_, cube = powers(3)
+&gt;&gt;&gt; cube
+27
+</code></pre>
+<p>Merging Iterables With the * Operator The last two examples show that this is also a more readable and efficient way to
+concatenate iterables. Instead of writing list(my_set) + my_list + list(my_tuple) + list(range(1, 4)) + list(my_str) we
+just write <code>[*my_set, *my_list, *my_tuple, *range(1, 4), *my_str]</code>.</p>
+<pre><code>&gt;&gt;&gt; my_tuple = (1, 2, 3)
+&gt;&gt;&gt; (0, *my_tuple, 4)
+(0, 1, 2, 3, 4)
+&gt;&gt;&gt; my_list = [1, 2, 3]
+&gt;&gt;&gt; [0, *my_list, 4]
+[0, 1, 2, 3, 4]
+&gt;&gt;&gt; my_set = {1, 2, 3}
+&gt;&gt;&gt; {0, *my_set, 4}
+{0, 1, 2, 3, 4}
+&gt;&gt;&gt; [*my_set, *my_list, *my_tuple, *range(1, 4)]
+[1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3]
+&gt;&gt;&gt; my_str = &quot;123&quot;
+&gt;&gt;&gt; [*my_set, *my_list, *my_tuple, *range(1, 4), *my_str]
+[1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, '1', '2', '3']
+
+</code></pre>
+<p>Unpacking Dictionaries With the ** Operator</p>
+<pre><code>&gt;&gt;&gt; numbers = {'one': 1, 'two': 2, 'three': 3}
+&gt;&gt;&gt; letters = {'a': 'A', 'b': 'B', 'c': 'C'}
+&gt;&gt;&gt; combination = {**numbers, **letters}
+&gt;&gt;&gt; combination
+{'one': 1, 'two': 2, 'three': 3, 'a': 'A', 'b': 'B', 'c': 'C'}
+</code></pre>
+<p>An important point to note is that, if the dictionaries we're trying to merge have repeated or common keys, then the
+values of the right-most dictionary will override the values of the left-most dictionary. Here's an example:</p>
+<pre><code>&gt;&gt;&gt; letters = {'a': 'A', 'b': 'B', 'c': 'C'}
+&gt;&gt;&gt; vowels = {'a': 'a', 'e': 'e', 'i': 'i', 'o': 'o', 'u': 'u'}
+&gt;&gt;&gt; {**letters, **vowels}
+{'a': 'a', 'b': 'B', 'c': 'C', 'e': 'e', 'i': 'i', 'o': 'o', 'u': 'u'}
+&gt;&gt;&gt; {**vowels, **letters}
+{'a': 'A', 'e': 'e', 'i': 'i', 'o': 'o', 'u': 'u', 'b': 'B', 'c': 'C'}
+</code></pre>
+<p>Unpacking in For-Loops</p>
+<p>We can also use iterable unpacking in the context of for loops. When we run a for loop, the loop assigns one item of its
+iterable to the target variable in every iteration. If the item to be assigned is an iterable, then we can use a tuple
+of target variables. The loop will unpack the iterable at hand into the tuple of target variables.</p>
+<p>We can build a list of two-elements tuples. Each tuple will contain the name of the product, the price, and the sold
+units. With this information, we want to calculate the income of each product. To do this, we can use a for loop like
+this:</p>
+<pre><code>&gt;&gt;&gt; sales = [('Pencle', 0.22, 1500), ('Notebook', 1.30, 550), ('Eraser', 0.75, 1000)]
+&gt;&gt;&gt; for items in sales:
+...     print(f&quot;Income for {item[0]} is: {item[1] * item[2]}&quot;)
+... 
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 2, in &lt;module&gt;
+NameError: name 'item' is not defined
+&gt;&gt;&gt; for items in sales:
+...     print(f&quot;Income for {items[0]} is: {items[1] * items[2]}&quot;)
+... 
+Income for Pencle is: 330.0
+Income for Notebook is: 715.0
+Income for Eraser is: 750.0
+</code></pre>
+<p>we're using indices to get access to individual elements of each tuple. This can be difficult to read and to understand
+by newcomer developers. We're now using iterable unpacking in our for loop in below sample codes, which is an
+alternative implementation using unpacking in Python:</p>
+<pre><code>&gt;&gt;&gt; sales = [('Pencle', 0.22, 1500), ('Notebook', 1.30, 550), ('Eraser', 0.75, 1000)]
+&gt;&gt;&gt; for product, price, sold_units in sales:
+...     print(f&quot;Income for {product} is: {price * sold_units}&quot;)
+... 
+Income for Pencle is: 330.0
+Income for Notebook is: 715.0
+Income for Eraser is: 750.0
+</code></pre>
+<p>It's also possible to use the * operator in a for loop to pack several items in a single target variable. In this for
+loop, we're catching the first element of each sequence in first. Then the * operator catches a list of values in its
+target variable rest.</p>
+<pre><code>&gt;&gt;&gt; for first, *rest in [(1, 2, 3),(4, 5, 6)]:
+...     print('First: ', first)
+...     print('Rest: ', rest)
+... 
+First:  1
+Rest:  [2, 3]
+First:  4
+Rest:  [5, 6]
+&gt;&gt;&gt; 
+</code></pre>
+<p>Finally, the structure of the target variables must agree with the structure of the iterable. Otherwise, we'll get an
+error. Take a look at the following example:</p>
+<pre><code>&gt;&gt;&gt; data = [((1, 2), 3), ((2, 3), 3)]
+&gt;&gt;&gt; for (a, b), c in data:
+...     print(a, b, c)
+... 
+1 2 3
+2 3 3
+&gt;&gt;&gt; for a, b, c in data:
+...     print(a, b, c)
+... 
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+ValueError: not enough values to unpack (expected 3, got 2)
+</code></pre>
+<p>Defining Functions With * and **</p>
+<p>The below function requires at least one argument called <code>required</code>. It can accept a variable number of positional and
+keyword arguments as well. In this case, the * operator <em>collects or packs</em> extra positional arguments in a tuple called
+<code>args</code> and the ** operator collects or packs extra keyword arguments in a dictionary called <code>kwargs</code>. Both, <code>args</code>
+and <code>kwargs</code>, are optional and automatically default to () and {} respectively.</p>
+<p>Even though the names <code>args</code> and <code>kwargs</code> are widely used by the Python community, they're not a requirement for these
+techniques to work. The syntax just requires * or ** followed by a valid identifier. So, if you can give meaningful
+names to these arguments, then do it. That will certainly improve your code's readability.</p>
+<pre><code>&gt;&gt;&gt; def func(required, *args, **kwargs):
+...     print(required)
+...     print(args)
+...     print(kwargs)
+... 
+&gt;&gt;&gt; func('Welcome to ...', 1, 2, 3, site='CloudAcademy.com')
+Welcome to ...
+(1, 2, 3)
+{'site': 'CloudAcademy.com'}
+&gt;&gt;&gt; func('Welcome to ...', 1, 2, 3, 4)
+Welcome to ...
+(1, 2, 3, 4)
+{}
+&gt;&gt;&gt; func('Welcome to ...', 1, 2, 3, (1, 2))
+Welcome to ...
+(1, 2, 3, (1, 2))
+{}
+&gt;&gt;&gt; func('Welcome to ...', 1, 2, 3, [1, 2])
+Welcome to ...
+(1, 2, 3, [1, 2])
+{}
+&gt;&gt;&gt; func('Welcome to ...', 1, 2, 3, ([2, 3], [1, 2]))
+Welcome to ...
+(1, 2, 3, ([2, 3], [1, 2]))
+{}
+</code></pre>
+<p>Calling Functions With * and **</p>
+<p>When calling functions, we can also benefit from the use of the * and <strong> operator to unpack collections of arguments
+into separate positional or keyword arguments respectively. This is the inverse of using * and </strong> in the signature of a
+function. In the signature, the operators mean collect or pack a variable number of arguments in one identifier. In the
+call, they mean <em>unpack</em> an iterable into several arguments.</p>
+<p>Here's a basic example of how this works. The * operator unpacks sequences like <code>["Welcome", "to"]</code> into positional
+arguments. Similarly, the ** operator unpacks dictionaries into arguments whose names match the keys of the unpacked
+dictionary.</p>
+<pre><code>&gt;&gt;&gt; def func(welcome, to, site):
+...     print(welcome, to, site
+... 
+... )
+... 
+&gt;&gt;&gt; def func(welcome, to, site):
+...     print(welcome, to, site)
+... 
+&gt;&gt;&gt; func(*['Welcome', 'to'], **{'site': 'CloudAcademy.com'})
+Welcome to CloudAcademy.com
+
+</code></pre>
+<p>We can also combine this technique and the one covered in the previous section to write quite flexible functions. The
+use of the * and ** operators, when defining and calling Python functions, will give them extra capabilities and make
+them more flexible and powerful.</p>
+<p>Here's an example:</p>
+<pre><code>&gt;&gt;&gt; def func(required, *args, **kwargs):
+...     print(required)
+...     print(args)
+...     print(kwargs)
+... 
+&gt;&gt;&gt; func('Welcome to...', *(1, 2, 3), **{'Site': 'CloudAcademy.com'})
+Welcome to...
+(1, 2, 3)
+{'Site': 'CloudAcademy.com'}
+</code></pre>
+<p>Conclusion</p>
+<p>Iterable unpacking turns out to be a pretty useful and popular feature in Python. This feature allows us to unpack an
+iterable into several variables. On the other hand, packing consists of catching several values into one variable using
+the unpacking operator, *.</p>
+<p>In this tutorial, we've learned how to use iterable unpacking in Python to write more readable, maintainable, and
+pythonic code.</p>
+<p>With this knowledge, we are now able to use iterable unpacking in Python to solve common problems like parallel
+assignment and swapping values between variables. We're also able to use this Python feature in other structures like
+for loops, function calls, and function definitions.</p>
+<h2 id="enumerate">拓展：enumerate</h2>
+<p>enumerate() 函数用于将一个可遍历的数据对象(如列表、元组或字符串)组合为一个索引序列，同时列出数据和数据下标，一般用在 for 循环当中。</p>
+<p>enumerate() 方法:
+语法</p>
+<ul>
+<li><code>enumerate(sequence, [start=0])</code></li>
+</ul>
+<p>参数</p>
+<ul>
+<li>sequence：一个序列、迭代器或其他支持迭代对象。</li>
+<li>start：下标起始位置。 返回值</li>
+</ul>
+<p>返回</p>
+<ul>
+<li>enumerate(枚举) 对象。</li>
+</ul>
+<p>基本用法：</p>
+<ul>
+<li>字符串</li>
+</ul>
+<pre><code>&gt;&gt;&gt; sample = 'abcd'
+&gt;&gt;&gt; for i, j in enumerate(sample):  # 输出的是元组内的元素
+...     print(i, j)
+... 
+0 a
+1 b
+2 c
+3 d
+
+&gt;&gt;&gt; for i in enumerate(sample):  # 输出的是元组
+...     print(i)
+... 
+(0, 'a')
+(1, 'b')
+(2, 'c')
+(3, 'd')
+
+&gt;&gt;&gt; sample = ('abcd')
+&gt;&gt;&gt; for i, j in enumerate(sample):
+...     print(i, j)
+... 
+0 a
+1 b
+2 c
+3 d
+</code></pre>
+<ul>
+<li>元组</li>
+</ul>
+<pre><code>&gt;&gt;&gt; sample = ('abcd', 'hijk')
+&gt;&gt;&gt; for i, j in enumerate(sample):
+...     print(i, j)
+... 
+0 abcd
+1 hijk
+
+&gt;&gt;&gt; sample = ('abcd', 'hijk')
+&gt;&gt;&gt; for i, j in enumerate(sample, 2):
+...     print(i, j)
+... 
+2 abcd
+3 hijk
+</code></pre>
+<ul>
+<li>数组</li>
+</ul>
+<pre><code>&gt;&gt;&gt; sample = ['abcd', 'hijk']
+&gt;&gt;&gt; for i, j in enumerate(sample):
+...     print(i, j)
+... 
+0 abcd
+1 hijk
+</code></pre>
+<ul>
+<li>字典</li>
+</ul>
+<pre><code>&gt;&gt;&gt; sample = {'abcd': 1, 'hijk': 2}
+&gt;&gt;&gt; for i, j in enumerate(sample):
+...     print(i, j)
+... 
+0 abcd
+1 hijk
+</code></pre>
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../../assets/javascripts/workers/search.22074ed6.min.js"}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.960e086b.min.js"></script>
+      
+    
+  </body>
+</html>
