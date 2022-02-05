@@ -1,7 +1,9 @@
-site_name: My Docs
-site_url: https://example.com
+site_name: My Memo
+site_url: https://huyuhui001.github.io/mySite/index.html
 nav:
         - Home: index.md
+        - Linux: linux.md
+        - Python: python.md
         - About: about.md
 theme:
   name: 'material'
