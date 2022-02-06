@@ -1,4 +1,8 @@
-[Python语言基础](ch01.md)
+
+
+# [Python安装](ch00.md)
+
+# [Python语言基础](ch01.md)
 
 1. Python数据类型（6个）
   * 数值型（number）
@@ -27,9 +31,18 @@
 4. 标量类型
 5. 三元表达式
 
-[Python中的打包Packing和拆包Unpacking](ch02.md)
 
-[函数及文件](ch03.md)
+# [Python中的打包Packing和拆包Unpacking](ch02.md)
+
+1. 解包Unpacking
+2. 打包Packing
+3. 使用 * 和 ** 运算符
+4. 通过 For-Loops 解包
+5. 用 * 和 ** 定义函数
+6. 使用 * 和 ** 调用函数
+
+
+# [函数及文件](ch03.md)
 
 1. 匿名（Lambda）函数
 2. 内置序列函数enumerate
@@ -41,6 +54,6 @@
 8. 错误和异常处理
 9. 文件与操作系统
 
-[Python的类(Class)](ch04.md)
+# [Python的类(Class)](ch04.md)
 
 
