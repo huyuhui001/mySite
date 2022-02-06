@@ -55,5 +55,19 @@
 9. 文件与操作系统
 
 # [Python的类(Class)](ch04.md)
-
-
+1. 名称Names和对象Objects
+2. 作用域Scopes和命名空间Namespace
+3. 类Class
+  * 类定义 Class Definition
+  * 类对象 Class Objects
+  * 实例对象 Instance Objects
+  * 方法对象 Method Objects
+  * 类和实例变量 Class and Instance Variables
+4. 继承 Inheritance
+  * 多重继承 Multiple Inheritance
+5. 私有变量 Private Variables
+6. 迭代器 Iterators
+7. 生成器 Generators
+8. 生成器表达式 Generator Expressions
+9. 多态 Polymorphism
+  * 鸭子类型(Ducking Typing)
