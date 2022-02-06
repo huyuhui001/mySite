@@ -318,29 +318,29 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#14-list" class="md-nav__link">
-    1.4 列表（list）
+  <a href="#13-list" class="md-nav__link">
+    1.3 列表（list）
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#15-dictionary" class="md-nav__link">
-    1.5 字典（dictionary）
+  <a href="#14-dictionary" class="md-nav__link">
+    1.4 字典（dictionary）
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#16-set" class="md-nav__link">
-    1.6 集合（set）
+  <a href="#15-set" class="md-nav__link">
+    1.5 集合（set）
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#17-tuple" class="md-nav__link">
-    1.7 元组（tuple）
+  <a href="#16-tuple" class="md-nav__link">
+    1.6 元组（tuple）
   </a>
   
 </li>
@@ -422,15 +422,17 @@
 <blockquote>
 <p>An object representing a stream of data. Repeated calls to the iterator’s next() method (or passing it to the built-in function next()) return successive items in the stream. When no more data are available a StopIteration exception is raised instead. At this point, the iterator object is exhausted and any further calls to its next() method just raise StopIteration again. Iterators are required to have an iter() method that returns the iterator object itself so every iterator is also iterable and may be used in most places where other iterables are accepted. One notable exception is code which attempts multiple iteration passes. A container object (such as a list) produces a fresh new iterator each time you pass it to the iter() function or use it in a for loop. Attempting this with an iterator will just return the same exhausted iterator object used in the previous iteration pass, making it appear like an empty container.</p>
 </blockquote>
-<p>可变数据（immutable）：
-列表（list），字典（dictionary），集合（set）。</p>
-<p>不可变数据（immutable）：
-数字（number），字符（string），元组（tuple）。</p>
-<p>可迭代（iterable）：
-字符（string），元组（tuple），列表（list），字典（dictionary），集合（set）</p>
-<p>序列：
-* 有序序列：字符（string），元组（tuple），列表（list）
-* 无序序列：字典（dictionary），集合（set）</p>
+<p>可变数据（immutable）：</p>
+<p>列表（list），字典（dictionary），集合（set）。</p>
+<p>不可变数据（immutable）：</p>
+<p>数字（number），字符（string），元组（tuple）。</p>
+<p>可迭代（iterable）：</p>
+<p>字符（string），元组（tuple），列表（list），字典（dictionary），集合（set）</p>
+<p>序列：</p>
+<ul>
+<li>有序序列：字符（string），元组（tuple），列表（list）</li>
+<li>无序序列：字典（dictionary），集合（set）</li>
+</ul>
 <h3 id="11-number">1.1 数值型（number）</h3>
 <p>例子：</p>
 <pre><code>a, b, c, d = 20, 5.5, True, 4+3j
@@ -727,10 +729,12 @@ for person in people:
 # He is watching TV.
 # She is watching TV.
 </code></pre>
-<p>使用f-string格式化输出。
-* 左对齐：&lt;
-* 右对齐：&gt; 
-* 居中对齐：^</p>
+<p>使用f-string格式化输出。</p>
+<ul>
+<li>左对齐：&lt;</li>
+<li>右对齐：&gt; </li>
+<li>居中对齐：^</li>
+</ul>
 <pre><code>print(f'{&quot;apple&quot;: &gt;30}')
 print(f'{&quot;apple&quot;: ^30}')
 print(f'{&quot;apple&quot;: &lt;30}')
@@ -785,7 +789,7 @@ number = 2
 print(f'{number = }')
 # number = 2
 </code></pre>
-<h3 id="14-list">1.4 列表（list）</h3>
+<h3 id="13-list">1.3 列表（list）</h3>
 <p>列表是 Python 内置的一种数据结构，是一种有序的集合，用来存储一连串元素的容器。列表中元素类型可以不相同，它支持数字、字符串等。</p>
 <p>列表的每个值都有对应的索引值，索引值从0开始。</p>
 <p>列表切片：</p>
@@ -1050,10 +1054,12 @@ b_list = ['saw', 'small', 'He', 'foxes', 'six']
 b_list.sort(key=len)  # 通过字符串的长度进行排序
 print(b_list)  # ['He', 'saw', 'six', 'small', 'foxes']
 </code></pre>
-<p>列表二分搜索和已排序列表的维护
-* bisect 返回要插入元素在列表中的下标。假定列表是有序的。
-* bisect_left 与 bisect 类似，只不过其默认将元素插到左边，所以返回的是插入到左边的下标
-* bisect_right与 bisect_left 相反。</p>
+<p>列表二分搜索和已排序列表的维护</p>
+<ul>
+<li>bisect 返回要插入元素在列表中的下标。假定列表是有序的。</li>
+<li>bisect_left 与 bisect 类似，只不过其默认将元素插到左边，所以返回的是插入到左边的下标</li>
+<li>bisect_right与 bisect_left 相反。</li>
+</ul>
 <p>以上方法若列表无序，那么会返回插入到列表最后一个合适的位置。</p>
 <p>insort 会在列表中插入元素到正确位置，假定列表有序。如果列表无序，那么会返回空。默认插入到右边。</p>
 <p>insort_left 和insort_right 类似。</p>
@@ -1071,7 +1077,7 @@ print(bisect.bisect(c, 6))  # 6 bisect会找到第一个5,并把新的6插入它
 bisect.insort(c, 6)
 print(c)  # [1, 2, 2, 3, 4, 5, 6, 7]
 </code></pre>
-<h3 id="15-dictionary">1.5 字典（dictionary）</h3>
+<h3 id="14-dictionary">1.4 字典（dictionary）</h3>
 <p>字典(dict)是使用键-值（key-value）存储，键是不可变对象，且不允许重复。</p>
 <p>dict（字典）更为常用的名字是哈希表或者是关联数组。 字典是拥有灵活尺寸的键值对集合，不是通过位置进行索引，其中键和值都是Python对象。用大括号{}是创建字典的一种方式，在字典中用逗号将键值对分隔。</p>
 <p><strong>字典常用方法</strong></p>
@@ -1343,7 +1349,7 @@ print(hash((1, 2, [2, 3])))
 print(hash((1, 2, tuple([2, 3]))))  
 # -9209053662355515447  为了将列表作为键，一种方式就是将其转换为元组
 </code></pre>
-<h3 id="16-set">1.6 集合（set）</h3>
+<h3 id="15-set">1.5 集合（set）</h3>
 <p>集合(set)是一种无序且元素唯一的序列。</p>
 <p>和字典类似，集合的元素是不可变的。可以认为集合也像字典，但是只有键没有值。基本功能是进行成员关系测试和删除重复元素。所以集合另一个用途是去重复。</p>
 <p>集合可以有两种创建方式：通过set()函数或者{}来创建</p>
@@ -1504,7 +1510,7 @@ my_data2 = [3, 4, 5, 6]
 my_set = {tuple(my_data1), tuple(my_data2)}
 print(my_set)  # {(1, 2, 3, 4), (3, 4, 5, 6)}
 </code></pre>
-<h3 id="17-tuple">1.7 元组（tuple）</h3>
+<h3 id="16-tuple">1.6 元组（tuple）</h3>
 <p>Python 的元组与列表类似，不同之处在于元组的元素不能修改。</p>
 <p>元组使用小括号( )，列表使用方括号[ ]。</p>
 <p>元组中只包含一个元素时，需要在元素后面添加逗号 ，否则括号会被当作运算符使用。</p>

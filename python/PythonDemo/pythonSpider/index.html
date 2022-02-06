@@ -8,14 +8,14 @@
       
       
       
-        <link rel="canonical" href="https://huyuhui001.github.io/mySite/index.html/python/PythonSP2020/PythonDataAnalysis/">
+        <link rel="canonical" href="https://huyuhui001.github.io/mySite/index.html/python/PythonDemo/pythonSpider/">
       
       <link rel="icon" href="../../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.9">
     
     
       
-        <title>PythonDataAnalysis - My Memo</title>
+        <title>pythonSpider - My Memo</title>
       
     
     
@@ -63,6 +63,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#file-demopy" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -92,7 +97,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              PythonDataAnalysis
+              pythonSpider
             
           </span>
         </div>
@@ -237,15 +242,108 @@
               </div>
             
             
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#file-demopy" class="md-nav__link">
+    File demo.py
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#file-image_linkpy" class="md-nav__link">
+    File image_link.py
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#file-spidervideopy-to-download-video-segments-and-consolidate-into-one-video-file" class="md-nav__link">
+    File SpiderVideo.py to download video segments and consolidate into one video file
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#file-spiderimagepy-to-download-images" class="md-nav__link">
+    File SpiderImage.py to download images
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
           
           <div class="md-content" data-md-component="content">
             <article class="md-content__inner md-typeset">
               
                 
 
-  <h1>PythonDataAnalysis</h1>
+  <h1>pythonSpider</h1>
 
+<h3 id="file-demopy">File demo.py</h3>
+<p>Get video names and links and export to talks.txt and links.txt <br />
+Using m3u8 to find out videos.
+Using merge.bat to merge video segments into one video file</p>
+<h3 id="file-image_linkpy">File image_link.py</h3>
+<p>Get image names and links   </p>
+<h3 id="file-spidervideopy-to-download-video-segments-and-consolidate-into-one-video-file">File <code>SpiderVideo.py</code> to download video segments and consolidate into one video file</h3>
+<p>The file <code>SpiderVideo.py</code> reads from <code>index.m3u8</code> as input to download video segments. <br />
+The file <code>index.m3u8</code> is maintained manually from target webpage. <br />
+Destination folder: <code>/opt/projects/myPython/pythonSpider/video_download</code>  <br />
+Consolidation: <code>merge.bat</code>
+Key is to get links of videos below:</p>
+<pre><code>    def get_talks_links(self):
+        response = requests.get(self.url)
+        html_text = response.text
+        bs = BeautifulSoup(html_text, 'html.parser')
+        results_div = bs.find('div', id='browse-results')
+        results_div_h4 = results_div.find_all('h4', class_='f-w:700 h9 m5')
+        # print(results_div_h4)
+        for items in results_div_h4:
+            self.talks.append(items.find('a').string)
+            self.links.append(items.find('a').get('href') + '\n')
+</code></pre>
+<h3 id="file-spiderimagepy-to-download-images">File SpiderImage.py to download images</h3>
+<p>Destination folder: <code>/opt/projects/myPython/pythonSpider/images_download</code>
+Key is to get links below</p>
+<pre><code>    def get_image_link(self):
+        response = requests.get(self.url)
+        html_text = response.text
+        bs = BeautifulSoup(html_text, 'html.parser')
+        results_div = bs.find('div', id='browse-results')
 
+        # 方法1 （二选一即可）
+        # results_div_span = results_div.find_all('span', class_='thumb__tugger')
+        # for items in results_div_span:
+        #     self.image_links.append(items.find('img').get('src') + '\n')
+
+        # 方法2 （二选一即可）
+        results_div_img = results_div.find_all('img')
+        for items1 in results_div_img:
+            self.image_links.append(items1.get('src') + '\n')
+</code></pre>
 
               
             </article>

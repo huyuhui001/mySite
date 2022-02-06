@@ -354,9 +354,6 @@
 &gt;&gt;&gt; z
 2
 </code></pre>
-<p>As a complement, the term packing can be used when we collect several values in a single variable using the iterable unpacking operator.</p>
-<p>The * operator is known, in this context, as the tuple (or iterable) unpacking operator. It extends the unpacking functionality to allow us to collect or pack multiple values in a single variable.</p>
-<p>In the following example, we pack a tuple of values into a single variable by using the * operator:</p>
 <p>打包可以理解为使用可迭代解包运算符在单个变量中收集多个值。在这种情况下， * 运算符被称为元组（或可迭代）解包运算符。 它扩展了解包功能，允许在单个变量中收集或打包多个值。</p>
 <p>在以下示例中可以看到 * 运算符将元组值打包到单个变量中： </p>
 <pre><code>&gt;&gt;&gt; # The right side is a tuple, the left side is a list
@@ -472,7 +469,6 @@ ValueError: not enough values to unpack (expected at least 4, got 3)
 &gt;&gt;&gt; cube
 27
 </code></pre>
-<p>Merging Iterables With the * Operator. The last two examples show that this is also a more readable and efficient way to concatenate iterables. Instead of writing list .</p>
 <p>使用 * 运算符合并迭代变量（iterables）。上面两个例子说明，这中方法也是连接迭代变量（iterables）的一种更易读和更有效的方法。</p>
 <p>这个方法 <code>(my_set) + my_list + list(my_tuple) + list(range(1, 4)) + list(my_str)</code>可以生成一个列表 ，也可以使用更简洁的方法 <code>[*my_set, *my_list, *my_tuple, *range(1, 4), *my_str]</code>。</p>
 <pre><code>&gt;&gt;&gt; my_tuple = (1, 2, 3)
@@ -491,15 +487,14 @@ ValueError: not enough values to unpack (expected at least 4, got 3)
 [1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, '1', '2', '3']
 
 </code></pre>
-<p>Unpacking Dictionaries With the ** Operator</p>
+<p>使用 ** 运算符解包字典。</p>
 <pre><code>&gt;&gt;&gt; numbers = {'one': 1, 'two': 2, 'three': 3}
 &gt;&gt;&gt; letters = {'a': 'A', 'b': 'B', 'c': 'C'}
 &gt;&gt;&gt; combination = {**numbers, **letters}
 &gt;&gt;&gt; combination
 {'one': 1, 'two': 2, 'three': 3, 'a': 'A', 'b': 'B', 'c': 'C'}
 </code></pre>
-<p>An important point to note is that, if the dictionaries we're trying to merge have repeated or common keys, then the
-values of the right-most dictionary will override the values of the left-most dictionary. Here's an example:</p>
+<p>需要注意的重要一点是，如果我们合并的字典具有重复键或公共键，则最右侧字典的值将覆盖最左侧字典的值。例如:</p>
 <pre><code>&gt;&gt;&gt; letters = {'a': 'A', 'b': 'B', 'c': 'C'}
 &gt;&gt;&gt; vowels = {'a': 'a', 'e': 'e', 'i': 'i', 'o': 'o', 'u': 'u'}
 &gt;&gt;&gt; {**letters, **vowels}
@@ -507,20 +502,10 @@ values of the right-most dictionary will override the values of the left-most di
 &gt;&gt;&gt; {**vowels, **letters}
 {'a': 'A', 'e': 'e', 'i': 'i', 'o': 'o', 'u': 'u', 'b': 'B', 'c': 'C'}
 </code></pre>
-<p>Unpacking in For-Loops</p>
-<p>We can also use iterable unpacking in the context of for loops. When we run a for loop, the loop assigns one item of its
-iterable to the target variable in every iteration. If the item to be assigned is an iterable, then we can use a tuple
-of target variables. The loop will unpack the iterable at hand into the tuple of target variables.</p>
-<p>We can build a list of two-elements tuples. Each tuple will contain the name of the product, the price, and the sold
-units. With this information, we want to calculate the income of each product. To do this, we can use a for loop like
-this:</p>
+<p>通过 For-Loops 解包。</p>
+<p>我们还可以在 for 循环的上下文中使用可迭代解包。 当我们运行 for 循环时，在每次循环迭代中将其可迭代对象中的一项(item)分配给目标变量。 如果要分配的项(item)是可迭代的，那么我们可以使用元组作为目标变量，通过循环将可迭代对象解包到目标变量的元组中。</p>
+<p>例如，我们可以构建一个包含两个元素的元组的列表。 每个元组将包含产品名称、价格和销售单位，我们通过 for 循环遍历每个元组元素来计算每个产品的收入。 </p>
 <pre><code>&gt;&gt;&gt; sales = [('Pencle', 0.22, 1500), ('Notebook', 1.30, 550), ('Eraser', 0.75, 1000)]
-&gt;&gt;&gt; for items in sales:
-...     print(f&quot;Income for {item[0]} is: {item[1] * item[2]}&quot;)
-... 
-Traceback (most recent call last):
-  File &quot;&lt;stdin&gt;&quot;, line 2, in &lt;module&gt;
-NameError: name 'item' is not defined
 &gt;&gt;&gt; for items in sales:
 ...     print(f&quot;Income for {items[0]} is: {items[1] * items[2]}&quot;)
 ... 
@@ -528,9 +513,7 @@ Income for Pencle is: 330.0
 Income for Notebook is: 715.0
 Income for Eraser is: 750.0
 </code></pre>
-<p>we're using indices to get access to individual elements of each tuple. This can be difficult to read and to understand
-by newcomer developers. We're now using iterable unpacking in our for loop in below sample codes, which is an
-alternative implementation using unpacking in Python:</p>
+<p>我们可以使用索引来访问每个元组的各个元素。下面的示例代码中，在 for 循环使用解包，这也是 Python 中解包的一种实现。 </p>
 <pre><code>&gt;&gt;&gt; sales = [('Pencle', 0.22, 1500), ('Notebook', 1.30, 550), ('Eraser', 0.75, 1000)]
 &gt;&gt;&gt; for product, price, sold_units in sales:
 ...     print(f&quot;Income for {product} is: {price * sold_units}&quot;)
@@ -539,9 +522,7 @@ Income for Pencle is: 330.0
 Income for Notebook is: 715.0
 Income for Eraser is: 750.0
 </code></pre>
-<p>It's also possible to use the * operator in a for loop to pack several items in a single target variable. In this for
-loop, we're catching the first element of each sequence in first. Then the * operator catches a list of values in its
-target variable rest.</p>
+<p>也可以在 for 循环中使用 * 运算符将多个项打包到单个目标变量中。 在下面这个例子中，我们首先取得每个序列的第一个元素。 其余值通过 * 运算符赋给目标变量 rest。 </p>
 <pre><code>&gt;&gt;&gt; for first, *rest in [(1, 2, 3),(4, 5, 6)]:
 ...     print('First: ', first)
 ...     print('Rest: ', rest)
@@ -552,8 +533,7 @@ First:  4
 Rest:  [5, 6]
 &gt;&gt;&gt; 
 </code></pre>
-<p>Finally, the structure of the target variables must agree with the structure of the iterable. Otherwise, we'll get an
-error. Take a look at the following example:</p>
+<p>目标变量的结构必须与可迭代对象的结构一致，否则会报错。看下面的例子。</p>
 <pre><code>&gt;&gt;&gt; data = [((1, 2), 3), ((2, 3), 3)]
 &gt;&gt;&gt; for (a, b), c in data:
 ...     print(a, b, c)
@@ -567,14 +547,9 @@ Traceback (most recent call last):
   File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
 ValueError: not enough values to unpack (expected 3, got 2)
 </code></pre>
-<p>Defining Functions With * and **</p>
-<p>The below function requires at least one argument called <code>required</code>. It can accept a variable number of positional and
-keyword arguments as well. In this case, the * operator <em>collects or packs</em> extra positional arguments in a tuple called
-<code>args</code> and the ** operator collects or packs extra keyword arguments in a dictionary called <code>kwargs</code>. Both, <code>args</code>
-and <code>kwargs</code>, are optional and automatically default to () and {} respectively.</p>
-<p>Even though the names <code>args</code> and <code>kwargs</code> are widely used by the Python community, they're not a requirement for these
-techniques to work. The syntax just requires * or ** followed by a valid identifier. So, if you can give meaningful
-names to these arguments, then do it. That will certainly improve your code's readability.</p>
+<p>用 * 和 ** 定义函数。</p>
+<p>下面例子中的函数func至少需要一个名为“required”的参数。 它也可以接受一个或多个位置参数或关键字参数。 在这种情况下， * 运算符在一个叫 <code>args</code> 的元组中收集或打包额外的位置参数，而 ** 运算符在一个叫 <code>kwargs</code> 的字典中收集或打包额外的关键字参数。 <code>args</code> 和 <code>kwargs</code> 都是可选的，并且分别自动默认为元组()和字典{}。</p>
+<p>这里 <code>args</code> 和 <code>kwargs</code> 的命名并不是必须的，语法上只需要 * 或 ** 后跟有效标识符即可，建议给变量起个有意义的名字，提高代码的可读性。 </p>
 <pre><code>&gt;&gt;&gt; def func(required, *args, **kwargs):
 ...     print(required)
 ...     print(args)
@@ -601,14 +576,9 @@ Welcome to ...
 (1, 2, 3, ([2, 3], [1, 2]))
 {}
 </code></pre>
-<p>Calling Functions With * and **</p>
-<p>When calling functions, we can also benefit from the use of the * and <strong> operator to unpack collections of arguments
-into separate positional or keyword arguments respectively. This is the inverse of using * and </strong> in the signature of a
-function. In the signature, the operators mean collect or pack a variable number of arguments in one identifier. In the
-call, they mean <em>unpack</em> an iterable into several arguments.</p>
-<p>Here's a basic example of how this works. The * operator unpacks sequences like <code>["Welcome", "to"]</code> into positional
-arguments. Similarly, the ** operator unpacks dictionaries into arguments whose names match the keys of the unpacked
-dictionary.</p>
+<p>使用 * 和 ** 调用函数。</p>
+<p>调用函数时，我们还可以受益于使用 * 和 <strong> 运算符将参数集合分别解压缩为单独的位置参数或关键字参数。 这与在函数签名(signature of a function)中使用 * 和 </strong> 是相反的。 在函数签名中，运算符的意思是在一个标识符中收集或打包可变数量的参数。 在调用(calling)中，它们的意思是解包(unpack)一个可迭代对象到多个参数中。</p>
+<p>在下面的示例中，<em> 运算符将像 <code>["Welcome", "to"]</code> 这样的序列解包到位置参数中。 类似地， </em>* 运算符将字典解包为与字典的键值匹配的参数名。 </p>
 <pre><code>&gt;&gt;&gt; def func(welcome, to, site):
 ...     print(welcome, to, site
 ... 

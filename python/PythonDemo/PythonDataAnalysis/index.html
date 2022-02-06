@@ -8,14 +8,14 @@
       
       
       
-        <link rel="canonical" href="https://huyuhui001.github.io/mySite/index.html/python/PythonSP2020/pythonDjango/">
+        <link rel="canonical" href="https://huyuhui001.github.io/mySite/index.html/python/PythonDemo/PythonDataAnalysis/">
       
       <link rel="icon" href="../../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.9">
     
     
       
-        <title>pythonDjango - My Memo</title>
+        <title>PythonDataAnalysis - My Memo</title>
       
     
     
@@ -63,11 +63,6 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
-        
-        <a href="#initialize-the-project-and-get-managepy-file-as-starting-point" class="md-skip">
-          Skip to content
-        </a>
-      
     </div>
     <div data-md-component="announce">
       
@@ -97,7 +92,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              pythonDjango
+              PythonDataAnalysis
             
           </span>
         </div>
@@ -242,168 +237,15 @@
               </div>
             
             
-              
-              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
-                <div class="md-sidebar__scrollwrap">
-                  <div class="md-sidebar__inner">
-                    
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#initialize-the-project-and-get-managepy-file-as-starting-point" class="md-nav__link">
-    Initialize the project and get manage.py file as starting point
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#initialize-employee-model" class="md-nav__link">
-    Initialize employee model
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#register-your-model-by-add-adminpy-in-folder-employee" class="md-nav__link">
-    Register your model by add admin.py in folder employee
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#configure-the-app" class="md-nav__link">
-    Configure the app
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#deploy-the-change-and-start-the-server" class="md-nav__link">
-    Deploy the change and start the server
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#validate-the-service-is-up-no-content-here" class="md-nav__link">
-    Validate the service is up (no content here!)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#create-super-user" class="md-nav__link">
-    Create super user
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#validate-the-admin-service-add-records-in-employee-also-available-for-delete-and-update" class="md-nav__link">
-    Validate the admin service. Add records in Employee, also available for delete and update
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#sqlite-utils-dbsqlite3-select-from-employee_employee" class="md-nav__link">
-    sqlite-utils db.sqlite3 "select * from employee_employee"
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-                  </div>
-                </div>
-              </div>
-            
           
           <div class="md-content" data-md-component="content">
             <article class="md-content__inner md-typeset">
               
                 
 
-<h3 id="initialize-the-project-and-get-managepy-file-as-starting-point">Initialize the project and get <code>manage.py</code> file as starting point</h3>
-<pre><code># cd /opt/projects/myPython
-# django-admin startproject pythonDjango
-</code></pre>
-<h3 id="initialize-employee-model">Initialize employee model</h3>
-<pre><code># python3 manage.py startapp employee
-</code></pre>
-<h3 id="register-your-model-by-add-adminpy-in-folder-employee">Register your model by add admin.py in folder employee</h3>
-<pre><code>from django.contrib import admin
-from employee.models import Employee
-
-# Register your models here.
-class EmployeeAdmin(admin.ModelAdmin):
-    list_display = ['id', 'code', 'name', 'salary']  # 对于model里面的定义
-    search_fields = ['code', 'name']
-    list_filter = ['id']
-
-admin.site.register(Employee, EmployeeAdmin)
-</code></pre>
-<h3 id="configure-the-app">Configure the app</h3>
-<pre><code>from django.apps import AppConfig
+  <h1>PythonDataAnalysis</h1>
 
 
-class EmployeeConfig(AppConfig):
-    name = 'employee'
-</code></pre>
-<h3 id="deploy-the-change-and-start-the-server">Deploy the change and start the server</h3>
-<pre><code># python3 manage.py makemigrations
-# python3 manage.py migrate
-# python3 manage.py runserver
-</code></pre>
-<h3 id="validate-the-service-is-up-no-content-here">Validate the service is up (no content here!)</h3>
-<p>http://127.0.0.1:8000/</p>
-<h3 id="create-super-user">Create super user</h3>
-<pre><code># python3 manage.py createsuperuser
-Username (leave blank to use 'i310913'): root
-Email address: aa@bb.cn
-Password: root
-Password (again): root
-The password is too similar to the username.
-This password is too short. It must contain at least 8 characters.
-This password is too common.
-Bypass password validation and create user anyway? [y/N]: y
-Superuser created successfully.
-</code></pre>
-<h3 id="validate-the-admin-service-add-records-in-employee-also-available-for-delete-and-update">Validate the admin service. Add records in Employee, also available for delete and update</h3>
-<p>http://127.0.0.1:8000/admin</p>
-<p>Validate 3 records added via admin page in Sqlite database</p>
-<pre><code># /opt/projects/myPython/pythonDjango/sqlite-utils tables db.sqlite3
-[{&quot;table&quot;: &quot;django_migrations&quot;},
- {&quot;table&quot;: &quot;sqlite_sequence&quot;},
- {&quot;table&quot;: &quot;auth_group_permissions&quot;},
- {&quot;table&quot;: &quot;auth_user_groups&quot;},
- {&quot;table&quot;: &quot;auth_user_user_permissions&quot;},
- {&quot;table&quot;: &quot;django_admin_log&quot;},
- {&quot;table&quot;: &quot;django_content_type&quot;},
- {&quot;table&quot;: &quot;auth_permission&quot;},
- {&quot;table&quot;: &quot;auth_group&quot;},
- {&quot;table&quot;: &quot;auth_user&quot;},
- {&quot;table&quot;: &quot;django_session&quot;},
- {&quot;table&quot;: &quot;employee_employee&quot;}]
-</code></pre>
-<p>Query table employee, and see 3 records below. 
-```</p>
-<h1 id="sqlite-utils-dbsqlite3-select-from-employee_employee">sqlite-utils db.sqlite3 "select * from employee_employee"</h1>
-<p>[{"id": 1, "code": "E01", "name": "James", "salary": 0},
- {"id": 2, "code": "E02", "name": "Jim", "salary": 0},
- {"id": 3, "code": "E03", "name": "Jason", "salary": 120.5}]</p>
-<p>```</p>
 
               
             </article>

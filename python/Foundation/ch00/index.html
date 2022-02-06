@@ -15,7 +15,7 @@
     
     
       
-        <title>Python安装 - My Memo</title>
+        <title>Python环境 - My Memo</title>
       
     
     
@@ -97,7 +97,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Python安装
+              Python环境
             
           </span>
         </div>
@@ -266,13 +266,65 @@
               
                 
 
-<h1 id="python">Python安装</h1>
-<p>环境：
-* 安装方式：VMWare虚拟机
-* 客户机guest操作系统：openSUSE 15.3
-* Python版本：3.9.6
-* 安装方式：源码编译</p>
-<p>安装步骤：</p>
+<h1 id="python">Python环境</h1>
+<p>这里使用系统自带的Python环境：</p>
+<ul>
+<li>主机：VMWare虚拟机</li>
+<li>操作系统(Guest)：openSUSE 15.3</li>
+<li>Python版本：3.6.15(openSUSE自带)</li>
+</ul>
+<h1 id="python_1">检查Python版本</h1>
+<pre><code>james@lizard:/opt/myProject/mySite&gt; python --version
+Python 2.7.18
+
+james@lizard:/opt/myProject/mySite&gt; python3 --version
+Python 3.6.15
+</code></pre>
+<h1 id="pip">升级pip</h1>
+<pre><code>james@lizard:/opt&gt; pip3 install --upgrade pip
+
+james@lizard:~&gt; pip --version
+pip 21.3.1 from /home/james/.local/lib/python3.6/site-packages/pip (python 3.6)
+
+james@lizard:~&gt; pip3 --version
+pip 21.3.1 from /home/james/.local/lib/python3.6/site-packages/pip (python 3.6)
+</code></pre>
+<h1 id="pip_1">pip国内源</h1>
+<ul>
+<li>https://mirrors.aliyun.com/pypi/simple/</li>
+<li>https://pypi.tuna.tsinghua.edu.cn/simple/</li>
+<li>http://pypi.doubanio.com/simple/</li>
+<li>https://mirrors.cloud.tencent.com/pypi/simple/ </li>
+</ul>
+<h1 id="python_2">安装Python包(指定源)</h1>
+<pre><code>james@lizard:/opt&gt; pip3 install jinja2 -i https://mirrors.aliyun.com/pypi/simple/
+james@lizard:/opt&gt; pip3 install Django -i https://mirrors.aliyun.com/pypi/simple/
+james@lizard:/opt&gt; pip3 install sqlite_utils -i https://mirrors.aliyun.com/pypi/simple/
+james@lizard:/opt&gt; pip3 install pymongo -i https://mirrors.aliyun.com/pypi/simple/
+james@lizard:/opt&gt; pip3 install numpy  -i https://mirrors.aliyun.com/pypi/simple/
+james@lizard:/opt&gt; pip3 install matplotlib  -i https://mirrors.aliyun.com/pypi/simple/
+james@lizard:/opt&gt; pip3 install scikit-learn  -i https://mirrors.aliyun.com/pypi/simple/
+james@lizard:/opt&gt; pip3 install xlrd  -i https://mirrors.aliyun.com/pypi/simple/
+james@lizard:/opt&gt; pip3 install pandas  -i https://mirrors.aliyun.com/pypi/simple/
+james@lizard:/opt&gt; pip3 install pydotplus  -i https://mirrors.aliyun.com/pypi/simple/
+james@lizard:/opt&gt; pip3 install seaborn  -i https://mirrors.aliyun.com/pypi/simple/
+james@lizard:/opt&gt; pip3 install selenium  -i https://mirrors.aliyun.com/pypi/simple/
+james@lizard:/opt&gt; pip3 install mlxtend  -i https://mirrors.aliyun.com/pypi/simple/
+james@lizard:/opt&gt; pip3 install pandas-datareader -i https://mirrors.aliyun.com/pypi/simple/
+james@lizard:/opt&gt; pip3 install lxml -i https://mirrors.aliyun.com/pypi/simple/
+james@lizard:/opt&gt; pip3 install beautifulsoup4 -i https://mirrors.aliyun.com/pypi/simple/
+james@lizard:/opt&gt; pip3 install html5lib -i https://mirrors.aliyun.com/pypi/simple/
+james@lizard:/opt&gt; pip3 install tables -i https://mirrors.aliyun.com/pypi/simple/
+james@lizard:/opt&gt; pip3 install openpyxl -i https://mirrors.aliyun.com/pypi/simple/
+james@lizard:/opt&gt; pip3 install sqlalchemy -i https://mirrors.aliyun.com/pypi/simple/
+james@lizard:/opt&gt; pip3 install statsmodels -i https://mirrors.aliyun.com/pypi/simple/
+james@lizard:/opt&gt; pip3 install patsy -i https://mirrors.aliyun.com/pypi/simple/
+james@lizard:/opt&gt; pip3 install numba -i https://mirrors.aliyun.com/pypi/simple/
+james@lizard:/opt&gt; pip3 install jason -i https://mirrors.aliyun.com/pypi/simple/
+james@lizard:/opt&gt; pip3 install openpyxl -i https://mirrors.aliyun.com/pypi/simple/
+</code></pre>
+<h1 id="_1">源码编译方法</h1>
+<p>下面是源码编译方式自行安装Python的方法，以3.9.6版本为例。</p>
 <p>官网下载python3.9.6 （<a href="https://www.python.org/downloads/">连接</a>） </p>
 <p>解压安装包</p>
 <pre><code>james@lizard:/opt&gt; tar xvf Python-3.9.6.tgz
@@ -280,10 +332,12 @@
 <p>安装路径为 <code>/opt/Python-3.9.6/</code>，需要把安装路径的owner改为当前用户，否则后期python编译以及使用pip安装python包会报错。</p>
 <pre><code>james@lizard:/opt&gt; chown -R james.wheel /opt/Python-3.9.6
 </code></pre>
-<p>在安装前的一些建议
-* 在openSUSE中把开发包都安装一下，特别是c和c++的开发包。这些都是Python编译的依赖包。
-* 在openSUSE中安装sqlite3.
-* 使用openSUSE自带的openSSL，如果自行编译openSSL，在编译Python时会遇到一些未知问题。</p>
+<p>在安装前的一些建议</p>
+<ul>
+<li>在openSUSE中把开发包都安装一下，特别是c和c++的开发包。这些都是Python编译的依赖包。</li>
+<li>在openSUSE中安装sqlite3.</li>
+<li>使用openSUSE自带的openSSL，如果自行编译openSSL，在编译Python时会遇到一些未知问题。</li>
+</ul>
 <p>编译和安装：</p>
 <pre><code>james@lizard:/opt/Python-3.9.6&gt; sudo ./configure --enable-optimizations --with-ensurepip=install
 james@lizard:/opt/Python-3.9.6&gt; sudo make
@@ -343,41 +397,6 @@ pip - auto mode
 
 james@lizard:/opt/Python-3.9.6&gt; sudo update-alternatives --install /usr/bin/pip pip /usr/bin/pip3.9 100
 update-alternatives: using /usr/bin/pip3.9 to provide /usr/bin/pip (pip) in auto mode
-</code></pre>
-<p>升级pip到最新版本。</p>
-<pre><code>james@lizard:/opt/Python-3.9.6&gt; pip install --upgrade pip
-</code></pre>
-<p>pip国内源：
-* https://mirrors.aliyun.com/pypi/simple/
-* https://pypi.tuna.tsinghua.edu.cn/simple/
-* http://pypi.doubanio.com/simple/
-* https://mirrors.cloud.tencent.com/pypi/simple/ </p>
-<p>下面的Python包可以提前安装。</p>
-<pre><code>james@lizard:/opt&gt; pip install jinja2 -i https://mirrors.aliyun.com/pypi/simple/
-james@lizard:/opt&gt; pip install Django -i https://mirrors.aliyun.com/pypi/simple/
-james@lizard:/opt&gt; pip install sqlite_utils -i https://mirrors.aliyun.com/pypi/simple/
-james@lizard:/opt&gt; pip install pymongo -i https://mirrors.aliyun.com/pypi/simple/
-james@lizard:/opt&gt; pip install numpy  -i https://mirrors.aliyun.com/pypi/simple/
-james@lizard:/opt&gt; pip install matplotlib  -i https://mirrors.aliyun.com/pypi/simple/
-james@lizard:/opt&gt; pip install scikit-learn  -i https://mirrors.aliyun.com/pypi/simple/
-james@lizard:/opt&gt; pip install xlrd  -i https://mirrors.aliyun.com/pypi/simple/
-james@lizard:/opt&gt; pip install pandas  -i https://mirrors.aliyun.com/pypi/simple/
-james@lizard:/opt&gt; pip install pydotplus  -i https://mirrors.aliyun.com/pypi/simple/
-james@lizard:/opt&gt; pip install seaborn  -i https://mirrors.aliyun.com/pypi/simple/
-james@lizard:/opt&gt; pip install selenium  -i https://mirrors.aliyun.com/pypi/simple/
-james@lizard:/opt&gt; pip install mlxtend  -i https://mirrors.aliyun.com/pypi/simple/
-james@lizard:/opt&gt; pip install pandas-datareader -i https://mirrors.aliyun.com/pypi/simple/
-james@lizard:/opt&gt; pip install lxml -i https://mirrors.aliyun.com/pypi/simple/
-james@lizard:/opt&gt; pip install beautifulsoup4 -i https://mirrors.aliyun.com/pypi/simple/
-james@lizard:/opt&gt; pip install html5lib -i https://mirrors.aliyun.com/pypi/simple/
-james@lizard:/opt&gt; pip install tables -i https://mirrors.aliyun.com/pypi/simple/
-james@lizard:/opt&gt; pip install openpyxl -i https://mirrors.aliyun.com/pypi/simple/
-james@lizard:/opt&gt; pip install sqlalchemy -i https://mirrors.aliyun.com/pypi/simple/
-james@lizard:/opt&gt; pip install statsmodels -i https://mirrors.aliyun.com/pypi/simple/
-james@lizard:/opt&gt; pip install patsy -i https://mirrors.aliyun.com/pypi/simple/
-james@lizard:/opt&gt; pip install numba -i https://mirrors.aliyun.com/pypi/simple/
-james@lizard:/opt&gt; pip install jason -i https://mirrors.aliyun.com/pypi/simple/
-james@lizard:/opt&gt; pip install openpyxl -i https://mirrors.aliyun.com/pypi/simple/
 </code></pre>
 
               

@@ -8,14 +8,14 @@
       
       
       
-        <link rel="canonical" href="https://huyuhui001.github.io/mySite/index.html/python/PythonSP2020/pythonScrapy/">
+        <link rel="canonical" href="https://huyuhui001.github.io/mySite/index.html/python/PythonDemo/pythonDB%2BUI/">
       
       <link rel="icon" href="../../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.9">
     
     
       
-        <title>pythonScrapy - My Memo</title>
+        <title>pythonDB+UI - My Memo</title>
       
     
     
@@ -64,7 +64,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#initialize-the-project-and-scrapycfg-will-be-created-automatically" class="md-skip">
+        <a href="#create-the-database" class="md-skip">
           Skip to content
         </a>
       
@@ -97,7 +97,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              pythonScrapy
+              pythonDB+UI
             
           </span>
         </div>
@@ -260,43 +260,29 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#initialize-the-project-and-scrapycfg-will-be-created-automatically" class="md-nav__link">
-    Initialize the project and scrapy.cfg will be created automatically
+  <a href="#create-the-database" class="md-nav__link">
+    Create the database
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#define-pipeline-via-fie-pipelinepy" class="md-nav__link">
-    Define pipeline via fie pipeline.py
+  <a href="#model-folder" class="md-nav__link">
+    Model folder
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#configure-settingspy-by-adding-two-pipelines-defined-above-two-classes" class="md-nav__link">
-    Configure settings.py by adding two pipelines defined above two classes
+  <a href="#home-foder" class="md-nav__link">
+    Home foder
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#file-itemspy-is-to-define-which-labels-will-be-captured" class="md-nav__link">
-    File items.py is to define which labels will be captured
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#start-mongodb-server" class="md-nav__link">
-    Start MongoDB Server
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#run-the-application" class="md-nav__link">
-    Run the application
+  <a href="#template-folder" class="md-nav__link">
+    Template folder
   </a>
   
 </li>
@@ -314,56 +300,112 @@
               
                 
 
-  <h1>pythonScrapy</h1>
+  <h1>pythonDB+UI</h1>
 
-<h3 id="initialize-the-project-and-scrapycfg-will-be-created-automatically">Initialize the project and <code>scrapy.cfg</code> will be created automatically</h3>
-<pre><code># /opt/projects/myPython/scrapy startproject pythonScrapy
+<h2 id="create-the-database">Create the database</h2>
+<pre><code># sqlite3 sqlite.db
+sqlite&gt; .database
+main: /opt/projects/myPython/pythonDB+UI/sqlite.db
+sqlite&gt; create table employee (
+id integer primary key autoincrement,
+code varchar(100),
+name varchar(200)
+);
+sqlite&gt; .tables
+employee
+sqlite&gt; select * from employee;
+23|E01|Ying
+24|E02|Wang
+25|E03|Zhang
+sqlite&gt; 
 </code></pre>
-<p>File <code>scrapy.cfg</code>:</p>
-<pre><code>[settings]
-default = pythonScrapy.settings
+<h2 id="model-folder">Model folder</h2>
+<p>File <code>config.ini</code> is to set up configuration of Sqlite database</p>
+<pre><code>[DB_SECTION]
+user=root
+password=
+database=/opt/projects/myPython/pythonDB+UI/sqlite.db
+</code></pre>
+<p>File <code>employee.py</code> is to define class <code>Employee</code></p>
+<pre><code>class Employee(object):
+    def __init__(self, code, name, *, salary=0.0, **kwargs):
+        self.code = code
+        self.name = name
+        self.salary = salary
+        self.details = kwargs
+        print(kwargs)
+</code></pre>
+<p>File <code>databaseSqlite.py</code> is to define database connection and CRUD. <br />
+File <code>application.py</code> is the entry of the web application. Run below command to start the service at http://127.0.0.1:9000/   </p>
+<pre><code>python3 application.py
+</code></pre>
+<h2 id="home-foder">Home foder</h2>
+<p>File <code>controller.py</code> is to about logic of each pages based on templates</p>
+<pre><code># Initialize home page
+@get('/')
+def index():
+    return {
+        '__template__': 'employee_list.html'
+    }
 
-[deploy]
-#url = http://localhost:6800/
-project = pythonScrapy
-</code></pre>
-<h3 id="define-pipeline-via-fie-pipelinepy">Define pipeline via fie <code>pipeline.py</code></h3>
-<p><code>class JsonPipeline(object)</code>
-<code>class MongoPipeline(object)</code></p>
-<h3 id="configure-settingspy-by-adding-two-pipelines-defined-above-two-classes">Configure <code>settings.py</code> by adding two pipelines defined above two classes</h3>
-<pre><code># Configure item pipelines
-# See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-ITEM_PIPELINES = {
-   # 'pythonScrapy.pipelines.PythonscrapyPipeline': 300,
-    'pythonScrapy.pipelines.JsonPipeline': 1,
-    'pythonScrapy.pipelines.MongoPipeline': 2,
-}
 
-# Configure Mongo DB
-MONGO_URI = '127.0.0.1'
-MONGO_DATABASE = 'mydb'
-</code></pre>
-<h3 id="file-itemspy-is-to-define-which-labels-will-be-captured">File <code>items.py</code> is to define which labels will be captured</h3>
-<pre><code>class TedItem(scrapy.Item):
-    talk = scrapy.Field()
-    link = scrapy.Field()
-</code></pre>
-<h3 id="start-mongodb-server">Start MongoDB Server</h3>
-<pre><code># mongod --config &quot;/opt/mongodb/mongod.cfg&quot; --fork
-</code></pre>
-<h3 id="run-the-application">Run the application</h3>
-<pre><code># /opt/projects/myPython/pythonScrapy/scrapy crawl ted
-</code></pre>
-<p>File <code>ted.json</code> was generated and all records were inserted into MongoDB</p>
-<pre><code>&gt; use mydb
-switched to db mydb
+# Show the list in home page
+@get('/services/employees')  #  Row29 in employee_list.html
+def get_employees():
+    employees = Database.query()
+    return dict(employees=employees)
 
-&gt; show collections
-Employee
-ted
 
-&gt; db.ted.find().pretty()
+# Define the new page ADD after clicking button ADD
+@get('/ui/employees/add')
+def ui_add_employee():
+    return {
+        '__template__': 'add_edit_employee.html',
+        'id': '',
+        'action': '/service/employees'
+    }
+
+
+# Define the logic of SAVE button in the ADD page
+@post('/service/employees')
+def add_employee(*, code, name):
+    employee = Employee(code, name)
+    Database.save(employee)
+
+
+# Define the new page EDIT after clicking EDIT button in the homepage
+@get('/ui/employees/edit')
+def ui_edit_employee(*, id):
+    return {
+        '__template__': 'add_edit_employee.html',
+        'id': id,
+        'action': '/services/employees/%s' % id
+    }
+
+
+# Define what will be shown in the EDIT page
+@get('/services/employees/{id}')
+def edit_employee(*, id):
+    employee = Database.query_by_id(id)
+    print(employee)
+    return dict(id=employee[0], code=employee[1], name=employee[2])
+
+
+# Define function of SAVE button in the EDIT page
+@post('/services/employees/{id}')
+def save_change(*, id, code, name):
+    employee = Employee(code, name)
+    employee.id = id
+    Database.update(employee)
+
+
+# Define the function of DELETE button in the homepage
+@post('/services/employees/{id}/delete')  # Row18 in employee_list.html
+def delete_employee(*, id):
+    Database.delete(id)
 </code></pre>
+<h2 id="template-folder">Template folder</h2>
+<p>Define templates</p>
 
               
             </article>

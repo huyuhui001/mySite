@@ -8,14 +8,14 @@
       
       
       
-        <link rel="canonical" href="https://huyuhui001.github.io/mySite/index.html/python/PythonSP2020/pythonSelenium/">
+        <link rel="canonical" href="https://huyuhui001.github.io/mySite/index.html/python/PythonDemo/pythonSocket/">
       
       <link rel="icon" href="../../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.9">
     
     
       
-        <title>pythonSelenium - My Memo</title>
+        <title>pythonSocket - My Memo</title>
       
     
     
@@ -63,6 +63,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#file-serverpy" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -92,7 +97,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              pythonSelenium
+              pythonSocket
             
           </span>
         </div>
@@ -237,15 +242,101 @@
               </div>
             
             
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#file-serverpy" class="md-nav__link">
+    File server.py
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#clientpy" class="md-nav__link">
+    client.py
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#demo" class="md-nav__link">
+    Demo
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
           
           <div class="md-content" data-md-component="content">
             <article class="md-content__inner md-typeset">
               
                 
 
-  <h1>pythonSelenium</h1>
+  <h1>pythonSocket</h1>
+
+<h3 id="file-serverpy">File server.py</h3>
+<pre><code>import socket
+import threading
+
+server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server_socket.bind(('127.0.0.1', 9001))
+server_socket.listen(1)  # 1代表监听线程的数量
+print('waiting for connection...')
 
 
+# function to receive message
+def receive_message(sock, addr):
+    while True:
+        message = sock.recv(1024)
+        print(message.decode('UTF-8'))
+
+
+# accept request
+while True:
+    sock, addr = server_socket.accept()  # accept()的源码中return sock, addr
+    print(sock, addr)
+    # receive_message(sock, addr)  # receive message only from one client
+    thread = threading.Thread(target=receive_message, args=(sock, addr))  # receive message from multi-clients
+    thread.start()
+</code></pre>
+<h3 id="clientpy">client.py</h3>
+<pre><code>import socket
+
+client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+client_socket.connect(('127.0.0.1', 9001))
+
+while True:
+    message = input(&quot;Please input message: &quot;)
+    client_socket.send(message.encode('UTF-8'))
+</code></pre>
+<h3 id="demo">Demo</h3>
+<p>Start server   </p>
+<pre><code># python3 server.py
+</code></pre>
+<p>Start multi-clients and send messages via each client   </p>
+<pre><code># python3 client.py
+</code></pre>
 
               
             </article>

@@ -8,14 +8,14 @@
       
       
       
-        <link rel="canonical" href="https://huyuhui001.github.io/mySite/index.html/python/PythonSP2020/pythonSpider/">
+        <link rel="canonical" href="https://huyuhui001.github.io/mySite/index.html/python/PythonDemo/pythonDjango/">
       
       <link rel="icon" href="../../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.9">
     
     
       
-        <title>pythonSpider - My Memo</title>
+        <title>pythonDjango - My Memo</title>
       
     
     
@@ -64,7 +64,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#file-demopy" class="md-skip">
+        <a href="#initialize-the-project-and-get-managepy-file-as-starting-point" class="md-skip">
           Skip to content
         </a>
       
@@ -97,7 +97,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              pythonSpider
+              pythonDjango
             
           </span>
         </div>
@@ -260,29 +260,64 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#file-demopy" class="md-nav__link">
-    File demo.py
+  <a href="#initialize-the-project-and-get-managepy-file-as-starting-point" class="md-nav__link">
+    Initialize the project and get manage.py file as starting point
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#file-image_linkpy" class="md-nav__link">
-    File image_link.py
+  <a href="#initialize-employee-model" class="md-nav__link">
+    Initialize employee model
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#file-spidervideopy-to-download-video-segments-and-consolidate-into-one-video-file" class="md-nav__link">
-    File SpiderVideo.py to download video segments and consolidate into one video file
+  <a href="#register-your-model-by-add-adminpy-in-folder-employee" class="md-nav__link">
+    Register your model by add admin.py in folder employee
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#file-spiderimagepy-to-download-images" class="md-nav__link">
-    File SpiderImage.py to download images
+  <a href="#configure-the-app" class="md-nav__link">
+    Configure the app
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deploy-the-change-and-start-the-server" class="md-nav__link">
+    Deploy the change and start the server
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#validate-the-service-is-up-no-content-here" class="md-nav__link">
+    Validate the service is up (no content here!)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create-super-user" class="md-nav__link">
+    Create super user
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#validate-the-admin-service-add-records-in-employee-also-available-for-delete-and-update" class="md-nav__link">
+    Validate the admin service. Add records in Employee, also available for delete and update
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sqlite-utils-dbsqlite3-select-from-employee_employee" class="md-nav__link">
+    sqlite-utils db.sqlite3 "select * from employee_employee"
   </a>
   
 </li>
@@ -300,50 +335,75 @@
               
                 
 
-  <h1>pythonSpider</h1>
-
-<h3 id="file-demopy">File demo.py</h3>
-<p>Get video names and links and export to talks.txt and links.txt <br />
-Using m3u8 to find out videos.
-Using merge.bat to merge video segments into one video file</p>
-<h3 id="file-image_linkpy">File image_link.py</h3>
-<p>Get image names and links   </p>
-<h3 id="file-spidervideopy-to-download-video-segments-and-consolidate-into-one-video-file">File <code>SpiderVideo.py</code> to download video segments and consolidate into one video file</h3>
-<p>The file <code>SpiderVideo.py</code> reads from <code>index.m3u8</code> as input to download video segments. <br />
-The file <code>index.m3u8</code> is maintained manually from target webpage. <br />
-Destination folder: <code>/opt/projects/myPython/pythonSpider/video_download</code>  <br />
-Consolidation: <code>merge.bat</code>
-Key is to get links of videos below:</p>
-<pre><code>    def get_talks_links(self):
-        response = requests.get(self.url)
-        html_text = response.text
-        bs = BeautifulSoup(html_text, 'html.parser')
-        results_div = bs.find('div', id='browse-results')
-        results_div_h4 = results_div.find_all('h4', class_='f-w:700 h9 m5')
-        # print(results_div_h4)
-        for items in results_div_h4:
-            self.talks.append(items.find('a').string)
-            self.links.append(items.find('a').get('href') + '\n')
+<h3 id="initialize-the-project-and-get-managepy-file-as-starting-point">Initialize the project and get <code>manage.py</code> file as starting point</h3>
+<pre><code># cd /opt/projects/myPython
+# django-admin startproject pythonDjango
 </code></pre>
-<h3 id="file-spiderimagepy-to-download-images">File SpiderImage.py to download images</h3>
-<p>Destination folder: <code>/opt/projects/myPython/pythonSpider/images_download</code>
-Key is to get links below</p>
-<pre><code>    def get_image_link(self):
-        response = requests.get(self.url)
-        html_text = response.text
-        bs = BeautifulSoup(html_text, 'html.parser')
-        results_div = bs.find('div', id='browse-results')
-
-        # 方法1 （二选一即可）
-        # results_div_span = results_div.find_all('span', class_='thumb__tugger')
-        # for items in results_div_span:
-        #     self.image_links.append(items.find('img').get('src') + '\n')
-
-        # 方法2 （二选一即可）
-        results_div_img = results_div.find_all('img')
-        for items1 in results_div_img:
-            self.image_links.append(items1.get('src') + '\n')
+<h3 id="initialize-employee-model">Initialize employee model</h3>
+<pre><code># python3 manage.py startapp employee
 </code></pre>
+<h3 id="register-your-model-by-add-adminpy-in-folder-employee">Register your model by add admin.py in folder employee</h3>
+<pre><code>from django.contrib import admin
+from employee.models import Employee
+
+# Register your models here.
+class EmployeeAdmin(admin.ModelAdmin):
+    list_display = ['id', 'code', 'name', 'salary']  # 对于model里面的定义
+    search_fields = ['code', 'name']
+    list_filter = ['id']
+
+admin.site.register(Employee, EmployeeAdmin)
+</code></pre>
+<h3 id="configure-the-app">Configure the app</h3>
+<pre><code>from django.apps import AppConfig
+
+
+class EmployeeConfig(AppConfig):
+    name = 'employee'
+</code></pre>
+<h3 id="deploy-the-change-and-start-the-server">Deploy the change and start the server</h3>
+<pre><code># python3 manage.py makemigrations
+# python3 manage.py migrate
+# python3 manage.py runserver
+</code></pre>
+<h3 id="validate-the-service-is-up-no-content-here">Validate the service is up (no content here!)</h3>
+<p>http://127.0.0.1:8000/</p>
+<h3 id="create-super-user">Create super user</h3>
+<pre><code># python3 manage.py createsuperuser
+Username (leave blank to use 'i310913'): root
+Email address: aa@bb.cn
+Password: root
+Password (again): root
+The password is too similar to the username.
+This password is too short. It must contain at least 8 characters.
+This password is too common.
+Bypass password validation and create user anyway? [y/N]: y
+Superuser created successfully.
+</code></pre>
+<h3 id="validate-the-admin-service-add-records-in-employee-also-available-for-delete-and-update">Validate the admin service. Add records in Employee, also available for delete and update</h3>
+<p>http://127.0.0.1:8000/admin</p>
+<p>Validate 3 records added via admin page in Sqlite database</p>
+<pre><code># /opt/projects/myPython/pythonDjango/sqlite-utils tables db.sqlite3
+[{&quot;table&quot;: &quot;django_migrations&quot;},
+ {&quot;table&quot;: &quot;sqlite_sequence&quot;},
+ {&quot;table&quot;: &quot;auth_group_permissions&quot;},
+ {&quot;table&quot;: &quot;auth_user_groups&quot;},
+ {&quot;table&quot;: &quot;auth_user_user_permissions&quot;},
+ {&quot;table&quot;: &quot;django_admin_log&quot;},
+ {&quot;table&quot;: &quot;django_content_type&quot;},
+ {&quot;table&quot;: &quot;auth_permission&quot;},
+ {&quot;table&quot;: &quot;auth_group&quot;},
+ {&quot;table&quot;: &quot;auth_user&quot;},
+ {&quot;table&quot;: &quot;django_session&quot;},
+ {&quot;table&quot;: &quot;employee_employee&quot;}]
+</code></pre>
+<p>Query table employee, and see 3 records below. 
+```</p>
+<h1 id="sqlite-utils-dbsqlite3-select-from-employee_employee">sqlite-utils db.sqlite3 "select * from employee_employee"</h1>
+<p>[{"id": 1, "code": "E01", "name": "James", "salary": 0},
+ {"id": 2, "code": "E02", "name": "Jim", "salary": 0},
+ {"id": 3, "code": "E03", "name": "Jason", "salary": 120.5}]</p>
+<p>```</p>
 
               
             </article>
