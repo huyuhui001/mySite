@@ -631,23 +631,301 @@ print(type(x.f))
 <ul>
 <li>函数(function)是Python中一个可调用对象(callable), 方法(method)是一种特殊的函数。</li>
 <li>一个可调用对象是方法和函数，和这个对象无关，仅和这个对象是否与类或实例绑定有关（bound method）。</li>
-<li>静态方法没有和任何类或实例绑定，所以静态方法是个函数。</li>
+<li>静态方法没有和任何类或实例绑定，所以<strong>静态方法是个函数</strong>。</li>
 </ul>
 <h3 id="method-objects">方法对象 Method Objects</h3>
 <p>在 MyClass 示例中，<code>x.f()</code>是一个方法对象，被调用后，将返回字符串<code>'hello world'</code>。可以立即调用，也可以保存起来以后再调用<code>xf = x.f</code>。</p>
-<p>虽然<code>f()</code>的函数定义指定了一个参数，但上面调用<code>x.f()</code>时并没有带参数，也没有引发异常报错。原因在于，<strong>方法(method)的特殊之处就在于实例对象会作为函数的第一个参数被传入。</strong>
+<p>虽然<code>f()</code>的函数定义指定了一个参数，但上面例子中调用<code>x.f()</code>时并没有带参数，也没有引发异常报错。原因在于，<strong>方法(method)的特殊之处就在于实例对象会作为函数的第一个参数被传入。</strong>
 调用<code>x.f()</code>其实就相当于<code>MyClass.f(x)</code>。 
 总之，调用一个具有<code>n</code>个参数的方法(method)就相当于调用再多一个参数的对应函数，这个参数值为方法所属实例对象，<strong>位置在其他参数之前</strong>。</p>
 <p>当一个实例的非数据属性被引用时，将搜索实例所属的类。
 如果被引用的属性名称是类中一个有效的函数对象，则会创建一个抽象的对象，通过打包（parking，即指向）匹配到的实例对象和函数对象，这个抽象对象就是方法对象。
 当带参数调用方法对象时，将基于实例对象和参数列表构建一个新的参数列表，并使用这个新参数列表调用相应的函数对象。</p>
 <h3 id="class-and-instance-variables">类和实例变量 Class and Instance Variables</h3>
+<p>一般来说，<strong>实例变量</strong>用于每个实例的唯一数据，而<strong>类变量</strong>用于类的所有实例共享的属性和方法:</p>
+<pre><code>class Dog:
+
+    kind = 'canine'  # class variable shared by all instances
+
+    def __init__(self, name):
+        self.name = name  # instance variable unique to each instance
+
+d = Dog('Fido')
+e = Dog('Buddy')
+
+print(d.kind)  # shared by all dogs
+# 'canine'
+
+print(e.kind)  # shared by all dogs
+# 'canine'
+
+print(d.name) # unique to d instance
+# 'Fido'
+
+print(e.name) # unique to e instance
+# 'Buddy'
+</code></pre>
+<p>下代码中的<code>tricks</code>列表不应该被用作类变量，因为所有的<code>Dog</code>实例将只共享一个单独的列表:</p>
+<pre><code>class Dog:
+
+    kind = 'canine'  # class variable shared by all instances
+
+    tricks = []  # mistaken use of a class variable
+
+    def __init__(self, name):
+        self.name = name  # instance variable unique to each instance
+
+    def add_trick(self, trick):
+        self.tricks.append(trick)
+
+
+d = Dog('Fido')
+e = Dog('Buddy')
+
+d.add_trick('roll over')
+e.add_trick('play dead')
+
+print(d.tricks)
+# ['roll over', 'play dead']
+</code></pre>
+<p>正确的类设计应该使用实例变量:</p>
+<pre><code>class Dog:
+
+    kind = 'canine'  # class variable shared by all instances
+
+    def __init__(self, name):
+        self.name = name  # instance variable unique to each instance
+        self.tricks = []    # creates a new empty list for each dog
+
+    def add_trick(self, trick):
+        self.tricks.append(trick)
+
+
+d = Dog('Fido')
+e = Dog('Buddy')
+
+d.add_trick('roll over')
+e.add_trick('play dead')
+
+print(d.tricks)
+# ['roll over']
+
+print(e.tricks)
+# ['play dead']
+</code></pre>
+<p>如果同样的属性名称同时出现在实例和类中，则属性查找会<strong>优先选择实例</strong>:</p>
+<pre><code>class Warehouse:
+    purpose = 'storage'
+    region = 'west'
+
+w1 = Warehouse()
+print(w1.purpose, w1.region)
+# storage west
+
+w2 = Warehouse()
+w2.region = 'east'  # Instance W2 has higher priority than class
+print(w2.purpose, w2.region)
+# storage east
+</code></pre>
+<p>数据属性（Data attributes）可以被方法（method）以及一个对象的普通用户（ordinary users）（“客户端Client”）所引用。 换句话说，类不能用于实现纯抽象数据类型。</p>
+<p>方法的第一个参数常常被命名为<code>self</code>，这只是一个约定: <code>self</code>这一名称在Python中没有特殊含义。 但是遵循此约定会使得代码具有很好的可读性。</p>
+<p>任何一个作为类属性（class attribute）的函数对象（function object）都为该类的实例定义了一个相应方法。 </p>
+<p>函数定义的文本并非必须包含于类定义之内：将一个函数对象赋值给一个局部变量也是可以的。如下例。现在<code>f</code>,<code>g</code>和<code>h</code>都是类<code>C</code>的引用函数对象的属性，因而它们就都是类<code>C</code>的实例的方法，其中<code>h</code>完全等同于<code>g</code>。但请注意，下面这个例子的可读性非常不好。</p>
+<pre><code># Function defined outside the class
+def f1(self, x, y):
+    return min(x, x + y)
+
+
+class C:
+    f = f1  # Assign a function object to a local variable in the class
+
+    def g(self):
+        return 'hello world'
+
+    h = g
+</code></pre>
+<p>方法（methods）可以通过使用<code>self</code>参数的方法属性（method attributes）调用其他方法（method）:</p>
+<pre><code>class Bag:
+
+    def __init__(self):
+        self.data = []
+
+    def add(self, x):
+        self.data.append(x)
+
+    def addtwice(self, x):
+        self.add(x)
+        self.add(x)
+</code></pre>
+<p>方法可以通过与普通函数相同的方式引用全局名称。 
+与方法相关联的全局作用域就是包含其定义的模块。 （类永远不会被作为全局作用域。） </p>
+<p>虽然我们很少会有充分的理由在方法中使用全局作用域，但全局作用域存在许多合理的使用场景：举个例子，导入到全局作用域的函数和模块可以被方法所使用，在其中定义的函数和类也一样。
+通常，包含该方法的类本身是在全局作用域中定义的。</p>
 <h2 id="inheritance">继承 Inheritance</h2>
+<p>如果不支持继承，就算不上真正的“类”。派生类（derived class）定义的语法如下所示:</p>
+<pre><code>class DerivedClassName(BaseClassName):
+    &lt;statement-1&gt;
+    .
+    .
+    .
+    &lt;statement-N&gt;
+</code></pre>
+<p>名称<code>BaseClassName</code>必须定义于包含派生类定义的作用域中。 也允许用其他任意表达式代替基类名称所在的位置，例如，当基类定义在另一个模块中的时候:</p>
+<pre><code>class DerivedClassName(modname.BaseClassName):
+</code></pre>
+<p>派生类定义的执行过程与基类相同。 当构造类对象时，基类会被记住。 此信息将被用来解析属性引用：如果请求的属性在类中找不到，搜索将转往基类中进行查找。 如果基类本身也派生自其他某个类，则此规则将被递归地（recursively）应用。</p>
+<p>派生类的实例化没有任何特殊之处: <code>DerivedClassName()</code>会创建该类的一个<em>新实例</em>。 方法引用将按以下方式解析：搜索相应的类属性，如有必要将按基类继承链逐步向下查找，如果产生了一个函数对象则方法引用就生效。</p>
+<p>派生类可能会重写（override）其基类的方法。 因为方法在调用同一对象的其他方法时没有特殊权限，所以调用同一基类中定义的另一方法的基类方法最终可能会调用覆盖它的派生类的方法。</p>
+<p>在派生类中的重载方法（overriding method）实际上可能想要扩展而非简单地替换同名的基类方法。 有一种方式可以简单地直接调用基类方法：即调用<code>BaseClassName.methodname(self, arguments)</code>。请注意，仅当此基类可在全局作用域中以<code>BaseClassName</code>的名称被访问时方可使用此方式。</p>
+<p>Python有两个内置函数可被用于继承机制：</p>
+<ul>
+<li>使用<code>isinstance()</code>来检查一个实例的类型: <code>isinstance(obj, int)</code>仅会在<code>obj.__class__</code> 为<code>int</code>或某个派生自<code>int</code>的类时为<code>True</code>。</li>
+<li>使用<code>issubclass()</code>来检查类的继承关系:<code>issubclass(bool, int)</code>为<code>True</code>，因为<code>bool</code>是<code>int</code>的子类。 但是，<code>issubclass(float, int)</code>为<code>False</code>，因为<code>float</code>不是<code>int</code>的子类。</li>
+</ul>
 <h3 id="multiple-inheritance">多重继承 Multiple Inheritance</h3>
+<p>Python 也支持一种多重继承。 带有多个基类的类定义语句如下所示:</p>
+<pre><code>class DerivedClassName(Base1, Base2, Base3):
+    &lt;statement-1&gt;
+    .
+    .
+    .
+    &lt;statement-N&gt;
+</code></pre>
+<p>在最简单的情况下，搜索从父类所继承属性的操作是深度优先（depth-first）、从左至右（left-to-right）的，当层次结构中存在重叠时不会在同一个类中搜索两次。 因此，如果某一属性在<code>DerivedClassName</code>中未找到，则会到<code>Base1</code>中搜索它，然后（递归地）到<code>Base1</code>的基类中搜索，如果在那里未找到，再到<code>Base2</code>中搜索，依此类推。</p>
+<p>真实情况更复杂；方法解析顺序会动态改变以支持对<code>super()</code>的协同调用。 这种方式在某些其他多重继承型语言中被称为<strong>后续方法调用（call-next-method）</strong>，它比单继承型（single-inheritance）语言中的<code>uper</code>调用更强大。</p>
+<p>动态改变顺序是有必要的，因为所有多重继承的情况都会显示出一个或更多的菱形关联（diamond relationships）（即至少有一个父类可通过多条路径被最底层类所访问）。 
+例如，所有类都是继承自<code>object</code>，因此任何多重继承的情况都提供了一条以上的路径可以通向 <code>object</code>。 为了确保基类不会被访问一次以上，动态算法会用一种特殊方式将搜索顺序线性化， 保留每个类所指定的从左至右的顺序，只调用每个父类一次，并且保持单调（monotonic）（即一个类可以被子类化而不影响其父类的优先顺序）。 
+总而言之，这些特性使得设计具有多重继承的可靠且可扩展的类成为可能。</p>
 <h2 id="private-variables">私有变量 Private Variables</h2>
+<p>那种仅限从一个对象内部访问的“私有”实例变量（“Private” instance variables）在 Python 中并不存在。 但是，大多数 Python 代码都遵循这样一个约定：带有<em>一个前缀下划线</em>的名称 (例如<code>_spam</code>) 应该被当作是 API 的非公有（non-public）部分 (无论它是函数、方法或是数据成员)。 这应当被视为一个实现细节，可能不经通知即加以改变。</p>
+<p>由于存在对于类私有成员（class-private members）的有效使用场景（例如避免名称与子类所定义的名称相冲突），因此存在对此种机制的有限支持，称为<strong>名称改写（name mangling）</strong>。 任何形式为<code>__spam</code>的标识符（至少带有<em>两个前缀下划线</em>，至多一个后缀下划线）的文本将被替换为 <code>_classname__spam</code>，其中 <code>classname</code> 为去除了前缀下划线的当前类名称。 这种改写不考虑标识符的句法位置，只要它出现在类定义内部就会进行。</p>
+<p>名称改写（Name mangling）有助于让子类重载方法（）override methods而不破坏类内方法（intraclass method）调用。例如:</p>
+<pre><code>class Mapping:
+
+    def __init__(self, iterable):
+        self.items_list = []
+        self.__update(iterable)
+
+    def update(self, iterable):
+        for item in iterable:
+            self.items_list.append(item)
+
+    __update = update  # private copy of original update() method
+
+
+class MappingSubclass(Mapping):
+
+    def update(self, keys, values):
+        # provides new signature for update()
+        # but does not break __init__()
+        for item in zip(keys, values):
+            self.items_list.append(item)
+</code></pre>
+<p>上面的示例即使在 <code>MappingSubclass</code> 引入了一个 <code>__update</code> 标识符的情况下也不会出错，因为它会在 Mapping 类中被替换为 <code>_Mapping__update</code> 而在 <code>MappingSubclass</code> 类中被替换为 <code>_MappingSubclass__update</code>。</p>
+<p>请注意，改写规则（mangling rules）的设计主要是为了避免意外冲突；访问或修改私有变量仍然是可能的。这在特殊情况下甚至会很有用，例如在调试器（debugger）中。</p>
+<p>请注意传递给 <code>exec()</code> 或 <code>eval()</code> 的代码不会把发起调用类的类名视作当前类；这类似于 <code>global</code> 语句的效果，因此这种效果仅限于同时经过字节码编译的代码。 同样的限制也适用于 <code>getattr()</code>, <code>setattr()</code> 和 <code>delattr()</code>，以及对于 <code>__dict__</code> 的直接引用。</p>
 <h2 id="iterators">迭代器 Iterators</h2>
+<p>在Python中，大多数容器对象（container object）都可以使用 for 语句:</p>
+<pre><code>for element in [1, 2, 3]:
+    print(element)
+for element in (1, 2, 3):
+    print(element)
+for key in {'one': 1, 'two': 2}:
+    print(key)
+for char in &quot;123&quot;:
+    print(char)
+for line in open(&quot;myfile.txt&quot;):
+    print(line, end='')
+</code></pre>
+<p><code>for</code> 语句会在容器对象上调用 iter()。 该函数返回一个定义了 <code>__next__()</code> 方法的迭代器对象，此方法将逐一访问容器中的元素。 当元素用尽时，<code>__next__()</code> 将引发 <code>StopIteration</code> 异常来通知终止 <code>for</code> 循环。 可以使用 <code>next()</code> 内置函数来调用 <code>__next__()</code> 方法；下面这个例子展示了刚刚描述的具体运行方式:</p>
+<pre><code>&gt;&gt;&gt; s = 'abc'
+&gt;&gt;&gt; it = iter(s)
+&gt;&gt;&gt; it
+&lt;str_iterator object at 0x10c90e650&gt;
+&gt;&gt;&gt; next(it)
+'a'
+&gt;&gt;&gt; next(it)
+'b'
+&gt;&gt;&gt; next(it)
+'c'
+&gt;&gt;&gt; next(it)
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+    next(it)
+StopIteration
+</code></pre>
+<p>在了解了迭代器协议（iterator protocol）的机制后，给类添加迭代器就很容易了。 定义一个 <code>__iter__()</code> 方法来返回一个带有 <code>__next__()</code> 方法的对象。 如果类已定义了 <code>__next__()</code>，则 <code>__iter__()</code> 可以简单地返回 <code>self</code>:</p>
+<pre><code>class Reverse:
+    &quot;&quot;&quot;Iterator for looping over a sequence backwards.&quot;&quot;&quot;
+
+    def __init__(self, data):
+        self.data = data
+        self.index = len(data)
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        if self.index == 0:
+            raise StopIteration
+        self.index = self.index - 1
+        return self.data[self.index]
+
+
+rev = Reverse('spam')
+
+print(iter(rev))
+
+for char in rev:
+    print(char)
+
+# m
+# a
+# p
+# s
+</code></pre>
 <h2 id="generators">生成器 Generators</h2>
+<p><strong>生成器（Generators）</strong>是一个用于创建迭代器的简单而强大的工具。 
+它们的写法类似于标准的函数，但当它们要返回数据时会使用 <code>yield</code> 语句。 
+每次在生成器上调用 <code>next()</code> 时，它会从上次离开的位置恢复执行（它会记住上次执行语句时的所有数据值）。 </p>
+<p>一个创建生成器的示例如下（改写上面迭代器中所举的例子）:</p>
+<pre><code>def reverse(data):
+    for index in range(len(data) - 1, -1, -1):
+        yield data[index]
+
+
+for char in reverse('golf'):
+    print(char)
+
+# f
+# l
+# o
+# g
+</code></pre>
+<p>可以用生成器来完成的操作同样可以用前面所描述的基于类的迭代器来完成。但生成器的写法更为紧凑，因为它会自动创建 <code>__iter__()</code> 和 <code>__next__()</code> 方法。</p>
+<p>另一个关键特性在于局部变量和执行状态会在每次调用之间自动保存。 这使得该函数相比使用 <code>self.index</code> 和 <code>self.data</code> 这种实例变量的方式更易编写且更为清晰。</p>
+<p>除了会自动创建方法和保存程序状态，当生成器终结时，它们还会自动引发 <code>StopIteration</code>。 </p>
 <h2 id="generator-expressions">生成器表达式 Generator Expressions</h2>
+<p>某些简单的生成器可以写成简洁的表达式代码，所用语法类似列表推导式，但外层为圆括号而非方括号。 
+这种表达式被设计用于生成器将立即被外层函数所使用的情况。 
+生成器表达式相比完整的生成器更紧凑但较不灵活，相比等效的列表推导式则更为节省内存。</p>
+<p>示例:</p>
+<pre><code>&gt;&gt;&gt; sum(i * i for i in range(10))  # sum of squares
+285
+
+&gt;&gt;&gt; xvec = [10, 20, 30]
+&gt;&gt;&gt; yvec = [7, 5, 3]
+&gt;&gt;&gt; sum(x * y for x, y in zip(xvec, yvec))  # dot product
+260
+
+&gt;&gt;&gt; unique_words = set(word for line in page  for word in line.split())
+
+&gt;&gt;&gt; valedictorian = max((student.gpa, student.name) for student in graduates)
+
+&gt;&gt;&gt; data = 'golf'
+&gt;&gt;&gt; list(data[i] for i in range(len(data)-1, -1, -1))
+['f', 'l', 'o', 'g']
+</code></pre>
 <h2 id="polymorphism">多态 Polymorphism</h2>
 
               
