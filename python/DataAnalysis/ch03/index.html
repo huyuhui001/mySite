@@ -1,0 +1,773 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://huyuhui001.github.io/mySite/index.html/python/DataAnalysis/ch03/">
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.9">
+    
+    
+      
+        <title>Ch03 - My Memo</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.2b4465f4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.e6a45f82.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#2094f3">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="blue" data-md-color-accent="deep-blue">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#_1" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="My Memo" class="md-header__button md-logo" aria-label="My Memo" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            My Memo
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Ch03
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="My Memo" class="md-nav__button md-logo" aria-label="My Memo" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    My Memo
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../linux/" class="md-nav__link">
+        Linux
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../" class="md-nav__link">
+        Python
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../about/" class="md-nav__link">
+        About
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    文本格式数据的读写
+  </a>
+  
+    <nav class="md-nav" aria-label="文本格式数据的读写">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    分块读入文本文件
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    将数据写入文本格式
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    使用分隔格式
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#json" class="md-nav__link">
+    JSON数据
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#xmlhtml" class="md-nav__link">
+    XML和HTML：网络抓取
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    二进制格式
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#web-api" class="md-nav__link">
+    与Web API交互
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    与数据库交互
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+
+  <h1>Ch03</h1>
+
+<h3 id="_1">文本格式数据的读写</h3>
+<pre><code>import numpy as np
+import pandas as pd
+import sys
+import csv
+import json
+</code></pre>
+<p>将表格型数据读取为DataFrame对象是pandas的重要特性。\
+下面是部分实现文件读取功能的函数，read_csv和read_table可能是后期我们使用最多的函数。\
+\
+这些函数的可选参数主要有以下几种类型：
+* 索引：可以将一列或多个列作为返回的DataFrame，从文件或用户处获得列名，或者没有列名。
+* 类型推断和数据转换：包括用户自定义的值转换和自定义的缺失值符号列表。
+* 日期时间解析：包括组合功能，也包括将分散在多个列上的日期和时间信息组合成结果中的单个列。
+* 迭代：支持对大型文件的分块迭代。
+* 未清洗数据问题：跳过行、页脚、注释以及其他次要数据，比如使用逗号分隔千位的数字。</p>
+<pre><code>file01 = '../examples/ex1.csv'
+# 使用read_csv将文件读入一个DataFrame
+df = pd.read_csv(file01)
+print(df)
+#    1   2   3   4  hello
+# 0  5   6   7   8  world
+# 1  9  10  11  12    foo
+
+df = pd.read_csv(file01, header=None)  # 使用pandas自动分配默认列名
+print(df)
+#    0   1   2   3      4
+# 0  1   2   3   4  hello
+# 1  5   6   7   8  world
+# 2  9  10  11  12    foo
+
+df = pd.read_csv(file01, names=['aa', 'bb', 'cc', 'dd', 'message'])  # 自己指定列名
+print(df)
+#    aa  bb  cc  dd     ee
+# 0   1   2   3   4  hello
+# 1   5   6   7   8  world
+# 2   9  10  11  12    foo
+
+# 使用read_table，并指定分隔符，将文件读入一个DataFrame
+df = pd.read_table(file01, sep=',')
+print(df)
+#    a   b   c   d message
+# 0  1   2   3   4   hello
+# 1  5   6   7   8   world
+# 2  9  10  11  12     foo
+</code></pre>
+<p>从多个列中形成一个分层索引</p>
+<pre><code>parased = pd.read_csv('../examples/csv_mindex.csv', index_col=['key1', 'key2'])
+print(parased)
+#            value1  value2
+# key1 key2
+# one  a          1       2
+#      b          3       4
+#      c          5       6
+#      d          7       8
+# two  a          9      10
+#      b         11      12
+#      c         13      14
+#      d         15      16
+</code></pre>
+<p>下例中，由于列名的数量比数据的列数少一个，因此read_table推断第一列应当作为DataFrame的索引。\
+ex3.txt原始文件内容</p>
+<pre><code>A         B         C
+aaa   -0.264438         -1.026059   -0.619500
+bbb  0.927272    0.302904 -0.032399
+ccc      -0.264273      -0.386314        -0.217601
+ddd -0.871858 -0.348382          1.100491
+</code></pre>
+<pre><code>result = pd.read_table('../examples/ex3.txt')  # 直接读取
+print(result)
+#                                                 A         B         C
+# aaa   -0.264438                                 -1.026059   -0.619500
+# bbb  0.927272    0.302904 -0.032399                               NaN
+# ccc      -0.264273      -0.386314                           -0.217601
+# ddd -0.871858 -0.348382                                      1.100491
+result = pd.read_table('../examples/ex3.txt', sep='\s+')  # 向read_table正则表达式为\s+来格式化文件
+print(result)
+#             A         B         C
+# aaa -0.264438 -1.026059 -0.619500
+# bbb  0.927272  0.302904 -0.032399
+# ccc -0.264273 -0.386314 -0.217601
+# ddd -0.871858 -0.348382  1.100491
+</code></pre>
+<p>下例中ex4.csv原始文件内容</p>
+<pre><code># hey!
+a,b,c,d,message
+# just wanted to make things more difficult for you
+# who reads CSV files with computers, anyway?
+1,2,3,4,hello
+5,6,7,8,world
+9,10,11,12,foo
+</code></pre>
+<pre><code>result = pd.read_csv('../examples/ex4.csv', skiprows=[0, 2, 3])  # 使用skiprows来跳过第一行、第三行和第四行
+print(result)
+#    a   b   c   d message
+# 0  1   2   3   4   hello
+# 1  5   6   7   8   world
+# 2  9  10  11  12     foo
+</code></pre>
+<p>缺失值处理 \
+默认情况下，pandas使用一些常见的标识，例如NA和NULL \
+下例中ex5.csv原始文件内容</p>
+<pre><code>something,a,b,c,d,message
+one,1,2,3,4,NA
+two,5,6,,8,world
+three,9,10,11,12,foo
+</code></pre>
+<pre><code>result = pd.read_csv('../examples/ex5.csv')
+print(result)
+#   something  a   b     c   d message
+# 0       one  1   2   3.0   4     NaN
+# 1       two  5   6   NaN   8   world
+# 2     three  9  10  11.0  12     foo
+print(pd.isnull(result))
+#    something      a      b      c      d  message
+# 0      False  False  False  False  False     True
+# 1      False  False  False   True  False    False
+# 2      False  False  False  False  False    False
+result = pd.read_csv('../examples/ex5.csv', na_values=['NULL'])
+print(result)
+#   something  a   b     c   d message
+# 0       one  1   2   3.0   4     NaN
+# 1       two  5   6   NaN   8   world
+# 2     three  9  10  11.0  12     foo
+</code></pre>
+<p>定义替换规则</p>
+<pre><code>sentinels = {
+    'message': ['foo', 'NA'],
+    'something': ['two']
+}
+result = pd.read_csv('../examples/ex5.csv', na_values=sentinels)
+</code></pre>
+<p>把message列所有值为foo或NA的替换为Null \
+把something列所有值为two的替换为Null</p>
+<pre><code>print(result)
+#   something  a   b     c   d message
+# 0       one  1   2   3.0   4     NaN
+# 1       NaN  5   6   NaN   8   world
+# 2     three  9  10  11.0  12     NaN
+</code></pre>
+<h4 id="_2">分块读入文本文件</h4>
+<pre><code>pd.options.display.max_rows = 10
+result = pd.read_csv('../examples/ex6.csv')  # 读取全部记录
+print(result)
+result = pd.read_csv('../examples/ex6.csv', nrows=5)  # 读取前5行记录
+print(result)
+# [10000 rows x 5 columns]
+#         one       two     three      four key
+# 0  0.467976 -0.038649 -0.295344 -1.824726   L
+# 1 -0.358893  1.404453  0.704965 -0.200638   B
+# 2 -0.501840  0.659254 -0.421691 -0.057688   G
+# 3  0.204886  1.074134  1.388361 -0.982404   R
+# 4  0.354628 -0.133116  0.283763 -0.837063   Q
+result = pd.read_csv('../examples/ex6.csv', chunksize=1000)  # 分块读入文件，每块1000行
+print(result)  # 返回的是一个TextParser对象, 允许你根据chunksize遍历文件。
+# &lt;pandas.io.parsers.readers.TextFileReader object at 0x7f2b3cd01730&gt;
+</code></pre>
+<p>可以遍历ex6.csv，并对’key’列聚合获得计数值</p>
+<pre><code>tot = pd.Series([], dtype=float)  # 这里需要显式指定dtype，后续Python会将默认值从float64变成object，目前默认是float64
+for piece in result:
+    tot = tot.add(piece['key'].value_counts(), fill_value=0)
+tot = tot.sort_values(ascending=False)
+print(tot[:10])
+# E    368.0
+# X    364.0
+# L    346.0
+# O    343.0
+# Q    340.0
+# M    338.0
+# J    337.0
+# F    335.0
+# K    334.0
+# H    330.0
+# dtype: float64
+</code></pre>
+<h4 id="_3">将数据写入文本格式</h4>
+<pre><code>data = pd.read_csv('../examples/ex5.csv')
+print(data)
+#   something  a   b     c   d message
+# 0       one  1   2   3.0   4     NaN
+# 1       two  5   6   NaN   8   world
+# 2     three  9  10  11.0  12     foo
+</code></pre>
+<p>使用DataFrame的to_csv方法，将数据导出为逗号分隔的文件</p>
+<pre><code>data.to_csv('../examples/out.csv')
+# 输出out.csv的内容
+# ,something,a,b,c,d,message
+# 0,one,1,2,3.0,4,
+# 1,two,5,6,,8,world
+# 2,three,9,10,11.0,12,foo
+</code></pre>
+<p>使用DataFrame的to_csv方法，将数据导出为其他的分隔符的文件</p>
+<pre><code>data.to_csv(sys.stdout, sep='|')
+# |something|a|b|c|d|message
+# 0|one|1|2|3.0|4|
+# 1|two|5|6||8|world
+# 2|three|9|10|11.0|12|foo
+data.to_csv(sys.stdout, sep=',')
+# ,something,a,b,c,d,message
+# 0,one,1,2,3.0,4,
+# 1,two,5,6,,8,world
+# 2,three,9,10,11.0,12,foo
+data.to_csv(sys.stdout, sep=',', na_rep='NULL')  # 设定缺失值在输出时以空字符串出现
+# ,something,a,b,c,d,message
+# 0,one,1,2,3.0,4,NULL
+# 1,two,5,6,NULL,8,world
+# 2,three,9,10,11.0,12,foo
+data.to_csv(sys.stdout, sep=',', na_rep='NULL', index=False, header=False)  # 不输出行和列的标签（index，header）
+# one,1,2,3.0,4,NULL
+# two,5,6,NULL,8,world
+# three,9,10,11.0,12,foo
+data.to_csv(sys.stdout, sep=',', na_rep='NULL', index=False, header=False, columns=['a', 'b', 'c'])  # 按照自定的顺序输出子集
+# 1,2,3.0
+# 5,6,NULL
+# 9,10,11.0
+</code></pre>
+<p>Series也有to_csv方法</p>
+<pre><code>dates = pd.date_range('1/1/2000', periods=7)
+ts = pd.Series(np.arange(7), index=dates)
+ts.to_csv('../examples/tseries.csv', header=False)
+# 输出tseries.csv文件内容
+# 2000-01-01,0
+# 2000-01-02,1
+# 2000-01-03,2
+# 2000-01-04,3
+# 2000-01-05,4
+# 2000-01-06,5
+# 2000-01-07,6
+</code></pre>
+<h4 id="_4">使用分隔格式</h4>
+<p>绝大多数的表型数据都可以使用函数pandas.read_table从硬盘中读取。 \
+然而，在某些情况下，接收一个带有一行或多行错误的文件并不少见，read_table也无法解决这种情况。</p>
+<p>ex7.csv 文件内容</p>
+<pre><code>&quot;a&quot;,&quot;b&quot;,&quot;c&quot;
+&quot;1&quot;,&quot;2&quot;,&quot;3&quot;
+&quot;1&quot;,&quot;2&quot;,&quot;3&quot;
+</code></pre>
+<pre><code>f = open('../examples/ex7.csv')  # 使用Python的内建csv模块
+reader = csv.reader(f)  # 将任一打开的文件或文件型对象传给csv.reader
+for line in reader:  # # 遍历reader，产生元组，元组的值为删除了引号的字符
+    print(line)
+f.close()
+# ['a', 'b', 'c']
+# ['1', '2', '3']
+# ['1', '2', '3']
+
+with open('../examples/ex7.csv') as f:
+    lines = list(csv.reader(f))  # 首先，将文件读取为行的列表
+    header, values = lines[0], lines[1:]  # 其次，将数据拆分为列名行和数据行
+    data_dict = {
+        h: v for h, v in zip(header, zip(*values))  # 再然后，使用字典推导式和表达式zip(*values)生成一个包含数据列的字典，字典中行转置成列
+    }
+print(data_dict)  # 输出结果
+# {'a': ('1', '1'), 'b': ('2', '2'), 'c': ('3', '3')}
+</code></pre>
+<p>如果需根据不同的分隔符、字符串引用约定或行终止符定义一种新的格式时，可以: \
+方法1：使用csv.Dialect定义一个简单的子类</p>
+<pre><code>class my_dialect(csv.Dialect):
+    lineterminator = '\n'
+    delimiter = ';'  # 这里只能是一个字符
+    quotechar = '&quot;'
+    quoting = csv.QUOTE_MINIMAL
+
+
+f = open('../examples/ex7.csv')
+reader = csv.reader(f, dialect=my_dialect)
+for line in reader:  # 遍历reader，产生元组，元组的值为删除了引号的字符
+    print(line)
+f.close()
+# ['a,&quot;b&quot;,&quot;c&quot;']
+# ['1,&quot;2&quot;,&quot;3&quot;']
+# ['1,&quot;2&quot;,&quot;3&quot;']
+</code></pre>
+<p>方法2：直接将CSV方言参数(dialect)传入csv.reader的关键字参数 \
+比较详细的介绍方言和分隔符：https://blog.csdn.net/tcy23456/article/details/85291994</p>
+<pre><code>f = open('../examples/ex7.csv')
+reader = csv.reader(f, delimiter='|')
+for line in reader:  # 遍历reader，产生元组，元组的值为删除了引号的字符
+    print(line)
+f.close()
+# ['a,&quot;b&quot;,&quot;c&quot;']
+# ['1,&quot;2&quot;,&quot;3&quot;']
+# ['1,&quot;2&quot;,&quot;3&quot;']
+</code></pre>
+<p>对于具有更复杂或固定的多字符分隔符的文件，将无法使用csv模块。 \
+在此类情况下，将使用字符串的split方法或正则表达式方法re.split进行行拆分和其他清理工作。 \
+需要手动写入被分隔的文件时，你可以使用csv.writer。 \
+这个函数接收一个已经打开的可写入文件对象以及和csv.reader相同的CSV方言、格式选项</p>
+<pre><code>with open('../examples/mydata.csv', 'w') as f:
+    writer = csv.writer(f, dialect=my_dialect)
+    writer.writerow(('1', '2', '3'))
+    writer.writerow(('4', '5', '6'))
+    writer.writerow(('7', '8', '9'))
+    writer.writerow(('10', '11', '12'))
+
+# mydata.csv 文件内容
+# 1;2;3
+# 4;5;6
+# 7;8;9
+# 10;11;12
+</code></pre>
+<h4 id="json">JSON数据</h4>
+<pre><code>obj = &quot;&quot;&quot;
+{
+    &quot;name&quot;: &quot;Wes&quot;,
+    &quot;places_lived&quot;: [&quot;United States&quot;, &quot;Spain&quot;, &quot;Germany&quot;],
+    &quot;pet&quot;: null,
+    &quot;siblings&quot;: [
+        {
+            &quot;name&quot;: &quot;Scott&quot;,
+            &quot;age&quot;: 30,
+            &quot;pets&quot;: [&quot;Zeus&quot;, &quot;Zuko&quot;]
+        },
+        {
+            &quot;name&quot;: &quot;Katie&quot;,
+            &quot;age&quot;: 38,
+            &quot;pets&quot;: [&quot;Sixes&quot;, &quot;Stache&quot;, &quot;Cisco&quot;]
+        }
+    ]
+}
+&quot;&quot;&quot;
+</code></pre>
+<p>将JSON字符串转换为Python形式时，使用json.loads方法</p>
+<pre><code>result = json.loads(obj)
+print(result)
+# {'name': 'Wes', 'places_lived': ['United States', 'Spain', 'Germany'], 'pet': None, 'siblings': [{'name': 'Scott', 'age': 30, 'pets': ['Zeus', 'Zuko']}, {'name': 'Katie', 'age': 38, 'pets': ['Sixes', 'Stache', 'Cisco']}]}
+</code></pre>
+<p>另一方面，json.dumps可以将Python对象转换回JSON</p>
+<pre><code>asjson = json.dumps(result)
+print(asjson)
+# {&quot;name&quot;: &quot;Wes&quot;, &quot;places_lived&quot;: [&quot;United States&quot;, &quot;Spain&quot;, &quot;Germany&quot;], &quot;pet&quot;: null, &quot;siblings&quot;: [{&quot;name&quot;: &quot;Scott&quot;, &quot;age&quot;: 30, &quot;pets&quot;: [&quot;Zeus&quot;, &quot;Zuko&quot;]}, {&quot;name&quot;: &quot;Katie&quot;, &quot;age&quot;: 38, &quot;pets&quot;: [&quot;Sixes&quot;, &quot;Stache&quot;, &quot;Cisco&quot;]}]}
+</code></pre>
+<p>将JSON对象或对象列表转换为DataFrame或其他数据结构 \
+比较方便的方式是将字典构成的列表（之前是JSON对象）传入DataFrame构造函数，并选出数据字段的子集</p>
+<pre><code>siblings = pd.DataFrame(result['siblings'], columns=['name', 'age'])
+print(siblings)
+#     name  age
+# 0  Scott   30
+# 1  Katie   38
+</code></pre>
+<p>pandas.read_json可以自动将JSON数据集按照指定次序转换为Series或DataFrame \
+pandas.read_json的默认选项是假设JSON数组中的每个对象是表里的一行 \
+读取、操作JSON数据（包括嵌套记录）的拓展示例，请参看第7章的USDA食品数据库示例 \
+例如读取 data = pd.read_json('../examples/example_new.json') </p>
+<pre><code>data = pd.read_json('../examples/example.json')
+print(data)
+#    a  b  c
+# 0  1  2  3
+# 1  4  5  6
+# 2  7  8  9
+print(data.to_json())
+# {&quot;a&quot;:{&quot;0&quot;:1,&quot;1&quot;:4,&quot;2&quot;:7},&quot;b&quot;:{&quot;0&quot;:2,&quot;1&quot;:5,&quot;2&quot;:8},&quot;c&quot;:{&quot;0&quot;:3,&quot;1&quot;:6,&quot;2&quot;:9}}
+print(data.to_json(orient='records'))
+# [{&quot;a&quot;:1,&quot;b&quot;:2,&quot;c&quot;:3},{&quot;a&quot;:4,&quot;b&quot;:5,&quot;c&quot;:6},{&quot;a&quot;:7,&quot;b&quot;:8,&quot;c&quot;:9}]
+</code></pre>
+<h4 id="xmlhtml">XML和HTML：网络抓取</h4>
+<p>pandas的内建函数read_html可以使用lxml和Beautiful Soup等库将HTML中的表自动解析为DataFrame对象</p>
+<pre><code>tables = pd.read_html('../examples/fdic_failed_bank_list.html')
+print(len(tables))
+# 1
+
+failures = tables[0]  # //*[@id=&quot;table&quot;]
+print(failures.head())  # 读取前5行记录
+#                       Bank Name  ...       Updated Date
+# 0                   Allied Bank  ...  November 17, 2016
+# 1  The Woodbury Banking Company  ...  November 17, 2016
+# 2        First CornerStone Bank  ...  September 6, 2016
+# 3            Trust Company Bank  ...  September 6, 2016
+# 4    North Milwaukee State Bank  ...      June 16, 2016
+#
+# [5 rows x 7 columns]
+
+close_timestamps = pd.to_datetime(failures['Closing Date'])  # 计算每年银行倒闭的数量
+print(close_timestamps.dt.year.value_counts())
+# 2010    157
+# 2009    140
+# 2011     92
+# 2012     51
+# 2008     25
+#        ...
+# 2004      4
+# 2001      4
+# 2007      3
+# 2003      3
+# 2000      2
+# Name: Closing Date, Length: 15, dtype: int64
+</code></pre>
+<h3 id="_5">二进制格式</h3>
+<h3 id="web-api">与Web API交互</h3>
+<h3 id="_6">与数据库交互</h3>
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../../assets/javascripts/workers/search.22074ed6.min.js"}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.960e086b.min.js"></script>
+      
+    
+  </body>
+</html>

@@ -64,7 +64,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#pandas" class="md-skip">
+        <a href="#_1" class="md-skip">
           Skip to content
         </a>
       
@@ -260,45 +260,52 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#pandas" class="md-nav__link">
-    pandas数据结构介绍
+  <a href="#_1" class="md-nav__link">
+    分层索引
   </a>
   
-    <nav class="md-nav" aria-label="pandas数据结构介绍">
+    <nav class="md-nav" aria-label="分层索引">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#series" class="md-nav__link">
-    Series
+    Series索引分层
   </a>
   
 </li>
         
           <li class="md-nav__item">
   <a href="#dataframe" class="md-nav__link">
-    DataFrame
+    DataFrame索引分层
   </a>
   
-    <nav class="md-nav" aria-label="DataFrame">
+    <nav class="md-nav" aria-label="DataFrame索引分层">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#dataframe_1" class="md-nav__link">
-    把一个字典赋值给DataFrame
+  <a href="#1" class="md-nav__link">
+    方法1：直接创建
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#dataframe_2" class="md-nav__link">
-    把一个包含字典的嵌套字典赋值给DataFrame
+  <a href="#2from_arrays" class="md-nav__link">
+    方法2：from_arrays
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#seriesdataframe" class="md-nav__link">
-    使用包含Series的字典构造DataFrame
+  <a href="#3from_tuples" class="md-nav__link">
+    方法3：from_tuples
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4from_product" class="md-nav__link">
+    方法4：from_product
   </a>
   
 </li>
@@ -307,73 +314,24 @@
     </nav>
   
 </li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_1" class="md-nav__link">
-    索引对象
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#pandas_1" class="md-nav__link">
-    pandas基本功能
-  </a>
-  
-    <nav class="md-nav" aria-label="pandas基本功能">
-      <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#_2" class="md-nav__link">
-    重建索引
+    重排序和层级排序
   </a>
   
 </li>
         
           <li class="md-nav__item">
   <a href="#_3" class="md-nav__link">
-    轴向索引删除条目
+    按层级进行汇总统计
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#_4" class="md-nav__link">
-    索引、选择与过滤
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_5" class="md-nav__link">
-    整数索引
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_6" class="md-nav__link">
-    算术和数据对齐
-  </a>
-  
-    <nav class="md-nav" aria-label="算术和数据对齐">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#numpy" class="md-nav__link">
-    NumPy
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#dataframeseries" class="md-nav__link">
-    DataFrame/Series
+  <a href="#dataframe_1" class="md-nav__link">
+    使用DataFrame的列进行索引
   </a>
   
 </li>
@@ -382,10 +340,39 @@
     </nav>
   
 </li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    联合与合并数据集
+  </a>
+  
+    <nav class="md-nav" aria-label="联合与合并数据集">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dataframe_2" class="md-nav__link">
+    数据库风格的DataFrame连接
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    根据索引合并
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    沿轴向连接
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#_7" class="md-nav__link">
-    函数应用和映射
+    联合重叠数据
   </a>
   
 </li>
@@ -397,63 +384,35 @@
       
         <li class="md-nav__item">
   <a href="#_8" class="md-nav__link">
-    排序和排名
+    重塑和透视
   </a>
   
-    <nav class="md-nav" aria-label="排序和排名">
+    <nav class="md-nav" aria-label="重塑和透视">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#series_1" class="md-nav__link">
-    Series排序
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#dataframe_3" class="md-nav__link">
-    DataFrame排序
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#_9" class="md-nav__link">
-    排名
+    使用多层索引进行重塑
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_10" class="md-nav__link">
+    将“长”透视为“宽”
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_11" class="md-nav__link">
+    将“宽”透视为“长”
   </a>
   
 </li>
         
       </ul>
     </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_10" class="md-nav__link">
-    含有重复标签的轴索引
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_11" class="md-nav__link">
-    描述性统计的概述与计算
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_12" class="md-nav__link">
-    相关性和协方差
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_13" class="md-nav__link">
-    唯一值、计数和成员属性
-  </a>
   
 </li>
       
@@ -472,1530 +431,1372 @@
 
   <h1>Ch05</h1>
 
-<h3 id="pandas">pandas数据结构介绍</h3>
-<p>参考：<a href="https://zhuanlan.zhihu.com/p/126206923">Python科学计算库Pandas基础数据结构Series和DataFrame</a></p>
-<pre><code>import numpy as np
-import pandas as pd
-from pandas import Series, DataFrame
-import pandas_datareader as web
+<h3 id="_1">分层索引</h3>
+<pre><code>import pandas as pd
+import numpy as np
+import re
 </code></pre>
-<h4 id="series">Series</h4>
-<p>Series是一种一维的数组型对象，它包含了一个值序列（与NumPy中的类型相似），并且包含了数据标签，称为索引（index）。\
-从另一个角度考虑Series，可以认为它是一个长度固定且有序的字典，因为它将索引值和数据值按位置配对。\
-索引在左边，值在右边。</p>
-<pre><code>obj = pd.Series([4, 7, -5, 3])
-print(obj)
-# 0    4
-# 1    7
-# 2   -5
-# 3    3
-# dtype: int64
-print(obj.values)  # [ 4  7 -5  3]
-print(obj.index)  # RangeIndex(start=0, stop=4, step=1)unique
-</code></pre>
-<p>自定义index</p>
-<pre><code>obj = pd.Series([4, 7, -5, 3], index=['d', 'b', 'a', 'c'])
-print(obj)
-# d    4
-# b    7
-# a   -5
-# c    3
-# dtype: int64
-print(obj.index)  # Index(['d', 'b', 'a', 'c'], dtype='object')
-
-print(obj['a'])  # -5
-print(obj[obj &gt; 3])
-# d    4
-# b    7
-# dtype: int64
-
-print(obj * 2)
-# d     8
-# b    14
-# a   -10
-# c     6
-# dtype: int64
-
-print(np.exp(obj))
-# d      54.598150
-# b    1096.633158
-# a       0.006738
-# c      20.085537
-# dtype: float64
-
-obj['a'] = 9  # 更新
-
-print(obj[['a', 'b', 'c']])
-# a    9
-# b    7
-# c    3
-# dtype: int64
-
-print(obj)
-print(9 in obj)  # False  注意，是索引，非值
-print('a' in obj)  # True
-</code></pre>
-<p>通过字典生成一个Series\
-当把字典传递给Series构造函数时，产生的Series的索引将是排序好的字典键。\
-可以将字典键按照你所想要的顺序传递给构造函数，从而使生成的Series的索引顺序符合预期。\
-NaN（not a number），这是pandas中标记缺失值或NA值的方式。</p>
-<pre><code>sdata = {'Ohio': 35000, 'Texas': 71000, 'Oregon': 16000, 'Utah': 5000}
-obj3 = pd.Series(sdata)
-print(sdata)  # {'Ohio': 35000, 'Texas': 71000, 'Oregon': 16000, 'Utah': 5000}
-print(obj3)
-# Ohio      35000
-# Texas     71000
-# Oregon    16000
-# Utah       5000
-# dtype: int64
-
-states = ['California', 'Ohio', 'Oregon', 'Texas']
-obj4 = pd.Series(sdata, index=states)
-print(obj4)
-# California        NaN
-# Ohio          35000.0
-# Oregon        16000.0
-# Texas         71000.0
-# dtype: float64
-
-print(pd.isnull(obj4))
-# California     True
-# Ohio          False
-# Oregon        False
-# Texas         False
-# dtype: bool
-print(obj4.isnull)
-# &lt;bound method Series.isnull of California        NaN
-# Ohio          35000.0
-# Oregon        16000.0
-# Texas         71000.0
-# dtype: float64&gt;
-
-print(pd.notnull(obj4))
-# California    False
-# Ohio           True
-# Oregon         True
-# Texas          True
-# dtype: bool
-print(obj4.notnull)
-# &lt;bound method Series.notnull of California        NaN
-# Ohio          35000.0
-# Oregon        16000.0
-# Texas         71000.0
-# dtype: float64&gt;
-</code></pre>
-<p>Series的自动对齐索引，与数据库的join操作是非常相似</p>
-<pre><code>print(&quot;obj3 \n&quot;, obj3)
-print(&quot;obj4 \n&quot;, obj4)
-print(&quot;obj3+obj4 \n&quot;, obj3 + obj4)
-# obj3                          obj4
-# Ohio      35000               California        NaN
-# Texas     71000               Ohio          35000.0
-# Oregon    16000               Oregon        16000.0
-# Utah       5000               Texas         71000.0
-# dtype: int64                  dtype: float64
-
-# obj3+obj4
-# California         NaN
-# Ohio           70000.0
-# Oregon         32000.0
-# Texas         142000.0
-# Utah               NaN
-# dtype: float64
-</code></pre>
-<p>Series对象自身和其索引都有name属性</p>
-<pre><code>obj4.name = 'population'
-obj4.index.name = 'state'
-print(obj4)
-# state
-# California        NaN
-# Ohio          35000.0
-# Oregon        16000.0
-# Texas         71000.0
-# Name: population, dtype: float64
-
-
-obj = pd.Series([4, 7, -5, 3], index=['d', 'b', 'a', 'c'])
-print(obj)
-obj.index = ['Bob', 'Steve', 'Jeff', 'Ryan']
-print(obj)
-# Bob      4
-# Steve    7
-# Jeff    -5
-# Ryan     3
-# dtype: int64
-</code></pre>
-<h4 id="dataframe">DataFrame</h4>
-<p>DataFrame表示的是矩阵的数据表，它包含已排序的列集合，每一列可以是不同的值类型（数值、字符串、布尔值等）。\
-DataFrame既有行索引也有列索引，它可以被视为一个共享相同索引的Series的字典。\
-在DataFrame中，数据被存储为一个以上的二维块，而不是列表、字典或其他一维数组的集合。\
-DataFrame是二维的，但可以利用分层索引在DataFrame中展现更高维度的数据。\
-从DataFrame中选取的列是数据的视图，而不是拷贝。因此，对Series的修改会映射到DataFrame中。如果需要复制，则应当显式地使用Series的copy方法。</p>
-<h5 id="dataframe_1">把一个字典赋值给DataFrame</h5>
-<pre><code>data = {
-    'state': ['Ohio', 'Ohio', 'Ohio', 'Nevada', 'Nevada', 'Nevada'],
-    'year': [2000, 2001, 2002, 2001, 2002, 2003],
-    'pop': [1.5, 1.7, 3.6, 2.4, 2.9, 3.2]
-}
-frame = pd.DataFrame(data)  # 产生的DataFrame会自动为Sereies分配索引，并且列会按照排序的顺序排列
-print(frame)
-#     state  year  pop
-# 0    Ohio  2000  1.5
-# 1    Ohio  2001  1.7
-# 2    Ohio  2002  3.6
-# 3  Nevada  2001  2.4
-# 4  Nevada  2002  2.9
-# 5  Nevada  2003  3.2
-
-print(frame.head(3))  # 对于大型DataFrame, head方法将会只选出头部的若干行, 默认是前五行
-#   state  year  pop
-# 0  Ohio  2000  1.5
-# 1  Ohio  2001  1.7
-# 2  Ohio  2002  3.6
-</code></pre>
-<p>如果指定了列的顺序，DataFrame的列将会按照指定顺序排列</p>
-<pre><code>frame = pd.DataFrame(data, columns=['year', 'state', 'pop'])
-print(frame)
-#    year   state  pop
-# 0  2000    Ohio  1.5
-# 1  2001    Ohio  1.7
-# 2  2002    Ohio  3.6
-# 3  2001  Nevada  2.4
-# 4  2002  Nevada  2.9
-# 5  2003  Nevada  3.2
-</code></pre>
-<p>如果传的列不包含在字典中，将会在结果中出现缺失值</p>
-<pre><code>frame2 = pd.DataFrame(
-    data,
-    columns=['year', 'state', 'pop', 'debt'],
-    index=['one', 'two', 'three', 'four', 'five', 'six']
+<p>分层索引是pandas的重要特性，允许你在一个轴向上拥有多个（两个或两个以上）索引层级。\
+分层索import re引提供了一种在更低维度的形式中处理更高维度数据的方式。</p>
+<h4 id="series">Series索引分层</h4>
+<pre><code>data = pd.Series(
+    np.random.randn(9),
+    index=[['a', 'a', 'a', 'b', 'b', 'c', 'c', 'd', 'd'],
+           [1, 2, 3, 1, 3, 1, 2, 2, 3]]
 )
-print(frame2)
-#        year   state  pop debt
-# one    2000    Ohio  1.5  NaN
-# two    2001    Ohio  1.7  NaN
-# three  2002    Ohio  3.6  NaN
-# four   2001  Nevada  2.4  NaN
-# five   2002  Nevada  2.9  NaN
-# six    2003  Nevada  3.2  NaN
 </code></pre>
-<p>选取行, 可以通过位置或特殊属性loc进行选取</p>
-<pre><code>print(frame2.loc['three'])
-# year     2002
-# state    Ohio
-# pop       3.6
-# debt      NaN
-# Name: three, dtype: object
-</code></pre>
-<p>DataFrame中的一列，可以按字典型标记或属性那样检索为Series\
-frame2[colunm]对于任意列名均有效，但是frame2.column只在列名是有效的Python变量名时有效。\
-返回的Series与原DataFrame有相同的索引，且Series的name属性也会被合理地设置。</p>
-<pre><code>print(frame2['state'])
-# one        Ohio
-# two        Ohio
-# three      Ohio
-# four     Nevada
-# five     Nevada
-# six      Nevada
-# Name: state, dtype: object
-print(frame2.state)  # 属性型连接
-# one        Ohio
-# two        Ohio
-# three      Ohio
-# four     Nevada
-# five     Nevada
-# six      Nevada
-# Name: state, dtype: object
-</code></pre>
-<p>列的引用是可以修改的。</p>
-<pre><code>frame2['debt'] = 16.5
-print(frame2)
-# Name: state, dtype: object
-#        year   state  pop  debt
-# one    2000    Ohio  1.5  16.5
-# two    2001    Ohio  1.7  16.5
-# three  2002    Ohio  3.6  16.5
-# four   2001  Nevada  2.4  16.5
-# five   2002  Nevada  2.9  16.5
-# six    2003  Nevada  3.2  16.5
-frame2['debt'] = np.arange(6.)  # 值的长度必须和DataFrame的长度相匹配
-print(frame2)
-#        year   state  pop  debt
-# one    2000    Ohio  1.5   0.0
-# two    2001    Ohio  1.7   1.0
-# three  2002    Ohio  3.6   2.0
-# four   2001  Nevada  2.4   3.0
-# five   2002  Nevada  2.9   4.0
-# six    2003  Nevada  3.2   5.0
-</code></pre>
-<p>如果你将Series赋值给一列时，Series的索引将会按照DataFrame的索引重新排列，并在空缺的地方填充缺失值</p>
-<pre><code>val = pd.Series([-1.2, -1.5, -1.7], index=['two', 'four', 'five'])
-frame2['debt'] = val
-print(frame2)
-#        year   state  pop  debt
-# one    2000    Ohio  1.5   NaN
-# two    2001    Ohio  1.7  -1.2
-# three  2002    Ohio  3.6   NaN
-# four   2001  Nevada  2.4  -1.5
-# five   2002  Nevada  2.9  -1.7
-# six    2003  Nevada  3.2   NaN
-</code></pre>
-<p>如果被赋值的列(eastern列)并不存在，则会生成一个新的列。</p>
-<pre><code>frame2['eastern'] = frame2.state == 'Ohio'
-print(frame2)
-#        year   state  pop  debt  eastern
-# one    2000    Ohio  1.5   NaN     True
-# two    2001    Ohio  1.7  -1.2     True
-# three  2002    Ohio  3.6   NaN     True
-# four   2001  Nevada  2.4  -1.5    False
-# five   2002  Nevada  2.9  -1.7    False
-# six    2003  Nevada  3.2   NaN    False
-print(frame2.eastern)
-# one       True
-# two       True
-# three     True
-# four     False
-# five     False
-# six      False
-# Name: eastern, dtype: bool
-</code></pre>
-<p>del关键字可以像在字典中那样对DataFrame删除列。</p>
-<pre><code>del frame2['eastern']
-print(frame2.columns)
-# Index(['year', 'state', 'pop', 'debt'], dtype='object')
-</code></pre>
-<h5 id="dataframe_2">把一个包含字典的嵌套字典赋值给DataFrame</h5>
-<p>pandas会将字典的键作为列('Nevada', etc.)，将内部字典的键作为行索引(2001, etc.)</p>
-<pre><code>pop = {
-    'Nevada': {
-        2001: 2.4,
-        2002: 2.9
-    },
-    'Ohio': {
-        2000: 1.5,
-        2001: 1.7,
-        2002: 3.6
-    }
-}
-
-frame3 = pd.DataFrame(pop)  # 不指定索引，默认使用字典索引
-print(frame3)
-#       Nevada  Ohio
-# 2001     2.4   1.7
-# 2002     2.9   3.6
-# 2000     NaN   1.5
-print(pd.DataFrame(pop, index=[2001, 2002, 2003]))  # 指定索引
-#       Nevada  Ohio
-# 2001     2.4   1.7
-# 2002     2.9   3.6
-# 2003     NaN   NaN
-</code></pre>
-<p>转置操作（调换行和列）</p>
-<pre><code>print(frame3.T)
-#         2001  2002  2000
-# Nevada   2.4   2.9   NaN
-# Ohio     1.7   3.6   1.5
-</code></pre>
-<h5 id="seriesdataframe">使用包含Series的字典构造DataFrame</h5>
-<pre><code>pdata = {
-    'Ohio': frame3['Ohio'][:-1],
-    'Nevada': frame3['Nevada'][:2]
-}
-print(pd.DataFrame(pdata))
-#       Ohio  Nevada
-# 2001   1.7     2.4
-# 2002   3.6     2.9
-
-
-
-frame3.index.name = 'year'
-frame3.columns.name = 'state'
-print(frame3)
-# state  Nevada  Ohio
-# year
-# 2001      2.4   1.7
-# 2002      2.9   3.6
-# 2000      NaN   1.5
-print(frame3.values)
-# [[2.4 1.7]
-#  [2.9 3.6]
-#  [nan 1.5]]
-
-
-
-print(frame2)
-#        year   state  pop  debt
-# one    2000    Ohio  1.5   NaN
-# two    2001    Ohio  1.7  -1.2
-# three  2002    Ohio  3.6   NaN
-# four   2001  Nevada  2.4  -1.5
-# five   2002  Nevada  2.9  -1.7
-# six    2003  Nevada  3.2   NaN
-print(frame2.values)
-# [[2000 'Ohio' 1.5 nan]
-#  [2001 'Ohio' 1.7 -1.2]
-#  [2002 'Ohio' 3.6 nan]
-#  [2001 'Nevada' 2.4 -1.5]
-#  [2002 'Nevada' 2.9 -1.7]
-#  [2003 'Nevada' 3.2 nan]]
-</code></pre>
-<h3 id="_1">索引对象</h3>
-<p>pandas中的索引对象是用于存储轴标签和其他元数据的（例如轴名称或标签）。\
-在构造Series或DataFrame时，你所使用的任意数组或标签序列都可以在内部转换为索引对象。\
-索引对象是不可变的。\
-除了类似数组，索引对象也像一个固定大小的集合。与Python集合不同，pandas索引对象可以包含重复标签。\
-因为一些操作会产生包含索引化数据的结果，理解索引如何工作还是很重要的。</p>
-<pre><code>obj = pd.Series(range(3), index=['a', 'b', 'c'])
-index = obj.index
-print(index)  # Index(['a', 'b', 'c'], dtype='object')
-print(index[1:])  # Index(['b', 'c'], dtype='object')
-
-labels = pd.Index(np.arange(3))
-print(labels)  # Int64Index([0, 1, 2], dtype='int64')
-obj2 = pd.Series([1.5, -2.5, 0], index=labels)
-print(obj2)
-# 0    1.5
-# 1   -2.5
-# 2    0.0
+<p>输出是一个以MultiIndex作为索引的Series的美化视图。\
+索引中的"间隙"表示"直接使用上面的标签"</p>
+<pre><code>print(data)
+# a  1    0.163468
+#    2   -1.525926
+#    3   -0.210247
+# b  1   -0.956063
+#    3   -1.839111
+# c  1   -0.398905
+#    2    0.595279
+# d  2    0.034305
+#    3   -0.896078
 # dtype: float64
-print(obj2.index is labels)  # True
 
-print(frame3)
-# state  Nevada  Ohio
-# year
-# 2001      2.4   1.7
-# 2002      2.9   3.6
-# 2000      NaN   1.5
-print(frame3.columns)
-# Index(['Nevada', 'Ohio'], dtype='object', name='state')
-print(frame3.index)
-# Int64Index([2001, 2002, 2000], dtype='int64', name='year')
-print('Ohio' in frame3.columns)  # True  类似集合操作
-print(2003 in frame3.index)  # False
+print(data.index)
+# MultiIndex([('a', 1),
+#             ('a', 2),
+#             ('a', 3),
+#             ('b', 1),
+#             ('b', 3),
+#             ('c', 1),
+#             ('c', 2),
+#             ('d', 2),
+#             ('d', 3)],
+#            )
 </code></pre>
-<p>pandas索引对象包含重复标签\
-根据重复标签进行筛选，会选取所有重复标签对应的数据。</p>
-<pre><code>dup_labels = pd.Index(['foo', 'foo', 'bar', 'bar'])
-print(dup_labels)
-# Index(['foo', 'foo', 'bar', 'bar'], dtype='object')
-</code></pre>
-<p>一些常用索引对象的方法和属性\
-https://blog.csdn.net/u012421852/article/details/80074478</p>
-<pre><code>obj1 = pd.Series(range(3), index=['a', 'b', 'c'])
-index1 = obj1.index
-
-obj2 = pd.Series(range(3), index=['c', 'f', 'g'])
-index2 = obj2.index
-
-print(index1)  # Index(['a', 'b', 'c'], dtype='object')
-print(index2)  # Index(['c', 'f', 'g'], dtype='object')
-</code></pre>
-<p>append: 将额外的索引对象粘贴到原索引后，产生一个新的索引</p>
-<pre><code>print(index1.append(index2))  # Index(['a', 'b', 'c', 'c', 'f', 'g'], dtype='object')
-</code></pre>
-<p>difference: 计算2个索引的差集</p>
-<pre><code>print(index1.difference(index2))  # Index(['a', 'b'], dtype='object')
-</code></pre>
-<p>intersection: 计算2个索引的交集</p>
-<pre><code>print(index1.intersection(index2))  # Index(['c'], dtype='object')
-</code></pre>
-<p>union: 计算2个索引的并集（去重）</p>
-<pre><code>print(index1.union(index2))  # Index(['a', 'b', 'c', 'f', 'g'], dtype='object')
-</code></pre>
-<p>isin: 计算表示每一个值是否在传值容器中的布尔数组</p>
-<pre><code>print(index1.isin(index2))  # [False False  True]
-</code></pre>
-<p>delete: 将位置i的元素删除，并产生新的数组</p>
-<pre><code>print(index1.delete(1))  # Index(['a', 'c'], dtype='object')
-print(index1)  # Index(['a', 'b', 'c'], dtype='object')
-</code></pre>
-<p>drop: 根据传参删除指定索引值，并产生新的索引, 对比和delete的区别</p>
-<pre><code>print(index1.drop('b'))  # Index(['a', 'c'], dtype='object')
-print(index1)  # Index(['a', 'b', 'c'], dtype='object')
-</code></pre>
-<p>insert: 在位置i插入元素，并产生新的索引</p>
-<pre><code>print(index1.insert(1, 'e'))  # Index(['a', 'e', 'b', 'c'], dtype='object')
-print(index1)  # Index(['a', 'b', 'c'], dtype='object')
-</code></pre>
-<p>is_monotonic: 如果索引序列递增，则返回True</p>
-<pre><code>print(index1.is_monotonic)  # True
-print(index1.insert(1, 'e').is_monotonic)  # False
-</code></pre>
-<p>is_unique: 如果索引序列唯一则返回True</p>
-<pre><code>print(index1.is_unique)  # True
-print(index1.append(index2).is_unique)  # False
-</code></pre>
-<p>unique: 计算索引的唯一值序列（对比Union）</p>
-<pre><code>print(index1.unique())  # Index(['a', 'b', 'c'], dtype='object')
-print(index1.append(index2).unique())  # Index(['a', 'b', 'c', 'f', 'g'], dtype='object')
-</code></pre>
-<h3 id="pandas_1">pandas基本功能</h3>
-<h4 id="_2">重建索引</h4>
-<ul>
-<li>reindex方法用于创建一个符合新索引的新对象。</li>
-<li>Series调用reindex方法时，会将数据按照新的索引进行排列，如果某个索引值之前并不存在，则会引入缺失值</li>
-<li>对于顺序数据，比如时间序列，在重建索引时可能会需要进行插值或填值。ffill方法在重建索引时插值，将值前向填充</li>
-<li>如果对obj1做reindex时指定method=‘ffill’，会报错index must be monotonic increasing or decreasing</li>
-<li>在DataFrame中，reindex可以改变行索引、列索引，也可以同时改变二者。当仅传入一个序列时，结果中的行会重建索引 </li>
-</ul>
-<pre><code>obj1 = pd.Series([4.5, 7.2, -5.3, 3.6], index=['d', 'b', 'a', 'c'])
-print(obj1)
-# d    4.5
-# b    7.2
-# a   -5.3
-# c    3.6
+<p>通过分层索引对象，也可以称为部分索引，可以简洁地选择出数据的子集</p>
+<pre><code>m = data['b']
+print(m)
+# 1   -0.956063
+# 3   -1.839111
 # dtype: float64
-obj2 = obj1.reindex(['a', 'b', 'c', 'd', 'e'])
-print(obj2)
-# a   -5.3
-# b    7.2
-# c    3.6
-# d    4.5
-# e    NaN
-# dtype: float64
-obj3 = pd.Series(['blue', 'purple', 'yellow'], index=[0, 2, 4])
-print(obj3.reindex(range(6), method='ffill'))
-# 0      blue
-# 1      blue
-# 2    purple
-# 3    purple
-# 4    yellow
-# 5    yellow
-# dtype: object
 
-indexes = index = ['a', 'b', 'c']
-states = ['Ohio', 'Texas', 'California']
+m = data['b': 'c']
+print(m)
+# b  1   -0.956063
+#    3   -1.839111
+# c  1   -0.398905
+#    2    0.595279
+# dtype: float64
+m = data.loc[['b', 'c']]
+print(m)
+# b  1   -0.956063
+#    3   -1.839111
+# c  1   -0.398905
+#    2    0.595279
+# dtype: float64
+
+m = data.loc[:, 2]
+print(m)
+# a   -1.525926
+# c    0.595279
+# d    0.034305
+# dtype: float64
+</code></pre>
+<p>分层索引在重塑数据和数组透视表等分组操作中扮演了重要角色。\
+例如，你可以使用unstack方法将数据在DataFrame中重新排列</p>
+<pre><code>m = data.unstack()
+print(m)
+#           1         2         3
+# a  0.163468 -1.525926 -0.210247
+# b -0.956063       NaN -1.839111
+# c -0.398905  0.595279       NaN
+# d       NaN  0.034305 -0.896078
+n = m.stack()
+print(n)  # 或者 print(data.unstack().stack())
+# a  1    0.163468
+#    2   -1.525926
+#    3   -0.210247
+# b  1   -0.956063
+#    3   -1.839111
+# c  1   -0.398905
+#    2    0.595279
+# d  2    0.034305
+#    3   -0.896078
+# dtype: float64
+</code></pre>
+<h4 id="dataframe">DataFrame索引分层</h4>
+<p>在DataFrame中，每个轴都可以拥有分层索引\
+参考：https://www.jianshu.com/p/2c1c8fbee55a</p>
+<h5 id="1">方法1：直接创建</h5>
+<p>直接通过给index（columns）参数传递多维数组，进而构建多维索引。\
+数组中每个维度对应位置的元素，组成每个索引值。</p>
+<pre><code>frame = pd.DataFrame(
+    np.arange(12).reshape((4, 3)),
+    index=[['a', 'a', 'b', 'b'],
+           [1, 2, 1, 2]],
+    columns=[['Ohio', 'Ohio', 'Colorado'],
+             ['Green', 'Red', 'Green']]
+)
+
+print(frame)
+#      Ohio     Colorado
+#     Green Red    Green
+# a 1     0   1        2
+#   2     3   4        5
+# b 1     6   7        8
+#   2     9  10       11
+</code></pre>
+<p>上面输出中的2个层级是没有名字。\
+分层的层级可以有名称（可以是字符串或Python对象）。\
+如果层级有名称，这些名称会在控制台输出中显示。</p>
+<pre><code>print(frame.index.names)
+# [None, None]
+print(frame.columns.names)
+# [None, None]
+</code></pre>
+<p>给层级赋予名称。注意区分行标签中的索引名称’state’和’color'。</p>
+<pre><code>frame.index.names = ['key1', 'key2']
+frame.columns.names = ['state', 'color']
+print(frame)
+# state      Ohio     Colorado
+# color     Green Red    Green
+# key1 key2
+# a    1        0   1        2
+#      2        3   4        5
+# b    1        6   7        8
+#      2        9  10       11
+print(frame['Ohio'])
+# color      Green  Red
+# key1 key2
+# a    1         0    1
+#      2         3    4
+# b    1         6    7
+#      2         9   10
+
+print(frame.index)
+# MultiIndex([('a', 1),
+#             ('a', 2),
+#             ('b', 1),
+#             ('b', 2)],
+#            names=['key1', 'key2'])
+</code></pre>
+<p>通过MultiIndex类的相关方法，预先创建一个MultiIndex对象，然后作为Series与DataFrame中的index（或columns）参数值。
+同时，可以通过names参数指定多层索引的名称。</p>
+<h5 id="2from_arrays">方法2：from_arrays</h5>
+<p>from_arrays：接收一个多维数组参数，高维指定高层索引，低维指定底层索引。</p>
+<pre><code>mindex = pd.MultiIndex.from_arrays(
+    [['a', 'a', 'b', 'b'],
+     [1, 2, 1, 2]],
+    names=['key1', 'key2']
+)
 frame = pd.DataFrame(
-    np.arange(9).reshape(3, 3),
-    index=indexes,
-    columns=states
+    np.arange(12).reshape((4, 3)),
+    index=mindex,
+    columns=[['Ohio', 'Ohio', 'Colorado'],
+             ['Green', 'Red', 'Green']]
+)
+frame.columns.names = ['state', 'color']
+print(frame)
+# state      Ohio     Colorado
+# color     Green Red    Green
+# key1 key2
+# a    1        0   1        2
+#      2        3   4        5
+# b    1        6   7        8
+#      2        9  10       11
+</code></pre>
+<h5 id="3from_tuples">方法3：from_tuples</h5>
+<p>from_tuples：接收一个元组的列表，每个元组指定每个索引（高维索引，低维索引）。</p>
+<pre><code>mindex = pd.MultiIndex.from_tuples(
+    [('a', 1),
+     ('a', 2),
+     ('b', 1),
+     ('b', 2)]
+)
+frame = pd.DataFrame(
+    np.arange(12).reshape((4, 3)),
+    index=mindex,
+    columns=[['Ohio', 'Ohio', 'Colorado'],
+             ['Green', 'Red', 'Green']]
+)
+frame.index.names = ['key1', 'key2']
+frame.columns.names = ['state', 'color']
+print(frame)
+# state      Ohio     Colorado
+# color     Green Red    Green
+# key1 key2
+# a    1        0   1        2
+#      2        3   4        5
+# b    1        6   7        8
+#      2        9  10       11
+</code></pre>
+<h5 id="4from_product">方法4：from_product</h5>
+<p>from_product：接收一个可迭代对象的列表，根据多个可迭代对象元素的笛卡尔积进行创建索引。\
+使用笛卡尔积的方式来创建多层索引。参数为嵌套的可迭代对象。结果为使用每个一维数组中的元素与其他一维数组中的元素来生成\
+笛卡尔积的方式的局限：两两组合必须都存在，否则，就不能使用这种方式。</p>
+<pre><code>mindex = pd.MultiIndex.from_product(
+    [['a', 'b'],
+     ['1', '2']],
+    names=['key1', 'key2']
+)
+frame = pd.DataFrame(
+    np.arange(12).reshape((4, 3)),
+    index=mindex,
+    columns=[['Ohio', 'Ohio', 'Colorado'],
+             ['Green', 'Red', 'Green']]
+)
+frame.columns.names = ['state', 'color']
+print(frame)
+# state      Ohio     Colorado
+# color     Green Red    Green
+# key1 key2
+# a    1        0   1        2
+#      2        3   4        5
+# b    1        6   7        8
+#      2        9  10       11
+</code></pre>
+<h4 id="_2">重排序和层级排序</h4>
+<p>如果需要重新排列轴上的层级顺序，或者按照特定层级的值对数据进行排序，\
+可以通过swaplevel接收两个层级序号或层级名称，返回一个进行了层级变更的新对象（但是数据是不变的）</p>
+<pre><code>print(frame)
+# state      Ohio     Colorado
+# color     Green Red    Green
+# key1 key2
+# a    1        0   1        2
+#      2        3   4        5
+# b    1        6   7        8
+#      2        9  10       11
+m = frame.swaplevel('key1', 'key2')
+print(m)
+# state      Ohio     Colorado
+# color     Green Red    Green
+# key2 key1
+# 1    a        0   1        2
+# 2    a        3   4        5
+# 1    b        6   7        8
+# 2    b        9  10       11
+</code></pre>
+<p>sort_index只能在单一层级上对数据进行排序。\
+在进行层级变换时，使用sort_index以使得结果按照层级进行字典排序</p>
+<pre><code>m = frame.sort_index(level=1)  # 对key2排序，底层索引
+print(m)
+# state      Ohio     Colorado
+# color     Green Red    Green
+# key1 key2
+# a    1        0   1        2
+# b    1        6   7        8
+# a    2        3   4        5
+# b    2        9  10       11
+m = frame.sort_index(level=0)  # 对key1排序，高层索引
+print(m)
+# state      Ohio     Colorado
+# color     Green Red    Green
+# key1 key2
+# a    1        0   1        2
+#      2        3   4        5
+# b    1        6   7        8
+#      2        9  10       11
+
+m = frame.swaplevel(0, 1).sort_index(level=1)  # swaplevel(0, 1)等同于swaplevel(key1, key2)，交换后key1变成了底层索引
+print(m)
+# state      Ohio     Colorado
+# color     Green Red    Green
+# key2 key1
+# 1    a        0   1        2
+# 2    a        3   4        5
+# 1    b        6   7        8
+# 2    b        9  10       11
+</code></pre>
+<h4 id="_3">按层级进行汇总统计</h4>
+<p>DataFrame和Series中很多描述性和汇总性统计有一个level选项，通过level选项你可以指定你想要在某个特定的轴上进行聚合。</p>
+<pre><code>print(frame)
+# state      Ohio     Colorado
+# color     Green Red    Green
+# key1 key2
+# a    1        0   1        2
+#      2        3   4        5
+# b    1        6   7        8
+#      2        9  10       11
+m = frame.groupby(level='key2').sum()
+print(m)
+# state  Ohio     Colorado
+# color Green Red    Green
+# key2
+# 1         6   8       10
+# 2        12  14       16
+m = frame.groupby(level='color', axis=1).sum()
+print(m)
+# color      Green  Red
+# key1 key2
+# a    1         2    1
+#      2         8    4
+# b    1        14    7
+#      2        20   10
+</code></pre>
+<h4 id="dataframe_1">使用DataFrame的列进行索引</h4>
+<p>通常我们不会使用DataFrame中一个或多个列作为行索引；反而你可能想要将行索引移动到DataFrame的列中。</p>
+<pre><code>frame = pd.DataFrame(
+    {'a': range(7),
+     'b': range(7, 0, -1),
+     'c': ['one', 'one', 'one', 'two', 'two', 'two', 'two'],
+     'd': [0, 1, 2, 0, 1, 2, 3]
+     }
 )
 print(frame)
-#    Ohio  Texas  California
-# a     0      1           2
-# b     3      4           5
-# c     6      7           8
-frame2 = frame.reindex(['a', 'b', 'c', 'd'])  # 重建行索引
+#    a  b    c  d
+# 0  0  7  one  0
+# 1  1  6  one  1
+# 2  2  5  one  2
+# 3  3  4  two  0
+# 4  4  3  two  1
+# 5  5  2  two  2
+# 6  6  1  two  3
+</code></pre>
+<p>DataFrame的set_index函数会生成一个新的DataFrame，新的DataFrame使用一个或多个列作为索引\
+默认情况下这些索引列会从DataFrame中移除，也可以将它们留在DataFrame中</p>
+<pre><code>frame2 = frame.set_index(['c', 'd'], drop=False)
 print(frame2)
-#    Ohio  Texas  California
-# a   0.0    1.0         2.0
-# b   3.0    4.0         5.0
-# c   6.0    7.0         8.0
-# d   NaN    NaN         NaN
-frame3 = frame2.reindex(columns=['Ohio', 'Uta', 'California'])  # 重建列索引
-print(frame3)
-#    Ohio  Uta  California
-# a   0.0  NaN         2.0
-# b   3.0  NaN         5.0
-# c   6.0  NaN         8.0
-# d   NaN  NaN         NaN
+#        a  b    c  d
+# c   d
+# one 0  0  7  one  0
+#     1  1  6  one  1
+#     2  2  5  one  2
+# two 0  3  4  two  0
+#     1  4  3  two  1
+#     2  5  2  two  2
+#     3  6  1  two  3
+
+frame2 = frame.set_index(['c', 'd'])
+print(frame2)
+#        a  b
+# c   d
+# one 0  0  7
+#     1  1  6
+#     2  2  5
+# two 0  3  4
+#     1  4  3
+#     2  5  2
+#     3  6  1
 </code></pre>
-<p>使用loc进行更为简洁的标签索引</p>
-<pre><code>frame4 = frame.loc[['a', 'b'], states]
-print(frame4)
-#    Ohio  Texas  California
-# a     0      1           2
-# b     3      4           5
+<p>reset_index是set_index的反操作，分层索引的索引层级会被移动到列中\
+注意：如果在set_index时使用了drop=False，在使用reset_index会报错</p>
+<pre><code>m = frame2.reset_index()
+print(m)
+#      c  d  a  b
+# 0  one  0  0  7
+# 1  one  1  1  6
+# 2  one  2  2  5
+# 3  two  0  3  4
+# 4  two  1  4  3
+# 5  two  2  5  2
+# 6  two  3  6  1
 </code></pre>
-<h4 id="_3">轴向索引删除条目</h4>
-<ul>
-<li>例如set_index(), dropna(), fillna(), reset_index(), drop(), replace() 这些方法的inplace属性设为True时,</li>
-<li>这些方法会修改Series或DataFrame的尺寸或形状，直接操作原对象而不返回新对象</li>
-</ul>
-<pre><code>obj = pd.Series(np.arange(5), index=['a', 'b', 'c', 'd', 'e'])
-print(obj)
-# a    0
-# b    1
-# c    2
-# d    3
-# e    4
-# dtype: int64
-obj1 = obj.drop('c')
-print(obj1)
-# a    0
-# b    1
-# d    3
-# e    4
-# dtype: int64
-print(obj1.drop(['d', 'e']))
-# a    0
-# b    1
-# dtype: int64
-</code></pre>
-<p>对比inplace=True和False的区别</p>
-<pre><code>print(obj.drop('c', inplace=False))
-print(obj)
-# a    0
-# b    1
-# c    2
-# d    3
-# e    4
-# dtype: int64
-print(obj.drop('c', inplace=True))  # None, 没有生成新对象
-print(obj)
-# a    0
-# b    1
-# d    3
-# e    4
-# dtype: int64
-
-
-data = pd.DataFrame(
-    np.arange(16).reshape(4, 4),
-    index=['Ohio', 'Colorado', 'Utah', 'New York'],
-    columns=['one', 'two', 'three', 'four']
-)
-print(data)
-#           one  two  three  four
-# Ohio        0    1      2     3
-# Colorado    4    5      6     7
-# Utah        8    9     10    11
-# New York   12   13     14    15
-
-print(data.drop(['Ohio', 'Colorado']))
-#           one  two  three  four
-# Utah        8    9     10    11
-# New York   12   13     14    15
-print(data.drop(['one', 'two'], axis=1))  # 如果不指定轴向axis，drop()会默认沿axis=0进行，如上例
-#           three  four
-# Ohio          2     3
-# Colorado      6     7
-# Utah         10    11
-# New York     14    15
-print(data.drop(['one', 'two'], axis='columns'))  # 与指定axis=1同样效果
-#           three  four
-# Ohio          2     3
-# Colorado      6     7
-# Utah         10    11
-# New York     14    15
-
-
-data = pd.DataFrame(
+<h3 id="_4">联合与合并数据集</h3>
+<p>包含在pandas对象的数据可以通过多种方式联合在一起：
+* pandas.merge根据一个或多个键将行进行连接。对于SQL或其他关系型数据库的用户来说，这种方式比较熟悉，它实现的是数据库的连接操作。
+* pandas.concat使对象在轴向上进行黏合或“堆叠”。
+* combine_first实例方法允许将重叠的数据拼接在一起，以使用一个对象中的值填充另一个对象中的缺失值。</p>
+<h4 id="dataframe_2">数据库风格的DataFrame连接</h4>
+<p>合并或连接操作通过一个或多个键连接行来联合数据集。\
+这些操作是关系型数据库的核心内容（例如基于SQL的数据库）。\
+pandas中的merge函数主要用于将各种join操作算法运用在数据上。\
+在进行列-列连接时，传递的DataFrame索引对象会被丢弃\
+合并操作也要考虑如何处理重叠的列名(suffixes后缀选项)。\
+\
+下面是一个多对一连接的例子。\
+df1的数据有多个行的标签为a和b，而df2在key列中每个值仅有一行。</p>
+<pre><code>df1 = pd.DataFrame(
     {
-        'Name': ['Shobhit', 'vaibhav', 'vimal', 'Sourabh'],
-        'class': [11, 12, 10, 9],
-        'Age': [18, 20, 21, 17]
+        'key': ['b', 'b', 'a', 'c', 'a', 'a', 'b'],
+        'data1': range(7)
+     }
+)
+df2 = pd.DataFrame(
+    {
+        'key': ['a', 'b', 'd'],
+        'data1': range(3)
+     }
+)
+print(df1)
+#   key  data1
+# 0   b      0
+# 1   b      1
+# 2   a      2
+# 3   c      3
+# 4   a      4
+# 5   a      5
+# 6   b      6
+print(df2)
+#   key  data1
+# 0   a      0
+# 1   b      1
+# 2   d      2
+</code></pre>
+<p>调用merge处理，推荐显式地指定连接键。</p>
+<pre><code>result = pd.merge(df1, df2)
+print(result)
+#   key  data1
+# 0   b      1
+result = pd.merge(df1, df2, on=['key', 'data1'])
+print(result)
+#   key  data1
+# 0   b      1
+result = pd.merge(df1, df2, on='key')
+print(result)
+#   key  data1_x  data1_y
+# 0   b        0        1
+# 1   b        1        1
+# 2   b        6        1
+# 3   a        2        0
+# 4   a        4        0
+# 5   a        5        0
+</code></pre>
+<p>如果每个对象的列名是不同的，可以分别为它们指定列名</p>
+<pre><code>df3 = pd.DataFrame(
+    {
+        'lkey': ['b', 'b', 'a', 'c', 'a', 'a', 'b'],
+        'data1': range(7)
+     }
+)
+
+df4 = pd.DataFrame(
+    {
+        'rkey': ['a', 'b', 'd'],
+        'data2': range(3)
+     }
+)
+print(df3)
+#   lkey  data1
+# 0    b      0
+# 1    b      1
+# 2    a      2
+# 3    c      3
+# 4    a      4
+# 5    a      5
+# 6    b      6
+print(df4)
+#   rkey  data2
+# 0    a      0
+# 1    b      1
+# 2    d      2
+</code></pre>
+<p>默认情况下，merge做的是内连接（'inner'join），结果中的键是两张表的交集。</p>
+<pre><code>result = pd.merge(df3, df4, left_on='lkey', right_on='rkey')  # df4的[a,0]对应df3的所有[a,?]记录（通过重复来填充不足）
+print(result)
+#   lkey  data1 rkey  data2
+# 0    b      0    b      1
+# 1    b      1    b      1
+# 2    b      6    b      1
+# 3    a      2    a      0
+# 4    a      4    a      0
+# 5    a      5    a      0
+</code></pre>
+<p>外连接（outer join）是键的并集，联合了左连接和右连接的效果\
+多对多连接是行的笛卡尔积</p>
+<pre><code>df1 = pd.DataFrame(
+    {
+        'key': ['b', 'b', 'a', 'c', 'a', 'b'],
+        'data1': range(6)
+     }
+)
+df2 = pd.DataFrame(
+    {
+        'key': ['a', 'b', 'a', 'b', 'd'],
+        'data2': range(5)
+     }
+)
+print(df1.sort_values(by='key'))
+#   key  data1
+# 2   a      2
+# 4   a      4
+# 0   b      0
+# 1   b      1
+# 5   b      5
+# 3   c      3
+print(df2.sort_values(by='key'))
+#   key  data2
+# 0   a      0
+# 2   a      2
+# 1   b      1
+# 3   b      3
+# 4   d      4
+
+result = pd.merge(df1, df2, on='key', how='left')
+print(result.sort_values(by='key'))
+#    key  data1  data2
+# 4    a      2    0.0
+# 5    a      2    2.0
+# 7    a      4    0.0
+# 8    a      4    2.0
+# 0    b      0    1.0
+# 1    b      0    3.0
+# 2    b      1    1.0
+# 3    b      1    3.0
+# 9    b      5    1.0
+# 10   b      5    3.0
+# 6    c      3    NaN
+
+result = pd.merge(df1, df2, on='key', how='outer')  # 多对多连接
+print(result.sort_values(by='key'))
+#    key  data1  data2
+# 6    a    2.0    0.0
+# 7    a    2.0    2.0
+# 8    a    4.0    0.0
+# 9    a    4.0    2.0
+# 0    b    0.0    1.0
+# 1    b    0.0    3.0
+# 2    b    1.0    1.0
+# 3    b    1.0    3.0
+# 4    b    5.0    1.0
+# 5    b    5.0    3.0
+# 10   c    3.0    NaN
+# 11   d    NaN    4.0
+</code></pre>
+<p>多键合并</p>
+<pre><code>df1 = pd.DataFrame(
+    {
+        'key1': ['foo', 'foo', 'bar'],
+        'key2': ['one', 'two', 'one'],
+        'lval': [1, 2, 3]
+     }
+)
+df2 = pd.DataFrame(
+    {
+        'key1': ['foo', 'foo', 'bar', 'bar'],
+        'key2': ['one', 'one', 'one', 'two'],
+        'rval': [4, 5, 6, 7]
+     }
+)
+print(df1.sort_values(by=['key1', 'key2']))
+#   key1 key2  lval
+# 2  bar  one     3
+# 0  foo  one     1
+# 1  foo  two     2
+print(df2.sort_values(by=['key1', 'key2']))
+#   key1 key2  rval
+# 2  bar  one     6
+# 3  bar  two     7
+# 0  foo  one     4
+# 1  foo  one     5
+
+result = pd.merge(df1, df2, on=['key1', 'key2'], how='outer')
+print(result.sort_values(by=['key1', 'key2']))
+#   key1 key2  lval  rval
+# 3  bar  one   3.0   6.0
+# 4  bar  two   NaN   7.0
+# 0  foo  one   1.0   4.0  # 重复填充
+# 1  foo  one   1.0   5.0  # 重复填充
+# 2  foo  two   2.0   NaN
+</code></pre>
+<p>处理重叠列名</p>
+<pre><code>result = pd.merge(df1, df2, on='key1')
+print(result.sort_values(by='key1'))
+#   key1 key2_x  lval key2_y  rval
+# 4  bar    one     3    one     6
+# 5  bar    one     3    two     7
+# 0  foo    one     1    one     4
+# 1  foo    one     1    one     5
+# 2  foo    two     2    one     4
+# 3  foo    two     2    one     5
+result = pd.merge(df1, df2, on='key1', suffixes=('_left', '_right'))
+print(result.sort_values(by='key1'))
+#   key1 key2_left  lval key2_right  rval
+# 4  bar       one     3        one     6
+# 5  bar       one     3        two     7
+# 0  foo       one     1        one     4
+# 1  foo       one     1        one     5
+# 2  foo       two     2        one     4
+# 3  foo       two     2        one     5
+</code></pre>
+<h4 id="_5">根据索引合并</h4>
+<p>在某些情况下，DataFrame中用于合并的键是它的索引。可以传递left_index=True或right_index=True（或者都传）来表示索引需要用来作为合并的键</p>
+<pre><code>df1 = pd.DataFrame(
+    {
+        'key1': ['foo', 'foo', 'bar'],
+        'key2': ['one', 'two', 'one'],
+        'lval': [1, 2, 3]
+     }
+)
+df2 = pd.DataFrame(
+    {
+        'key1': ['foo', 'foo', 'bar', 'bar'],
+        'key2': ['one', 'one', 'one', 'two'],
+        'rval': [4, 5, 6, 7]
+     },
+    index=['foo', 'foo', 'bar', 'bar']
+)
+print(df1)
+#   key1 key2  lval
+# 0  foo  one     1
+# 1  foo  two     2
+# 2  bar  one     3
+print(df2)
+#     key1 key2  rval
+# foo  foo  one     4
+# foo  foo  one     5
+# bar  bar  one     6
+# bar  bar  two     7
+result = pd.merge(df1, df2, left_on='key1', right_index=True, suffixes=('_left', '_right'))
+print(result.sort_index())
+#   key1 key1_left key2_left  lval key1_right key2_right  rval
+# 0  foo       foo       one     1        foo        one     4
+# 0  foo       foo       one     1        foo        one     5
+# 1  foo       foo       two     2        foo        one     4
+# 1  foo       foo       two     2        foo        one     5
+# 2  bar       bar       one     3        bar        one     6
+# 2  bar       bar       one     3        bar        two     7
+result = pd.merge(df1, df2, left_on='key1', right_index=True, how='outer', suffixes=('_left', '_right'))  # 和上述结果一样
+print(result.sort_index())
+#   key1 key1_left key2_left  lval key1_right key2_right  rval
+# 0  foo       foo       one     1        foo        one     4
+# 0  foo       foo       one     1        foo        one     5
+# 1  foo       foo       two     2        foo        one     4
+# 1  foo       foo       two     2        foo        one     5
+# 2  bar       bar       one     3        bar        one     6
+# 2  bar       bar       one     3        bar        two     7
+</code></pre>
+<p>在更复杂多层索引数据的多键合并，在索引上连接是一个隐式的多键合并\
+必须以列表的方式指明合并所需多个列（注意使用how='outer’处理重复的索引值）</p>
+<pre><code>df1 = pd.DataFrame(
+    {
+        'key1': ['Ohio', 'Ohio', 'Ohio', 'Nevada', 'Nevada'],
+        'key2': [2000, 2001, 2002, 2001, 2002],
+        'data': np.arange(5.)
     }
 )
-print(data)
-#       Name  class  Age
-# 0  Shobhit     11   18
-# 1  vaibhav     12   20
-# 2    vimal     10   21
-# 3  Sourabh      9   17
-print(data.rename(columns={'Name': 'FirstName'}, inplace=False))
-#   FirstName  class  Age
-# 0   Shobhit     11   18
-# 1   vaibhav     12   20
-# 2     vimal     10   21
-# 3   Sourabh      9   17
-print(data)
-#       Name  class  Age
-# 0  Shobhit     11   18
-# 1  vaibhav     12   20
-# 2    vimal     10   21
-# 3  Sourabh      9   17
-print(data.rename(columns={'Name': 'FirstName'}, inplace=True))  # None, 没有生成新对象
-print(data)
-#   FirstName  class  Age
-# 0   Shobhit     11   18
-# 1   vaibhav     12   20
-# 2     vimal     10   21
-# 3   Sourabh      9   17
-</code></pre>
-<h4 id="_4">索引、选择与过滤</h4>
-<p>Series的索引（obj[...]）与NumPy数组索引的功能类似，只不过Series的索引值可以不仅仅是整数</p>
-<pre><code>obj = pd.Series(['Shobhit', 'vaibhav', 'vimal', 'Sourabh'], index=['a', 'b', 'c', 'd'])
-print(obj)
-# a    Shobhit
-# b    vaibhav
-# c      vimal
-# d    Sourabh
-# dtype: object
-print(obj[1])  # 通过索引位检索，输出索引值
-# vaibhav
-print(obj['b'])  # 通过索引值检索，输出索引值
-# vaibhav
-print(obj[['b']])  # 通过索引值检索，输出Series
-# b    vaibhav
-# dtype: object
-</code></pre>
-<p>下面一组的输出中，注意对比普通Python切片与Series的切片的差异</p>
-<pre><code>print(obj[1])
-# vaibhav
-print(obj[[1]])
-# b    vaibhav
-# dtype: object
-print(obj[1:3])
-# b    vaibhav
-# c      vimal
-# dtype: object
-print(obj['b':'d'])
-# b    vaibhav
-# c      vimal
-# d    Sourabh
-# dtype: object
-</code></pre>
-<p>Series的切片的值更新</p>
-<pre><code>obj = pd.Series(['Shobhit', 'vaibhav', 'vimal', 'Sourabh'], index=['a', 'b', 'c', 'd'])
-obj['b': 'c'] = 5
-print(obj)
-# a    Shobhit
-# b          5
-# c          5
-# d    Sourabh
-# dtype: object
-obj[1: 3] = 6
-print(obj)
-# a    Shobhit
-# b          6
-# c          6
-# d    Sourabh
-# dtype: object
-</code></pre>
-<p>DataFrame的索引与切片</p>
-<pre><code>data = pd.DataFrame(
-    np.arange(16).reshape(4, 4),
-    index=['Ohio', 'Colorado', 'Utah', 'New York'],
-    columns=['One', 'Two', 'Three', 'Four']
+df2 = pd.DataFrame(
+    np.arange(12).reshape((6, 2)),
+    index=[
+        ['Nevada', 'Nevada', 'Ohio', 'Ohio', 'Ohio', 'Ohio'],
+        [2001, 2000, 2000, 2000, 2001, 2002]
+    ],
+    columns=['event1', 'event2']
 )
-print(data)
-#           One  Two  Three  Four
-# Ohio        0    1      2     3
-# Colorado    4    5      6     7
-# Utah        8    9     10    11
-# New York   12   13     14    15
-print(data['Two'])
-# Ohio         1
-# Colorado     5
-# Utah         9
-# New York    13
-# Name: Two, dtype: int64
-print(data[['Three', 'Two']])
-#           Three  Two
-# Ohio          2    1
-# Colorado      6    5
-# Utah         10    9
-# New York     14   13
-print(data[:2])
-#           One  Two  Three  Four
-# Ohio        0    1      2     3
-# Colorado    4    5      6     7
+print(df1)
+#      key1  key2  data
+# 0    Ohio  2000   0.0
+# 1    Ohio  2001   1.0
+# 2    Ohio  2002   2.0
+# 3  Nevada  2001   3.0
+# 4  Nevada  2002   4.0
+print(df2)
+#              event1  event2
+# Nevada 2001       0       1
+#        2000       2       3
+# Ohio   2000       4       5
+#        2000       6       7
+#        2001       8       9
+#        2002      10      11
+result = pd.merge(df1, df2, left_on=['key1', 'key2'], right_index=True)
+print(result)
+#      key1  key2  data  event1  event2
+# 0    Ohio  2000   0.0       4       5
+# 0    Ohio  2000   0.0       6       7
+# 1    Ohio  2001   1.0       8       9
+# 2    Ohio  2002   2.0      10      11
+# 3  Nevada  2001   3.0       0       1
+result = pd.merge(df1, df2, left_on=['key1', 'key2'], right_index=True, how='outer')
+print(result)
+#      key1  key2  data  event1  event2
+# 0    Ohio  2000   0.0     4.0     5.0
+# 0    Ohio  2000   0.0     6.0     7.0
+# 1    Ohio  2001   1.0     8.0     9.0
+# 2    Ohio  2002   2.0    10.0    11.0
+# 3  Nevada  2001   3.0     0.0     1.0
+# 4  Nevada  2002   4.0     NaN     NaN
+# 4  Nevada  2000   NaN     2.0     3.0
 </code></pre>
-<p>嵌套, 根据一个布尔值数组切片或选择数据</p>
-<pre><code>print(data['Three'] &gt; 5)
-# Ohio        False
-# Colorado     True
-# Utah         True
-# New York     True
-# Name: Three, dtype: bool
-print(data[data['Three'] &gt; 5])
-#           One  Two  Three  Four
-# Colorado    4    5      6     7
-# Utah        8    9     10    11
-# New York   12   13     14    15
-</code></pre>
-<p>使用布尔值DataFrame进行索引\
-在这个例子中，这种索引方式使得DataFrame在语法上更像是NumPy二维数组。</p>
-<pre><code>print(data &lt; 5)
-#             One    Two  Three   Four
-# Ohio       True   True   True   True
-# Colorado   True  False  False  False
-# Utah      False  False  False  False
-# New York  False  False  False  False
-data[data &lt; 5] = 0
-print(data)
-#           One  Two  Three  Four
-# Ohio        0    0      0     0
-# Colorado    0    5      6     7
-# Utah        8    9     10    11
-# New York   12   13     14    15
-</code></pre>
-<p>使用loc和iloc选择数据\
-使用轴标签（loc）或整数标签（iloc）以NumPy风格的语法从DataFrame中选出数组的行和列的子集。</p>
-<pre><code>data = pd.DataFrame(
-    np.arange(16).reshape(4, 4),
-    index=['Ohio', 'Colorado', 'Utah', 'New York'],
-    columns=['One', 'Two', 'Three', 'Four']
+<p>使用两边的索引进行合并也是可以的，# 前提是用两边用来合并的索引有交集（公共部分）。\
+在使用merge时，参数on=['key1', 'key2']不能和 left_index=True, right_index=True同时存在。\
+对于重复索引，如果值不同，则多行显示，和数据库SQL的full join类似概念。\
+如果出现相同列名，则会自动添加后缀字符以示区别。</p>
+<pre><code>df1 = pd.DataFrame(
+    [[1, 2], [3, 4], [5, 6]],
+    index=['a', 'c', 'e'],
+    columns=['Ohio', 'Nevada']
 )
-print(data)
-#           One  Two  Three  Four
-# Ohio        0    1      2     3
-# Colorado    4    5      6     7
-# Utah        8    9     10    11
-# New York   12   13     14    15
+print(df1)
+#    Ohio  Nevada
+# a     1       2
+# c     3       4
+# e     5       6
+df2 = pd.DataFrame(
+    [[7, 8], [9, 10], [11, 12], [13, 14]],
+    index=['b', 'c', 'c', 'e'],
+    columns=['Missouri', 'Alabama']
+)
+print(df2)
+#    Missouri  Alabama
+# b         7        8
+# c         9       10
+# c        11       12
+# e        13       14
+df3 = pd.DataFrame(
+    [[7, 8], [9, 10], [11, 12], [13, 14]],
+    index=['a', 'c', 'e', 'f'],
+    columns=['Nevada', 'Alabama']
+)
+print(df3)
+#    Nevada  Alabama
+# a       7        8
+# c       9       10
+# e      11       12
+# f      13       14
+result = pd.merge(df1, df2, left_index=True, right_index=True, how='outer')
+print(result)
+#    Ohio  Nevada  Missouri  Alabama
+# a   1.0     2.0       NaN      NaN
+# b   NaN     NaN       7.0      8.0
+# c   3.0     4.0       9.0     10.0
+# c   3.0     4.0      11.0     12.0
+# e   5.0     6.0      13.0     14.0
+result = pd.merge(df1, df3, left_index=True, right_index=True, how='outer')
+print(result)
+#    Ohio  Nevada_x  Nevada_y  Alabama
+# a   1.0       2.0         7        8
+# c   3.0       4.0         9       10
+# e   5.0       6.0        11       12
+# f   NaN       NaN        13       14
 </code></pre>
-<p>通过标签loc选出单行多列的数据\
-输出Colorado标签页的Two和Three这两列的值，以行记录的方式展现</p>
-<pre><code>print(data.loc['Colorado', ['Two', 'Three']])  # 切片:
-# Two      5
-# Three    6
-# Name: Colorado, dtype: int64
-print(data.loc[:'Ohio', :'Two'])  # 切片: 0行，0,1列
-#       One  Two
-# Ohio    0    1
+<p>另一种写法：</p>
+<pre><code>result = df1.join(df2, how='outer')
+print(result)
+#    Ohio  Nevada  Missouri  Alabama
+# a   1.0     2.0       NaN      NaN
+# b   NaN     NaN       7.0      8.0
+# c   3.0     4.0       9.0     10.0
+# c   3.0     4.0      11.0     12.0
+# e   5.0     6.0      13.0     14.0
 </code></pre>
-<p>通过整数标签iloc进行类似的数据选择</p>
-<pre><code>print(data.iloc[[0]])  # 0行
-#       One  Two  Three  Four
-# Ohio    0    1      2     3
-print(data.iloc[[0], [1]])  # 切片: 0行，1列
-#       Two
-# Ohio    1
-print(data.iloc[1:2, 1:2])  # 切片: 1行，2列
-#       Two
-# Ohio    1
-print(data.iloc[2, [3, 0, 1]])  # 切片: 2行，依次取3，0，1列
-# Four    11
-# One      8
-# Two      9
-# Name: Utah, dtype: int64
+<p>也可以向join方法传入一个DataFrame列表，类似于对三个数据集进行join操作</p>
+<pre><code>result = df1.join([df2, df3])
+print(result)
+#    Ohio  Nevada_x  Missouri  Alabama_x  Nevada_y  Alabama_y
+# a     1         2       NaN        NaN         7          8
+# c     3         4       9.0       10.0         9         10
+# c     3         4      11.0       12.0         9         10
+# e     5         6      13.0       14.0        11         12
+</code></pre>
+<h4 id="_6">沿轴向连接</h4>
+<p>另一种数据组合操作可称为拼接、绑定或堆叠。NumPy的concatenate函数可以在NumPy数组上实现该功能。\
+\
+基于Series的pandas的concat函数的工作机制分析\
+下面三个索引不重叠的Series</p>
+<pre><code>s1 = pd.Series([0, 1], index=['a', 'b'])
+s2 = pd.Series([2, 3, 4], index=['c', 'd', 'e'])
+s3 = pd.Series([5, 6], index=['f', 'g'])
+</code></pre>
+<p>用列表中的这些对象调用concat方法会将值和索引粘在一起：\
+默认情况下，concat方法是沿着axis=0的轴向生效的，生成另一个Series。\
+如果传递axis=1，返回的结果则是一个DataFrame（axis=1时是列）</p>
+<pre><code>result = pd.concat([s1, s2, s3])
+print(result)
+# a    0
+# b    1
+# c    2
+# d    3
+# e    4
+# f    5
+# g    6
+# dtype: int64
+result = pd.concat([s1, s2, s3], keys=['one', 'two', 'three'])  # 通过keys参数，在连接轴向上创建一个多层索引，以便在结果中区分各部分
+print(result)
+# one    a    0
+#        b    1
+# two    c    2
+#        d    3
+#        e    4
+# three  f    5
+#        g    6
+# dtype: int64
+print(result.unstack())  # 把原索引作为列标签展开
+#          a    b    c    d    e    f    g
+# one    0.0  1.0  NaN  NaN  NaN  NaN  NaN
+# two    NaN  NaN  2.0  3.0  4.0  NaN  NaN
+# three  NaN  NaN  NaN  NaN  NaN  5.0  6.0
+result = pd.concat([s1, s2, s3], axis=1)  # 在这个案例中axis=1轴向上并没有重叠
+print(result)
+#      0    1    2
+# a  0.0  NaN  NaN
+# b  1.0  NaN  NaN
+# c  NaN  2.0  NaN
+# d  NaN  3.0  NaN
+# e  NaN  4.0  NaN
+# f  NaN  NaN  5.0
+# g  NaN  NaN  6.0
+result = pd.concat([s1, s2, s3], axis=1, keys=['one', 'two', 'three'])  # 在这个案例中axis=1轴向上并没有重叠
+print(result)
+#    one  two  three
+# a  0.0  NaN    NaN
+# b  1.0  NaN    NaN
+# c  NaN  2.0    NaN
+# d  NaN  3.0    NaN
+# e  NaN  4.0    NaN
+# f  NaN  NaN    5.0
+# g  NaN  NaN    6.0
+print(result.unstack())  # 对比axis=0的多层索引，当axis=1时对输出各index的并集做了分组。
+# one    a    0.0
+#        b    1.0
+#        c    NaN
+#        d    NaN
+#        e    NaN
+#        f    NaN
+#        g    NaN
+# two    a    NaN
+#        b    NaN
+#        c    2.0
+#        d    3.0
+#        e    4.0
+#        f    NaN
+#        g    NaN
+# three  a    NaN
+#        b    NaN
+#        c    NaN
+#        d    NaN
+#        e    NaN
+#        f    5.0
+#        g    6.0
+# dtype: float64
 
-print(data.iloc[:3, :2][data &gt; 4])
+s4 = pd.concat([s1, s3])
+print(s4)
+# a    0
+# b    1
+# f    5
+# g    6
+# dtype: int64
+result = pd.concat([s1, s4])
+print(result)
+# a    0
+# b    1
+# a    0
+# b    1
+# f    5
+# g    6
+# dtype: int64
+result = pd.concat([s1, s4], axis=1)  # 现在在中axis=1轴向上有重叠
+print(result)
+#      0  1
+# a  0.0  0
+# b  1.0  1
+# f  NaN  5
+# g  NaN  6
+result = pd.concat([s1, s4], axis=1, keys=['one', 'two', 'three'])
+print(result)
+#    one  two
+# a  0.0    0
+# b  1.0    1
+# f  NaN    5
+# g  NaN    6
+result = pd.concat([s1, s4], axis=0, keys=['one', 'two', 'three'])  # 通过keys参数，在连接轴向上创建一个多层索引
+print(result)
+# one  a    0
+#      b    1
+# two  a    0
+#      b    1
+#      f    5
+#      g    6
+# dtype: int64
+result = pd.concat([s1, s4], axis=1, join='inner')  # 内连接方式合并索引（索引交集）
+print(result)
+#    0  1
+# a  0  0
+# b  1  1
+result = pd.concat([s1, s4], axis=1).reindex(['a', 'c', 'b', 'e'])  # 使用join_axes(已被替换成reindex)来指定用于连接其他轴向的轴
+print(result)
+#      0    1
+# a  0.0  0.0
+# c  NaN  NaN
+# b  1.0  1.0
+# e  NaN  NaN
 </code></pre>
-<h4 id="_5">整数索引</h4>
-<pre><code>ser = pd.Series(np.arange(3.))
-print(ser)
-# 0    0.0
-# 1    1.0
-# 2    2.0
-# dtype: float64
-print(ser[:1])
-# 0    0.0
-# dtype: float64
-print(ser.loc[:1])  # loc（用于标签）
-# 0    0.0
-# 1    1.0
-# dtype: float64
-print(ser.iloc[:1])  # iloc（用于整数）
-# 0    0.0
-# dtype: float64
+<p>基于DataFrame的pandas的concat函数的工作机制分析</p>
+<pre><code>df1 = pd.DataFrame(
+    np.arange(12).reshape((6, 2)),
+    index=[
+        ['Ohio', 'Ohio', 'Ohio', 'Nevada', 'Nevada', 'Nevada'],
+        [2000, 2001, 2002, 2000, 2001, 2002]
+    ],
+    columns=['event1', 'event2']
+)
+df2 = pd.DataFrame(
+    np.arange(12).reshape((6, 2)),
+    index=[
+        ['Ohio', 'Ohio', 'Ohio', 'Nevada', 'Nevada', 'Nevada'],
+        [2000, 2001, 2002, 2000, 2001, 2002]
+    ],
+    columns=['event3', 'event4']
+)
+print(df1)
+#              event1  event2
+# Ohio   2000       0       1
+#        2001       2       3
+#        2002       4       5
+# Nevada 2000       6       7
+#        2001       8       9
+#        2002      10      11
+print(df2)
+#              event3  event4
+# Ohio   2000       0       1
+#        2001       2       3
+#        2002       4       5
+# Nevada 2000       6       7
+#        2001       8       9
+#        2002      10      11
+result = np.concatenate([df1, df2], axis=0)  # 沿0轴拼接
+print(result)
+# [[ 0  1]
+#  [ 2  3]
+#  [ 4  5]
+#  [ 6  7]
+#  [ 8  9]
+#  [10 11]
+#  [ 0  1]
+#  [ 2  3]
+#  [ 4  5]
+#  [ 6  7]
+#  [ 8  9]
+#  [10 11]]
+result = np.concatenate([df1, df2], axis=1)  # 沿1轴拼接
+print(result)
+# [[ 0  1  0  1]
+#  [ 2  3  2  3]
+#  [ 4  5  4  5]
+#  [ 6  7  6  7]
+#  [ 8  9  8  9]
+#  [10 11 10 11]]
+result = np.concatenate([df1, df2], axis=None)  # 将数组展平
+print(result)
+# [ 0  1  2  3  4  5  6  7  8  9 10 11  0  1  2  3  4  5  6  7  8  9 10 11]
 </code></pre>
-<h4 id="_6">算术和数据对齐</h4>
-<p>不同索引的对象之间的算术行为是pandas提供给一些应用的一项重要特性。</p>
+<h4 id="_7">联合重叠数据</h4>
+<p>另一个数据联合场景，既不是合并操作，也不是连接操作。\
+假如有两个数据集，这两个数据集的索引全部或部分重叠，通过NumPy的where函数可以进行面向数组的if-else等价操作。</p>
 <pre><code>s1 = pd.Series(
-    [7.3, -2.5, 3.4, 1.5],
-    index=['a', 'c', 'd', 'e']
+    [np.nan, 2.5, 0.0, 3.5, 4.5, np.nan],
+    index=['f', 'e', 'd', 'c', 'b', 'a']
 )
-
 s2 = pd.Series(
-    [-2.1, 3.6, -1.5, 4, 3.1],
-    index=['a', 'c', 'e', 'f', 'g']
+    [0.0, np.nan, 2.0, np.nan, np.nan, 5.0],
+    index=['a', 'b', 'c', 'd', 'e', 'f']
 )
 
 print(s1)
-# a    7.3
-# c   -2.5
-# d    3.4
-# e    1.5
+# f    NaN
+# e    2.5
+# d    0.0
+# c    3.5
+# b    4.5
+# a    NaN
 # dtype: float64
 print(s2)
-# a   -2.1
-# c    3.6
-# e   -1.5
-# f    4.0
-# g    3.1
-# dtype: float64
-print(s1 + s2)  # 没有交叠的标签位置上，内部数据对齐会产生缺失值。缺失值会在后续的算术操作上产生影响。
-# a    5.2
-# c    1.1
+# a    0.0
+# b    NaN
+# c    2.0
 # d    NaN
-# e    0.0
-# f    NaN
-# g    NaN
+# e    NaN
+# f    5.0
 # dtype: float64
-
-
-df1 = pd.DataFrame(
-    np.arange(9).reshape((3, 3)),
-    columns=list('bcd'),
-    index=['Ohio', 'Texas', 'Colorado']
-)
-
-df2 = pd.DataFrame(
-    np.arange(12).reshape((4, 3)),
-    columns=list('bde'),
-    index=['Utah', 'Ohio', 'Texas', 'Oregon']
-)
-
-print(df1)
-#           b  c  d
-# Ohio      0  1  2
-# Texas     3  4  5
-# Colorado  6  7  8
-print(df2)
-#         b   d   e
-# Utah    0   1   2
-# Ohio    3   4   5
-# Texas   6   7   8
-# Oregon  9  10  11
 </code></pre>
-<p>将这些对象加在一起，返回一个DataFrame，它的索引、列是每个DataFrame的索引、列的并集。\
-由于’c’列和’e’列并不是两个DataFrame共有的列，这两列中产生了缺失值。\
-对于行标签不同的DataFrame对象也是如此。如果将两个行或列完全不同的DataFrame对象相加，结果将全部为空</p>
-<pre><code>print(df1 + df2)
-#             b   c     d   e
-# Colorado  NaN NaN   NaN NaN
-# Ohio      3.0 NaN   6.0 NaN
-# Oregon    NaN NaN   NaN NaN
-# Texas     9.0 NaN  12.0 NaN
-# Utah      NaN NaN   NaN NaN
+<p>方法1，通过Numpy的where函数</p>
+<pre><code>result = np.where(pd.isnull(s1), s2, s1)  # An array with elements from 'x'(s2) where 'condition'(isnull(s1)) is True, and elements from 'y'(s1) elsewhere.
+print(result)
+# [0.  2.5 0.  3.5 4.5 5. ]
+# s1         # s2         # result
+# f    NaN   # a    0.0   0.       条件中s1该元素为null，所以where函数取对应x(s2)的元素（注意，与索引顺序无关）
+# e    2.5   # b    NaN   2.5      条件中s1该元素不为null，所以where函数取对应y(s1)的元素
+# d    0.0   # c    2.0   0.
+# c    3.5   # d    NaN   3.5
+# b    4.5   # e    NaN   4.5
+# a    NaN   # f    5.0   5.0      条件中s1该元素为null，所以where函数取对应x(s2)的元素
+
+result = np.where(pd.isnull(s2), s1, s2)
+print(result)
+# [0.  2.5 2.  3.5 4.5 5. ]
 </code></pre>
-<p>使用填充值的算术方法\
-在两个不同的索引化对象之间进行算术操作时，会要使用特殊填充值，比如当轴标签在一个对象中存在，在另一个对象中不存在时，将缺失值填充为0\
-下面是Series和DataFrame的算术方法。这些方法中的每一个都有一个以r开头的副本，这些副本方法的参数是翻转的。
-* add，radd：加法(+)
-* sub，rsub：减法(-)
-* div，rdiv：除法(/)
-* floordiv，rfloordiv：整除(//)
-* mul，rmul：乘法(<em>)
-* pow，rpow：幂次方(</em>*)</p>
-<p>下面三个例子中，注意df2和df1列对应关系的不同所出现的NaN</p>
+<p>方法2，通过Series的combine_first方法</p>
+<pre><code>result = s2.combine_first(s1)  # 注意，combine_first是按照s2的索引顺序检索的，相同索引的s1的值会填充对应s2的null
+print(result)
+# a    0.0
+# b    4.5
+# c    2.0
+# d    0.0
+# e    2.5
+# f    5.0
+# dtype: float64
+</code></pre>
+<p>方法3：Pandas的combine_first方法</p>
 <pre><code>df1 = pd.DataFrame(
-    np.arange(4).reshape((2, 2)),
-    columns=list('ab')
+    {
+        'a': [1.0, np.nan, 5.0, np.nan],
+        'b': [np.nan, 2.0, np.nan, 6.0],
+        'c': [2.0, 6.0, 10.0, 15.0]
+    }
 )
-
 df2 = pd.DataFrame(
-    np.arange(9).reshape((3, 3)),
-    columns=list('bcd')
+    {
+        'a': [5.0, 4.0, np.nan, 3.0, 7.0],
+        'b': [np.nan, 3.0, 4.0, 6.0, 8.0]
+    }
 )
-print(df1 + df2)  # 在不重叠的位置出现NA值
-#     a    b   c   d
-# 0 NaN  1.0 NaN NaN
-# 1 NaN  6.0 NaN NaN
-# 2 NaN  NaN NaN NaN
-print(df1.add(df2, fill_value=0))
-#      a    b    c    d
-# 0  0.0  1.0  1.0  2.0
-# 1  2.0  6.0  4.0  5.0
-# 2  NaN  6.0  7.0  8.0
-
-df2 = pd.DataFrame(
-    np.arange(9).reshape((3, 3)),
-    columns=list('acd')
-)
-print(df1.add(df2, fill_value=0))  # 注意NaN与df1和df2列对应关系
-#      a    b    c    d
-# 0  0.0  1.0  1.0  2.0
-# 1  5.0  3.0  4.0  5.0
-# 2  6.0  NaN  7.0  8.0
-
-df2 = pd.DataFrame(
-    np.arange(9).reshape((3, 3)),
-    columns=list('abd')
-)
-print(df1.add(df2, fill_value=0))
-#      a    b    d
-# 0  0.0  2.0  2.0
-# 1  5.0  7.0  5.0
-# 2  6.0  7.0  8.0
-
-
-print(df1.radd(df2, fill_value=0))
-print(df1.sub(df2, fill_value=0))
-print(df1.div(df2, fill_value=0))
-print(df1.floordiv(df2, fill_value=0))
-print(df1.mul(df2, fill_value=0))
-print(df1.pow(df2, fill_value=0))
-
-df1.loc[1, :'b'] = np.nan
 print(df1)
-# #      a    b
-# # 0  0.0  1.0
-# 1  NaN  NaN
+#      a    b     c
+# 0  1.0  NaN   2.0
+# 1  NaN  2.0   6.0
+# 2  5.0  NaN  10.0
+# 3  NaN  6.0  15.0
+print(df2)
+#      a    b
+# 0  5.0  NaN
+# 1  4.0  3.0
+# 2  NaN  4.0
+# 3  3.0  6.0
+# 4  7.0  8.0
+result = df2.combine_first(df1)  # 用df1的值去填充df2对应索引位置的null值
+print(result)
+#      a    b     c
+# 0  5.0  NaN   2.0
+# 1  4.0  3.0   6.0
+# 2  5.0  4.0  10.0
+# 3  3.0  6.0  15.0
+# 4  7.0  8.0   NaN
 </code></pre>
-<p>DataFrame和Series间的操作\
-DataFrame和Series间的算术操作与NumPy中不同维度数组间的操作类似</p>
-<h5 id="numpy">NumPy</h5>
-<p>从arr中减去arr[0]时，减法在每一行都进行了操作。这就是所谓的广播机制</p>
-<pre><code>arr = np.arange(12).reshape((3, 4))
-print(arr)
-# [[ 0  1  2  3]
-#  [ 4  5  6  7]
-#  [ 8  9 10 11]]
-print(arr[0])
-# [0 1 2 3]
-print(arr - arr[0])
-# [[0 0 0 0]
-#  [4 4 4 4]
-#  [8 8 8 8]]
+<h3 id="_8">重塑和透视</h3>
+<p>重新排列表格型数据有多种基础操作。这些操作被称为重塑或透视。</p>
+<pre><code>import numpy as np
+import pandas as pd
 </code></pre>
-<h5 id="dataframeseries">DataFrame/Series</h5>
-<p>默认情况下，DataFrame和Series的数学操作中会将Series的索引和DataFrame的列进行匹配，并广播到各行.\
-如果一个索引值不在DataFrame的列中，也不在Series的索引中，则对象会重建索引并形成联合</p>
-<pre><code>frame = pd.DataFrame(
-    np.arange(12).reshape((4, 3)),
-    columns=list('bde'),
-    index=['Utah', 'Ohio', 'Texas', 'Oregon']
-)
-
-series = frame.iloc[0]
-series2 = pd.Series(
-    range(3),
-    index=list('bef')
-)
-series3 = frame['d']
-
-print(frame - series)  # Series的索引和DataFrame的列进行匹配
-# frame:                      series                           Result:
-#         b   d   e           # b    0                         #         b  d  e
-# Utah    0   1   2           # d    1                         # Utah    0  0  0
-# Ohio    3   4   5           # e    2                         # Ohio    3  3  3
-# Texas   6   7   8           # Name: Utah, dtype: int64       # Texas   6  6  6
-# Oregon  9  10  11                                            # Oregon  9  9  9
-
-print(frame - series2)  # Series的索引和DataFrame的列进行匹配
-# frame:                      series2                          Result:
-#         b   d   e           # b    0                         #           b   d     e   f
-# Utah    0   1   2           # e    1                         # Utah    0.0 NaN   1.0 NaN
-# Ohio    3   4   5           # f    2                         # Ohio    3.0 NaN   4.0 NaN
-# Texas   6   7   8           # dtype: int64                   # Texas   6.0 NaN   7.0 NaN
-# Oregon  9  10  11                                            # Oregon  9.0 NaN  10.0 NaN
-</code></pre>
-<p>改为在列上进行广播，在行上匹配，你必须使用算术方法中的一种</p>
-<pre><code>print(frame.sub(series3, axis='index'))  # 或axis=0
-# frame:                       series3                         Result:
-#         b   d   e            # Utah       1                  #         b  d  e
-# Utah    0   1   2            # Ohio       4                  # Utah   -1  0  1
-# Ohio    3   4   5            # Texas      7                  # Ohio   -1  0  1
-# Texas   6   7   8            # Oregon    10                  # Texas  -1  0  1
-# Oregon  9  10  11            # Name: d, dtype: int64         # Oregon -1  0  1
-</code></pre>
-<h4 id="_7">函数应用和映射</h4>
-<p>NumPy的通用函数（逐元素数组方法）对pandas对象也有效</p>
-<pre><code>frame = pd.DataFrame(
-    np.random.randn(4, 3),
-    columns=list('bde'),
-    index=['Utah', 'Ohio', 'Texas', 'Oregon']
-)
-print(frame)
-#                b         d         e
-# Utah    2.737734 -0.379977  0.758933
-# Ohio    0.847497  0.839583 -2.192021
-# Texas  -0.907544 -0.457436 -1.907396
-# Oregon  0.389362  0.250170  1.065889
-
-print(np.abs(frame))  # 绝对值
-#                b         d         e
-# Utah    2.737734  0.379977  0.758933
-# Ohio    0.847497  0.839583  2.192021
-# Texas   0.907544  0.457436  1.907396
-# Oregon  0.389362  0.250170  1.065889
-
-f = lambda x: x.max() - x.min()  # f返回一个标量值
-print(frame.apply(f))  # 将f应用在列, 默认axis=0
-# b    3.645278
-# d    1.297019
-# e    3.257911
-# dtype: float64
-
-print(frame.apply(f, axis=1))  # 将f应用在行
-# Utah      3.117711
-# Ohio      3.039518
-# Texas     1.449961
-# Oregon    0.815720
-# dtype: float64
-
-
-def f(x):  # f返回带有多个值的Series
-    return pd.Series(
-        [x.min(), x.max()],
-        index=['min', 'max']
-    )
-
-
-print(frame.apply(f))
-#             b         d         e
-# min -0.907544 -0.457436 -2.192021
-# max  2.737734  0.839583  1.065889
-
-
-f = lambda x: '%.2f' % x
-print(frame.applymap(f))  # 格式化字符串使用applymap方法, 将一个逐元素的函数应用到Series上
-#             b      d      e
-# Utah     2.74  -0.38   0.76
-# Ohio     0.85   0.84  -2.19
-# Texas   -0.91  -0.46  -1.91
-# Oregon   0.39   0.25   1.07
-
-print(frame['e'].map(f))
-# Utah       0.76
-# Ohio      -2.19
-# Texas     -1.91
-# Oregon     1.07
-# Name: e, dtype: object
-</code></pre>
-<h3 id="_8">排序和排名</h3>
-<p>使用sort_index方法，按行或列索引进行字典型排序，返回一个新的、排序好的对象</p>
-<h4 id="series_1">Series排序</h4>
-<pre><code>obj = pd.Series(
-    range(4),
-    index=list('dabc')
-)
-print(obj)
-# d    0
-# a    1
-# b    2
-# c    3
-# dtype: int64
-print(obj.sort_index())
-# a    1
-# b    2
-# c    3
-# d    0
-# dtype: int64
-# print(obj.sort_values())
-# d    0
-# a    1
-# b    2
-# c    3
-# dtype: int64
-</code></pre>
-<p>默认情况下，所有的缺失值都会被排序至Series的尾部</p>
-<pre><code>obj = pd.Series([4, np.nan, 7, np.nan, -3, 2])
-print(obj)
-# 0    4.0
-# 1    NaN
-# 2    7.0
-# 3    NaN
-# 4   -3.0
-# 5    2.0
-# dtype: float64
-print(obj.sort_values())
-# 4   -3.0
-# 5    2.0
-# 0    4.0
-# 2    7.0
-# 1    NaN
-# 3    NaN
-# dtype: float64
-</code></pre>
-<h4 id="dataframe_3">DataFrame排序</h4>
-<pre><code>frame = pd.DataFrame(
-    [[0, 1, 10, 3],
-     [4, 5, 6, 21],
-     [8, 9, 2, 21]],
-    index=['three', 'one', 'five'],
-    columns=list('dabc')
-)
-print(frame)
-#        d  a   b   c
-# three  0  1  10   3
-# one    4  5   6  21
-# five   8  9   2  21
-print(frame.index)
-# Index(['three', 'one', 'five'], dtype='object')
-print(frame.sort_index())  # five, one，three升序
-#        d  a   b   c
-# five   8  9   2  21
-# one    4  5   6  21
-# three  0  1  10   3
-print(frame.sort_index(axis=0))  # five, one，three升序
-#        d  a   b   c
-# five   8  9   2  21
-# one    4  5   6  21
-# three  0  1  10   3
-print(frame.sort_index(axis=0, ascending=False))  # five, one，three降序
-#        d  a   b   c
-# three  0  1  10   3
-# one    4  5   6  21
-# five   8  9   2  21
-print(frame.sort_index(axis=1))  # 对abcd升序
-#        a   b   c  d
-# three  1  10   3  0
-# one    5   6  21  4
-# five   9   2  21  8
-print(frame.sort_index(axis=1, ascending=False))  # 对abcd降序
-#        d   c   b  a
-# three  0   3  10  1
-# one    4  21   6  5
-# five   8  21   2  9
-print(frame.sort_values(by=['c'], ascending=False))
-#        d  a   b   c
-# one    4  5   6  21
-# five   8  9   2  21
-# three  0  1  10   3
-print(frame.sort_values(by=['c', 'd'], ascending=False))  # 先对b降序，再对d降序
-#        d  a   b   c
-# five   8  9   2  21
-# one    4  5   6  21
-# three  0  1  10   3
-</code></pre>
-<h4 id="_9">排名</h4>
-<p>排名是指对数组从1到有效数据点总数分配名次的操作。
-* Series和DataFrame的rank方法是实现排名的方法。
-* df.rank(ascending=False, method='max')
-* ascending：排名方式，默认从低到高，ascending=False 表示从高到低；
-* method：排名方式，包括：
-    * average:默认，在相等分组中，为各个值分配平均排名
-    * min:使用整个分组的最小排名
-    * max:使用整个分组的最大排名
-    * first:按值再原始数据中出现顺序分配排名
-    * dense:类似min方法，但排名总是再组间增加1，而不是组中相同的元素数
-* 默认情况下，rank是通过“为各组分配一个平均排名”的方式破坏平级关系</p>
-<pre><code>obj = pd.Series([7, -5, 7, 4, 2, 0, 4])  # 按照每个元素的大小顺序给出一个平均排名
-print(obj.rank())
-# 0    6.5
-# 1    1.0
-# 2    6.5
-# 3    4.5
-# 4    3.0
-# 5    2.0
-# 6    4.5
-# dtype: float64
-</code></pre>
-<p>根据元素的观察顺序进行分配\
-元素0和2没有使用平均排名6.5，它们被设成了6和7，因为数据中标签0位于标签2的前面。</p>
-<pre><code>print(obj.rank(method='first'))
-# 0    6.0
-# 1    1.0
-# 2    7.0
-# 3    4.0
-# 4    3.0
-# 5    2.0
-# 6    5.0
-# dtype: float64
-
-
-print(obj.rank(ascending=False, method='max'))
-print(obj.rank(ascending=True, method='max'))
-# Original Series   Max with inc         Max with dec
-# 0     7           # 0    2.0 (最小)     # 0    7.0 (最大)
-# 1    -5           # 1    7.0 (最大)     # 1    1.0 (最小)
-# 2     7           # 2    2.0 (最小)     # 2    7.0 (最大)
-# 3     4           # 3    4.0           # 3    5.0
-# 4     2           # 4    5.0           # 4    3.0
-# 5     0           # 5    6.0           # 5    2.0
-# 6     4           # 6    4.0           # 6    5.0
-# dtype: float64    # dtype: float64     # dtype: float64
-
-
-frame = pd.DataFrame(
-    {'b': [4.3, 7, -3, 2],
-     'a': [0, 1, 0, 1],
-     'c': [-2, 5, 8, -2]}
-)
-print(frame)
-#      b  a  c
-# 0  4.3  0 -2
-# 1  7.0  1  5
-# 2 -3.0  0  8
-# 3  2.0  1 -2
-print(frame.rank(axis='columns'))  # axis=1
-#      b    a    c
-# 0  3.0  2.0  1.0
-# 1  3.0  1.0  2.0
-# 2  1.0  2.0  3.0
-# 3  3.0  2.0  1.0
-</code></pre>
-<h3 id="_10">含有重复标签的轴索引</h3>
-<p>尽管很多pandas函数（比如reindex）需要标签是唯一的，但这个并不是强制性的。\
-索引的is_unique属性可以告诉你它的标签是否唯一。\
-带有重复索引的情况下，根据一个标签索引多个条目会返回一个序列，而单个条目会返回标量值，这可能会使代码更复杂。</p>
-<pre><code>obj = pd.Series(range(5), index=['a', 'b', 'a', 'c', 'b'])
-print(obj)
-# a    0
-# b    1
-# a    2
-# c    3
-# b    4
-# dtype: int64
-print(obj.is_unique)  # True
-print(obj.index.is_unique)  # False
-
-print(obj['a'])  # 返回一个序列
-# a    0
-# a    2
-# dtype: int64
-
-df = pd.DataFrame(np.random.randn(4, 3), index=['a', 'a', 'b', 'b'])
-print(df)
-#           0         1         2
-# a -0.726164  0.531540 -0.521611
-# a -1.539807 -0.710880 -0.992789
-# b -0.975970 -0.470725  0.121958
-# b -0.301495  1.072322 -1.542296
-print(df.index.is_unique)  # False
-print(df.loc['b'])
-#           0         1         2
-# b -0.520008  0.052574  0.638529
-# b -1.928705 -1.099534 -1.605296
-</code></pre>
-<h3 id="_11">描述性统计的概述与计算</h3>
-<ul>
-<li>pandas对象装配了一个常用数学、统计学方法的集合。</li>
-<li>其中大部分属于归约或汇总统计的类别，这些方法从DataFrame的行或列中抽取一个Series或一系列值的单个值（如总和或平均值）。</li>
-<li>与NumPy数组中的类似方法相比，它们内建了处理缺失值的功能。</li>
-<li>归约方法: sum()</li>
-<li>积累型方法: cumsun()</li>
-<li>既不是归约型方法也不是积累型方法: describe()james@nuc:/opt/python&gt; james@nuc:/opt/python&gt;</li>
-</ul>
+<h4 id="_9">使用多层索引进行重塑</h4>
+<p>多层索引在DataFrame中提供了一种一致性方式用于重排列数据。以下是两个基础操作：
+* statck（堆叠）该操作会“旋转”或将列中的数据透视到行。
+* unstack（拆堆）该操作会将行中的数据透视到列。</p>
 <pre><code>df = pd.DataFrame(
-    [[1.4, np.nan],
-     [7.1, -4.5],
-     [np.nan, np.nan],
-     [0.75, -1.3]],
-    index=list('abcd'),
-    columns=['one', 'two']
+    np.arange(6).reshape((2, 3)),
+    index=pd.Index(['Ohio', 'Colorado'], name='state'),
+    columns=pd.Index(['one', 'two', 'three'], name='number')
 )
 print(df)
-#     one  two
-# a  1.40  NaN
-# b  7.10 -4.5
-# c   NaN  NaN
-# d  0.75 -1.3
-print(df.sum())  # axis=0, 返回一个每列和的Series
-# one    9.25
-# two   -5.80
-# dtype: float64
-print(df.sum(axis=1))  # axis=1且skipna=True, 返回一个每行和的Series, 排除NA值, 填0
-# a    1.40
-# b    2.60
-# c    0.00
-# d   -0.55
-# dtype: float64
-print(df.sum(axis=1, skipna=False))  # 不排除NA值
-# a     NaN
-# b    2.60
-# c     NaN
-# d   -0.55
-# dtype: float64
-print(df.groupby(level=0).sum())  # df.sum(level=1) is deprecated. should use df.groupby(level=1).sum().
-#     one  two
-# a  1.40  0.0
-# b  7.10 -4.5
-# c  0.00  0.0
-# d  0.75 -1.3
-print(df.idxmax())  # 列one的最大值是在索引b, 列two的最大值是在索引d
-# one    b
-# two    d
-# dtype: object
-print(df.idxmin())
-# one    d
-# two    b
-# dtype: object
-
-print(df.cumsum())
-#     one  two
-# a  1.40  NaN
-# b  8.50 -4.5
-# c   NaN  NaN
-# d  9.25 -5.8
-
-print(df.describe())  # 一次性产生多个汇总统计
-#             one       two
-# count  3.000000  2.000000
-# mean   3.083333 -2.900000
-# std    3.493685  2.262742
-# min    0.750000 -4.500000
-# 25%    1.075000 -3.700000
-# 50%    1.400000 -2.900000
-# 75%    4.250000 -2.100000
-# max    7.100000 -1.300000
-
-
-obj = pd.Series(['a', 'a', 'b', 'c'] * 4)
-print(obj)
-# 0     a
-# 1     a
-# 2     bjames@nuc:/opt/python&gt;
-# 3     c
-# 4     a
-# 5     a
-# 6     b
-# 7     c
-# 8     a
-# 9     a
-# 10    b
-# 11    c
-# 12    a
-# 13    a
-# 14    b
-# 15    c
-# dtype: object
-print(obj.describe())  # 针对非数值型数据，describe产生另一种汇总统计
-# count     16
-# unique     3
-# top        a
-# freq       8
-# dtype: object
+# number    one  two  three
+# state
+# Ohio        0    1      2
+# Colorado    3    4      5
 </code></pre>
-<h3 id="_12">相关性和协方差</h3>
-<p>协方差与相关系数也是在时域分析时常见的两个概念，他们都是用来描述数据“像不像”的。\</p>
-<p>协方差的通俗理解：
-* 两个变量在变化过程中是同方向变化还是反方向变化？相同或者相反成都如何？
-* 你变大，同时我变大，说明两个变量是同向变化，这时协方差就是正的。
-* 你变大，同时我变小，说明两个变量是反向变化，这时协方差就是负的。
-* 从数值看，协方差的数值越大，两个变量同向程度也就越大。反之亦然。</p>
-<p>相关系数的通俗理解：
-* 用X，Y的协方差初一X的标准差和Y的标准差。
-* 相关系数也可以看成协方差，一种提出了两个变量量纲影响、标准化后的特殊协方差。
-* 所以：
-* 也可以反应两个变量变化时是同向还是反向，如果同向变化就为正，反向变化就为负。
-* 由于是标准版后的协方差，相关系数消除了两个变量变化幅度的影响，而只是单纯反应两个变量每单位变化时的相似成都。</p>
-<p>总结
-<em>对于两个变量X、Y，
-</em>当他们的相关系数为1时，说明两个变量变化时的正向相似度最大。
-<em>当他们的相关系数为－1时，说明两个变量变化的反向相似度最大。
-</em>随着他们相关系数减小，两个变量变化时的相似度也变小，当相关系数为0时，两个变量的变化过程没有任何相似度，也即两个变量无关。
-*当相关系数继续变小，小于0时，两个变量开始出现反向的相似度，随着相关系数继续变小，反向相似度会逐渐变大。</p>
-<p>下面的例子使用 pandas-datareader
-* https://pypi.org/project/pandas-datareader/
-* https://pydata.github.io/pandas-datareader/)</p>
-<p>在所有例子中，在计算相关性之前，数据点已经按标签进行了对齐。</p>
-<pre><code>all_data = {
-
-    ticker: web.get_data_yahoo(ticker) for ticker in ['AAPL', 'IBM', 'MSFT', 'GOOG']
-}
-
-price = pd.DataFrame(
-    {
-        ticker: data['Adj Close'] for ticker, data in all_data.items()
-    }
-)
-
-volume = pd.DataFrame(
-    {
-        ticker: data['Volume'] for ticker, data in all_data.items()
-    }
-)
-
-returns = price.pct_change()
-print(returns.tail())
-#                 AAPL       IBM      MSFT      GOOG
-# Date
-# 2021-08-09 -0.000342 -0.008424 -0.003904  0.007049
-# 2021-08-10 -0.003354  0.000920 -0.006555  0.000685
-# 2021-08-11  0.001786  0.005305  0.001781 -0.002947
-# 2021-08-12  0.020773  0.006614  0.009967  0.005084
-# 2021-08-13  0.001410  0.000769  0.010490  0.000119
-</code></pre>
-<p>Series的corr方法计算的是两个Series中重叠的、非NA的、按索引对齐的值的相关性。相应地，cov计算的是协方差</p>
-<pre><code>print(returns['MSFT'])
-# Date
-# 2016-08-15         NaN
-# 2016-08-16   -0.005540
-# 2016-08-17    0.002089
-# 2016-08-18    0.000695
-# 2016-08-19    0.000347
-#                 ...
-# 2021-08-09   -0.003904
-# 2021-08-10   -0.006555
-# 2021-08-11    0.001781
-# 2021-08-12    0.009967
-# 2021-08-13    0.010490
-# Name: MSFT, Length: 1259, dtype: float64
-print(returns['MSFT'].corr(returns['IBM']))  # Series的corr方法计算的是两个Series中重叠的、非NA的、按索引对齐的值的相关性。
-# 0.5175237180581937
-print(returns.MSFT.corr(returns.IBM))  # 等同写法，MSFT是一个有效的Python属性
-# 0.5175237180581937
-print(returns['MSFT'].cov(returns['IBM']))  # Series的cov方法计算的是两个Series中值的协方差。
-# 0.0001452224236764915
-</code></pre>
-<p>DataFrame的corr和cov方法会分别以DataFrame的形式返回相关性和协方差矩阵</p>
-<pre><code>print(returns.corr())
-#           AAPL       IBM      MSFT      GOOG
-# AAPL  1.000000  0.441111  0.735539  0.661961
-# IBM   0.441111  1.000000  0.517524  0.484230
-# MSFT  0.735539  0.517524  1.000000  0.775756
-# GOOG  0.661961  0.484230  0.775756  1.000000
-print(returns.corrwith(returns['IBM']))  # 给corrwith方法，传入一个Series时，会返回一个含有为每列计算相关性值的Series
-# AAPL    0.441111
-# IBM     1.000000
-# MSFT    0.517524
-# GOOG    0.484230
-# dtype: float64
-print(returns.corrwith(volume))  # 给corrwith方法，传入一个DataFrame时，会计算匹配到列名的相关性数值。下面是计算交易量百分比变化的相关性
-# AAPL   -0.063111
-# IBM    -0.103721
-# MSFT   -0.056842
-# GOOG   -0.119026
-# dtype: float64
-
-print(returns.cov())
-#           AAPL       IBM      MSFT      GOOG
-# AAPL  0.000361  0.000137  0.000240  0.000211
-# IBM   0.000137  0.000268  0.000145  0.000133
-# MSFT  0.000240  0.000145  0.000294  0.000224
-# GOOG  0.000211  0.000133  0.000224  0.000282
-</code></pre>
-<h3 id="_13">唯一值、计数和成员属性</h3>
-<pre><code>obj = pd.Series(['c', 'a', 'd', 'a', 'a', 'a', 'b', 'b', 'c', 'c'])
-print(obj)
-</code></pre>
-<p>函数unique给出Series中的唯一值</p>
-<pre><code>print(obj.unique())
-# ['c' 'a' 'd' 'b']
-print(obj.sort_values().unique())
-# ['a' 'b' 'c' 'd']
-print(obj.value_counts())  # value_counts计算Series包含的值的个数
-# a    4
-# c    3
-# b    2
-# d    1
+<p>在这份数据上使用stack方法会将列透视到行，产生一个新的Series：</p>
+<pre><code>result = df.stack()
+print(result)
+# state     number
+# Ohio      one       0
+#           two       1
+#           three     2
+# Colorado  one       3
+#           two       4
+#           three     5
 # dtype: int64
-print(pd.value_counts(obj.values, sort=True))  # 这里value_counts不是Series的方法，是pandas顶层方法
-# a    4
-# c    3
-# b    2
-# d    1
+</code></pre>
+<p>从一个多层索引序列中，你可以使用unstack方法将数据重排列后放入一个DataFrame中：</p>
+<pre><code>print(result.unstack())
+# number    one  two  three
+# state
+# Ohio        0    1      2
+# Colorado    3    4      5
+print(result.unstack(0))  # 可以传入一个层级序号或名称来拆分一个不同的层级
+# state   Ohio  Colorado
+# number
+# one        0         3
+# two        1         4
+# three      2         5
+print(result.unstack(1))
+# number    one  two  three
+# state
+# Ohio        0    1      2
+# Colorado    3    4      5
+print(result.unstack('state'))  # 输出结果和传入层级0一样
+# state   Ohio  Colorado
+# number
+# one        0         3
+# two        1         4
+# three      2         5
+print(result.unstack('number'))  # 输出结果和传入层级1一样
+# number    one  two  three
+# state
+# Ohio        0    1      2
+# Colorado    3    4      5
+</code></pre>
+<p>如果层级中的所有值并未包含于每个子分组中时，拆分可能会引入缺失值：</p>
+<pre><code>s1 = pd.Series([0, 1, 2, 3], index=['a', 'b', 'c', 'd'])
+s2 = pd.Series([4, 5, 6], index=['c', 'd', 'e'])
+s3 = pd.concat([s1, s2], keys=['one', 'two'])
+print(s3)
+# one  a    0
+#      b    1
+#      c    2
+#      d    3
+# two  c    4
+#      d    5
+#      e    6
 # dtype: int64
-print(obj.isin(['b', 'c']))
-# 0     True
-# 1    False
-# 2    False
-# 3    False
-# 4    False
-# 5    False
-# 6     True
-# 7     True
-# 8     True
-# 9     True
-# dtype: bool
-print(obj[obj.isin(['b', 'c'])])  # 将上面的结果作为列表输入的条件，输出为True的结果
-# 0    c
-# 6    b
-# 7    b
-# 8    c
-# 9    c
-# dtype: object
+print(s3.unstack(0))
+#    one  two
+# a  0.0  NaN
+# b  1.0  NaN
+# c  2.0  4.0
+# d  3.0  5.0
+# e  NaN  6.0
+print(s3.unstack(1))
+print(s3.unstack())
+#        a    b    c    d    e
+# one  0.0  1.0  2.0  3.0  NaN
+# two  NaN  NaN  4.0  5.0  6.0
 </code></pre>
-<p>参考: https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Index.get_indexer.html</p>
-<pre><code>obj1 = pd.Series(['c', 'a', 'd', 'a', 'a', 'a', 'b', 'b', 'c', 'c'])
-obj2 = pd.Series(['c', 'a', 'b'])
-
-print(pd.Index(obj1))
-# Index(['c', 'a', 'd', 'a', 'a', 'a', 'b', 'b', 'c', 'c'], dtype='object')
-print(pd.Index(obj2))
-# Index(['c', 'a', 'b'], dtype='object')
-print(pd.Index(obj2).get_indexer(obj1))  # 这里0对应obj2里面的c在job1的位置，以此类推，生成新的索引列表
-# [ 0  1 -1  1  1  1  2  2  0  0]
+<p>默认情况下，堆叠会过滤出缺失值，因此堆叠拆堆的操作是可逆的</p>
+<pre><code>print(s3.unstack().stack())
+# one  a    0.0
+#      b    1.0
+#      c    2.0
+#      d    3.0
+# two  c    4.0
+#      d    5.0
+#      e    6.0
+# dtype: float64
+print(s3.unstack().stack(dropna=False))
+# one  a    0.0
+#      b    1.0
+#      c    2.0
+#      d    3.0
+#      e    NaN
+# two  a    NaN
+#      b    NaN
+#      c    4.0
+#      d    5.0
+#      e    6.0
+# dtype: float64
 </code></pre>
-<p>计算DataFrame多个相关列的直方图</p>
-<pre><code>data = pd.DataFrame(
-    {
-        'Que1': [1, 3, 4, 3, 4],
-        'Que2': [2, 3, 1, 2, 3],
-        'Que3': [1, 5, 2, 4, 4],
-    }
+<p>在DataFrame中拆堆时，被拆堆的层级会变为结果中最低的层级\
+在调用stack方法时，我们可以指明需要堆叠的轴向名称</p>
+<pre><code>df = pd.DataFrame(
+    {'left': result, 'right': result + 5},
+    columns=pd.Index(['left', 'right'], name='side')
 )
+print(df)
+# side             left  right
+# state    number
+# Ohio     one        0      5
+#          two        1      6
+#          three      2      7
+# Colorado one        3      8
+#          two        4      9
+#          three      5     10
+print(df.unstack())
+# side     left           right
+# number    one two three   one two three
+# state
+# Ohio        0   1     2     5   6     7
+# Colorado    3   4     5     8   9    10
+print(df.unstack('state'))  # 被拆堆的层级(state)会变为结果中最低的层级
+# side   left          right
+# state  Ohio Colorado  Ohio Colorado
+# number
+# one       0        3     5        8
+# two       1        4     6        9
+# three     2        5     7       10
+</code></pre>
+<p>在调用stack方法时，可以指明需要堆叠的轴向名称：</p>
+<pre><code>print(df.unstack('state').stack('side'))
+# state         Colorado  Ohio
+# number side
+# one    left          3     0
+#        right         8     5
+# two    left          4     1
+#        right         9     6
+# three  left          5     2
+#        right        10     7
+</code></pre>
+<h4 id="_10">将“长”透视为“宽”</h4>
+<p>在数据库和CSV中存储多时间序列的方式就是所谓的长格式或堆叠格式。</p>
+<pre><code>data = pd.read_csv('../examples/macrodata.csv')
+
+print(data.head(3))
+#      year  quarter   realgdp  realcons  ...  unemp      pop  infl  realint
+# 0  1959.0      1.0  2710.349    1707.4  ...    5.8  177.146  0.00     0.00
+# 1  1959.0      2.0  2778.801    1733.7  ...    5.1  177.830  2.34     0.74
+# 2  1959.0      3.0  2775.488    1751.8  ...    5.3  178.657  2.74     1.09
+# ......
+# [3 rows x 14 columns]
+
+# PeriodIndex将year和quarter等列进行联合并生成了一种时间间隔类型
+periods = pd.PeriodIndex(
+    year=data.year,
+    quarter=data.quarter,
+    name='date'
+)
+columns = pd.Index(
+    ['realgdp', 'infl', 'unemp'],
+    name='item'
+)
+data = data.reindex(columns=columns)
 print(data)
-#    Que1  Que2  Que3
-# 0     1     2     1
-# 1     3     3     5
-# 2     4     1     2
-# 3     3     2     4
-# 4     4     3     4
+# item    realgdp  infl  unemp
+# 0      2710.349  0.00    5.8
+# 1      2778.801  2.34    5.1
+# 2      2775.488  2.74    5.3
+# ......
+# [203 rows x 3 columns]
 
-result = data.apply(pd.value_counts).fillna(0)
-print(result)  # 结果中的行标签是所有列中出现的不同值，数值则是这些不同值在每个列中出现的次数，例如：数字5只在Que3里面出现了一次
-#    Que1  Que2  Que3
-# 1   1.0   1.0   1.0
-# 2   0.0   2.0   1.0
-# 3   2.0   2.0   0.0
-# 4   2.0   0.0   2.0
-# 5   0.0   0.0   1.0
+data.index = periods.to_timestamp('D', 'end')
+print(data.index)
+# DatetimeIndex(['1959-03-31 23:59:59.999999999',
+#                '1959-06-30 23:59:59.999999999',
+#                ...
+#                '2009-06-30 23:59:59.999999999',
+#                '2009-09-30 23:59:59.999999999'],
+#               dtype='datetime64[ns]', name='date', length=203, freq=None)
+</code></pre>
+<p>下面是ldata的数据样本。\
+这种数据即所谓的多时间序列的长格式，或称为具有两个或更多个键的其他观测数据（这里，我们的键是date和item）。\
+表中的每一行表示一个时间点上的单个观测值。</p>
+<pre><code>ldata = data.stack().reset_index().rename(columns={0: 'value'})
+print(ldata)
+#                              date     item      value
+# 0   1959-03-31 23:59:59.999999999  realgdp   2710.349
+# 1   1959-03-31 23:59:59.999999999     infl      0.000
+# 2   1959-03-31 23:59:59.999999999    unemp      5.800
+# 3   1959-06-30 23:59:59.999999999  realgdp   2778.801
+# 4   1959-06-30 23:59:59.999999999     infl      2.340
+# ..                            ...      ...        ...
+# 604 2009-06-30 23:59:59.999999999     infl      3.370
+# 605 2009-06-30 23:59:59.999999999    unemp      9.200
+# 606 2009-09-30 23:59:59.999999999  realgdp  12990.341
+# 607 2009-09-30 23:59:59.999999999     infl      3.560
+# 608 2009-09-30 23:59:59.999999999    unemp      9.600
+# [609 rows x 3 columns]
+</code></pre>
+<p>在上面的例子中：\
+数据通常以这种方式存储在关系型数据库中，比如MySQL，因为固定模式（列名称和数据类型）允许item列中不同值的数量随着数据被添加到表中而改变。\
+date和item通常是主键（使用关系型数据库的说法），提供了关系完整性和更简单的连接。\
+在某些情况下，处理这种格式的数据更为困难。可能更倾向于获取一个按date列时间戳索引的且每个不同的item独立一列的DataFrame。\
+DataFrame的pivot方法就是进行这种转换的：\
+下面例子中，传递的前两个值是分别用作行和列索引的列，然后是可选的数值列以填充DataFrame。\
+注意，pivot方法等价于使用set_index创建分层索引，然后调用unstack。</p>
+<pre><code>pivoted = ldata.pivot('date', 'item', 'value')
+print(pivoted)
+# item                           infl    realgdp  unemp
+# date
+# 1959-03-31 23:59:59.999999999  0.00   2710.349    5.8
+# 1959-06-30 23:59:59.999999999  2.34   2778.801    5.1
+# ...                             ...        ...    ...
+# 2009-06-30 23:59:59.999999999  3.37  12901.504    9.2
+# 2009-09-30 23:59:59.999999999  3.56  12990.341    9.6
+# [203 rows x 3 columns]
+
+ldata['value2'] = np.random.randn(len(ldata))
+print(ldata[:5])
+#                            date     item     value    value2
+# 0 1959-03-31 23:59:59.999999999  realgdp  2710.349 -1.268405
+# 1 1959-03-31 23:59:59.999999999     infl     0.000  0.377691
+# 2 1959-03-31 23:59:59.999999999    unemp     5.800 -0.342492
+# 3 1959-06-30 23:59:59.999999999  realgdp  2778.801  0.132797
+# 4 1959-06-30 23:59:59.999999999     infl     2.340  0.180290
+</code></pre>
+<p>此时ldata已经添加了一列。如果遗漏最后一个参数，会得到一个含有多层列的DataFrame，如下：</p>
+<pre><code>pivoted = ldata.pivot('date', 'item')
+print(pivoted)
+#                               value             ...    value2
+# item                           infl    realgdp  ...   realgdp     unemp
+# date                                            ...
+# 1959-03-31 23:59:59.999999999  0.00   2710.349  ...  0.157467 -0.222464
+# 1959-06-30 23:59:59.999999999  2.34   2778.801  ...  0.861501  0.368855
+# ...                             ...        ...  ...       ...       ...
+# 2009-06-30 23:59:59.999999999  3.37  12901.504  ...  0.279988  0.934972
+# 2009-09-30 23:59:59.999999999  3.56  12990.341  ...  0.547914  1.842967
+# [203 rows x 6 columns]
+</code></pre>
+<p>注意，pivot方法等价于使用set_index创建分层索引，然后调用unstack。</p>
+<pre><code>unstacked = ldata.set_index(['date', 'item']).unstack('item')
+print(unstacked[:5])
+#                               value            ...    value2
+# item                           infl   realgdp  ...   realgdp     unemp
+# date                                           ...
+# 1959-03-31 23:59:59.999999999  0.00  2710.349  ...  0.213120 -0.248004
+# 1959-06-30 23:59:59.999999999  2.34  2778.801  ...  0.697763  0.112388
+# 1959-09-30 23:59:59.999999999  2.74  2775.488  ...  1.291884 -1.046142
+# 1959-12-31 23:59:59.999999999  0.27  2785.204  ...  0.363339 -0.307364
+# 1960-03-31 23:59:59.999999999  2.31  2847.699  ...  0.377330  2.272980
+# [5 rows x 6 columns]
+</code></pre>
+<h4 id="_11">将“宽”透视为“长”</h4>
+<p>在DataFrame中，pivot方法的反操作是pandas.melt。\
+与将一列变换为新的DataFrame中的多列不同，它将多列合并成一列，产生一个新的DataFrame，其长度比输入更长。</p>
+<pre><code>df = pd.DataFrame(
+    {
+        'key': ['foo', 'bar', 'baz'],
+        'A': [1, 2, 3],
+        'B': [4, 5, 6],
+        'C': [7, 8, 9]
+    }
+)
+
+print(df)
+#    key  A  B  C
+# 0  foo  1  4  7
+# 1  bar  2  5  8
+# 2  baz  3  6  9
+</code></pre>
+<p>'key’列可以作为分组指标，其他列均为数据值。\
+当使用pandas.melt时，我们必须指明哪些列是分组指标（如果有的话）。\
+此处，让我们使用’key’作为唯一的分组指标：</p>
+<pre><code>melted = pd.melt(df, ['key'])
+print(melted)
+#    key variable  value
+# 0  foo        A      1
+# 1  bar        A      2
+# 2  baz        A      3
+# 3  foo        B      4
+# 4  bar        B      5
+# 5  baz        B      6
+# 6  foo        C      7
+# 7  bar        C      8
+# 8  baz        C      9
+</code></pre>
+<p>使用pivot方法，我们可以将数据重塑回原先的布局</p>
+<pre><code>reshaped = melted.pivot('key', 'variable', 'value')
+print(reshaped)
+# variable  A  B  C
+# key
+# bar       2  5  8
+# baz       3  6  9
+# foo       1  4  7
+</code></pre>
+<p>由于pivot的结果根据作为行标签的列生成了索引，可使用reset_index来将数据回移一列：</p>
+<pre><code>print(reshaped.reset_index())
+# variable  key  A  B  C
+# 0         bar  2  5  8
+# 1         baz  3  6  9
+# 2         foo  1  4  7
+</code></pre>
+<p>pandas.melt的使用也可以无须任何分组指标</p>
+<pre><code>result = pd.melt(df, value_vars=['A', 'B', 'C'])
+print(result)
+#   variable  value
+# 0        A      1
+# 1        A      2
+# 2        A      3
+# 3        B      4
+# 4        B      5
+# 5        B      6
+# 6        C      7
+# 7        C      8
+# 8        C      9
+
+result = pd.melt(df, value_vars=['key', 'B', 'C'])
+print(result)
+#   variable value
+# 0      key   foo
+# 1      key   bar
+# 2      key   baz
+# 3        B     4
+# 4        B     5
+# 5        B     6
+# 6        C     7
+# 7        C     8
+# 8        C     9
 </code></pre>
 
               
