@@ -5,27 +5,12 @@
 # [Python语言基础](ch01.md)
 
 1. Python数据类型（6个）
-  * 数值型（number）
-    * 整型（int）
-      * 十进制
-      * 八进制
-      * 十六进制
-    * 浮点型（float）
-    * 布尔型（bool）
-    * 复数性（complex）
-  * 字符型（string）
-      * 字符串常用方法
-      * 转义字符
-      * 可迭代性
-      * f-string
-  * 列表（list）
-  * 字典（dictionary）
-      * 字典常用方法
-      * 从列表生成字典
-      * 字典默认值
-      * 有效的字典键类型
-  * 集合（set）
-  * 元组（tuple）
+    * 数值型（number）
+    * 字符型（string）
+    * 列表（list）
+    * 字典（dictionary）
+    * 集合（set）
+    * 元组（tuple）
 2. 动态引用、强类型
 3. 二元运算符和比较运算
 4. 标量类型
@@ -58,16 +43,19 @@
 1. 名称Names和对象Objects
 2. 作用域Scopes和命名空间Namespace
 3. 类Class
-  * 类定义 Class Definition
-  * 类对象 Class Objects
-  * 实例对象 Instance Objects
-  * 方法对象 Method Objects
-  * 类和实例变量 Class and Instance Variables
+    * 类定义 Class Definition
+    * 类对象 Class Objects
+    * 实例对象 Instance Objects
+    * 方法对象 Method Objects
+    * 类和实例变量 Class and Instance Variables
 4. 继承 Inheritance
-  * 多重继承 Multiple Inheritance
+    * 多重继承 Multiple Inheritance
 5. 私有变量 Private Variables
 6. 迭代器 Iterators
 7. 生成器 Generators
 8. 生成器表达式 Generator Expressions
 9. 多态 Polymorphism
-  * 鸭子类型(Ducking Typing)
+    * 类方法的多态性
+    * 继承的多态性
+    * 函数和对象的多态性
+    * 鸭子类型(Ducking Typing)
