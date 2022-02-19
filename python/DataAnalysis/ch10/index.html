@@ -15,7 +15,7 @@
     
     
       
-        <title>Ch10 - My Memo</title>
+        <title>高阶NumPy - My Memo</title>
       
     
     
@@ -64,7 +64,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#ndarray" class="md-skip">
+        <a href="#numpy" class="md-skip">
           Skip to content
         </a>
       
@@ -97,7 +97,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Ch10
+              高阶NumPy
             
           </span>
         </div>
@@ -251,6 +251,8 @@
 <nav class="md-nav md-nav--secondary" aria-label="Table of contents">
   
   
+  
+    
   
   
     <label class="md-nav__title" for="__toc">
@@ -408,34 +410,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#_8" class="md-nav__link">
-    更多有关排序的话题
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#numbanumpy" class="md-nav__link">
-    用Numba编写快速NumPy函数
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_9" class="md-nav__link">
-    高级数组输入输出
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_10" class="md-nav__link">
-    性能建议
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -449,21 +423,36 @@
               
                 
 
-  <h1>Ch10</h1>
-
-<h3 id="ndarray">ndarray对象的内部机理</h3>
-<pre><code>import numpy as np
-</code></pre>
-<p>NumPy的ndarray提供了一种将同质数据块（可以是连续或跨越）解释为多维数组对象的方式。\
-正如你之前所看到的那样，数据类型（dtype）决定了数据的解释方式，比如浮点数、整数、布尔值等。\
-ndarray如此强大的部分原因是所有数组对象都是数据块的一个跨度视图（strided view）。\
-你可能想知道数组视图arr[::2,::-1]不复制任何数据的原因是什么。\
-简单地说，ndarray不只是一块内存和一个dtype，它还有跨度信息，这使得数组能以各种步幅（step size）在内存中移动。\
-更准确地讲，ndarray内部由以下内容组成：
-* 一个指向数据（内存或内存映射文件中的一块数据）的指针。
-* 数据类型或dtype，描述在数组中的固定大小值的格子。
-* 一个表示数组形状（shape）的元组。
-* 一个跨度元组（stride），其中的整数指的是为了前进到当前维度下一个元素需要“跨过”的字节数。</p>
+<h1 id="numpy">高阶NumPy</h1>
+<p>包含以下内容：</p>
+<ul>
+<li>ndarray对象的内部机理</li>
+<li>高级数组操作<ul>
+<li>重塑数组</li>
+<li>C顺序和F顺序</li>
+<li>连接和分隔数组</li>
+<li>堆叠助手：r 和c</li>
+<li>重复元素：tile和repeat</li>
+<li>神奇索引的等价方法：take和put</li>
+</ul>
+</li>
+<li>广播</li>
+<li>ufunc高级应用</li>
+<li>结构化和记录式数组</li>
+</ul>
+<h2 id="ndarray">ndarray对象的内部机理</h2>
+<p>NumPy的<code>ndarray</code>提供了一种将同质数据块（可以是连续或跨越）解释为多维数组对象的方式。
+<code>ndarray</code>的数据类型<code>dtype</code>决定了数据的解释方式，比如浮点数、整数、布尔值等。
+<code>ndarray</code>的所有数组对象都是数据块的一个跨度视图（strided view）。</p>
+<p>数组视图<code>arr[::2,::-1]</code>不复制任何数据的原因是什么？
+简单地说，<code>ndarray</code>不只是一块内存和一个<code>dtype</code>，它还有跨度信息，这使得数组能以各种步幅（step size）在内存中移动。</p>
+<p>更准确地讲，<code>ndarray</code>内部由以下内容组成：</p>
+<ul>
+<li>一个指向数据（内存或内存映射文件中的一块数据）的指针。</li>
+<li>数据类型或<code>dtype</code>，描述在数组中的固定大小值的格子。</li>
+<li>一个表示数组形状（shape）的元组。</li>
+<li>一个跨度元组（stride），其中的整数指的是为了前进到当前维度下一个元素需要“跨过”的字节数。</li>
+</ul>
 <p>例如，一个10×5的数组，其shape为(10, 5)：</p>
 <pre><code>s = np.ones((10, 5)).shape
 print(s)
@@ -502,7 +491,7 @@ print(np.issubdtype(floats.dtype, np.number))
 print(np.issubdtype(floats.dtype, np.generic))
 # True
 </code></pre>
-<h3 id="_1">高级数组操作</h3>
+<h2 id="_1">高级数组操作</h2>
 <pre><code>import numpy as np
 </code></pre>
 <h4 id="_2">重塑数组</h4>
@@ -777,7 +766,7 @@ print(a)
 # [[-0.01903239 -0.82371274 -0.01903239 -0.16911898]
 #  [ 0.33872999 -0.55176496  0.33872999 -0.30111564]]
 </code></pre>
-<h3 id="_4">广播</h3>
+<h2 id="_4">广播</h2>
 <pre><code>import numpy as np
 import pandas as pd
 </code></pre>
@@ -939,7 +928,7 @@ print(arr)
 #  [2. 2. 2.]
 #  [3. 3. 3.]]
 </code></pre>
-<h3 id="ufunc">ufunc高级应用</h3>
+<h2 id="ufunc">ufunc高级应用</h2>
 <pre><code>import numpy as np
 </code></pre>
 <h4 id="ufunc_1">ufunc实例方法</h4>
@@ -1051,7 +1040,7 @@ result = add_them(np.arange(8), np.arange(8))
 print(result)
 # [ 0.  2.  4.  6.  8. 10. 12. 14.]
 </code></pre>
-<h3 id="_6">结构化和记录式数组</h3>
+<h2 id="_6">结构化和记录式数组</h2>
 <pre><code>import numpy as np
 </code></pre>
 <p>ndarray是一个同构数据的容器。也就是说，它表示一个内存块，其中每个元素占用相同数量的字节，由dtype确定。\
@@ -1106,10 +1095,6 @@ print(arr)
 由于数组中的每个元素都在内存中表示为固定数量的字节，因此结构化数组提供了读/写磁盘（包括内存映射）数据，以及在网络上传输数据和其他此类用途的非常快速有效的方法。\
 作为结构化数组的另一种常见用途，将数据文件编写为固定长度的记录字节流是将C和C ++代码中的数据序列化的常用方法，这在业界传统系统中很常见。\
 只要知道文件的格式（每个记录的大小以及每个元素的顺序、字节大小和数据类型），就可以用np.fromfile将数据读入内存。</p>
-<h3 id="_8">更多有关排序的话题</h3>
-<h3 id="numbanumpy">用Numba编写快速NumPy函数</h3>
-<h3 id="_9">高级数组输入输出</h3>
-<h3 id="_10">性能建议</h3>
 
               
             </article>
