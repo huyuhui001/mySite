@@ -294,7 +294,8 @@
     重塑数组
   </a>
   
-</li>
+    <nav class="md-nav" aria-label="重塑数组">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#cf" class="md-nav__link">
@@ -328,6 +329,11 @@
   <a href="#takeput" class="md-nav__link">
     神奇索引的等价方法：take和put
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -465,9 +471,9 @@ print(s)
 </code></pre>
 <p>数组跨度（strides）是构建“零复制”数组视图的关键因素。</p>
 <p>数组跨度甚至可以是负的，这使得数组能够穿过内存“向后”移动（例如，在诸如obj[::-1]或obj[:, ::-1]的切片中就是这种情况）。</p>
-<h4 id="numpy-dtype">NumPy dtype层次结构</h4>
-<p>有时候需要通过一些代码来检查数组是否包含整数、浮点数、字符串或Python对象。\
-由于浮点数有多种类型（float16到float128），因此检查dtype是否在类型列表中会非常麻烦。\
+<h3 id="numpy-dtype">NumPy dtype层次结构</h3>
+<p>有时候需要通过一些代码来检查数组是否包含整数、浮点数、字符串或Python对象。
+由于浮点数有多种类型（float16到float128），因此检查dtype是否在类型列表中会非常麻烦。
 dtype有超类，如np.integer和np.floating，它们可以和np.issubdtype函数一起使用：</p>
 <pre><code>ints = np.ones(10, dtype=np.uint16)
 floats = np.ones(10, dtype=np.float32)
@@ -492,29 +498,39 @@ print(np.issubdtype(floats.dtype, np.generic))
 # True
 </code></pre>
 <h2 id="_1">高级数组操作</h2>
-<pre><code>import numpy as np
+<h3 id="_2">重塑数组</h3>
+<p>通常，通过<code>reshape</code>将数组从一个形状转换为另一个形状，并且不复制任何数据。
+<code>reshape</code>里面有两种重塑顺序，按C顺序（行方向）的重塑和按Fortran顺序（列方向）的重塑。
+首先是取数，然后是放数，取数按什么顺序，放数就按什么顺序。</p>
+<p>下面是官网的解释：</p>
+<pre><code>‘C’ means to read / write the elements using C-like index order, with the last axis index changing fastest, back to the first axis index changing slowest.
+
+‘F’ means to read / write the elements using Fortran-like index order, with the first index changing fastest, and the last index changing slowest.
+
+Note that the ‘C’ and ‘F’ options take no account of the memory layout of the underlying array, and only refer to the order of indexing.
+
+‘A’ means to read / write the elements in Fortran-like index order if a is Fortran contiguous in memory, C-like order otherwise.
 </code></pre>
-<h4 id="_2">重塑数组</h4>
-<p>通常，通过reshape将数组从一个形状转换为另一个形状，并且不复制任何数据。</p>
 <p>一维数组重塑：</p>
 <pre><code>arr = np.arange(8)
 print(arr)
 # [0 1 2 3 4 5 6 7]
-a = arr.reshape((4, 2), order='C')  # 按C顺序（行方向）的重塑
+
+a = arr.reshape((4, 2), order='C')
 print(a)
 # [[0 1]
 #  [2 3]
 #  [4 5]
 #  [6 7]]
-a = arr.reshape((4, 2), order='F')  # 按Fortran顺序（列方向）的重塑
+
+a = arr.reshape((4, 2), order='F')
 print(a)
 # [[0 4]
 #  [1 5]
 #  [2 6]
 #  [3 7]]
 </code></pre>
-<p>多维数组重塑：\
-传递的形状维度可以有一个值是-1，表示维度通过数据进行推断：</p>
+<p>多维数组重塑：传递的形状维度可以有一个值是-1，表示维度通过数据进行推断：</p>
 <pre><code>a = arr.reshape((4, 2)).reshape((2, 4))
 print(a)
 # [[0 1 2 3]
