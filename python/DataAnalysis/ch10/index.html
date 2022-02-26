@@ -11,7 +11,7 @@
         <link rel="canonical" href="https://huyuhui001.github.io/mySite/index.html/python/DataAnalysis/ch10/">
       
       <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.9">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.2.1">
     
     
       
@@ -19,7 +19,7 @@
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.2b4465f4.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.e8d9bf0c.min.css">
       
         
         <link rel="stylesheet" href="../../../assets/stylesheets/palette.e6a45f82.min.css">
@@ -422,6 +422,7 @@
             <article class="md-content__inner md-typeset">
               
                 
+
 
 <h1 id="numpy">高阶NumPy</h1>
 <p>包含以下内容：</p>
@@ -895,9 +896,31 @@ print(a)
 #  [ 0.33872999 -0.55176496  0.33872999 -0.30111564]]
 </code></pre>
 <h2 id="_4">广播</h2>
-<p><strong>广播（broadcasting）</strong>指的是不同形状的数组之间的算术运算的执行方式。</p>
-<p>广播的规则：
-如果对于每个结尾维度（即从尾部开始的），轴长度都匹配或者长度都是1，则两个二维数组就是可以兼容广播的。之后，广播会在丢失的或长度为1的轴上进行。</p>
+<p><strong>广播（broadcasting）</strong>指的是不同形状的数组之间的算术运算的执行方式。受某些约束的影响，较小的数组在较大的数组上“广播”，以便它们具有兼容的形状。广播提供了一种矢量化数组操作的方法。</p>
+<p>NumPy 操作通常在<em>逐个元素</em>的基础上在数组对上完成。在最简单的情况下，两个数组必须具有完全相同的形状，如下例所示：</p>
+<pre><code>a = np.array([1, 3, 5])
+b = np.array([2, 2, 2])
+
+print(a * b)
+# [ 2  6 10]
+
+print(a + b)
+# [3 5 7]
+</code></pre>
+<p>当数组的形状满足某些约束时，NumPy的广播规则放宽了这种约束。当一个数组和一个标量值在一个操作中组合时，会发生最简单的广播示例：</p>
+<pre><code>a = np.array([1, 3, 5])
+b = 2
+
+print(a * b)
+# [ 2  6 10]
+
+print(a + b)
+# [3 5 7]
+</code></pre>
+<p>结果等同于前面的示例，其中<code>b</code>是数组。可以假象将在算术运算期间标量<code>b</code>被<em>拉伸</em>成与数组<code>a</code>具有相同形状的数组。拉伸类比只是概念性的。NumPy在实际运算中直接使用原始标量值而不会去制作拉伸副本，因此广播操作效率更高效，在上例的乘法期间，通过广播操作，移动的内存较少（b是标量而不是数组）。</p>
+<p><strong>广播的规则</strong>：
+在两个数组上进行广播操作时，NumPy会逐元素地比较它们的形状。它从尾随尺寸开始，并向前发展。如果对于每个结尾维度（即从尾部开始的）轴长度都匹配，或者长度都是1，则两个二维数组就是可以兼容广播的。之后，广播会在丢失的或长度为1的轴上进行。</p>
+<p>如果不满足这些条件，则抛出 ValueError: operands could not be broadcast together 异常，指示数组具有不兼容的形状。结果数组的大小是沿输入的每个轴不是1的大小。</p>
 <p>将标量值跟数组合并时就会发生最简单的广播。</p>
 <pre><code>arr = np.arange(5)
 print(arr * 4)  # 标量值4已经被广播给乘法运算中的所有其他元素
@@ -1248,10 +1271,10 @@ print(arr)
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../../assets/javascripts/workers/search.22074ed6.min.js"}</script>
+    <script id="__config" type="application/json">{"base": "../../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../../assets/javascripts/workers/search.bd0b6b67.min.js"}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.960e086b.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.8aa65030.min.js"></script>
       
     
   </body>
