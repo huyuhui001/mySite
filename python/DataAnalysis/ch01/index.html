@@ -11,15 +11,15 @@
         <link rel="canonical" href="https://huyuhui001.github.io/mySite/index.html/python/DataAnalysis/ch01/">
       
       <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.2.1">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.9">
     
     
       
-        <title>NumPy基础：数组与向量化计算 - My Memo</title>
+        <title>NumPy基础 - My Memo</title>
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.e8d9bf0c.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.2b4465f4.min.css">
       
         
         <link rel="stylesheet" href="../../../assets/stylesheets/palette.e6a45f82.min.css">
@@ -97,7 +97,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              NumPy基础：数组与向量化计算
+              NumPy基础
             
           </span>
         </div>
@@ -523,8 +523,7 @@
               
                 
 
-
-<h1 id="numpy">NumPy基础：数组与向量化计算</h1>
+<h1 id="numpy">NumPy基础</h1>
 <p>包含以下内容：</p>
 <ul>
 <li>多维数组对象</li>
@@ -708,14 +707,14 @@ print(result)
 #  [9 9 9]
 #  [9 9 9]]
 </code></pre>
-<p><img alt="Numpy沿0轴操作" src="../Assets/python_da_ch02_01.png" title="Numpy沿0轴操作" /></p>
+<p><img alt="Numpy沿0轴操作" src="../Assets/01.png" title="Numpy沿0轴操作" /></p>
 <p>沿1轴合并的思路是，两个数组沿1轴方向，向1轴“塌缩”</p>
 <pre><code>result = np.concatenate([arr_1, arr_2], axis=1)
 print(result)
 # [[1 1 1 9 9 9]
 #  [1 1 1 9 9 9]]
 </code></pre>
-<p><img alt="Numpy沿1轴操作" src="../Assets/python_da_ch02_02.png" title="Numpy沿1轴操作" /></p>
+<p><img alt="Numpy沿1轴操作" src="../Assets/02.png" title="Numpy沿1轴操作" /></p>
 <p>我们来看NumPy的三维数组。</p>
 <pre><code>array1 = np.arange(36).reshape((3, 3, 4))
 print(array1)
@@ -1265,7 +1264,7 @@ plt.show()
 
 </code></pre>
 <p>输出图像为：
-<img alt="计算值的网格图" src="../Assets/python_da_ch02_03.png" /></p>
+<img alt="计算值的网格图" src="../Assets/03.png" /></p>
 <h3 id="_8">通过条件逻辑操作数组</h3>
 <p><code>numpy.where</code>函数是三元表达式<code>x if condition else y</code>的向量化版本。
 <code>np.where</code>的第二个和第三个参数并不需要是数组，它们可以是标量。</p>
@@ -1947,7 +1946,7 @@ plt.plot(walks[:500000000000000000000000000])
 plt.show()
 </code></pre>
 <p>输出图像：
-<img alt="输出图像" src="../Assets/python_da_ch02_04.png" /></p>
+<img alt="输出图像" src="../Assets/04.png" /></p>
 
               
             </article>
@@ -1978,10 +1977,10 @@ plt.show()
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../../assets/javascripts/workers/search.bd0b6b67.min.js"}</script>
+    <script id="__config" type="application/json">{"base": "../../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../../assets/javascripts/workers/search.22074ed6.min.js"}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.8aa65030.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.960e086b.min.js"></script>
       
     
   </body>
