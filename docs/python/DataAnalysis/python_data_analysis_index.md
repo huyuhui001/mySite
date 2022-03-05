@@ -1,6 +1,6 @@
 
-### [NumPy基础：数组与向量化计算](ch01.md)
-### [高阶NumPy](ch10.md)
+### [NumPy基础](ch01.md)
+### [NumPy进阶](ch10.md)
 ### [Pandas入门](ch02.md)
 ### [数据载入、存储及文件格式](ch03.md)
 ### [数据清洗与准备](ch04.md)
