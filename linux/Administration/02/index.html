@@ -1,0 +1,1441 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://huyuhui001.github.io/mySite/index.html/linux/Administration/02/">
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.9">
+    
+    
+      
+        <title>Useful Commands - My Memo</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.2b4465f4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.e6a45f82.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#2094f3">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="blue" data-md-color-accent="deep-blue">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#useful-commands" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="My Memo" class="md-header__button md-logo" aria-label="My Memo" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            My Memo
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Useful Commands
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="My Memo" class="md-nav__button md-logo" aria-label="My Memo" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    My Memo
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../" class="md-nav__link">
+        Linux
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../python/" class="md-nav__link">
+        Python
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../about/" class="md-nav__link">
+        About
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#some-common-abbreviations" class="md-nav__link">
+    Some common abbreviations
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#software-package-documentation" class="md-nav__link">
+    Software package documentation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#release-notes" class="md-nav__link">
+    Release Notes
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#command-help" class="md-nav__link">
+    Command help
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#manual-pages" class="md-nav__link">
+    Manual pages
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#display-descriptions" class="md-nav__link">
+    Display descriptions:
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#info-pages" class="md-nav__link">
+    Info pages:
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pwd-command" class="md-nav__link">
+    pwd command
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cd-command" class="md-nav__link">
+    cd command
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ls-command" class="md-nav__link">
+    ls command
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cp-command" class="md-nav__link">
+    cp command
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mv-command" class="md-nav__link">
+    mv command
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rm-command" class="md-nav__link">
+    rm command
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mkdir-command" class="md-nav__link">
+    mkdir command
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rmdir-command" class="md-nav__link">
+    rmdir command
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ln-command" class="md-nav__link">
+    ln command
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#touch-command" class="md-nav__link">
+    touch command
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cat-command" class="md-nav__link">
+    cat command
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tac-command" class="md-nav__link">
+    tac command
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#more-command" class="md-nav__link">
+    more command
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#less-command" class="md-nav__link">
+    less command
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#head-command" class="md-nav__link">
+    head command
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tail-command" class="md-nav__link">
+    tail command
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tar-command" class="md-nav__link">
+    tar command
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cpio-command" class="md-nav__link">
+    cpio command
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gzip-command" class="md-nav__link">
+    gzip command
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gunzip-command" class="md-nav__link">
+    gunzip command
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bzip2-command" class="md-nav__link">
+    bzip2 command
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bunzip2-command" class="md-nav__link">
+    bunzip2 command
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rsync-command" class="md-nav__link">
+    rsync command
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dd-command" class="md-nav__link">
+    dd command
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#find-command" class="md-nav__link">
+    find command
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#which-command" class="md-nav__link">
+    which command
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#whereis-command" class="md-nav__link">
+    whereis command
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#type-command" class="md-nav__link">
+    type command
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#file-command" class="md-nav__link">
+    file command
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#grep-command" class="md-nav__link">
+    grep command
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+
+<h1 id="useful-commands">Useful Commands</h1>
+<h2 id="some-common-abbreviations">Some common abbreviations</h2>
+<table>
+<thead>
+<tr>
+<th>Abbreviations</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.</code></td>
+<td>represents the current directory</td>
+</tr>
+<tr>
+<td><code>..</code></td>
+<td>represents the parent directory</td>
+</tr>
+<tr>
+<td><code>~</code></td>
+<td>represents the home directory</td>
+</tr>
+<tr>
+<td><code>~username</code></td>
+<td>represents the home directory of user username</td>
+</tr>
+</tbody>
+</table>
+<h2 id="software-package-documentation">Software package documentation</h2>
+<pre><code class="language-bash">/usr/share/doc/packages/
+</code></pre>
+<h2 id="release-notes">Release Notes</h2>
+<pre><code class="language-bash">/usr/share/doc/release-notes/
+</code></pre>
+<h2 id="command-help">Command help</h2>
+<pre><code class="language-bash">&lt;command&gt; -h or &lt;command&gt; --help
+# tree --help
+</code></pre>
+<h2 id="manual-pages">Manual pages</h2>
+<pre><code class="language-bash">man [section] command
+# man 5 crontab
+# man
+/sestion options
+</code></pre>
+<p>Show tree command manual:</p>
+<pre><code class="language-bash"># man tree
+</code></pre>
+<p>List for keywords: </p>
+<pre><code class="language-bash"># man -k keyword
+</code></pre>
+<p>Force mandb to update. Normally this is done daily via a cron job.</p>
+<pre><code class="language-bash"># mandb
+</code></pre>
+<p>Search for all instances of a command or a file named crontab</p>
+<pre><code class="language-bash"># man -f crontab
+# whatis crontab (same output with above command)
+
+# man -k crontab
+# apropos crontab (same output with above command)
+</code></pre>
+<p>To go directly to a given man page:</p>
+<pre><code class="language-bash"># man 5 crontab
+</code></pre>
+<ul>
+<li><code>1G</code> : go to the 1st line</li>
+<li><code>10G</code> : go to the 10th line</li>
+<li><code>G</code> : go to the end of the page</li>
+<li><code>/^SELinux</code> : search the word SELinux</li>
+<li><code>/section OPTIONS</code> : go to the section OPTIONS</li>
+</ul>
+<p>man共有以下几个章节，比如，man 5 crontab就是进入crontab的第5章节：</p>
+<ul>
+<li>Executable programs or shell commands （标准命令）</li>
+<li>System calls (functions provided by the kernel)（系统调用）</li>
+<li>Library calls (functions within program libraries)（库函数）</li>
+<li>Special files (usually found in /dev)（设备说明）</li>
+<li>File formats and conventions eg <code>/etc/passwd</code> （文件格式）</li>
+<li>Games （游戏和娱乐）</li>
+<li>Miscellaneous (including macro packages and conventions)（杂项，惯例与协定等网络协定、ASCII code等等的說明）</li>
+<li>System administration commands (usually only for root) （管理员命令）</li>
+<li>Kernel routines [Non standard] （其他Linux特定的，用来存放内核例行程序的文档。）</li>
+</ul>
+<p>man常用快捷键</p>
+<ul>
+<li>翻屏<ul>
+<li>向后翻一屏：space(空格键) </li>
+<li>向前翻一屏：b</li>
+<li>向后翻一行：Enter(回车键)</li>
+<li>向前翻一行：k</li>
+</ul>
+</li>
+<li>查找<ul>
+<li>/关键词</li>
+<li>?关键词 </li>
+<li>n  (下一个)</li>
+<li>N  (前一个)</li>
+</ul>
+</li>
+</ul>
+<p>man 中文化。在<code>/etc/profile</code>加入下面alias，可以在man中输出中文</p>
+<pre><code># For man in zh_CH
+alias cman='man -M /usr/share/man/zh_CN'
+</code></pre>
+<h2 id="display-descriptions">Display descriptions:</h2>
+<pre><code>whatis command
+</code></pre>
+<h2 id="info-pages">Info pages:</h2>
+<p>info command</p>
+<pre><code class="language-bash"># info
+# info top
+</code></pre>
+<p>From the terminal window display the info pages for the info command by entering:</p>
+<pre><code class="language-bash"># info info
+</code></pre>
+<p>Move the cursor to the line referring to (Invoking Info) by pressing
+<code>Tab</code>
+<code>Tab</code></p>
+<p>Follow the link by pressing
+<code>Enter</code></p>
+<p>Move the cursor to the link Note Custom Key Bindings: by pressing
+<code>Tab</code>(6 times)</p>
+<p>Follow the link by pressing
+<code>Enter</code></p>
+<p>Return to the page Note Custom Key Bindings: by typing (lowercase L):
+<code>l</code></p>
+<p>Exit the info file by typing:
+<code>q</code></p>
+<h2 id="pwd-command"><code>pwd</code> command</h2>
+<p>Display the current working directory</p>
+<h2 id="cd-command"><code>cd</code> command</h2>
+<p>Change directory</p>
+<h2 id="ls-command"><code>ls</code> command</h2>
+<p>Display directory contents</p>
+<pre><code>* Display hidden files with -a option
+* Detailed listing with -l option
+* Output is recursive, including all subdirectories with -R option
+* With option -F After each name, a character indicates the file type (“/” for directories, “*” for executable files, “|” for FIFO files, “@” symbolic link).
+</code></pre>
+<h2 id="cp-command"><code>cp</code> command</h2>
+<p>Copy a file or directory </p>
+<p>Syntax: <code>cp [option] &lt;source&gt; &lt;destination&gt;</code></p>
+<ul>
+<li>Option <code>-a</code> : Copies a directory and subdirectories (compare <code>-R</code>); symbolic links, file permissions, owners, and time stamps are not changed. 它保留符号链接、文件属性，并复制目录下的所有内容。其作用等于-dpR参数组合。</li>
+<li>Option <code>-I</code> :  Asks before overwriting.</li>
+<li>Option <code>-R</code>, <code>-r</code> : Copies directories recursively (the directory and any subdirectories). 递归拷贝，包含子目录及（隐含）文件，继承目标目录的权限和属性等</li>
+<li>Option <code>-l</code> : Makes hardlinks instead of copying (创建硬链接的另外一个方法)</li>
+<li>Option <code>-s</code> : Makes symbolic instead of copying (创建符号链接的另外一个方法)</li>
+<li>Option <code>-u</code> : Copies a file only when the source file is newer than the destination file or when the destination file is missing.</li>
+<li>Option <code>-p</code> : 连同档案的属性一起复制过去，包括修改时间、访问权限、所有者组等，而非使用预设属性；</li>
+</ul>
+<p>Labs: </p>
+<ul>
+<li>Initiate directories and files</li>
+</ul>
+<pre><code class="language-bash">mySUSE:~ # su - pmgr
+pmgr@mySUSE:~&gt; mkdir /data/program
+pmgr@mySUSE:~&gt; mkdir /data/program/general
+pmgr@mySUSE:~&gt; mkdir /data/program/general/staffing
+pmgr@mySUSE:~&gt; touch /data/program/general/program_scope
+pmgr@mySUSE:~&gt; touch /data/program/general/staffing/assignment
+
+mySUSE:~ # su - pm1
+pm1@mySUSE:~&gt; mkdir /data/project1
+pm1@mySUSE:~&gt; mkdir /data/project1/iot
+pm1@mySUSE:~&gt; mkdir /data/project1/iot/bigdata
+pm1@mySUSE:~&gt; touch /data/project1/iot/devicelist
+pm1@mySUSE:~&gt; touch /data/project1/iot/bigdata/math_lib
+
+mySUSE:~ # su - pm2
+pm2@mySUSE:~&gt; mkdir /data/project2
+pm2@mySUSE:~&gt; mkdir /data/project2/erp
+pm2@mySUSE:~&gt; mkdir /data/project2/erp/fin
+pm2@mySUSE:~&gt; touch /data/project2/erp/erp_vision
+pm2@mySUSE:~&gt; touch /data/project2/erp/fin/fin_ar
+pm2@mySUSE:~&gt; chmod g+w /data/project2/erp/erp_vision
+
+pmgr@mySUSE:~&gt; ln /data/project2/erp/erp_vision /data/program/general/p2_erp_version 
+    (创建硬链接，当前用户需要对源文件erp_vision有w权限)
+pmgr@mySUSE:~&gt; ln -s /data/project1/iot/devicelist /data/program/general/p1_devicelist 
+    (创建符号链接，不验证当前用户是否对源文件devicelist有权限)
+
+mySUSE:~ # tree /data
+/data
+├── program
+│   └── general
+│       ├── p1_devicelist -&gt; /data/project1/iot/devicelist
+│       ├── p2_erp_version
+│       ├── program_scope
+│       └── staffing
+│           └── assignment
+├── project1
+│   └── iot
+│       ├── bigdata
+│       │   └── math_lib
+│       └── devicelist
+└── project2
+    └── erp
+        ├── erp_vision
+        └── fin
+            └── fin_ar
+
+pmgr@mySUSE:~&gt; cp -R /data/project1 /data/program/ 
+    (/data/program/project1的用户和组都继承了/data/program/)
+pmgr@mySUSE:~&gt; cp -a /data/project2 /data/program/
+    (/data/program/project2的用户继承了/data/program/，但组还是保留原来的)
+</code></pre>
+<h2 id="mv-command"><code>mv</code> command</h2>
+<p>Move or rename a file or directory</p>
+<ul>
+<li>Option -i : Asks for confirmation before moving or renaming a file. This prevents existing files with the same name from being overwritten.</li>
+<li>Option -u : Only moves files that are newer than the target files of the same name.</li>
+</ul>
+<pre><code>pmgr@mySUSE:/data/program/general&gt; cp program_scope ./staffing/
+pmgr@mySUSE:/data/program/general&gt; mv -i program_scope ./staffing/
+mv: overwrite './staffing/program_scope'? n
+</code></pre>
+<h2 id="rm-command"><code>rm</code> command</h2>
+<p>Delete a file or directory</p>
+<ul>
+<li>Option <code>-i</code> : Asks for confirmation before deleting.</li>
+<li>Option <code>-r</code> : (recursively) Allows full directories to be deleted.</li>
+<li>Option <code>-f</code> : (force) By default, rm asks for confirmation if the file that should be deleted is read-only. Using this option, the files are deleted without asking for confirmation.</li>
+</ul>
+<h2 id="mkdir-command"><code>mkdir</code> command</h2>
+<p>Create a new directory</p>
+<ul>
+<li>Option <code>-p</code> lets you create a complete path (层级路径一次创建)</li>
+</ul>
+<pre><code>pmgr@mySUSE:/data&gt; mkdir -p industry/utilities
+pmgr@mySUSE:/data&gt; tree ./industry/
+./industry/
+└── utilities
+</code></pre>
+<h2 id="rmdir-command"><code>rmdir</code> command</h2>
+<p>Remove an empty directory. The directory or directories must be empty before you can delete them.</p>
+<h2 id="ln-command"><code>ln</code> command</h2>
+<p>Create a link</p>
+<ul>
+<li>Default: Hard link</li>
+<li>Symbolic link with -s option</li>
+<li>Syntax: <code>ln [-s] &lt;original&gt; &lt;link&gt;</code></li>
+</ul>
+<h2 id="touch-command"><code>touch</code> command</h2>
+<p>Change the access and modification times</p>
+<ul>
+<li>Create an empty file if the given file does not exist.</li>
+<li>Change the time stamp of a file.<ul>
+<li>Option <code>-a</code> : Changes only the time of the last read access (access time).</li>
+<li>Option <code>-m</code> : Changes only the time of the last modification (modification time).</li>
+<li>Option <code>-r</code> file : Sets the time stamp of file instead of the current time.</li>
+<li>Option <code>-t</code> time : Instead of the current time, sets time (structure: [[CC]YY]MMDDhhmm.[ss] ([Century]Year] Month Day Hour Minute [Seconds], two digits in each))</li>
+</ul>
+</li>
+</ul>
+<pre><code>pmgr@mySUSE:/data/industry&gt; touch readme
+pmgr@mySUSE:/data/industry&gt; touch -a readme
+pmgr@mySUSE:/data/industry&gt; touch -m readme
+pmgr@mySUSE:/data/industry&gt; stat readme 
+  File: readme
+  Size: 0           Blocks: 0          IO Block: 4096   regular empty file
+Device: 3dh/61d Inode: 338         Links: 1
+Access: (0644/-rw-r--r--)  Uid: ( 1003/    pmgr)   Gid: ( 1000/  admins)
+Access: 2019-03-31 10:07:47.489055973 +0800
+Modify: 2019-03-31 10:07:58.805109884 +0800
+Change: 2019-03-31 10:07:58.805109884 +0800
+ Birth: -
+</code></pre>
+<h2 id="cat-command"><code>cat</code> command</h2>
+<p>Concatenates files</p>
+<h2 id="tac-command"><code>tac</code> command</h2>
+<p>Same as cat, but displays the file(s) in reverse</p>
+<pre><code>pmgr@mySUSE:/data/industry&gt; cat readme 
+line 1
+line 2
+line 3
+pmgr@mySUSE:/data/industry&gt; tac readme 
+line 3
+line 2
+line 1
+</code></pre>
+<h2 id="more-command"><code>more</code> command</h2>
+<p>Display file contents one page at a time</p>
+<h2 id="less-command"><code>less</code> command</h2>
+<p>Displays file contents for better navigation</p>
+<h2 id="head-command"><code>head</code> command</h2>
+<p>Displays the first 10 lines of a file. </p>
+<ul>
+<li>To set the number of lines use the -n option</li>
+</ul>
+<pre><code>pmgr@mySUSE:/data/industry&gt; head readme 
+line 1
+line 2
+line 3
+line 4
+line 5
+line 6
+line 7
+line 8
+line 9
+line 10
+pmgr@mySUSE:/data/industry&gt; head -n 5 readme 
+line 1
+line 2
+line 3
+line 4
+line 5
+</code></pre>
+<h2 id="tail-command"><code>tail</code> command</h2>
+<p>Display the last lines of a file</p>
+<ul>
+<li>To set the number of lines use the -n option</li>
+<li>To output appended data use -f option, displays a continuously updated view of the last lines of a file. To exit tail -f, press Ctrl+C.</li>
+</ul>
+<pre><code>pmgr@mySUSE:/data/industry&gt; tail -n 6 readme 
+line 10
+line 11
+line 12
+line 13
+line 14
+line 15
+</code></pre>
+<h2 id="tar-command"><code>tar</code> command</h2>
+<p>Create, expand or list archive files</p>
+<ul>
+<li>Use option <code>c</code> to create an archive</li>
+<li>Use option <code>f</code> to specify the archive file name</li>
+<li>Use option <code>v</code> for verbose mode</li>
+<li>Use option <code>x</code> to extract an archive</li>
+<li>Use option <code>t</code> to list the content of an archive</li>
+<li>Use option <code>z</code> to (un-)compress the archive with gzip</li>
+<li>Use option <code>j</code> to (un-)compress the archive with bzip</li>
+</ul>
+<p>The <code>/etc</code> directory (include sub-directories) is backed up to the <code>/backup/etc.tar</code> file</p>
+<pre><code>pmgr@mySUSE:~&gt; tar -cvf /data/backup/project1.tar /data/project1/
+pmgr@mySUSE:~&gt; tar -cvf /data/backup/project2.tar /data/project2/
+pmgr@mySUSE:~&gt; tar -cv --exclude='*.conf' -f /data/backup/project2a.tar /data/project2/
+</code></pre>
+<p>View the contents of an archive. Some .conf files are excluded in project2a.tar file.</p>
+<pre><code>pmgr@mySUSE:~&gt; tar -tvf /data/backup/project2.tar
+drwxr-xr-x pm2/project2      0 2019-03-31 16:47 data/project2/
+drwxr-xr-x pm2/project2      0 2019-03-31 16:47 data/project2/erp/
+drwxr-xr-x pm2/project2      0 2019-03-31 16:47 data/project2/erp/fin/
+-rw-r--r-- pm2/project2      0 2019-03-29 16:06 data/project2/erp/fin/fin_ar
+-rw-r--r-- pm2/project2      0 2019-03-31 16:47 data/project2/erp/fin/fin.conf
+-rw-rw-r-- pm2/project2      0 2019-03-29 16:06 data/project2/erp/erp_vision
+-rw-r--r-- pm2/project2      0 2019-03-31 16:47 data/project2/erp/erp.conf
+-rw-r--r-- pm2/project2      0 2019-03-31 16:47 data/project2/project2.conf
+
+pmgr@mySUSE:~&gt; tar -tvf /data/backup/project2a.tar
+drwxr-xr-x pm2/project2      0 2019-03-31 16:47 data/project2/
+drwxr-xr-x pm2/project2      0 2019-03-31 16:47 data/project2/erp/
+drwxr-xr-x pm2/project2      0 2019-03-31 16:47 data/project2/erp/fin/
+-rw-r--r-- pm2/project2      0 2019-03-29 16:06 data/project2/erp/fin/fin_ar
+-rw-rw-r-- pm2/project2      0 2019-03-29 16:06 data/project2/erp/erp_vision
+</code></pre>
+<p>Unpack and write all files in the archive to the current directory. Extract to another directory by using the -C option</p>
+<pre><code>pmgr@mySUSE:~&gt; mkdir project1.backup 
+pmgr@mySUSE:~&gt; tar -xvf /data/backup/project1.tar -C /data/backup/project1.backup/
+</code></pre>
+<p>Incremental backup with tar command</p>
+<pre><code>pmgr@mySUSE:~&gt; tar -g snapshot_program -cvf /data/backup/bkp_program_full.tar /data/program/
+pmgr@mySUSE:~&gt; tar -tvf /data/backup/bkp_program_full.tar
+pmgr@mySUSE:~&gt; touch /data/program/general/general.conf
+pmgr@mySUSE:~&gt; tar -g snapshot_program -cvf /data/backup/bkp_program_inc.tar /data/program/
+
+pmgr@mySUSE:~&gt; rm -rf program/
+pmgr@mySUSE:~&gt; tar -xvf /data/backup/bkp_program_inc.tar -C /data/
+</code></pre>
+<h2 id="cpio-command"><code>cpio</code> command</h2>
+<p>Another archiving command</p>
+<h2 id="gzip-command"><code>gzip</code> command</h2>
+<p>Compress files using the gzip algorithm</p>
+<ul>
+<li>Option -c : Compresses the file without modifying the original file. The result is written to the standard output (usually the screen). From there, it can be redirected to a file with “&gt;”.</li>
+<li>Option -d : Decompresses the specified file (gunzip)</li>
+<li>Option -r : Compresses and decompresses files in all subdirectories.</li>
+<li>Option -1 to -9, --fast, --best : Controls the compression speed: -1 means --fast and causes a quick compression but produces larger files, -9 corresponds to --best and requires more computing time but produces smaller files. The default setting is -6.</li>
+</ul>
+<h2 id="gunzip-command"><code>gunzip</code> command</h2>
+<p>Expand files compressed with gzip</p>
+<h2 id="bzip2-command"><code>bzip2</code> command</h2>
+<p>Compress files using the bzip2 algorithm</p>
+<ul>
+<li>Option <code>-c</code> : </li>
+<li>Option <code>-d</code> : Decompresses the specified file (bunzip2).</li>
+<li>Option <code>-1</code> to <code>-9</code> : Controls the compression speed: <code>-1</code> causes a quick compression but produces larger files, <code>-9</code> requires more computing time but produces smaller files. The default setting is <code>-9</code>.</li>
+</ul>
+<h2 id="bunzip2-command"><code>bunzip2</code> command</h2>
+<p>Expand files compressed with bzip</p>
+<h2 id="rsync-command"><code>rsync</code> command</h2>
+<p>Copy only deltas between two directories. A key benefit of using rsync is that when copying data, rsync compares the source and the target directory and transfers only data that has changed or has been created.  仅复制两个目录之间的增量。 使用rsync的一个主要好处是，在复制数据时，rsync会比较源目录和目标目录，并仅传输已更改或已创建的数据。</p>
+<ul>
+<li>Local or via network 本地或通过网络</li>
+<li>Uses ssh as default transport 使用ssh作为默认传输</li>
+<li>Can talk to rsync daemon on the remote machine 可以与远程计算机上的rsync守护程序通信</li>
+</ul>
+<p>Note: </p>
+<p><code>rsync</code> must be installed on both the source and the target computer for this to work. 必须在源计算机和目标计算机上安装rsync才能使其正常工作。
+As the default shell used by rsync is ssh, the -e option only needs to be used when you want to use something else than ssh. 由于rsync使用的默认shell是ssh，因此只有在想要使用除ssh以外的其他工具时才需要使用-e选项。</p>
+<p>Options</p>
+<ul>
+<li>Option -a : Puts rsync into the archive mode. The -a option ensures the following are preserved 保留 in the mirrored copy of the directory:<ul>
+<li>Symbolic links (l option)</li>
+<li>Access permissions (p option)</li>
+<li>Owners (o option)</li>
+<li>Group membership (g option)</li>
+<li>Time stamp (t option)</li>
+</ul>
+</li>
+<li>Option -x : Saves files on one file system only, which means that rsync does not follow symbolic links to other file systems. 不跨文件系统，只在一个文件系统内(don't cross filesyste* undaries)</li>
+<li>Option -v : Enables the verbose mode. Use this mode to output information about the transferred files and the progress of the copying process. 输出传输过程的细节信息</li>
+<li>Option -z : Compresses the data during the transfer. This is especially useful for remote synchronization. 压缩方式传输</li>
+<li>Option --delete : Deletes files from the mirrored directory that no longer exist in the original directory.</li>
+<li>Option --exclude-from : Does not back up files listed in an exclude file.</li>
+</ul>
+<p>Local backup via rsync command</p>
+<pre><code>pmgr@mySUSE:/data&gt; rsync -av /data/industry/* /data/backup/industry/
+sending incremental file list
+created directory /data/backup/industry
+readme
+utilities/
+sent 264 bytes  received 87 bytes  702.00 bytes/sec
+total size is 111  speedup is 0.32
+
+pmgr@mySUSE:/data/industry/utilities&gt; touch roadmap.txt
+
+pmgr@mySUSE:/data&gt; rsync -av /data/industry/* /data/backup/industry/
+sending incremental file list
+utilities/
+utilities/roadmap.txt
+sent 171 bytes  received 39 bytes  420.00 bytes/sec
+total size is 111  speedup is 0.53
+pmgr@mySUSE:/data&gt; rm roadmap.txt
+pmgr@mySUSE:/data&gt; rsync -av /data/industry/* --delete /data/backup/industry/
+sending incremental file list
+deleting utilities/roadmap.txt
+utilities/
+sent 102 bytes  received 41 bytes  286.00 bytes/sec
+total size is 111  speedup is 0.78
+</code></pre>
+<h2 id="dd-command"><code>dd</code> command</h2>
+<p>Copies files block by block</p>
+<ul>
+<li>Used to create disk or partition images</li>
+<li>Most important options:<ul>
+<li><code>if</code>=input_file</li>
+<li>`of``=output_file</li>
+<li><code>bs</code>=block_size</li>
+</ul>
+</li>
+</ul>
+<p>You can use the dd command to convert and copy files byte-wise.  </p>
+<p>Normally dd reads from the standard input and writes the result to the standard output. But with the appropriate parameters, regular files can be addressed as well.</p>
+<p>You can copy all kinds of Linux data with this command, including entire hard disk partitions. You can even copy an entire installed system (or just parts of it).</p>
+<p>Copy file /etc/protocols to protocols.old. The default size for a record is 512 bytes. Below 45+1 means, 45 complete record of standard size and 1 incomplete record (less than 512 bytes</p>
+<pre><code>pmgr@mySUSE:/data/program&gt; dd if=/etc/protocols of=protocols.old bs=512
+45+1 records in
+45+1 records out
+23259 bytes (23 kB, 23 KiB) copied, 0.000595392 s, 39.1 MB/s
+</code></pre>
+<p>创建一个100M的空文件</p>
+<pre><code>pmgr@mySUSE:/data/program&gt; dd if=/dev/zero of=datafile bs=100M count=2
+2+0 records in
+2+0 records out
+209715200 bytes (210 MB, 200 MiB) copied, 2.79311 s, 75.1 MB/s
+</code></pre>
+<p>备份整个分区</p>
+<pre><code>#dd if=/dev/sda1 of=boot.partition
+</code></pre>
+<p>制作U盘启动盘（U盘挂载到/dev/sdb）</p>
+<pre><code>#dd if=/root/diskboot.img of=/dev/sdb bs=125682176
+</code></pre>
+<p>备份硬盘主引导记录</p>
+<pre><code>#dd if=/dev/sda of=/tmp/mbr_copy bs=512 count=1
+</code></pre>
+<p>还原硬盘主引导记录</p>
+<pre><code>#dd if=/disk.mbr of=/dev/hda bs=512 count=1
+</code></pre>
+<p>将内存里的数据拷贝到root目录下的mem.bin文件</p>
+<pre><code># dd if=/dev/mem of=/root/mem.bin bs=1024
+</code></pre>
+<p>拷贝光盘数据到root文件夹下，并保存为cd.iso文件</p>
+<pre><code># dd if=/dev/cdrom of=/root/cd.iso
+</code></pre>
+<p>利用随机的数据填充硬盘(销毁硬盘数据)</p>
+<pre><code># dd if=/dev/urandom of=/dev/hda1
+</code></pre>
+<p>测试硬盘读写速度。通过两个命令输出的执行时间，可以计算出测试硬盘的读／写速度：</p>
+<pre><code>mySUSE:/data # dd if=/data/program/datafile bs=64k | dd of=/dev/null
+3200+0 records in
+3200+0 records out
+209715200 bytes (210 MB, 200 MiB) copied, 0.67138 s, 312 MB/s
+409600+0 records in
+409600+0 records out
+209715200 bytes (210 MB, 200 MiB) copied, 0.675912 s, 310 MB/s
+
+# dd if=/dev/zero of=/data/program/datafile bs=1024 count=100
+</code></pre>
+<p>切割大文件bigfile，共98336321字节，则：</p>
+<pre><code># dd if=bigfile of=smallfile1 bs=1 count=20000000
+# dd if=bigfile of=smallfile2 bs=1 count=20000000 skip=20000000
+# dd if=bigfile of=smallfile3 bs=1 count=20000000 skip=40000000
+# dd if=bigfile of=smallfile4 bs=1 count=20000000 skip=60000000
+# dd if=bigfile of=smallfile5 bs=1 count=18336321 skip=80000000
+</code></pre>
+<p>将切割文件组装</p>
+<pre><code># dd if=smallfile1 of=bigfile bs=1 count=20000000
+# dd if=smallfile2 of=bigfile bs=1 count=20000000 seek=20000000
+# dd if=smallfile3 of=bigfile bs=1 count=20000000 seek=40000000
+# dd if=smallfile4 of=bigfile bs=1 count=20000000 seek=60000000
+# dd if=smallfile5 of=bigfile bs=1 count=18336321 seek=80000000
+
+if: 要切割的大文件名
+of: 切割后的子文件名
+bs: 以多少字节作为一个切割记录单位
+count: 是要切割的单位记录数
+skip: 说明切割时的起点
+seek: 明确指出开始位置
+</code></pre>
+<h2 id="find-command"><code>find</code> command</h2>
+<p>Search for files or directories</p>
+<p>Syntax: <code>find path criterion [action]</code></p>
+<p>The find command has a multitude of options, a few of which are explained here. You can use the following arguments with the command:</p>
+<ul>
+<li>path: The section of the file system to search (the specified directory and all its subdirectories). If nothing is specified, the file system below the current directory is used.</li>
+<li>criterion: The properties the file should have (see below)</li>
+<li>action: Options that influence the following conditions or control the search as a whole</li>
+</ul>
+<p>The most important actions are:</p>
+<ul>
+<li><code>-print</code> (default)</li>
+<li><code>-exec</code> command</li>
+</ul>
+<p>With the <code>-exec</code> option, you can call up another command. This option is frequently used to link find and grep, as in the following:</p>
+<p>找出gen开头的文件</p>
+<pre><code>pmgr@dcmaster:/data&gt; find . -name gen\*
+./program/general
+./program/general/general.conf
+</code></pre>
+<p>找出gen开头的文件，并在文件内容中查找xen，找到后结果输出xen</p>
+<pre><code>pmgr@dcmaster:/data&gt; find . -name gen\* -type f -exec grep xen {} \;
+xen
+xening 
+</code></pre>
+<p>The two brackets “{}” stand as placeholders for the file names which are found and passed to the grep command. 
+The semicolon closes the -exec instruction. Because this is a special character, it is masked by placing a backslash in front of it.</p>
+<p>-ctime [+/-]days</p>
+<pre><code>Searches for files whose last change took place no later than (no earlier than) a specified number of days ago.  
+在过去n天内被修改过的文件
+</code></pre>
+<pre><code>mgr@dcmaster:/data&gt; find . -ctime 1
+.
+./program/datafile
+</code></pre>
+<p>-gid number</p>
+<pre><code>Searches for files with the numeric GID (Group ID) number.  (gid 是 n)
+</code></pre>
+<p>-group name</p>
+<pre><code>Searches for files that are owned by the group name. Instead of a name, the numeric GID is allowed. (group 名称是 name)
+</code></pre>
+<p>-name pattern</p>
+<pre><code>Searches for files whose names contain the given pattern. If the pattern contains meta characters or wild cards, the name must be enclosed by quotation marks. 
+Otherwise thename will be interpreted by the shell and not by find.
+</code></pre>
+<p>-newer file</p>
+<pre><code>Searches for files that were modified more recently than file. 
+比文件 file 更新的文件
+</code></pre>
+<pre><code>pmgr@dcmaster:/data&gt; find . -cnewer ./program/datafile
+.
+</code></pre>
+<p>-size [+/-]size</p>
+<pre><code>Matches files that are above or below a certain size. The size (in blocks of 512 bytes) is given as an argument. 
+The suffix “c“switches to byte and “k” to blocks of 1024bytes. 
+A preceding “+” stands for all larger files and a “-” for all smaller files. (文件大小 是 n
+    • b 代表 512 位元组的区块
+    • c 表示字元数
+    • k 表示 kilo bytes
+    • w 是二个位元组
+</code></pre>
+<pre><code>pmgr@dcmaster:/data&gt; find . -size 20k
+./backup/project2.tar
+</code></pre>
+<p>-type file_type</p>
+<pre><code>Searches for a file type. A file type can be one of the following: 
+    * c : 文件类型是 c 的文件。
+    * d: 目录
+    * c: 字型装置文件
+    * b: 区块装置文件
+    * p: 具名贮列
+    * f: 一般文件
+    * l: 符号连结
+    * s: socket
+</code></pre>
+<p>-uid number</p>
+<pre><code>Searches for files with the numeric UID (User ID) number.
+</code></pre>
+<p>-user name</p>
+<pre><code>Searches for files, which are owned by user name. Instead of a name, the numeric UID is allowed.
+</code></pre>
+<p>常用参数</p>
+<ul>
+<li>mount, -xdev : 只检查和指定目录在同一个文件系统下的文件，避免列出其它文件系统中的文件</li>
+<li>amin n : 在过去 n 分钟内被读取过</li>
+<li>anewer file : 比文件 file 更晚被读取过的文件</li>
+<li>atime n : 在过去n天内被读取过的文件</li>
+</ul>
+<pre><code>pmgr@dcmaster:/data&gt; find . -atime 1
+./program/datafile
+</code></pre>
+<ul>
+<li>cmin n : 在过去 n 分钟内被修改过</li>
+</ul>
+<pre><code>pmgr@dcmaster:/data&gt; find . -cmin 20
+</code></pre>
+<ul>
+<li>empty : 空的文件</li>
+<li>ipath p, -path p : 路径名称符合 p 的文件，ipath 会忽略大小写</li>
+<li>name name, -iname name : 文件名称符合 name 的文件。iname 会忽略大小写</li>
+<li>pid n : process id 是 n 的文件</li>
+</ul>
+<p>查找当前目录及子目录中所有文件长度为0的普通文件，并列出它们的完整路径</p>
+<pre><code>pmgr@dcmaster:/data&gt; find . -type f -size 0 -exec ls -l {} \;
+</code></pre>
+<p>查找前目录中文件属主具有读、写权限，并且文件所属组的用户和其他用户具有读权限的文件</p>
+<pre><code>pmgr@dcmaster:/data&gt; find . -type f -perm 644 -exec ls -l {} \;
+</code></pre>
+<p>查找/var/log目录中更改时间在17日以前的普通文件，并在删除之前询问它们</p>
+<pre><code>pmgr@dcmaster:/data&gt; find /var/log -type f -mtime +17 -ok rm {} \;
+</code></pre>
+<p>将目前目录及其子目录下所有最近 1 天内更新过的文件列出</p>
+<pre><code>mgr@dcmaster:/data&gt; find . -ctime 1
+</code></pre>
+<p>将目前目录其其下子目录中所有一般文件列出</p>
+<pre><code>pmgr@dcmaster:/data&gt; find . -type f
+</code></pre>
+<p>将目前目录及其子目录下所有延伸档名是conf 的文件列出来</p>
+<pre><code>pmgr@dcmaster:/data&gt; find . -name &quot;*.conf&quot;
+</code></pre>
+<h2 id="which-command"><code>which</code> command</h2>
+<p>Searches all paths listed in the variable $PATH and returns the full path of the command</p>
+<p>The which command searches all paths listed in the variable $PATH for the specified command and returns the full path of the command. In the variable $PATH, the most important directoriesare listed where the shell looks for executable files. which命令搜索变量$PATH中列出的所有路径以获取指定命令，并返回命令的完整路径。</p>
+<p>The which command is especially useful if several versions of a command exist in different directories and you want to know which version is executed when entered without specifying apath. 
+如果命令的多个版本存在于不同的目录中，并且您想知道在输入时执行了哪个版本而未指定路径，那么which命令特别有用。</p>
+<p>NOTE: To see the content of a variable, use the echo command</p>
+<table>
+<thead>
+<tr>
+<th>Options</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-n&lt;文件名长度&gt;</code></td>
+<td>指定文件名长度，指定的长度必须大于或等于所有文件中最长的文件名。</td>
+</tr>
+<tr>
+<td><code>-p&lt;文件名长度&gt;</code></td>
+<td>与-n参数相同，但此处的&lt;文件名长度&gt;包括了文件的路径。</td>
+</tr>
+<tr>
+<td><code>-w</code></td>
+<td>指定输出时栏位的宽度。</td>
+</tr>
+<tr>
+<td><code>-V</code></td>
+<td>显示版本信息</td>
+</tr>
+</tbody>
+</table>
+<pre><code># which grep
+/usr/bin/grep
+
+# which -V grep
+GNU which v2.21, Copyright (C) 1999 - 2015 Carlo Wood.
+GNU which comes with ABSOLUTELY NO WARRANTY;
+This program is free software; your freedom to use, change
+and distribute this program is protected by the GPL.
+</code></pre>
+<h2 id="whereis-command"><code>whereis</code> command</h2>
+<p>The whereis command returns the binaries (option -b), manual pages (option -m), and the source code (option -s) of the specified command. If no option is used, all this information is returned, provided the information is available. This command is faster than find, but it is less thorough.</p>
+<p>Attempts to locate the desired program in the standard Linux places, and in the places specified by <code>$PATH</code> and <code>$MANPATH</code>. 尝试在标准Linux位置和指定位置($PATH和$MANPATH)找到所需的程序</p>
+<table>
+<thead>
+<tr>
+<th>Options</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-b</code></td>
+<td>只查找二进制文件。</td>
+</tr>
+<tr>
+<td><code>-B&lt;目录&gt;</code></td>
+<td>只在设置的目录下查找二进制文件。</td>
+</tr>
+<tr>
+<td><code>-f</code></td>
+<td>不显示文件名前的路径名称。</td>
+</tr>
+<tr>
+<td><code>-m</code></td>
+<td>只查找说明文件。</td>
+</tr>
+<tr>
+<td><code>-M&lt;目录&gt;</code></td>
+<td>只在设置的目录下查找说明文件。</td>
+</tr>
+<tr>
+<td><code>-s</code></td>
+<td>只查找原始代码文件。</td>
+</tr>
+<tr>
+<td><code>-S&lt;目录&gt;</code></td>
+<td>只在设置的目录下查找原始代码文件。</td>
+</tr>
+<tr>
+<td><code>-u</code></td>
+<td>查找不包含指定类型的文件。</td>
+</tr>
+</tbody>
+</table>
+<p>以下输出信息从左至右分别为查询的程序名、bash路径、bash的man手册页路径。</p>
+<pre><code># whereis grep
+grep: /usr/bin/grep /bin/grep /usr/share/man/man1/grep.1.gz /usr/share/info/grep.info.gz
+</code></pre>
+<p>显示bash 命令的二进制程序</p>
+<pre><code># whereis -b grep
+grep: /usr/bin/grep /bin/grep
+</code></pre>
+<p>显示bash 命令的帮助文件</p>
+<pre><code># whereis -m grep
+grep: /usr/share/man/man1/grep.1.gz /usr/share/info/grep.info.gz
+</code></pre>
+<h2 id="type-command"><code>type</code> command</h2>
+<p>The type command shows what kind of command is executed when you enter it: 命令的类型</p>
+<ul>
+<li>a shell built-in command (an essential command that is hard coded in the shell), for example type or cd</li>
+<li>an external command (called by the shell) </li>
+<li>an alias, for example ls. An alias defines shortcuts and synonyms for commonly used shell commands.</li>
+<li>a function</li>
+<li>The -a option delivers all instances of a command bearing this name in the file system.</li>
+</ul>
+<p>NOTE: If you want to have more information about a file format, you can use the file command.</p>
+<p>不适用于普通文件</p>
+<pre><code>dcmaster:/data/shell # type pwd.txt
+-bash: type: pwd.txt: not found
+</code></pre>
+<p>不适用于自定义可执行脚本</p>
+<pre><code>dcmaster:/data/shell # type math.sh
+-bash: type: math.sh: not found
+</code></pre>
+<p>系统命令</p>
+<pre><code>dcmaster:/data/shell # type rsync 
+rsync is /usr/bin/rsync
+</code></pre>
+<p>别名</p>
+<pre><code>dcmaster:/data/shell # type l  
+l is aliased to `ls -alF'
+</code></pre>
+<h2 id="file-command"><code>file</code> command</h2>
+<p>file命令用于辨识文件类型</p>
+<ul>
+<li><code>-b</code> 列出辨识结果时，不显示文件名称。</li>
+<li><code>-c</code> 详细显示指令执行过程，便于排错或分析程序执行的情形。</li>
+<li><code>-f</code> &lt;名称文件&gt; 指定名称文件，其内容有一个或多个文件名称时，让file依序辨识这些文件，格式为每列一个文件名称。</li>
+<li><code>-L</code> 直接显示符号连接所指向的文件的类别。</li>
+<li><code>-m&lt;魔法数字文件&gt;</code> 指定魔法数字文件。</li>
+<li><code>-v</code> 显示版本信息。</li>
+<li><code>-z</code> 尝试去解读压缩文件的内容。</li>
+</ul>
+<pre><code>dcmaster:/data/linktype # l
+-rw-r--r-- 3 root root  44 May  3 09:50 file
+-rw-r--r-- 3 root root  44 May  3 09:50 hardlinkfile1
+-rw-r--r-- 3 root root  44 May  3 09:50 hardlinkfile2
+lrwxrwxrwx 1 root root   4 Mar 28 15:21 symlinkfile1 -&gt; file
+lrwxrwxrwx 1 root root  12 Mar 28 15:49 symlinkfile1-1 -&gt; symlinkfile1
+lrwxrwxrwx 1 root root   4 Mar 28 15:23 symlinkfile2 -&gt; file
+
+dcmaster:/data/linktype # file hardlinkfile1
+hardlinkfile1: ASCII text
+
+dcmaster:/data/linktype # file -i hardlinkfile1
+hardlinkfile1: text/plain; charset=us-ascii
+
+dcmaster:/data/linktype # file /data/linktype/
+/data/linktype/: directory
+
+dcmaster:/data/linktype # file -L /data/linktype/
+/data/linktype/: directory
+
+dcmaster:/data/linktype # file -i /data/linktype/
+/data/linktype/: inode/directory; charset=binary
+
+dcmaster:/data/linktype # file symlinkfile1
+symlinkfile1: symbolic link to file
+
+dcmaster:/data/linktype # file -i symlinkfile1
+symlinkfile1: inode/symlink; charset=binary
+</code></pre>
+<h2 id="grep-command"><code>grep</code> command</h2>
+<p>You can specify search patterns in the form of regular expressions, although the basic grep command is limited in this regard. To search for more complex patterns, use the egrep command (or   <code>grep -E</code>) instead, which accepts extended regular expressions.</p>
+<p>To avoid having special characters in search patterns interpreted by the shell, enclose the pattern in quotation marks.</p>
+<p>Syntax: <code>grep [options] search_pattern filename</code>
+    * <code>egrep = grep -E</code>
+    * <code>rgrep</code></p>
+<p>参数</p>
+<ul>
+<li><code>-a</code> 或 <code>--text</code> : 不要忽略二进制的数据。</li>
+<li><code>-A&lt;显示行数&gt;</code> 或 <code>--after-context=&lt;显示行数&gt;</code> : 除了显示符合范本样式的那一列之外，并显示该行之后的内容。</li>
+<li><code>-b</code> 或 <code>--byte-offset</code> : 在显示符合样式的那一行之前，标示出该行第一个字符的编号。</li>
+<li><code>-B&lt;显示行数&gt;</code> 或 <code>--before-context=&lt;显示行数&gt;</code> : 除了显示符合样式的那一行之外，并显示该行之前的内容。</li>
+<li><code>-c</code> 或 <code>--count</code> : 计算符合样式的列数。</li>
+<li><code>-C&lt;显示行数&gt;</code> 或 <code>--context=&lt;显示行数&gt;</code>或<code>-&lt;显示行数&gt;</code> : 除了显示符合样式的那一行之外，并显示该行之前后的内容。</li>
+<li><code>-d &lt;动作&gt;</code> 或 <code>--directories=&lt;动作&gt;</code> : 当指定要查找的是目录而非文件时，必须使用这项参数，否则grep指令将回报信息并停止动作。</li>
+<li><code>-e&lt;范本样式&gt;</code> 或 <code>--regexp=&lt;范本样式&gt;</code> : 指定字符串做为查找文件内容的样式。</li>
+<li><code>-E</code> 或 <code>--extended-regexp</code> : 将样式为延伸的普通表示法来使用。</li>
+<li><code>-f&lt;规则文件&gt;</code> 或 <code>--file=&lt;规则文件&gt;</code> : 指定规则文件，其内容含有一个或多个规则样式，让grep查找符合规则条件的文件内容，格式为每行一个规则样式。</li>
+<li><code>-F</code> 或 <code>--fixed-regexp</code> : 将样式视为固定字符串的列表。</li>
+<li><code>-G</code> 或 <code>--basic-regexp</code> : 将样式视为普通的表示法来使用。</li>
+<li><code>-h</code> 或 <code>--no-filename</code> : 在显示符合样式的那一行之前，不标示该行所属的文件名称。</li>
+<li><code>-H</code> 或 <code>--with-filename</code> : 在显示符合样式的那一行之前，表示该行所属的文件名称。</li>
+<li><code>-i</code> 或 <code>--ignore-case</code> : 忽略字符大小写的差别。</li>
+<li><code>-l</code> 或 <code>--file-with-matches</code> : 列出文件内容符合指定的样式的文件名称。</li>
+<li><code>-L</code> 或 <code>--files-without-match</code> : 列出文件内容不符合指定的样式的文件名称。</li>
+<li><code>-n</code> 或 <code>--line-number</code> : 在显示符合样式的那一行之前，标示出该行的列数编号。</li>
+<li><code>-o</code> 或 <code>--only-matching</code> : 只显示匹配PATTERN 部分。</li>
+<li><code>-q</code> 或 <code>--quiet或--silent</code> : 不显示任何信息。</li>
+<li><code>-r</code> 或 <code>--recursive</code> : 此参数的效果和指定"-d recurse"参数相同。</li>
+<li><code>-s</code> 或 <code>--no-messages</code> : 不显示错误信息。</li>
+<li><code>-v</code> 或 <code>--revert-match</code> : 显示不包含匹配文本的所有行。</li>
+<li><code>-V</code> 或 <code>--version</code> : 显示版本信息。</li>
+<li><code>-w</code> 或 <code>--word-regexp</code> : 只显示全字符合的列。</li>
+<li><code>-x --line-regexp</code> : 只显示全列符合的列。</li>
+<li><code>-y</code> : 此参数的效果和指定"-i"参数相同。 </li>
+</ul>
+<p>在当前目录中，查找后缀有conf字样的文件中包含xen字符串的文件，并打印出该字符串的行。</p>
+<pre><code>pmgr@dcmaster:/data/program/general&gt; grep xen *.conf
+xen
+xening
+</code></pre>
+<p>查找前缀有gen的文件包含xen字符串的文件</p>
+<pre><code>pmgr@dcmaster:/data/program/general&gt; grep xen gen*
+xen
+xening
+</code></pre>
+<p>以递归的方式查找符合条件的文件。查找指定目录/data/program/及其子目录（如果存在子目录的话）下所有文件中包含字符串xen的文件，并打印出该字符串所在行的内容</p>
+<pre><code>pmgr@dcmaster:/data&gt; grep -r xen /data/program/
+./program/general/general.conf:xen
+./program/general/general.conf:xening
+</code></pre>
+<p>反向查找。前面各个例子是查找并打印出符合条件的行，通过 -v 参数可以打印出不符合条件行的内容。查找文件名中包含xen的文件中不包含xen的行</p>
+<pre><code>pmgr@dcmaster:/data/program/general&gt; grep -v xen gen*
+Linux
+Test
+test
+</code></pre>
+<p>查找当前目录下包含字符串“Linux”的文件</p>
+<pre><code>pmgr@dcmaster:/data/program/general&gt; grep Linux *
+general.conf:Linux
+grep: staffing: Is a directory
+pmgr@dcmaster:/data/program/general&gt; egrep Linux *
+general.conf:Linux
+grep: staffing: Is a directory
+</code></pre>
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../../assets/javascripts/workers/search.22074ed6.min.js"}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.960e086b.min.js"></script>
+      
+    
+  </body>
+</html>
