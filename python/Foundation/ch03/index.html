@@ -398,6 +398,33 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#10" class="md-nav__link">
+    10. 装饰器
+  </a>
+  
+    <nav class="md-nav" aria-label="10. 装饰器">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    闭包
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    装饰器
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1159,6 +1186,137 @@ with open(path2, 'r+', encoding='utf-8') as f:
     f.writelines(x for x in open(path1, 'r', encoding='utf-8') if len(x) &gt; 1)  # 把file01.txt的内容写入file02.txt
     lines = f.readlines()
     print(lines)
+</code></pre>
+<h2 id="10">10. 装饰器</h2>
+<h3 id="_8">闭包</h3>
+<p>维基百科中的解释：<strong>闭包（Closure）</strong>，又称词法闭包（Lexical Closure）或函数闭包（function closures），是引用了自由变量的函数。
+这个被引用的自由变量将和这个函数一同存在，即使已经离开了创造它的环境也不例外。</p>
+<p>先看下面的例子。
+<code>money</code>是一个局部变量，在<code>get_money</code>是外围函数，函数执行之后应该就不会存在了。
+但是嵌套函数<code>work</code>引用了<code>money</code>这个自由变量，将这个局部变量封闭在了嵌套函数<code>work</code>中，这样就形成了一个闭包。
+<code>closure = get_money()</code>获得的就是一个闭包。
+<code>closure()</code>输出闭包。</p>
+<p>结合这个例子再看上面的解释，闭包就是引用了自由变量的函数，这个函数保存了执行的上下文，可以脱离原本的作用域独立存在。</p>
+<pre><code>def get_money():
+    money = 0
+
+    def work():
+        nonlocal money
+        money += 100
+        print(money)
+
+    return work
+
+
+closure = get_money()
+
+closure()
+</code></pre>
+<h3 id="_9">装饰器</h3>
+<p>看下面例子，将函数作为参数传给另一个函数，函数<code>my_decorator</code>的传入参数正好是其嵌套函数<code>myFunc</code>。</p>
+<pre><code>def my_decorator(nestedFunc):
+
+    def myFunc():
+        print(&quot;Before executing nestedFunc()&quot;)
+
+        nestedFunc()
+
+        print(&quot;After executing nestedFunc()&quot;)
+
+    return myFunc
+
+
+def nestedFunc():
+    print(&quot;Decoration - executing nestedFunc()&quot;)
+
+
+nestedFunc()
+# Decoration - executing nestedFunc()
+
+nestedFunc = my_decorator(nestedFunc)
+
+nestedFunc()
+# Before executing nestedFunc()
+# Decoration - executing nestedFunc()
+# After executing nestedFunc()
+</code></pre>
+<p>装饰器只是个方法，使用时用了<code>@</code>语法。<code>@</code>语法只是将函数<code>nestedFunc</code>传入装饰器函数<code>my_decorator</code>。
+<code>@my_decorator</code>是<code>nestedFunc = my_decorator(nestedFunc)</code>的快捷表达方式，</p>
+<pre><code>@my_decorator
+def nestedFunc():
+    print(&quot;New added to decoration - executing nestedFunc()&quot;)
+
+
+nestedFunc()
+# Before executing nestedFunc()
+# New added to decoration - executing nestedFunc()
+# After executing nestedFunc()
+
+print(nestedFunc.__name__)
+# myFunc
+</code></pre>
+<p>但上例最后的输出不是我们想要的，我们希望输出<code>nestedFunc</code>，但却被<code>myFunc</code>替代了，它重写了我们函数的名字和注释文档(docstring)。</p>
+<p>下面使用<code>functools.wraps</code>来修正上面的问题。</p>
+<pre><code>from functools import wraps
+
+
+def my_decorator(nestedFunc):
+
+    @wraps(nestedFunc)
+    def myFunc():
+        print(&quot;Before executing nestedFunc()&quot;)
+
+        nestedFunc()
+
+        print(&quot;After executing nestedFunc()&quot;)
+
+    return myFunc
+
+
+def nestedFunc():
+    print(&quot;Decoration - executing nestedFunc()&quot;)
+
+
+@my_decorator
+def nestedFunc():
+    print(&quot;New added to decoration - executing nestedFunc()&quot;)
+
+
+nestedFunc()
+# Before executing nestedFunc()
+# New added to decoration - executing nestedFunc()
+# After executing nestedFunc()
+
+print(nestedFunc.__name__)
+# nestedFunc
+</code></pre>
+<p>下面是装饰器的蓝本规范。</p>
+<pre><code>from functools import wraps
+
+
+def decorator_name(f):
+
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if not can_run:
+            return &quot;Function will not run&quot;
+        return f(*args, **kwargs)
+
+    return decorated
+
+
+@decorator_name
+def func():
+    return (&quot;Function is running&quot;)
+
+
+can_run = True
+print(func())
+# Output: Function is running
+
+can_run = False
+print(func())
+# Output: Function will not run
 </code></pre>
 
               
