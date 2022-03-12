@@ -363,19 +363,26 @@
     算术和数据对齐
   </a>
   
-    <nav class="md-nav" aria-label="算术和数据对齐">
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dataframeseries" class="md-nav__link">
+    DataFrame和Series间的算术操作
+  </a>
+  
+    <nav class="md-nav" aria-label="DataFrame和Series间的算术操作">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#numpy" class="md-nav__link">
-    NumPy
+    不同维度NumPy数组间的算术操作
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#dataframeseries" class="md-nav__link">
-    DataFrame/Series
+  <a href="#dataframeseries_1" class="md-nav__link">
+    DataFrame和Series间的算术操作
   </a>
   
 </li>
@@ -440,7 +447,7 @@
       
         <li class="md-nav__item">
   <a href="#_11" class="md-nav__link">
-    描述性统计的概述与计算
+    描述性统计概述与计算
   </a>
   
 </li>
@@ -1172,8 +1179,7 @@ print(obj1.drop(['d', 'e']))
 # b    1
 # dtype: int64
 </code></pre>
-<p>对比<code>inplace=True</code>和<code>False</code>的区别。<code>inplace=False</code>时，<code>obj</code>的值没有变化。
-<code>obj.drop('c', inplace=True)</code>输出是<code>None</code>，说明没有生成新对象，变化直接作用到<code>obj</code>上。</p>
+<p>对比<code>inplace=True</code>和<code>False</code>的区别。<code>inplace=False</code>时，<code>obj</code>的值没有变化。</p>
 <pre><code>obj = pd.Series(np.arange(5), index=['a', 'b', 'c', 'd', 'e'])
 
 print(obj.drop('c', inplace=False))  # 说明生成了新对象
@@ -1190,9 +1196,9 @@ print(obj)
 # d    3
 # e    4
 # dtype: int64
-
-
-obj = pd.Series(np.arange(5), index=['a', 'b', 'c', 'd', 'e'])
+</code></pre>
+<p><code>obj.drop('c', inplace=True)</code>输出是<code>None</code>，说明没有生成新对象，变化直接作用到<code>obj</code>上。</p>
+<pre><code>obj = pd.Series(np.arange(5), index=['a', 'b', 'c', 'd', 'e'])
 print(obj)
 
 print(obj.drop('c', inplace=True))  # 说明没有生成新对象
@@ -1221,7 +1227,7 @@ print(data)
 # Utah        8    9     10    11
 # New York   12   13     14    15
 
-# 沿0轴操作
+# 沿0轴操作，删除符合条件的行记录
 print(data.drop(['Ohio', 'Colorado']))
 #           one  two  three  four
 # Utah        8    9     10    11
@@ -1230,7 +1236,7 @@ print(data.drop(['Ohio', 'Colorado']))
 print(data.drop(['one', 'two']))
 # KeyError: &quot;['one' 'two'] not found in axis&quot;
 
-# 沿1轴操作
+# 沿1轴操作，删除符合条件的列记录
 print(data.drop(['one', 'two'], axis=1))
 #           three  four
 # Ohio          2     3
@@ -1337,8 +1343,10 @@ print(obj['b':'d'])
 # d    Sourabh
 # dtype: object
 </code></pre>
-<p>Series的切片的值更新</p>
+<p>Series的切片的值更新。
+<code>obj['b': 'c'] = 5</code>是通过索引值进行更新，直接作用在<code>obj</code>。<code>obj[1: 3] = 6</code>是通过索引位置来更新<code>obj</code>。</p>
 <pre><code>obj = pd.Series(['Shobhit', 'vaibhav', 'vimal', 'Sourabh'], index=['a', 'b', 'c', 'd'])
+
 obj['b': 'c'] = 5
 print(obj)
 # a    Shobhit
@@ -1346,6 +1354,7 @@ print(obj)
 # c          5
 # d    Sourabh
 # dtype: object
+
 obj[1: 3] = 6
 print(obj)
 # a    Shobhit
@@ -1354,24 +1363,28 @@ print(obj)
 # d    Sourabh
 # dtype: object
 </code></pre>
-<p>DataFrame的索引与切片</p>
+<p>DataFrame的索引与切片。
+<code>data[['Three', 'Two']]</code>选取指定列，注意输入列条件是列表<code>['Three', 'Two']</code>。</p>
 <pre><code>data = pd.DataFrame(
     np.arange(16).reshape(4, 4),
     index=['Ohio', 'Colorado', 'Utah', 'New York'],
     columns=['One', 'Two', 'Three', 'Four']
 )
+
 print(data)
 #           One  Two  Three  Four
 # Ohio        0    1      2     3
 # Colorado    4    5      6     7
 # Utah        8    9     10    11
 # New York   12   13     14    15
+
 print(data['Two'])
 # Ohio         1
 # Colorado     5
 # Utah         9
 # New York    13
 # Name: Two, dtype: int64
+
 print(data[['Three', 'Two']])
 #           Three  Two
 # Ohio          2    1
@@ -1383,27 +1396,31 @@ print(data[:2])
 # Ohio        0    1      2     3
 # Colorado    4    5      6     7
 </code></pre>
-<p>嵌套, 根据一个布尔值数组切片或选择数据</p>
+<p>嵌套：根据一个布尔值数组切片或选择数据。
+<code>data['Three'] &gt; 5</code>是一个布尔值序列。
+<code>data[data['Three'] &gt; 5]</code>输出条件为True的结果集。</p>
 <pre><code>print(data['Three'] &gt; 5)
 # Ohio        False
 # Colorado     True
 # Utah         True
 # New York     True
 # Name: Three, dtype: bool
+
 print(data[data['Three'] &gt; 5])
 #           One  Two  Three  Four
 # Colorado    4    5      6     7
 # Utah        8    9     10    11
 # New York   12   13     14    15
 </code></pre>
-<p>使用布尔值DataFrame进行索引\
-在这个例子中，这种索引方式使得DataFrame在语法上更像是NumPy二维数组。</p>
+<p>使用布尔值DataFrame进行索引，已经更新。
+在下面这个例子中，这种索引方式使得DataFrame在语法上更像是NumPy二维数组。</p>
 <pre><code>print(data &lt; 5)
 #             One    Two  Three   Four
 # Ohio       True   True   True   True
 # Colorado   True  False  False  False
 # Utah      False  False  False  False
 # New York  False  False  False  False
+
 data[data &lt; 5] = 0
 print(data)
 #           One  Two  Three  Four
@@ -1412,13 +1429,14 @@ print(data)
 # Utah        8    9     10    11
 # New York   12   13     14    15
 </code></pre>
-<p>使用loc和iloc选择数据\
-使用轴标签（loc）或整数标签（iloc）以NumPy风格的语法从DataFrame中选出数组的行和列的子集。</p>
+<p>使用loc和iloc选择数据。
+使用标签名<code>loc</code>或标签位置<code>iloc</code>以NumPy风格的语法从DataFrame中选出Dataframe的行和列的子集。</p>
 <pre><code>data = pd.DataFrame(
     np.arange(16).reshape(4, 4),
     index=['Ohio', 'Colorado', 'Utah', 'New York'],
     columns=['One', 'Two', 'Three', 'Four']
 )
+
 print(data)
 #           One  Two  Three  Four
 # Ohio        0    1      2     3
@@ -1426,26 +1444,30 @@ print(data)
 # Utah        8    9     10    11
 # New York   12   13     14    15
 </code></pre>
-<p>通过标签loc选出单行多列的数据\
-输出Colorado标签页的Two和Three这两列的值，以行记录的方式展现</p>
+<p>下例通过loc对标签名筛选行或列数据。例如，输出<code>Colorado</code>行标签的<code>Two</code>和<code>Three</code>这两列的值，以行记录的方式展现。</p>
 <pre><code>print(data.loc['Colorado', ['Two', 'Three']])  # 切片:
 # Two      5
 # Three    6
 # Name: Colorado, dtype: int64
+
 print(data.loc[:'Ohio', :'Two'])  # 切片: 0行，0,1列
 #       One  Two
 # Ohio    0    1
 </code></pre>
-<p>通过整数标签iloc进行类似的数据选择</p>
+<p>下例通过标签位置<code>iloc</code>进行类似的数据选择。
+<code>data.iloc[:3, :2][data &gt; 4]</code>按指定条件进行行、列筛选，符合条件<code>[data &gt; 4]</code>的输出Dataframe值，不符合条件的输出NaN。</p>
 <pre><code>print(data.iloc[[0]])  # 0行
 #       One  Two  Three  Four
 # Ohio    0    1      2     3
+
 print(data.iloc[[0], [1]])  # 切片: 0行，1列
 #       Two
 # Ohio    1
+
 print(data.iloc[1:2, 1:2])  # 切片: 1行，2列
 #       Two
 # Ohio    1
+
 print(data.iloc[2, [3, 0, 1]])  # 切片: 2行，依次取3，0，1列
 # Four    11
 # One      8
@@ -1453,27 +1475,84 @@ print(data.iloc[2, [3, 0, 1]])  # 切片: 2行，依次取3，0，1列
 # Name: Utah, dtype: int64
 
 print(data.iloc[:3, :2][data &gt; 4])
+#           One  Two
+# Ohio      NaN  NaN
+# Colorado  NaN  5.0
+# Utah      8.0  9.0
 </code></pre>
 <h3 id="_5">整数索引</h3>
-<pre><code>ser = pd.Series(np.arange(3.))
+<p>Pandas的Series的索引值是整数索引。</p>
+<pre><code>data = np.arange(3.)
+ser = pd.Series(data)
+
 print(ser)
 # 0    0.0
 # 1    1.0
 # 2    2.0
 # dtype: float64
+
 print(ser[:1])
 # 0    0.0
 # dtype: float64
-print(ser.loc[:1])  # loc（用于标签）
+
+print(ser.loc[:1])  # loc用于标签名
 # 0    0.0
 # 1    1.0
 # dtype: float64
-print(ser.iloc[:1])  # iloc（用于整数）
+
+print(ser.iloc[:1])  # iloc用于标签位置
 # 0    0.0
 # dtype: float64
+
+data = ['1', 'b', 'e', 3]
+ser = pd.Series(data)
+
+print(ser)
+# 0    1
+# 1    b
+# 2    e
+# 3    3
+# dtype: object
+
+print(ser[:1])
+# 0    1
+# dtype: object
+
+print(ser.loc[:1])
+# 0    1
+# 1    b
+# dtype: object
+
+print(ser.iloc[:1]) 
+# 0    1
+# dtype: object
+
+</code></pre>
+<p>对DataFrame的更新。</p>
+<pre><code>df1 = pd.DataFrame(np.arange(4).reshape((2, 2)), columns=list('ab'))
+
+print(df1)
+#    a  b
+# 0  0  1
+# 1  2  3
+
+# 按标签名更新
+df1.loc[1, :'b'] = np.nan
+
+print(df1)
+#      a    b
+# 0  0.0  1.0
+# 1  NaN  NaN
 </code></pre>
 <h3 id="_6">算术和数据对齐</h3>
-<p>不同索引的对象之间的算术行为是pandas提供给一些应用的一项重要特性。</p>
+<p>Pandas支持在Series或者DataFrame对象之间进行算术运算。</p>
+<p>例：两个Series做算术加法。</p>
+<ul>
+<li>返回的结果也是一个Series。</li>
+<li>返回结果的索引是每个Series的索引的并集。</li>
+<li>凡是没有在两个Series都出现的索引位置，内部数据对齐会填充缺失值NaN。缺失值会在后续的其它算术操作上产生影响。</li>
+<li>同时出现在两个Series的索引位置，Series的值做算术相加。</li>
+</ul>
 <pre><code>s1 = pd.Series(
     [7.3, -2.5, 3.4, 1.5],
     index=['a', 'c', 'd', 'e']
@@ -1490,6 +1569,7 @@ print(s1)
 # d    3.4
 # e    1.5
 # dtype: float64
+
 print(s2)
 # a   -2.1
 # c    3.6
@@ -1497,7 +1577,8 @@ print(s2)
 # f    4.0
 # g    3.1
 # dtype: float64
-print(s1 + s2)  # 没有交叠的标签位置上，内部数据对齐会产生缺失值。缺失值会在后续的算术操作上产生影响。
+
+print(s1 + s2)
 # a    5.2
 # c    1.1
 # d    NaN
@@ -1505,9 +1586,15 @@ print(s1 + s2)  # 没有交叠的标签位置上，内部数据对齐会产生�
 # f    NaN
 # g    NaN
 # dtype: float64
-
-
-df1 = pd.DataFrame(
+</code></pre>
+<p>例：两个Dataframe做算术加法</p>
+<ul>
+<li>返回结果也是一个Dataframe。</li>
+<li>返回结果的行列索引是每个DataFrame的行列索引的并集。</li>
+<li>凡是没有在两个DataFrame都出现的位置就会被置为NaN。</li>
+<li>两个DataFrame都出现的位置，对Dataframe的值做算术加法。</li>
+</ul>
+<pre><code>df1 = pd.DataFrame(
     np.arange(9).reshape((3, 3)),
     columns=list('bcd'),
     index=['Ohio', 'Texas', 'Colorado']
@@ -1524,17 +1611,15 @@ print(df1)
 # Ohio      0  1  2
 # Texas     3  4  5
 # Colorado  6  7  8
+
 print(df2)
 #         b   d   e
 # Utah    0   1   2
 # Ohio    3   4   5
 # Texas   6   7   8
 # Oregon  9  10  11
-</code></pre>
-<p>将这些对象加在一起，返回一个DataFrame，它的索引、列是每个DataFrame的索引、列的并集。\
-由于’c’列和’e’列并不是两个DataFrame共有的列，这两列中产生了缺失值。\
-对于行标签不同的DataFrame对象也是如此。如果将两个行或列完全不同的DataFrame对象相加，结果将全部为空</p>
-<pre><code>print(df1 + df2)
+
+print(df1 + df2)
 #             b   c     d   e
 # Colorado  NaN NaN   NaN NaN
 # Ohio      3.0 NaN   6.0 NaN
@@ -1542,16 +1627,8 @@ print(df2)
 # Texas     9.0 NaN  12.0 NaN
 # Utah      NaN NaN   NaN NaN
 </code></pre>
-<p>使用填充值的算术方法\
-在两个不同的索引化对象之间进行算术操作时，会要使用特殊填充值，比如当轴标签在一个对象中存在，在另一个对象中不存在时，将缺失值填充为0\
-下面是Series和DataFrame的算术方法。这些方法中的每一个都有一个以r开头的副本，这些副本方法的参数是翻转的。
-* add，radd：加法(+)
-* sub，rsub：减法(-)
-* div，rdiv：除法(/)
-* floordiv，rfloordiv：整除(//)
-* mul，rmul：乘法(<em>)
-* pow，rpow：幂次方(</em>*)</p>
-<p>下面三个例子中，注意df2和df1列对应关系的不同所出现的NaN</p>
+<p>在Series或者DataFrame对象之间进行算术操作时，有时需要对缺失值指定填充值，比如当轴标签在一个对象中存在，在另一个对象中不存在时，将缺失值填充为0。也就是说，如果在两个DataFrame都缺失，那么依然还会是NaN。</p>
+<p>下例中a2是在<code>df1</code>和<code>df2</code>都缺失的位置，所以即使<code>fill_value=0</code>，a2仍然是NaN。</p>
 <pre><code>df1 = pd.DataFrame(
     np.arange(4).reshape((2, 2)),
     columns=list('ab')
@@ -1561,84 +1638,221 @@ df2 = pd.DataFrame(
     np.arange(9).reshape((3, 3)),
     columns=list('bcd')
 )
-print(df1 + df2)  # 在不重叠的位置出现NA值
+
+print(df1)
+#    a  b
+# 0  0  1
+# 1  2  3
+
+print(df2)
+#    b  c  d
+# 0  0  1  2
+# 1  3  4  5
+# 2  6  7  8
+
+# 对df1和df2就算术和，对应没有行列共同的交集的地方填充空值NaN，有交集的地方求算术和。
+print(df1.add(df2))
 #     a    b   c   d
 # 0 NaN  1.0 NaN NaN
 # 1 NaN  6.0 NaN NaN
 # 2 NaN  NaN NaN NaN
-print(df1.add(df2, fill_value=0))
+
+# 对df1和df2就算术和，对应没有行列共同的交集的地方填充空值0，有交集的地方求算术和。
+print(df1.add(df2, fill_value=0))  # df2.add(df1, fill_value=0) 返回同样的结果
 #      a    b    c    d
 # 0  0.0  1.0  1.0  2.0
 # 1  2.0  6.0  4.0  5.0
 # 2  NaN  6.0  7.0  8.0
+</code></pre>
+<p>下例中b2是在<code>df1</code>和<code>df2</code>都缺失的位置，所以即使<code>fill_value=0</code>，b2仍然是NaN。</p>
+<pre><code>df1 = pd.DataFrame(
+    np.arange(4).reshape((2, 2)),
+    columns=list('ab')
+)
 
 df2 = pd.DataFrame(
     np.arange(9).reshape((3, 3)),
     columns=list('acd')
 )
-print(df1.add(df2, fill_value=0))  # 注意NaN与df1和df2列对应关系
+
+print(df1)
+#    a  b
+# 0  0  1
+# 1  2  3
+
+print(df2)
+#    a  c  d
+# 0  0  1  2
+# 1  3  4  5
+# 2  6  7  8
+
+print(df1.add(df2, fill_value=0))
 #      a    b    c    d
 # 0  0.0  1.0  1.0  2.0
 # 1  5.0  3.0  4.0  5.0
 # 2  6.0  NaN  7.0  8.0
+</code></pre>
+<p>下例中没有两个DataFrame共同缺失的情况。</p>
+<pre><code>df1 = pd.DataFrame(
+    np.arange(4).reshape((2, 2)),
+    columns=list('ab')
+)
 
 df2 = pd.DataFrame(
     np.arange(9).reshape((3, 3)),
     columns=list('abd')
 )
+
+print(df1)
+#    a  b
+# 0  0  1
+# 1  2  3
+
+print(df2)
+#    a  b  d
+# 0  0  1  2
+# 1  3  4  5
+# 2  6  7  8
+
 print(df1.add(df2, fill_value=0))
 #      a    b    d
 # 0  0.0  2.0  2.0
 # 1  5.0  7.0  5.0
 # 2  6.0  7.0  8.0
+</code></pre>
+<p>下面是Series和DataFrame的算术方法。</p>
+<ul>
+<li>add，radd：加法(+)</li>
+<li>sub，rsub：减法(-)</li>
+<li>div，rdiv：除法(/)</li>
+<li>floordiv，rfloordiv：整除(//)</li>
+<li>mul，rmul：乘法(*)</li>
+<li>pow，rpow：幂次方(**)</li>
+</ul>
+<p>上述每个方法都有一个以r开头的副本，这些副本方法的参数是翻转的。比如，求DataFrame当中所有元素的倒数<code>1/df</code>，可以写成df.rdiv(1)。</p>
+<pre><code>df1 = pd.DataFrame(
+    np.arange(4).reshape((2, 2)),
+    columns=list('ab')
+)
 
+df2 = pd.DataFrame(
+    np.arange(9).reshape((3, 3)),
+    columns=list('abd')
+)
+
+print(df1)
+#    a  b
+# 0  0  1
+# 1  2  3
+
+print(df2)
+#    a  b  d
+# 0  0  1  2
+# 1  3  4  5
+# 2  6  7  8
 
 print(df1.radd(df2, fill_value=0))
-print(df1.sub(df2, fill_value=0))
-print(df1.div(df2, fill_value=0))
-print(df1.floordiv(df2, fill_value=0))
-print(df1.mul(df2, fill_value=0))
-print(df1.pow(df2, fill_value=0))
+#      a    b    d
+# 0  0.0  2.0  2.0
+# 1  5.0  7.0  5.0
+# 2  6.0  7.0  8.0
 
-df1.loc[1, :'b'] = np.nan
-print(df1)
-# #      a    b
-# # 0  0.0  1.0
-# 1  NaN  NaN
+print(df1.sub(df2, fill_value=0))
+#      a    b    d
+# 0  0.0  0.0 -2.0
+# 1 -1.0 -1.0 -5.0
+# 2 -6.0 -7.0 -8.0
+
+print(df1.div(df2, fill_value=0))
+#           a     b    d
+# 0       NaN  1.00  0.0
+# 1  0.666667  0.75  0.0
+# 2  0.000000  0.00  0.0
+
+print(df1.floordiv(df2, fill_value=0))
+#      a    b    d
+# 0  NaN  1.0  0.0
+# 1  0.0  0.0  0.0
+# 2  0.0  0.0  0.0
+
+print(df1.mul(df2, fill_value=0))
+#      a     b    d
+# 0  0.0   1.0  0.0
+# 1  6.0  12.0  0.0
+# 2  0.0   0.0  0.0
+
+print(df1.pow(df2, fill_value=0))
+#      a     b    d
+# 0  1.0   1.0  0.0
+# 1  8.0  81.0  0.0
+# 2  0.0   0.0  0.0
 </code></pre>
-<p>DataFrame和Series间的操作\
-DataFrame和Series间的算术操作与NumPy中不同维度数组间的操作类似</p>
-<h4 id="numpy">NumPy</h4>
-<p>从arr中减去arr[0]时，减法在每一行都进行了操作。这就是所谓的广播机制</p>
+<h3 id="dataframeseries">DataFrame和Series间的算术操作</h3>
+<p>DataFrame和Series间的算术操作与NumPy中不同维度数组间的操作类似。</p>
+<h4 id="numpy">不同维度NumPy数组间的算术操作</h4>
+<p>从arr中减去arr[0]时，减法沿0轴在每一行都进行了操作。这就是所谓的广播机制。</p>
 <pre><code>arr = np.arange(12).reshape((3, 4))
+
 print(arr)
 # [[ 0  1  2  3]
 #  [ 4  5  6  7]
 #  [ 8  9 10 11]]
+
 print(arr[0])
 # [0 1 2 3]
+
 print(arr - arr[0])
 # [[0 0 0 0]
 #  [4 4 4 4]
 #  [8 8 8 8]]
 </code></pre>
-<h4 id="dataframeseries">DataFrame/Series</h4>
-<p>默认情况下，DataFrame和Series的数学操作中会将Series的索引和DataFrame的列进行匹配，并广播到各行.\
-如果一个索引值不在DataFrame的列中，也不在Series的索引中，则对象会重建索引并形成联合</p>
+<h4 id="dataframeseries_1">DataFrame和Series间的算术操作</h4>
+<p>默认情况下，DataFrame和Series的数学操作中会将Series的索引和DataFrame的<em>列</em>进行匹配，并<em>广播到各行</em>.</p>
+<p>如果一个索引值不在DataFrame的列中，也不在Series的索引中，则新对象会构建并集索引。</p>
 <pre><code>frame = pd.DataFrame(
     np.arange(12).reshape((4, 3)),
     columns=list('bde'),
     index=['Utah', 'Ohio', 'Texas', 'Oregon']
 )
 
+print(frame)
+#         b   d   e
+# Utah    0   1   2
+# Ohio    3   4   5
+# Texas   6   7   8
+# Oregon  9  10  11
+
+# 截取frame的第0行，列标签变成新Serise的索引。
 series = frame.iloc[0]
+print(series)
+# b    0
+# d    1
+# e    2
+# Name: Utah, dtype: int64
+
+
 series2 = pd.Series(
     range(3),
     index=list('bef')
 )
-series3 = frame['d']
 
-print(frame - series)  # Series的索引和DataFrame的列进行匹配
+print(series2)
+# b    0
+# e    1
+# f    2
+# dtype: int64
+
+# 截取frame的d列，行标签变成新Serise的索引。
+series3 = frame['d']
+print(series3)
+# Utah       1
+# Ohio       4
+# Texas      7
+# Oregon    10
+# Name: d, dtype: int64
+
+# 将Series的索引和DataFrame的列标签进行匹配，Series的值沿DataFrame的0轴广播到各个行。
+print(frame - series)
 # frame:                      series                           Result:
 #         b   d   e           # b    0                         #         b  d  e
 # Utah    0   1   2           # d    1                         # Utah    0  0  0
@@ -1646,16 +1860,17 @@ print(frame - series)  # Series的索引和DataFrame的列进行匹配
 # Texas   6   7   8           # Name: Utah, dtype: int64       # Texas   6  6  6
 # Oregon  9  10  11                                            # Oregon  9  9  9
 
-print(frame - series2)  # Series的索引和DataFrame的列进行匹配
+# 将Series的索引和DataFrame的列标签进行匹配，Series的值沿DataFrame的0轴广播到各个行，缺失位置填充空值NaN。
+print(frame - series2)
 # frame:                      series2                          Result:
 #         b   d   e           # b    0                         #           b   d     e   f
 # Utah    0   1   2           # e    1                         # Utah    0.0 NaN   1.0 NaN
 # Ohio    3   4   5           # f    2                         # Ohio    3.0 NaN   4.0 NaN
 # Texas   6   7   8           # dtype: int64                   # Texas   6.0 NaN   7.0 NaN
 # Oregon  9  10  11                                            # Oregon  9.0 NaN  10.0 NaN
-</code></pre>
-<p>改为在列上进行广播，在行上匹配，你必须使用算术方法中的一种</p>
-<pre><code>print(frame.sub(series3, axis='index'))  # 或axis=0
+
+# 改为在列上进行广播，在行上匹配，必须作用在某种算术方法上。下例中Series的值沿DataFrame的0轴广播到各个行（按index匹配进行行操作）。
+print(frame.sub(series3, axis='index'))  # 或axis=0
 # frame:                       series3                         Result:
 #         b   d   e            # Utah       1                  #         b  d  e
 # Utah    0   1   2            # Ohio       4                  # Utah   -1  0  1
@@ -1664,12 +1879,13 @@ print(frame - series2)  # Series的索引和DataFrame的列进行匹配
 # Oregon  9  10  11            # Name: d, dtype: int64         # Oregon -1  0  1
 </code></pre>
 <h3 id="_7">函数应用和映射</h3>
-<p>NumPy的通用函数（逐元素数组方法）对pandas对象也有效</p>
+<p>NumPy的通用函数（逐元素数组方法）对pandas对象（DataFrame和Series）也有效。</p>
 <pre><code>frame = pd.DataFrame(
     np.random.randn(4, 3),
     columns=list('bde'),
     index=['Utah', 'Ohio', 'Texas', 'Oregon']
 )
+
 print(frame)
 #                b         d         e
 # Utah    2.737734 -0.379977  0.758933
@@ -1677,21 +1893,26 @@ print(frame)
 # Texas  -0.907544 -0.457436 -1.907396
 # Oregon  0.389362  0.250170  1.065889
 
-print(np.abs(frame))  # 绝对值
+# 对DataFrame对象计算绝对值。
+print(np.abs(frame))
 #                b         d         e
 # Utah    2.737734  0.379977  0.758933
 # Ohio    0.847497  0.839583  2.192021
 # Texas   0.907544  0.457436  1.907396
 # Oregon  0.389362  0.250170  1.065889
 
-f = lambda x: x.max() - x.min()  # f返回一个标量值
-print(frame.apply(f))  # 将f应用在列, 默认axis=0
+# f返回一个标量值
+f = lambda x: x.max() - x.min()
+
+# 沿0轴应用f（对每列的所有行元素进行f计算）, 默认axis=0
+print(frame.apply(f))
 # b    3.645278
 # d    1.297019
 # e    3.257911
 # dtype: float64
 
-print(frame.apply(f, axis=1))  # 将f应用在行
+# 沿1轴应用f（对每行的所有列元素进行f计算）
+print(frame.apply(f, axis=1))
 # Utah      3.117711
 # Ohio      3.039518
 # Texas     1.449961
@@ -1699,12 +1920,12 @@ print(frame.apply(f, axis=1))  # 将f应用在行
 # dtype: float64
 
 
-def f(x):  # f返回带有多个值的Series
+# 定义函数f，返回带有多个值的Series。
+def f(x):
     return pd.Series(
         [x.min(), x.max()],
         index=['min', 'max']
     )
-
 
 print(frame.apply(f))
 #             b         d         e
@@ -1712,8 +1933,9 @@ print(frame.apply(f))
 # max  2.737734  0.839583  1.065889
 
 
+# 定义函数f，使用applymap方法格式化字符，将一个逐元素的函数应用到Series上。
 f = lambda x: '%.2f' % x
-print(frame.applymap(f))  # 格式化字符串使用applymap方法, 将一个逐元素的函数应用到Series上
+print(frame.applymap(f))  # 
 #             b      d      e
 # Utah     2.74  -0.38   0.76
 # Ohio     0.85   0.84  -2.19
@@ -1728,24 +1950,28 @@ print(frame['e'].map(f))
 # Name: e, dtype: object
 </code></pre>
 <h2 id="_8">排序和排名</h2>
-<p>使用sort_index方法，按行或列索引进行字典型排序，返回一个新的、排序好的对象</p>
+<p>使用sort_index方法，按行或列索引进行字典型排序，返回一个新的排序好的Pandas对象。</p>
 <h3 id="series_1">Series排序</h3>
+<p>对Series进行索引排序和值排序。</p>
 <pre><code>obj = pd.Series(
     range(4),
     index=list('dabc')
 )
+
 print(obj)
 # d    0
 # a    1
 # b    2
 # c    3
 # dtype: int64
+
 print(obj.sort_index())
 # a    1
 # b    2
 # c    3
 # d    0
 # dtype: int64
+
 # print(obj.sort_values())
 # d    0
 # a    1
@@ -1753,8 +1979,9 @@ print(obj.sort_index())
 # c    3
 # dtype: int64
 </code></pre>
-<p>默认情况下，所有的缺失值都会被排序至Series的尾部</p>
+<p>默认情况下，所有的缺失值都会被排序至Series的尾部。</p>
 <pre><code>obj = pd.Series([4, np.nan, 7, np.nan, -3, 2])
+
 print(obj)
 # 0    4.0
 # 1    NaN
@@ -1763,6 +1990,7 @@ print(obj)
 # 4   -3.0
 # 5    2.0
 # dtype: float64
+
 print(obj.sort_values())
 # 4   -3.0
 # 5    2.0
@@ -1780,62 +2008,96 @@ print(obj.sort_values())
     index=['three', 'one', 'five'],
     columns=list('dabc')
 )
+
 print(frame)
 #        d  a   b   c
 # three  0  1  10   3
 # one    4  5   6  21
 # five   8  9   2  21
+
 print(frame.index)
 # Index(['three', 'one', 'five'], dtype='object')
-print(frame.sort_index())  # five, one，three升序
+
+# 默认0轴，所有行进行索引首字母升序
+print(frame.sort_index())
 #        d  a   b   c
 # five   8  9   2  21
 # one    4  5   6  21
 # three  0  1  10   3
-print(frame.sort_index(axis=0))  # five, one，three升序
+
+# 指定0轴，所有行进行索引首字母升序
+print(frame.sort_index(axis=0))
 #        d  a   b   c
 # five   8  9   2  21
 # one    4  5   6  21
 # three  0  1  10   3
-print(frame.sort_index(axis=0, ascending=False))  # five, one，three降序
+
+# 指定0轴，所有行进行索引首字母降序
+print(frame.sort_index(axis=0, ascending=False))
 #        d  a   b   c
 # three  0  1  10   3
 # one    4  5   6  21
 # five   8  9   2  21
-print(frame.sort_index(axis=1))  # 对abcd升序
+
+# 指定1轴，所有列进列索引首字母升序
+print(frame.sort_index(axis=1))
 #        a   b   c  d
 # three  1  10   3  0
 # one    5   6  21  4
 # five   9   2  21  8
-print(frame.sort_index(axis=1, ascending=False))  # 对abcd降序
+
+# 指定1轴，所有列进列索引首字母降序
+print(frame.sort_index(axis=1, ascending=False))
 #        d   c   b  a
 # three  0   3  10  1
 # one    4  21   6  5
 # five   8  21   2  9
+
+# 按指定单列进行值排序（降序）
 print(frame.sort_values(by=['c'], ascending=False))
 #        d  a   b   c
 # one    4  5   6  21
 # five   8  9   2  21
 # three  0  1  10   3
-print(frame.sort_values(by=['c', 'd'], ascending=False))  # 先对b降序，再对d降序
+
+# 按指定多列进行值排序（降序），先对b降序，再对d降序
+print(frame.sort_values(by=['c', 'd'], ascending=False)) 
 #        d  a   b   c
 # five   8  9   2  21
 # one    4  5   6  21
 # three  0  1  10   3
 </code></pre>
 <h3 id="_9">排名</h3>
-<p>排名是指对数组从1到有效数据点总数分配名次的操作。
-* Series和DataFrame的rank方法是实现排名的方法。
-* df.rank(ascending=False, method='max')
-* ascending：排名方式，默认从低到高，ascending=False 表示从高到低；
-* method：排名方式，包括：
-    * average:默认，在相等分组中，为各个值分配平均排名
-    * min:使用整个分组的最小排名
-    * max:使用整个分组的最大排名
-    * first:按值再原始数据中出现顺序分配排名
-    * dense:类似min方法，但排名总是再组间增加1，而不是组中相同的元素数
-* 默认情况下，rank是通过“为各组分配一个平均排名”的方式破坏平级关系</p>
-<pre><code>obj = pd.Series([7, -5, 7, 4, 2, 0, 4])  # 按照每个元素的大小顺序给出一个平均排名
+<p><strong>排名</strong>是指对数组从1到有效数据点总数分配名次的操作。</p>
+<ul>
+<li>Series和DataFrame的<code>rank</code>方法是实现排名的方法，</li>
+<li><code>df.rank(ascending=False, method='max')</code>。<ul>
+<li><code>ascending</code>：排名方式，默认从低到高，<code>ascending=False</code> 表示从高到低；</li>
+<li><code>method</code>：排名方式，包括：<ul>
+<li>average:默认，在相等分组中，为各个值分配平均排名，即相同值的和除以该值的个数，即为该值的名次。</li>
+<li>min:使用整个分组的最小排名，即，对应相同值，取在顺序排名中最小的那个排名作为所有该值的排名。</li>
+<li>max:使用整个分组的最大排名，即，对应相同值，取在顺序排名中最大的那个排名作为所有该值的排名。</li>
+<li>first:按值再原始数据中出现顺序分配排名，谁出现的位置靠前，谁的排名靠前。</li>
+<li>dense:类似min方法，但排名总是在组间增加1，而不是组中相同的元素数，即相同值的排名相同，其他依次加1即可。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>默认情况下，rank是通过“为各组分配一个平均排名”的方式破坏平级关系</li>
+</ul>
+<pre><code># 按照每个元素的大小顺序给出一个平均排名
+obj = pd.Series([7, -5, 7, 4, 2, 0, 4])
+
+print(obj)
+# 0    7
+# 1   -5
+# 2    7
+# 3    4
+# 4    2
+# 5    0
+# 6    4
+# dtype: int64
+
 print(obj.rank())
 # 0    6.5
 # 1    1.0
@@ -1845,10 +2107,19 @@ print(obj.rank())
 # 5    2.0
 # 6    4.5
 # dtype: float64
-</code></pre>
-<p>根据元素的观察顺序进行分配\
-元素0和2没有使用平均排名6.5，它们被设成了6和7，因为数据中标签0位于标签2的前面。</p>
-<pre><code>print(obj.rank(method='first'))
+
+# index  value  rank
+#     2     -5    1
+#     6      0    2
+#     5      2    3
+#     4      4    4.5
+#     7      4    4.5
+#     1      7    6.5
+#     3      7    6.5
+
+
+# 根据元素的观察顺序进行分配。元素0和2没有使用平均排名6.5，它们被设成了6和7，因为数据中标签0位于标签2的前面。
+print(obj.rank(method='first'))
 # 0    6.0
 # 1    1.0
 # 2    7.0
@@ -1858,7 +2129,7 @@ print(obj.rank())
 # 6    5.0
 # dtype: float64
 
-
+# 按照max进行升序和降序
 print(obj.rank(ascending=False, method='max'))
 print(obj.rank(ascending=True, method='max'))
 # Original Series   Max with inc         Max with dec
@@ -1870,19 +2141,21 @@ print(obj.rank(ascending=True, method='max'))
 # 5     0           # 5    6.0           # 5    2.0
 # 6     4           # 6    4.0           # 6    5.0
 # dtype: float64    # dtype: float64     # dtype: float64
-
-
-frame = pd.DataFrame(
+</code></pre>
+<pre><code>frame = pd.DataFrame(
     {'b': [4.3, 7, -3, 2],
      'a': [0, 1, 0, 1],
      'c': [-2, 5, 8, -2]}
 )
+
 print(frame)
 #      b  a  c
 # 0  4.3  0 -2
 # 1  7.0  1  5
 # 2 -3.0  0  8
 # 3  2.0  1 -2
+
+# 沿1轴对DataFrame进行rank操作，即，每一行各元素进行rank。
 print(frame.rank(axis='columns'))  # axis=1
 #      b    a    c
 # 0  3.0  2.0  1.0
@@ -1891,9 +2164,9 @@ print(frame.rank(axis='columns'))  # axis=1
 # 3  3.0  2.0  1.0
 </code></pre>
 <h2 id="_10">含有重复标签的轴索引</h2>
-<p>尽管很多pandas函数（比如reindex）需要标签是唯一的，但这个并不是强制性的。\
-索引的is_unique属性可以告诉你它的标签是否唯一。\
-带有重复索引的情况下，根据一个标签索引多个条目会返回一个序列，而单个条目会返回标量值，这可能会使代码更复杂。</p>
+<p>尽管很多pandas函数（比如reindex）需要标签是唯一的，但这个并不是强制性的。
+索引的is_unique属性可以检查标签是否唯一。</p>
+<p>带有重复索引的情况下，一个索引标签会以序列方式返回多个条目。不重复的索引则会以标量值的形式返回单个条目，这可能会使代码更复杂。</p>
 <pre><code>obj = pd.Series(range(5), index=['a', 'b', 'a', 'c', 'b'])
 print(obj)
 # a    0
@@ -1902,10 +2175,15 @@ print(obj)
 # c    3
 # b    4
 # dtype: int64
-print(obj.is_unique)  # True
-print(obj.index.is_unique)  # False
 
-print(obj['a'])  # 返回一个序列
+print(obj.is_unique)  
+# True
+
+print(obj.index.is_unique)  
+# False
+
+# 返回重复索引对应值的序列。
+print(obj['a'])
 # a    0
 # a    2
 # dtype: int64
@@ -1917,20 +2195,22 @@ print(df)
 # a -1.539807 -0.710880 -0.992789
 # b -0.975970 -0.470725  0.121958
 # b -0.301495  1.072322 -1.542296
-print(df.index.is_unique)  # False
+
+print(df.index.is_unique)  
+# False
+
 print(df.loc['b'])
 #           0         1         2
 # b -0.520008  0.052574  0.638529
 # b -1.928705 -1.099534 -1.605296
 </code></pre>
-<h2 id="_11">描述性统计的概述与计算</h2>
+<h2 id="_11">描述性统计概述与计算</h2>
+<p>pandas包含了一些常用数学、统计学方法。其中大部分属于归约或汇总统计的类别，这些方法从DataFrame的行或列中抽取一个Series或一系列值（如总和或平均值）。</p>
+<p>与NumPy数组中的类似方法相比，pandas内建了处理缺失值的功能。</p>
 <ul>
-<li>pandas对象装配了一个常用数学、统计学方法的集合。</li>
-<li>其中大部分属于归约或汇总统计的类别，这些方法从DataFrame的行或列中抽取一个Series或一系列值的单个值（如总和或平均值）。</li>
-<li>与NumPy数组中的类似方法相比，它们内建了处理缺失值的功能。</li>
 <li>归约方法: sum()</li>
 <li>积累型方法: cumsun()</li>
-<li>既不是归约型方法也不是积累型方法: describe()james@nuc:/opt/python&gt; james@nuc:/opt/python&gt;</li>
+<li>既不是归约型方法也不是积累型方法: describe()</li>
 </ul>
 <pre><code>df = pd.DataFrame(
     [[1.4, np.nan],
@@ -1940,51 +2220,66 @@ print(df.loc['b'])
     index=list('abcd'),
     columns=['one', 'two']
 )
+
 print(df)
 #     one  two
 # a  1.40  NaN
 # b  7.10 -4.5
 # c   NaN  NaN
 # d  0.75 -1.3
-print(df.sum())  # axis=0, 返回一个每列和的Series
+
+# axis=0, 返回一个每列算术和的Series
+print(df.sum())
 # one    9.25
 # two   -5.80
 # dtype: float64
-print(df.sum(axis=1))  # axis=1且skipna=True, 返回一个每行和的Series, 排除NA值, 填0
+
+# axis=1且skipna=True, 返回一个每行和的Series, 忽略NA值, 填0。
+print(df.sum(axis=1))
 # a    1.40
 # b    2.60
 # c    0.00
 # d   -0.55
 # dtype: float64
-print(df.sum(axis=1, skipna=False))  # 不排除NA值
+
+# 不忽略NA值，填NaN。
+print(df.sum(axis=1, skipna=False))
 # a     NaN
 # b    2.60
 # c     NaN
 # d   -0.55
 # dtype: float64
-print(df.groupby(level=0).sum())  # df.sum(level=1) is deprecated. should use df.groupby(level=1).sum().
+
+# 只有1级索引，所以level=0和原索引没有区别，NaN填充0。
+print(df.groupby(level=0).sum())
 #     one  two
 # a  1.40  0.0
 # b  7.10 -4.5
 # c  0.00  0.0
 # d  0.75 -1.3
-print(df.idxmax())  # 列one的最大值是在索引b, 列two的最大值是在索引d
+
+# 列one的最大值是在索引b, 列two的最大值是在索引d
+print(df.idxmax())
 # one    b
 # two    d
 # dtype: object
+
 print(df.idxmin())
 # one    d
 # two    b
 # dtype: object
 
+# cumsun的意思是第n次的和是n-1次的和与n的和，one列d行的和就是one列a、b、c、d值的总和。
 print(df.cumsum())
 #     one  two
 # a  1.40  NaN
 # b  8.50 -4.5
 # c   NaN  NaN
 # d  9.25 -5.8
-
-print(df.describe())  # 一次性产生多个汇总统计
+</code></pre>
+<p>通过describe产生统计信息，注意，数值型和非数值型的describe的信息是不同的。</p>
+<pre><code># 一次性产生多个汇总统计
+print(df.describe())
 #             one       two
 # count  3.000000  2.000000
 # mean   3.083333 -2.900000
@@ -1995,12 +2290,11 @@ print(df.describe())  # 一次性产生多个汇总统计
 # 75%    4.250000 -2.100000
 # max    7.100000 -1.300000
 
-
 obj = pd.Series(['a', 'a', 'b', 'c'] * 4)
 print(obj)
 # 0     a
 # 1     a
-# 2     bjames@nuc:/opt/python&gt;
+# 2     b
 # 3     c
 # 4     a
 # 5     a
@@ -2015,7 +2309,9 @@ print(obj)
 # 14    b
 # 15    c
 # dtype: object
-print(obj.describe())  # 针对非数值型数据，describe产生另一种汇总统计
+
+# 针对非数值型数据，describe产生另一种汇总统计
+print(obj.describe())
 # count     16
 # unique     3
 # top        a
@@ -2023,29 +2319,37 @@ print(obj.describe())  # 针对非数值型数据，describe产生另一种汇�
 # dtype: object
 </code></pre>
 <h2 id="_12">相关性和协方差</h2>
-<p>协方差与相关系数也是在时域分析时常见的两个概念，他们都是用来描述数据“像不像”的。\</p>
-<p>协方差的通俗理解：
-* 两个变量在变化过程中是同方向变化还是反方向变化？相同或者相反成都如何？
-* 你变大，同时我变大，说明两个变量是同向变化，这时协方差就是正的。
-* 你变大，同时我变小，说明两个变量是反向变化，这时协方差就是负的。
-* 从数值看，协方差的数值越大，两个变量同向程度也就越大。反之亦然。</p>
-<p>相关系数的通俗理解：
-* 用X，Y的协方差初一X的标准差和Y的标准差。
-* 相关系数也可以看成协方差，一种提出了两个变量量纲影响、标准化后的特殊协方差。
-* 所以：
-* 也可以反应两个变量变化时是同向还是反向，如果同向变化就为正，反向变化就为负。
-* 由于是标准版后的协方差，相关系数消除了两个变量变化幅度的影响，而只是单纯反应两个变量每单位变化时的相似成都。</p>
-<p>总结
-<em>对于两个变量X、Y，
-</em>当他们的相关系数为1时，说明两个变量变化时的正向相似度最大。
-<em>当他们的相关系数为－1时，说明两个变量变化的反向相似度最大。
-</em>随着他们相关系数减小，两个变量变化时的相似度也变小，当相关系数为0时，两个变量的变化过程没有任何相似度，也即两个变量无关。
-*当相关系数继续变小，小于0时，两个变量开始出现反向的相似度，随着相关系数继续变小，反向相似度会逐渐变大。</p>
-<p>下面的例子使用 pandas-datareader
-* https://pypi.org/project/pandas-datareader/
-* https://pydata.github.io/pandas-datareader/)</p>
+<p>协方差与相关系数也是在时域分析时常见的两个概念，他们都是用来描述数据“像不像”的。</p>
+<p>协方差的通俗理解：</p>
+<ul>
+<li>两个变量在变化过程中是同方向变化还是反方向变化？相同或者相反程度如何？</li>
+<li>你变大，同时我变大，说明两个变量是同向变化，这时协方差就是正的。</li>
+<li>你变大，同时我变小，说明两个变量是反向变化，这时协方差就是负的。</li>
+<li>从数值看，协方差的数值越大，两个变量同向程度也就越大。反之亦然。</li>
+</ul>
+<p>相关系数的通俗理解：</p>
+<ul>
+<li>用X，Y的协方差除以X的标准差和Y的标准差。相关系数也可以看成协方差，一种提出了两个变量量纲影响、标准化后的特殊协方差。所以：也可以反映两个变量变化时是同向还是反向，如果同向变化就为正，反向变化就为负。</li>
+<li>由于是标准版后的协方差，相关系数消除了两个变量变化幅度的影响，而只是单纯反应两个变量每单位变化时的相似程度。</li>
+</ul>
+<p>总结：</p>
+<ul>
+<li>对于两个变量X、Y，</li>
+<li>当他们的相关系数为1时，说明两个变量变化时的正向相似度最大。</li>
+<li>当他们的相关系数为－1时，说明两个变量变化的反向相似度最大。</li>
+<li>随着他们相关系数减小，两个变量变化时的相似度也变小，当相关系数为0时，两个变量的变化过程没有任何相似度，也即两个变量无关。</li>
+<li>当相关系数继续变小，小于0时，两个变量开始出现反向的相似度，随着相关系数继续变小，反向相似度会逐渐变大。</li>
+</ul>
+<p>下面的例子使用 pandas-datareader：</p>
+<ul>
+<li>https://pypi.org/project/pandas-datareader/</li>
+<li>https://pydata.github.io/pandas-datareader/)</li>
+</ul>
 <p>在所有例子中，在计算相关性之前，数据点已经按标签进行了对齐。</p>
-<pre><code>all_data = {
+<p>下例需要通过pandas-datareader库从Yahoo! Finance上获取的包含股价和交易量的DataFrame。</p>
+<pre><code>import pandas_datareader.data as web
+
+all_data = {
 
     ticker: web.get_data_yahoo(ticker) for ticker in ['AAPL', 'IBM', 'MSFT', 'GOOG']
 }
@@ -2087,27 +2391,37 @@ print(returns.tail())
 # 2021-08-12    0.009967
 # 2021-08-13    0.010490
 # Name: MSFT, Length: 1259, dtype: float64
-print(returns['MSFT'].corr(returns['IBM']))  # Series的corr方法计算的是两个Series中重叠的、非NA的、按索引对齐的值的相关性。
+
+# Series的corr方法计算的是两个Series中重叠的、非NA的、按索引对齐的值的相关性。
+print(returns['MSFT'].corr(returns['IBM']))  
 # 0.5175237180581937
-print(returns.MSFT.corr(returns.IBM))  # 等同写法，MSFT是一个有效的Python属性
+
+# 等同写法，MSFT是一个有效的Python属性
+print(returns.MSFT.corr(returns.IBM))  
 # 0.5175237180581937
-print(returns['MSFT'].cov(returns['IBM']))  # Series的cov方法计算的是两个Series中值的协方差。
+
+# Series的cov方法计算的是两个Series中值的协方差。
+print(returns['MSFT'].cov(returns['IBM']))
 # 0.0001452224236764915
 </code></pre>
-<p>DataFrame的corr和cov方法会分别以DataFrame的形式返回相关性和协方差矩阵</p>
+<p>DataFrame的corr和cov方法会分别以DataFrame的形式返回相关性和协方差矩阵。</p>
 <pre><code>print(returns.corr())
 #           AAPL       IBM      MSFT      GOOG
 # AAPL  1.000000  0.441111  0.735539  0.661961
 # IBM   0.441111  1.000000  0.517524  0.484230
 # MSFT  0.735539  0.517524  1.000000  0.775756
 # GOOG  0.661961  0.484230  0.775756  1.000000
-print(returns.corrwith(returns['IBM']))  # 给corrwith方法，传入一个Series时，会返回一个含有为每列计算相关性值的Series
+
+# 给corrwith方法，传入一个Series时，会返回一个含有为每列计算相关性值的Series
+print(returns.corrwith(returns['IBM']))  
 # AAPL    0.441111
 # IBM     1.000000
 # MSFT    0.517524
 # GOOG    0.484230
 # dtype: float64
-print(returns.corrwith(volume))  # 给corrwith方法，传入一个DataFrame时，会计算匹配到列名的相关性数值。下面是计算交易量百分比变化的相关性
+
+# 给corrwith方法，传入一个DataFrame时，会计算匹配到列名的相关性数值。下面是计算交易量百分比变化的相关性
+print(returns.corrwith(volume))  
 # AAPL   -0.063111
 # IBM    -0.103721
 # MSFT   -0.056842
@@ -2123,25 +2437,43 @@ print(returns.cov())
 </code></pre>
 <h2 id="_13">唯一值、计数和成员属性</h2>
 <pre><code>obj = pd.Series(['c', 'a', 'd', 'a', 'a', 'a', 'b', 'b', 'c', 'c'])
+
 print(obj)
+# 0    c
+# 1    a
+# 2    d
+# 3    a
+# 4    a
+# 5    a
+# 6    b
+# 7    b
+# 8    c
+# 9    c
+# dtype: object
 </code></pre>
-<p>函数unique给出Series中的唯一值</p>
+<p>函数<code>unique</code>给出Series中的唯一值。</p>
 <pre><code>print(obj.unique())
 # ['c' 'a' 'd' 'b']
+
 print(obj.sort_values().unique())
 # ['a' 'b' 'c' 'd']
-print(obj.value_counts())  # value_counts计算Series包含的值的个数
+
+# value_counts计算Series包含的值的个数
+print(obj.value_counts())
 # a    4
 # c    3
 # b    2
 # d    1
 # dtype: int64
-print(pd.value_counts(obj.values, sort=True))  # 这里value_counts不是Series的方法，是pandas顶层方法
+
+# 这里value_counts不是Series的方法，是pandas顶层方法
+print(pd.value_counts(obj.values, sort=True))
 # a    4
 # c    3
 # b    2
 # d    1
 # dtype: int64
+
 print(obj.isin(['b', 'c']))
 # 0     True
 # 1    False
@@ -2154,7 +2486,9 @@ print(obj.isin(['b', 'c']))
 # 8     True
 # 9     True
 # dtype: bool
-print(obj[obj.isin(['b', 'c'])])  # 将上面的结果作为列表输入的条件，输出为True的结果
+
+# 将上面的结果作为列表输入的条件，输出为True的结果
+print(obj[obj.isin(['b', 'c'])])
 # 0    c
 # 6    b
 # 7    b
@@ -2162,18 +2496,21 @@ print(obj[obj.isin(['b', 'c'])])  # 将上面的结果作为列表输入的条�
 # 9    c
 # dtype: object
 </code></pre>
-<p>参考: https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Index.get_indexer.html</p>
+<p>参考: <a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Index.get_indexer.html">pandas.Index.get_indexer</a></p>
 <pre><code>obj1 = pd.Series(['c', 'a', 'd', 'a', 'a', 'a', 'b', 'b', 'c', 'c'])
 obj2 = pd.Series(['c', 'a', 'b'])
 
 print(pd.Index(obj1))
 # Index(['c', 'a', 'd', 'a', 'a', 'a', 'b', 'b', 'c', 'c'], dtype='object')
+
 print(pd.Index(obj2))
 # Index(['c', 'a', 'b'], dtype='object')
-print(pd.Index(obj2).get_indexer(obj1))  # 这里0对应obj2里面的c在job1的位置，以此类推，生成新的索引列表
+
+# 这里0对应obj2里面的c在job1的位置，以此类推，生成新的索引列表
+print(pd.Index(obj2).get_indexer(obj1))
 # [ 0  1 -1  1  1  1  2  2  0  0]
 </code></pre>
-<p>计算DataFrame多个相关列的直方图</p>
+<p>计算DataFrame多个相关列的直方图。</p>
 <pre><code>data = pd.DataFrame(
     {
         'Que1': [1, 3, 4, 3, 4],
@@ -2181,6 +2518,7 @@ print(pd.Index(obj2).get_indexer(obj1))  # 这里0对应obj2里面的c在job1的
         'Que3': [1, 5, 2, 4, 4],
     }
 )
+
 print(data)
 #    Que1  Que2  Que3
 # 0     1     2     1
@@ -2190,7 +2528,9 @@ print(data)
 # 4     4     3     4
 
 result = data.apply(pd.value_counts).fillna(0)
-print(result)  # 结果中的行标签是所有列中出现的不同值，数值则是这些不同值在每个列中出现的次数，例如：数字5只在Que3里面出现了一次
+
+# 下面结果中的行标签是所有列中出现的不同值，数值则是这些不同值在每个列中出现的次数，例如：数字5只在Que3里面出现了一次
+print(result)
 #    Que1  Que2  Que3
 # 1   1.0   1.0   1.0
 # 2   0.0   2.0   1.0
