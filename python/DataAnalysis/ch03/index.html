@@ -15,7 +15,7 @@
     
     
       
-        <title>Ch03 - My Memo</title>
+        <title>数据载入、存储及文件格式 - My Memo</title>
       
     
     
@@ -97,7 +97,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Ch03
+              数据载入、存储及文件格式
             
           </span>
         </div>
@@ -252,6 +252,8 @@
   
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -260,7 +262,7 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#_1" class="md-nav__link">
+  <a href="#_2" class="md-nav__link">
     文本格式数据的读写
   </a>
   
@@ -268,21 +270,21 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#_2" class="md-nav__link">
+  <a href="#_3" class="md-nav__link">
     分块读入文本文件
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#_3" class="md-nav__link">
+  <a href="#_4" class="md-nav__link">
     将数据写入文本格式
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#_4" class="md-nav__link">
+  <a href="#_5" class="md-nav__link">
     使用分隔格式
   </a>
   
@@ -308,7 +310,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_5" class="md-nav__link">
+  <a href="#_6" class="md-nav__link">
     二进制格式
   </a>
   
@@ -322,7 +324,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_6" class="md-nav__link">
+  <a href="#_7" class="md-nav__link">
     与数据库交互
   </a>
   
@@ -341,9 +343,8 @@
               
                 
 
-  <h1>Ch03</h1>
-
-<h3 id="_1">文本格式数据的读写</h3>
+<h1 id="_1">数据载入、存储及文件格式</h1>
+<h3 id="_2">文本格式数据的读写</h3>
 <pre><code>import numpy as np
 import pandas as pd
 import sys
@@ -483,7 +484,7 @@ result = pd.read_csv('../examples/ex5.csv', na_values=sentinels)
 # 1       NaN  5   6   NaN   8   world
 # 2     three  9  10  11.0  12     NaN
 </code></pre>
-<h4 id="_2">分块读入文本文件</h4>
+<h4 id="_3">分块读入文本文件</h4>
 <pre><code>pd.options.display.max_rows = 10
 result = pd.read_csv('../examples/ex6.csv')  # 读取全部记录
 print(result)
@@ -518,7 +519,7 @@ print(tot[:10])
 # H    330.0
 # dtype: float64
 </code></pre>
-<h4 id="_3">将数据写入文本格式</h4>
+<h4 id="_4">将数据写入文本格式</h4>
 <pre><code>data = pd.read_csv('../examples/ex5.csv')
 print(data)
 #   something  a   b     c   d message
@@ -572,7 +573,7 @@ ts.to_csv('../examples/tseries.csv', header=False)
 # 2000-01-06,5
 # 2000-01-07,6
 </code></pre>
-<h4 id="_4">使用分隔格式</h4>
+<h4 id="_5">使用分隔格式</h4>
 <p>绝大多数的表型数据都可以使用函数pandas.read_table从硬盘中读取。 \
 然而，在某些情况下，接收一个带有一行或多行错误的文件并不少见，read_table也无法解决这种情况。</p>
 <p>ex7.csv 文件内容</p>
@@ -730,9 +731,9 @@ print(close_timestamps.dt.year.value_counts())
 # 2000      2
 # Name: Closing Date, Length: 15, dtype: int64
 </code></pre>
-<h3 id="_5">二进制格式</h3>
+<h3 id="_6">二进制格式</h3>
 <h3 id="web-api">与Web API交互</h3>
-<h3 id="_6">与数据库交互</h3>
+<h3 id="_7">与数据库交互</h3>
 
               
             </article>
