@@ -15,7 +15,7 @@
     
     
       
-        <title>Python的类(Class) - My Memo</title>
+        <title>Python的面向对象概念 - My Memo</title>
       
     
     
@@ -64,7 +64,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#pythonclass" class="md-skip">
+        <a href="#python" class="md-skip">
           Skip to content
         </a>
       
@@ -97,7 +97,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Python的类(Class)
+              Python的面向对象概念
             
           </span>
         </div>
@@ -324,86 +324,58 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#inheritance" class="md-nav__link">
-    继承 Inheritance
-  </a>
-  
-    <nav class="md-nav" aria-label="继承 Inheritance">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#multiple-inheritance" class="md-nav__link">
-    多重继承 Multiple Inheritance
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#private-variables" class="md-nav__link">
-    私有变量 Private Variables
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#iterators" class="md-nav__link">
-    迭代器 Iterators
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#generators" class="md-nav__link">
-    生成器 Generators
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#generator-expressions" class="md-nav__link">
-    生成器表达式 Generator Expressions
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#polymorphism" class="md-nav__link">
-    多态 Polymorphism
-  </a>
-  
-    <nav class="md-nav" aria-label="多态 Polymorphism">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
   <a href="#_1" class="md-nav__link">
-    类方法的多态性
+    总结
   </a>
   
-</li>
+    <nav class="md-nav" aria-label="总结">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#_2" class="md-nav__link">
-    继承的多态性
+    类定义小结
   </a>
   
 </li>
         
           <li class="md-nav__item">
   <a href="#_3" class="md-nav__link">
-    函数和对象的多态性
+    类成员操作（不推荐）：
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#ducking-typing" class="md-nav__link">
-    鸭子类型(Ducking Typing)
+  <a href="#self" class="md-nav__link">
+    成员方法中的self
   </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    魔术方法
+  </a>
+  
+    <nav class="md-nav" aria-label="魔术方法">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#__init__" class="md-nav__link">
+    __init__初始化方法
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#__del__" class="md-nav__link">
+    __del__析构方法
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -425,7 +397,7 @@
               
                 
 
-<h1 id="pythonclass">Python的类(Class)</h1>
+<h1 id="python">Python的面向对象概念</h1>
 <p>类(class)把数据与功能绑定在一起。创建新类就是创建新的对象类型（type of object），从而创建该类型的新实例（instances）。
 类实例具有多种保持自身状态的属性（attributes）。
 类实例还支持（由类定义的）修改自身状态的方法（methods）。</p>
@@ -448,7 +420,7 @@
 <li>模块中的全局名称；</li>
 <li>函数调用中的局部名称；</li>
 </ul>
-<p>从某种意义上说，对象的属性集合（the set of attributes of an object）也是一种命名空间的形式。 </p>
+<p>从某种意义上说，<strong>对象的属性集合（the set of attributes of an object）也是一种命名空间的形式</strong>。 </p>
 <p>关于命名空间的重要一点是，不同命名空间中的名称之间绝对没有关系；
 例如，在两个不同的模块中都可以定义一个<code>maximize</code>函数而不会产生混淆，但在调用<code>maximize</code>函数时必须必须在其前面加上模块名称。</p>
 <p>任何跟在一个点号之后的名称都称为<strong>属性（attribute）</strong>。例如，在表达式<code>z.real</code>中，<code>real</code>是对象<code>z</code>的一个属性。</p>
@@ -795,329 +767,101 @@ class C:
 与方法相关联的全局作用域就是包含其定义的模块。 （类永远不会被作为全局作用域。） </p>
 <p>虽然我们很少会有充分的理由在方法中使用全局作用域，但全局作用域存在许多合理的使用场景：举个例子，导入到全局作用域的函数和模块可以被方法所使用，在其中定义的函数和类也一样。
 通常，包含该方法的类本身是在全局作用域中定义的。</p>
-<h2 id="inheritance">继承 Inheritance</h2>
-<p>如果不支持继承，就算不上真正的“类”。派生类（derived class）定义的语法如下所示:</p>
-<pre><code>class DerivedClassName(BaseClassName):
-    &lt;statement-1&gt;
-    .
-    .
-    .
-    &lt;statement-N&gt;
-</code></pre>
-<p>名称<code>BaseClassName</code>必须定义于包含派生类定义的作用域中。 也允许用其他任意表达式代替基类名称所在的位置，例如，当基类定义在另一个模块中的时候:</p>
-<pre><code>class DerivedClassName(modname.BaseClassName):
-</code></pre>
-<p>派生类定义的执行过程与基类相同。 当构造类对象时，基类会被记住。 此信息将被用来解析属性引用：如果请求的属性在类中找不到，搜索将转往基类中进行查找。 如果基类本身也派生自其他某个类，则此规则将被递归地（recursively）应用。</p>
-<p>派生类的实例化没有任何特殊之处: <code>DerivedClassName()</code>会创建该类的一个<em>新实例</em>。 方法引用将按以下方式解析：搜索相应的类属性，如有必要将按基类继承链逐步向下查找，如果产生了一个函数对象则方法引用就生效。</p>
-<p>派生类可能会重写（override）其基类的方法。 因为方法在调用同一对象的其他方法时没有特殊权限，所以调用同一基类中定义的另一方法的基类方法最终可能会调用覆盖它的派生类的方法。</p>
-<p>在派生类中的重载方法（overriding method）实际上可能想要扩展而非简单地替换同名的基类方法。 有一种方式可以简单地直接调用基类方法：即调用<code>BaseClassName.methodname(self, arguments)</code>。请注意，仅当此基类可在全局作用域中以<code>BaseClassName</code>的名称被访问时方可使用此方式。</p>
-<p>Python有两个内置函数可被用于继承机制：</p>
+<h2 id="_1">总结</h2>
+<h3 id="_2">类定义小结</h3>
+<p>一个类定义类成员属性和成员方法。</p>
+<p>一个类可以实例化多个对象，每个实例化对象都是独立的。</p>
+<p>创建的类实例化对象，会引用父类中的属性和方法，并不会把类的属性和方法复制给对象，因此：</p>
+<p>在访问实例化对象的属性和方法时，会先去找对象自己的属性和方法，然后再去实例化这个对象的类中查找（引用）。</p>
+<p>对象成员的添加和修改，都只会影响当前对象自己，不会影响类和其它对象。</p>
+<p>删除对象成员的时候，必须是该对象自己具备的成员才可以，不能删除类中引用的成员。</p>
+<p>对类成员的操作，会影响这个类创建的对象，包括之前创建的对象（引用）。</p>
+<h3 id="_3">类成员操作（不推荐）：</h3>
 <ul>
-<li>使用<code>isinstance()</code>来检查一个实例的类型: <code>isinstance(obj, int)</code>仅会在<code>obj.__class__</code> 为<code>int</code>或某个派生自<code>int</code>的类时为<code>True</code>。</li>
-<li>使用<code>issubclass()</code>来检查类的继承关系:<code>issubclass(bool, int)</code>为<code>True</code>，因为<code>bool</code>是<code>int</code>的子类。 但是，<code>issubclass(float, int)</code>为<code>False</code>，因为<code>float</code>不是<code>int</code>的子类。</li>
+<li>成员属性：<ul>
+<li>访问：<code>ClassName.AttributeName</code></li>
+<li>修改：<code>ClassName.AttributeName = NewValue</code>，等于给这个类对象创建了一个自己的属性，通过这个类创建的对象都具有这个属性。</li>
+<li>添加：<code>ClassName.NewAttributeName = Value</code>，等于给这个类对象创建了一个自己的属性，通过这个类创建的对象都具有这个属性。</li>
+<li>删除：<code>del ClassName.AttributeName</code>，注意，只能删除类对象自己的属性，通过这个类创建的对象都不再具有这个属性。</li>
 </ul>
-<h3 id="multiple-inheritance">多重继承 Multiple Inheritance</h3>
-<p>Python 也支持一种多重继承。 带有多个基类的类定义语句如下所示:</p>
-<pre><code>class DerivedClassName(Base1, Base2, Base3):
-    &lt;statement-1&gt;
-    .
-    .
-    .
-    &lt;statement-N&gt;
+</li>
+<li>成员方法：<ul>
+<li>访问：<code>ClassName.MethodName()</code></li>
+<li>修改：<code>ClassName.MethodName = NewFunction</code>，等于给这个类对象创建了一个自己的方法，通过这个类创建的对象都具有这个方法。</li>
+<li>添加：<code>ClassName.MethodName = Function</code>，等于给这个类对象创建了一个自己的方法，通过这个类创建的对象都具有这个方法。</li>
+<li>删除：<code>del ClassName.MethodName</code>，注意，只能删除类对象自己的方法，通过这个类创建的对象都不再具有这个方法。</li>
+</ul>
+</li>
+</ul>
+<h3 id="self">成员方法中的self</h3>
+<p><code>self</code>只是一个形参，不是关键字。
+<code>self</code>在方法（method）代表当前对象自己。前面提到过，方法的第一个参数常常被命名为<code>self</code>，这只是一个约定。
+可以使用<code>self</code>在类内部操作成员（添加、修改、删除等）。</p>
+<p>方法的分类：</p>
+<ul>
+<li>含有self或者可以接受对象作为参数的方法，称为<strong>非绑定类方法</strong>，非绑定类的方法可以使用对象去访问。</li>
+<li>不含有self或者不能接受对象作为参数的方法，称为<strong>绑定类方法</strong>，绑定方法只能使用类去访问。</li>
+</ul>
+<h3 id="_4">魔术方法</h3>
+<p>魔术方法（Magic Method）和普通方法一样，都是类中定义的成员方法。
+魔术方法名称前后各有2个下划线，比如 <code>__init__</code>
+魔术方法是不需要手动调用的，会在某种情况下自动触发（自动执行）。
+魔术方法是系统定义好的，不是用户定义的。</p>
+<h4 id="__init__"><code>__init__</code>初始化方法</h4>
+<p>类实例化对象创建后自动触发。</p>
+<p><code>__init__</code>初始化方法可以用来在对象实例化后完成对象的初始化，比如属性赋值，方法调用等。</p>
+<h4 id="__del__"><code>__del__</code>析构方法</h4>
+<p>类实例化对象被销毁时自动触发。</p>
+<p><code>__del__</code>析构方法可以在销毁对象时完成一些特殊任务，关闭对象打开的一些资源，如文件等。</p>
+<p>注意，是对象被销毁时触发了析构方法，而不是这个析构方法销毁了对象。</p>
+<p>对象销毁的情况：</p>
+<ul>
+<li>当程序执行完毕，销毁和释放内存中的资源。</li>
+<li>使用<code>del</code>删除时。</li>
+<li>对象不再被任何对象引用时，会自动销毁。</li>
+</ul>
+<p>看下面的例子，对比<code>bmw = Car('BMW')</code>和<code>Car('BMW')</code>来理解<code>init</code>和<code>del</code>的触发机制。</p>
+<p>编辑文件<code>file1.py</code></p>
+<pre><code>class Car():
+    brand = &quot;&quot;
+
+    def __init__(self, car_brand):
+        self.brand = car_brand
+        print(f&quot;initial method called, create {self.brand} car&quot;)
+
+    def __del__(self):
+        print(f&quot;delete method called, destroy {self.brand} car&quot;)
+
+
+bmw = Car('BMW')
+vw = Car('VW')
 </code></pre>
-<p>在最简单的情况下，搜索从父类所继承属性的操作是深度优先（depth-first）、从左至右（left-to-right）的，当层次结构中存在重叠时不会在同一个类中搜索两次。 因此，如果某一属性在<code>DerivedClassName</code>中未找到，则会到<code>Base1</code>中搜索它，然后（递归地）到<code>Base1</code>的基类中搜索，如果在那里未找到，再到<code>Base2</code>中搜索，依此类推。</p>
-<p>真实情况更复杂；方法解析顺序会动态改变以支持对<code>super()</code>的协同调用。 这种方式在某些其他多重继承型语言中被称为<strong>后续方法调用（call-next-method）</strong>，它比单继承型（single-inheritance）语言中的<code>uper</code>调用更强大。</p>
-<p>动态改变顺序是有必要的，因为所有多重继承的情况都会显示出一个或更多的菱形关联（diamond relationships）（即至少有一个父类可通过多条路径被最底层类所访问）。 
-例如，所有类都是继承自<code>object</code>，因此任何多重继承的情况都提供了一条以上的路径可以通向 <code>object</code>。 为了确保基类不会被访问一次以上，动态算法会用一种特殊方式将搜索顺序线性化， 保留每个类所指定的从左至右的顺序，只调用每个父类一次，并且保持单调（monotonic）（即一个类可以被子类化而不影响其父类的优先顺序）。 
-总而言之，这些特性使得设计具有多重继承的可靠且可扩展的类成为可能。</p>
-<h2 id="private-variables">私有变量 Private Variables</h2>
-<p>那种仅限从一个对象内部访问的“私有”实例变量（“Private” instance variables）在 Python 中并不存在。 但是，大多数 Python 代码都遵循这样一个约定：带有<em>一个前缀下划线</em>的名称 (例如<code>_spam</code>) 应该被当作是 API 的非公有（non-public）部分 (无论它是函数、方法或是数据成员)。 这应当被视为一个实现细节，可能不经通知即加以改变。</p>
-<p>由于存在对于类私有成员（class-private members）的有效使用场景（例如避免名称与子类所定义的名称相冲突），因此存在对此种机制的有限支持，称为<strong>名称改写（name mangling）</strong>。 任何形式为<code>__spam</code>的标识符（至少带有<em>两个前缀下划线</em>，至多一个后缀下划线）的文本将被替换为 <code>_classname__spam</code>，其中 <code>classname</code> 为去除了前缀下划线的当前类名称。 这种改写不考虑标识符的句法位置，只要它出现在类定义内部就会进行。</p>
-<p>名称改写（Name mangling）有助于让子类重载方法（）override methods而不破坏类内方法（intraclass method）调用。例如:</p>
-<pre><code>class Mapping:
-
-    def __init__(self, iterable):
-        self.items_list = []
-        self.__update(iterable)
-
-    def update(self, iterable):
-        for item in iterable:
-            self.items_list.append(item)
-
-    __update = update  # private copy of original update() method
-
-
-class MappingSubclass(Mapping):
-
-    def update(self, keys, values):
-        # provides new signature for update()
-        # but does not break __init__()
-        for item in zip(keys, values):
-            self.items_list.append(item)
+<p>执行上面的代码<code>python3 file1.py</code>得到如下输出，在程序执行完毕时，依次执行<code>__del__</code>。</p>
+<pre><code>initial method called, create BMW car
+initial method called, create VW car
+delete method called, destroy BMW car
+delete method called, destroy VW car
 </code></pre>
-<p>上面的示例即使在 <code>MappingSubclass</code> 引入了一个 <code>__update</code> 标识符的情况下也不会出错，因为它会在 Mapping 类中被替换为 <code>_Mapping__update</code> 而在 <code>MappingSubclass</code> 类中被替换为 <code>_MappingSubclass__update</code>。</p>
-<p>请注意，改写规则（mangling rules）的设计主要是为了避免意外冲突；访问或修改私有变量仍然是可能的。这在特殊情况下甚至会很有用，例如在调试器（debugger）中。</p>
-<p>请注意传递给 <code>exec()</code> 或 <code>eval()</code> 的代码不会把发起调用类的类名视作当前类；这类似于 <code>global</code> 语句的效果，因此这种效果仅限于同时经过字节码编译的代码。 同样的限制也适用于 <code>getattr()</code>, <code>setattr()</code> 和 <code>delattr()</code>，以及对于 <code>__dict__</code> 的直接引用。</p>
-<h2 id="iterators">迭代器 Iterators</h2>
-<p>在Python中，大多数容器对象（container object）都可以使用 for 语句:</p>
-<pre><code>for element in [1, 2, 3]:
-    print(element)
-for element in (1, 2, 3):
-    print(element)
-for key in {'one': 1, 'two': 2}:
-    print(key)
-for char in &quot;123&quot;:
-    print(char)
-for line in open(&quot;myfile.txt&quot;):
-    print(line, end='')
+<p>编辑文件<code>file2.py</code></p>
+<pre><code>class Car():
+    brand = &quot;&quot;
+
+    def __init__(self, car_brand):
+        self.brand = car_brand
+        print(f&quot;initial method called, create {self.brand} car&quot;)
+
+    def __del__(self):
+        print(f&quot;delete method called, destroy {self.brand} car&quot;)
+
+
+Car('BMW')
+Car('VW')
 </code></pre>
-<p><code>for</code> 语句会在容器对象上调用 iter()。 该函数返回一个定义了 <code>__next__()</code> 方法的迭代器对象，此方法将逐一访问容器中的元素。 当元素用尽时，<code>__next__()</code> 将引发 <code>StopIteration</code> 异常来通知终止 <code>for</code> 循环。 可以使用 <code>next()</code> 内置函数来调用 <code>__next__()</code> 方法；下面这个例子展示了刚刚描述的具体运行方式:</p>
-<pre><code>&gt;&gt;&gt; s = 'abc'
-&gt;&gt;&gt; it = iter(s)
-&gt;&gt;&gt; it
-&lt;str_iterator object at 0x10c90e650&gt;
-&gt;&gt;&gt; next(it)
-'a'
-&gt;&gt;&gt; next(it)
-'b'
-&gt;&gt;&gt; next(it)
-'c'
-&gt;&gt;&gt; next(it)
-Traceback (most recent call last):
-  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
-    next(it)
-StopIteration
-</code></pre>
-<p>在了解了迭代器协议（iterator protocol）的机制后，给类添加迭代器就很容易了。 定义一个 <code>__iter__()</code> 方法来返回一个带有 <code>__next__()</code> 方法的对象。 如果类已定义了 <code>__next__()</code>，则 <code>__iter__()</code> 可以简单地返回 <code>self</code>:</p>
-<pre><code>class Reverse:
-    &quot;&quot;&quot;Iterator for looping over a sequence backwards.&quot;&quot;&quot;
-
-    def __init__(self, data):
-        self.data = data
-        self.index = len(data)
-
-    def __iter__(self):
-        return self
-
-    def __next__(self):
-        if self.index == 0:
-            raise StopIteration
-        self.index = self.index - 1
-        return self.data[self.index]
-
-
-rev = Reverse('spam')
-
-print(iter(rev))
-
-for char in rev:
-    print(char)
-
-# m
-# a
-# p
-# s
-</code></pre>
-<h2 id="generators">生成器 Generators</h2>
-<p><strong>生成器（Generators）</strong>是一个用于创建迭代器的简单而强大的工具。 
-它们的写法类似于标准的函数，但当它们要返回数据时会使用 <code>yield</code> 语句。 
-每次在生成器上调用 <code>next()</code> 时，它会从上次离开的位置恢复执行（它会记住上次执行语句时的所有数据值）。 </p>
-<p>一个创建生成器的示例如下（改写上面迭代器中所举的例子）:</p>
-<pre><code>def reverse(data):
-    for index in range(len(data) - 1, -1, -1):
-        yield data[index]
-
-
-for char in reverse('golf'):
-    print(char)
-
-# f
-# l
-# o
-# g
-</code></pre>
-<p>可以用生成器来完成的操作同样可以用前面所描述的基于类的迭代器来完成。但生成器的写法更为紧凑，因为它会自动创建 <code>__iter__()</code> 和 <code>__next__()</code> 方法。</p>
-<p>另一个关键特性在于局部变量和执行状态会在每次调用之间自动保存。 这使得该函数相比使用 <code>self.index</code> 和 <code>self.data</code> 这种实例变量的方式更易编写且更为清晰。</p>
-<p>除了会自动创建方法和保存程序状态，当生成器终结时，它们还会自动引发 <code>StopIteration</code>。 </p>
-<h2 id="generator-expressions">生成器表达式 Generator Expressions</h2>
-<p>某些简单的生成器可以写成简洁的表达式代码，所用语法类似列表推导式，但外层为圆括号而非方括号。 
-这种表达式被设计用于生成器将立即被外层函数所使用的情况。 
-生成器表达式相比完整的生成器更紧凑但较不灵活，相比等效的列表推导式则更为节省内存。</p>
-<p>示例:</p>
-<pre><code>&gt;&gt;&gt; sum(i * i for i in range(10))  # sum of squares
-285
-
-&gt;&gt;&gt; xvec = [10, 20, 30]
-&gt;&gt;&gt; yvec = [7, 5, 3]
-&gt;&gt;&gt; sum(x * y for x, y in zip(xvec, yvec))  # dot product
-260
-
-&gt;&gt;&gt; unique_words = set(word for line in page  for word in line.split())
-
-&gt;&gt;&gt; valedictorian = max((student.gpa, student.name) for student in graduates)
-
-&gt;&gt;&gt; data = 'golf'
-&gt;&gt;&gt; list(data[i] for i in range(len(data)-1, -1, -1))
-['f', 'l', 'o', 'g']
-</code></pre>
-<h2 id="polymorphism">多态 Polymorphism</h2>
-<p>多态意味着相同的函数名用于不同的情形。 如下例，<code>len()</code>被用于不同的情形。</p>
-<pre><code># len() being used for a string
-print(len(&quot;geeks&quot;))
-# 5
-
-# len() being used for a list
-print(len([10, 20, 30]))
-# 3
-
-</code></pre>
-<h3 id="_1">类方法的多态性</h3>
-<p>下面的代码展示了 Python 如何以相同的方式使用两种不同的类类型。 我们创建了一个遍历对象元组的 <code>for</code> 循环。 然后调用方法而不用关心每个对象是哪个类类型。 我们假设这些方法实际上存在于每个类中。 </p>
-<pre><code>class India():
-
-    def capital(self):
-        print(&quot;New Delhi is the capital of India.&quot;)
-
-    def language(self):
-        print(&quot;Hindi is the most widely spoken language of India.&quot;)
-
-    def type(self):
-        print(&quot;India is a developing country.&quot;)
-
-
-class USA():
-
-    def capital(self):
-        print(&quot;Washington, D.C. is the capital of USA.&quot;)
-
-    def language(self):
-        print(&quot;English is the primary language of USA.&quot;)
-
-    def type(self):
-        print(&quot;USA is a developed country.&quot;)
-
-
-obj_ind = India()
-obj_usa = USA()
-
-for country in (obj_ind, obj_usa):
-    country.capital()
-    country.language()
-    country.type()
-
-# New Delhi is the capital of India.
-# Hindi is the most widely spoken language of India.
-# India is a developing country.
-# Washington, D.C. is the capital of USA.
-# English is the primary language of USA.
-# USA is a developed country.
-</code></pre>
-<h3 id="_2">继承的多态性</h3>
-<p>在 Python 中，多态允许我们在子类中定义与父类中的方法同名的方法。 在继承中，子类继承父类的方法。 但是，可以修改从父类继承的子类中的方法。 这在从父类继承的方法不太适合子类的情况下特别有用。 在这种情况下，我们在子类中重新实现该方法。 这种在子类中重新实现方法的过程称为<strong>方法覆盖（Method Overriding）</strong>。 </p>
-<pre><code>class Bird:
-
-    def intro(self):
-        print(&quot;There are many types of birds.&quot;)
-
-    def flight(self):
-        print(&quot;Most of the birds can fly but some cannot.&quot;)
-
-
-class sparrow(Bird):
-
-    def flight(self):
-        print(&quot;Sparrows can fly.&quot;)
-
-
-class ostrich(Bird):
-
-    def flight(self):
-        print(&quot;Ostriches cannot fly.&quot;)
-
-
-obj_bird = Bird()
-obj_spr = sparrow()
-obj_ost = ostrich()
-
-obj_bird.intro()
-# There are many types of birds.
-
-obj_bird.flight()
-# Most of the birds can fly but some cannot.
-
-obj_spr.intro()
-# There are many types of birds.
-
-obj_spr.flight()
-# Sparrows can fly.
-
-obj_ost.intro()
-# There are many types of birds.
-
-obj_ost.flight()
-# Ostriches cannot fly.
-</code></pre>
-<h3 id="_3">函数和对象的多态性</h3>
-<p>我们也可以创建一个可以接受任何对象的函数，允许多态性。 在下面例子中，我们创建一个名为<code>func()</code>的函数，传入参数是<code>obj</code>的对象。在这种情况下，我们调用三个方法，即<code>capital()</code>、<code>language()</code>和<code>type()</code>，每个方法都定义在<code>India</code>和<code>USA</code>两个类中。 我们可以使用相同的 <code>func()</code> 函数调用它们的动作：</p>
-<pre><code>class India():
-
-    def capital(self):
-        print(&quot;New Delhi is the capital of India.&quot;)
-
-    def language(self):
-        print(&quot;Hindi is the most widely spoken language of India.&quot;)
-
-    def type(self):
-        print(&quot;India is a developing country.&quot;)
-
-
-class USA():
-
-    def capital(self):
-        print(&quot;Washington, D.C. is the capital of USA.&quot;)
-
-    def language(self):
-        print(&quot;English is the primary language of USA.&quot;)
-
-    def type(self):
-        print(&quot;USA is a developed country.&quot;)
-
-
-def func(obj):
-    obj.capital()
-    obj.language()
-    obj.type()
-
-
-obj_ind = India()
-obj_usa = USA()
-
-func(obj_ind)
-# New Delhi is the capital of India.
-# Hindi is the most widely spoken language of India.
-# India is a developing country.
-
-func(obj_usa)
-# Washington, D.C. is the capital of USA.
-# English is the primary language of USA.
-# USA is a developed country.
-</code></pre>
-<h3 id="ducking-typing">鸭子类型(Ducking Typing)</h3>
-<p>鸭子类型是多态一种形式。我们可以验证，一个对象如果实现了迭代器协议，那它一定是可以迭代的。</p>
-<pre><code>def isiterable(obj):
-    try:
-        iter(obj)
-        return True
-    except TypeError:
-        return False
-</code></pre>
-<p>只能输入一个object, 接受多种类型输入。</p>
-<pre><code>print(isiterable('a string'))  
-# True
-print(isiterable([1, 2, 3]))  
-# True
-print(isiterable(5))  
-# False
+<p>执行上面的代码<code>python3 file2.py</code>得到如下输出：</p>
+<pre><code>initial method called, create BMW car
+delete method called, destroy BMW car
+initial method called, create VW car
+delete method called, destroy VW car
 </code></pre>
 
               
