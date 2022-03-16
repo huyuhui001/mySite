@@ -1,4 +1,4 @@
-site_name: My Memo
+site_name: 学而时习之
 site_url: https://huyuhui001.github.io/mySite/index.html
 nav:
         - Home: index.md
