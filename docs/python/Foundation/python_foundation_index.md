@@ -64,5 +64,17 @@
 
 
 ## [面向对象三大特性](ch05.md)
-
-
+1. 封装 Encapsulation
+2. 继承 Inheritance
+    * 多重继承 Multiple Inheritance
+    * 菱形继承
+    * 继承关系检测
+3. 多态 Polymorphism
+    * 类方法的多态性
+    * 继承的多态性
+    * 函数和对象的多态性
+    * 鸭子类型(Ducking Typing)
+4. 私有变量 Private Variables
+5. 迭代器 Iterators
+6. 生成器 Generators
+7. 生成器表达式 Generator Expressions
