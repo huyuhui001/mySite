@@ -50,17 +50,15 @@
     * 实例对象 Instance Objects
     * 方法对象 Method Objects
     * 类和实例变量 Class and Instance Variables
-4. 继承 Inheritance
-    * 多重继承 Multiple Inheritance
-5. 私有变量 Private Variables
-6. 迭代器 Iterators
-7. 生成器 Generators
-8. 生成器表达式 Generator Expressions
-9. 多态 Polymorphism
-    * 类方法的多态性
-    * 继承的多态性
-    * 函数和对象的多态性
-    * 鸭子类型(Ducking Typing)
+4. 总结
+    * 类定义小结
+    * 类成员操作（不推荐）：
+    * 成员方法中的self
+    * 魔术方法
+        * __init__初始化方法
+        * __del__析构方法
+
+
 
 
 ## [面向对象三大特性](ch05.md)
