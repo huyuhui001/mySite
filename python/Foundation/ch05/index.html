@@ -290,6 +290,20 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#minxins" class="md-nav__link">
+    多继承关系的minxins机制
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#class-combination" class="md-nav__link">
+    组合（Class Combination）
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -561,7 +575,8 @@ class C(F, M):
 c.drink()
 # Drink Water
 </code></pre>
-<p>如果把<code>C</code>类改写为如下，可以调用父类，但只有<code>F</code>类，从左至右（left-to-right）。</p>
+<p>方法1：按照mro进行继承查找。
+如果把<code>C</code>类改写为如下，可以调用父类，参照<code>C</code>类的mro进行，<code>mro</code>里面类<code>F</code>的上一级是类<code>M</code>，所以类<code>F</code>中的<code>super()</code>就是指类<code>M</code>。</p>
 <pre><code>class C(F, M):
 
     def drink(self):
@@ -573,8 +588,11 @@ c = C()
 c.drink()
 # Drink Beer
 # Drink Water
+
+C.mro()
+# [&lt;class '__main__.C'&gt;, &lt;class '__main__.F'&gt;, &lt;class '__main__.M'&gt;, &lt;class 'object'&gt;]
 </code></pre>
-<p>如果把<code>C</code>类改写为如下，可以调用<code>M</code>类。</p>
+<p>方法2：“指名道姓”调用。如果把<code>C</code>类改写为如下，可以调用<code>M</code>类。</p>
 <pre><code>class C(F, M):
 
     def drink(self):
@@ -673,7 +691,149 @@ a.test()
 
 A.mro()
 # [&lt;class '__main__.A'&gt;, &lt;class '__main__.B'&gt;, &lt;class '__main__.E'&gt;, &lt;class '__main__.C'&gt;, &lt;class '__main__.F'&gt;, &lt;class '__main__.D'&gt;, &lt;class 'object'&gt;]
+</code></pre>
+<p>总结：</p>
+<ol>
+<li>继承结构要尽量简单，不要过于复杂。</li>
+<li>推荐使用minxins机制，在多继承背景下，满足继承的什么是什么的关系（is-a）</li>
+</ol>
+<h3 id="minxins">多继承关系的minxins机制</h3>
+<p>看下面例子，如果在<code>Vehicle</code>类中定义了<code>fly</code>的方法，会导致<code>Car(Vehicle)</code>的继承关系出现矛盾，汽车并不会飞，但按照上述继承关系，汽车也能飞了。
+但是如果民航飞机和直升机都各自写自己的飞行fly方法，又违背了代码尽可能重用的原则。</p>
+<pre><code>class Vehicle:  # 交通工具
 
+    def fly(self):
+        '''
+        飞行功能相应的代码        
+        '''
+        print(&quot;I am flying&quot;)
+
+
+# 民航飞机
+class CivilAircraft(Vehicle):
+    pass
+
+
+# 直升飞机
+class Helicopter(Vehicle):
+    pass
+
+
+# 汽车
+class Car(Vehicle):
+    pass
+</code></pre>
+<p>Python中没有类似Java接口interface的功能，但提供了Mixins机制。</p>
+<ul>
+<li>Python对于<code>Mixin</code>类的命名方式一般以 <code>Mixin</code>, <code>able</code>, <code>ible</code>为后缀。</li>
+<li><code>Mixin</code>类必须功能单一，如果有多个功能，那就写多个Mixin类。</li>
+<li>一个类可以继承多个<code>Mixin</code>类，为了保证遵循继承的“is-a”原则，只能继承一个标识其归属含义的父类</li>
+<li><code>Mixin</code>类不依赖于子类的实现。</li>
+<li>子类即便没有继承这个<code>Mixin</code>类类，也照样可以工作，就是缺少了某个功能。</li>
+</ul>
+<p>我们定义的<code>Mixin</code>类越多，子类的代码可读性就会越差。</p>
+<pre><code># 交通工具
+class Vehicle:
+    pass
+
+
+# 为当前类混入一些功能，不是一个单纯的类
+class FlyableMixin:
+
+    def fly(self):
+        '''
+        飞行功能相应的代码        
+        '''
+        print(&quot;I am flying&quot;)
+
+
+# 民航飞机
+class CivilAircraft(FlyableMixin, Vehicle):
+    pass
+
+
+# 直升飞机
+class Helicopter(FlyableMixin, Vehicle):
+    pass
+
+
+# 汽车
+class Car(Vehicle):
+    pass
+</code></pre>
+<h3 id="class-combination">组合（Class Combination）</h3>
+<p>在一个类中以另一个类的对象作为数据属性，称为类的<strong>组合</strong>。组合与继承都是用来解决代码的重用性问题。
+继承体现“是”的关系，当类之间有很多相同之处，用继承。
+组合体现“有”的关系，当类之间有显著不同，一个类是另一个类的属性是，用组合。</p>
+<p>下例是计算圆环的面积和周长，圆环是由两个圆组成的，圆环的面积是外面圆的面积减去内部圆的面积。圆环的周长是内部圆的周长加上外部圆的周长。</p>
+<p>这个例子演示了类<code>ring</code>里面的属性<code>circle1</code>和<code>circle2</code>正是另一个类<code>Circle</code>。</p>
+<pre><code>from math import pi
+
+class Circle():
+
+    def __init__(self, r):
+        self.r = r
+
+    def area(self):
+        return pi * self.r * self.r
+
+    def perimeter(self):
+        return 2 * pi * self.r
+
+
+class Ring():
+
+    def __init__(self, r1, r2):
+        self.circle1 = Circle(r1)
+        self.circle2 = Circle(r2)
+
+    def area(self):
+        return abs(self.circle1.area() - self.circle2.area())
+
+    def permiter(self):
+        return self.circle1.perimeter() + self.circle2.perimeter()
+
+
+ring = Ring(5, 8)
+
+print(ring.area())
+# 122.52211349000193
+
+print(ring.permiter())
+# 81.68140899333463
+</code></pre>
+<p>下面的例子演示了如何通过传参的方式进行类的组合。</p>
+<pre><code>class Birthday():
+
+    def __init__(self, year, month, day):
+        self.year = year
+        self.month = month
+        self.day = day
+
+
+class Course():
+
+    def __init__(self, course_name, course_period):
+        self.course_name = course_name
+        self.course_period = course_period
+
+
+class Professor():
+
+    def __init__(self, name, gender, birth, course):
+        self.name = name
+        self.gender = gender
+        self.birth = birth
+        self.course = course
+
+    def teach(self):
+        print(f&quot;Professor name: {self.name}; Gender: {self.gender}; Birthday: {self.birth.year}-{self.birth.month}{self.birth.day}, Course name: {self.course.course_name} and period: {self.course.course_period}&quot;)
+
+
+prof = Professor('Tom', 'Male', Birthday(1985, 5, 5), Course('Chinese', '2022/3/1 ~ 2022/6/30'))
+
+prof.teach()
+# Professor name: Tom; Gender: Male; Birthday: 1985-55, Course name: Chinese and period: 2022/3/1 ~ 2022/6/30
 </code></pre>
 <h2 id="polymorphism">多态 Polymorphism</h2>
 <p>多态意味着相同的函数名用于不同的情形。 如下例，<code>len()</code>被用于不同的情形。</p>
@@ -687,7 +847,10 @@ print(len([10, 20, 30]))
 
 </code></pre>
 <h3 id="_3">类方法的多态性</h3>
-<p>下面的代码展示了 Python 如何以相同的方式使用两种不同的类类型。 我们创建了一个遍历对象元组的 <code>for</code> 循环。 然后调用方法而不用关心每个对象是哪个类类型。 我们假设这些方法实际上存在于每个类中。 </p>
+<p>下面的代码展示了 Python 如何以相同的方式使用两种不同的类类型。 
+我们创建了一个遍历对象元组的 <code>for</code> 循环。 
+然后调用方法而不用关心每个对象是哪个类类型。 
+我们假设这些方法实际上存在于每个类中。 </p>
 <pre><code>class India():
 
     def capital(self):
@@ -829,8 +992,10 @@ func(obj_usa)
 <p>只能输入一个object, 接受多种类型输入。</p>
 <pre><code>print(isiterable('a string'))  
 # True
+
 print(isiterable([1, 2, 3]))  
 # True
+
 print(isiterable(5))  
 # False
 </code></pre>
