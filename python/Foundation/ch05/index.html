@@ -345,6 +345,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#class-methodstatic-method" class="md-nav__link">
+    类方法（Class method）和静态方法（Static Method）
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -353,6 +360,13 @@
         <li class="md-nav__item">
   <a href="#private-variables" class="md-nav__link">
     私有变量 Private Variables
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reflection" class="md-nav__link">
+    反射(reflection)
   </a>
   
 </li>
@@ -374,6 +388,13 @@
         <li class="md-nav__item">
   <a href="#generator-expressions" class="md-nav__link">
     生成器表达式 Generator Expressions
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#metaclass" class="md-nav__link">
+    元类（metaclass）
   </a>
   
 </li>
@@ -433,7 +454,7 @@
 </tr>
 </tbody>
 </table>
-<p>看下面的例子。</p>
+<p>看下面的例子。(参考<a href="./">私有变量Private Variables</a>)</p>
 <ul>
 <li><code>name</code>是共有属性，可以在外部调用tom.name。</li>
 <li><code>_age</code>是受保护的属性，理论上在外部是不可调用的，但在Python中是可以调用的<code>tom._age</code>。</li>
@@ -936,7 +957,10 @@ obj_ost.flight()
 # Ostriches cannot fly.
 </code></pre>
 <h3 id="_5">函数和对象的多态性</h3>
-<p>我们也可以创建一个可以接受任何对象的函数，允许多态性。 在下面例子中，我们创建一个名为<code>func()</code>的函数，传入参数是<code>obj</code>的对象。在这种情况下，我们调用三个方法，即<code>capital()</code>、<code>language()</code>和<code>type()</code>，每个方法都定义在<code>India</code>和<code>USA</code>两个类中。 我们可以使用相同的 <code>func()</code> 函数调用它们的动作：</p>
+<p>我们也可以创建一个可以接受任何对象的函数，允许多态性。 
+在下面例子中，我们创建一个名为<code>func()</code>的函数，传入参数是<code>obj</code>的对象。
+在这种情况下，我们调用三个方法，即<code>capital()</code>、<code>language()</code>和<code>type()</code>，每个方法都定义在<code>India</code>和<code>USA</code>两个类中。 
+我们可以使用相同的 <code>func()</code> 函数调用它们的动作：</p>
 <pre><code>class India():
 
     def capital(self):
@@ -999,6 +1023,91 @@ print(isiterable([1, 2, 3]))
 print(isiterable(5))  
 # False
 </code></pre>
+<h3 id="class-methodstatic-method">类方法（Class method）和静态方法（Static Method）</h3>
+<p>类方法（Class method）也叫绑定方法，必须把类作为传入参数，使用<code>cls</code>作为第一个传入参数，而静态方法（Static Method），也叫非绑定方法，不需要特定的参数。</p>
+<p>类方法是绑定到类的，不是绑定到类对象，所以类方法可以访问或修改类，并对所有类实例生效。</p>
+<p>静态方法无法直接访问或修改类，因为静态方法是不知道类本身的，静态方法是属于工具类方法，基于传入的参数完成特定的功能，其实就是一个普通函数而已。</p>
+<p>Python中使用<code>@classmethod</code>装饰器（decorator）来创建一个类方法，用@staticmethod装饰器来创建一个静态方法。</p>
+<p>语法格式：</p>
+<pre><code>@classmethod
+def fun(cls, arg1, arg2, ...):
+</code></pre>
+<p>其中：</p>
+<pre><code>fun: 需要转换成类方法的函数
+returns: 函数的类方法
+</code></pre>
+<p><code>classmethod()</code>方法绑定到类而不是对象。类方法可以被类和对象调用。这些方法可以通过类或对象进行调用。 </p>
+<p>例1：创建一个简单的<code>classmethod</code>。
+创建一个类<code>Training</code>，有类变量<code>course</code>和方法<code>purchase</code>。
+我们通过把函数<code>Training.purchase</code>传给<code>classmethod()</code>，把该方法转成类方法，然后直接调用它，而无需先创建对象。
+可以看出转换前后<code>Training.purchase</code>的类型变化。</p>
+<pre><code>class Training:
+    course = 'Python for Data Analysis'
+
+    def purchase(obj):
+        print(&quot;Puchase course : &quot;, obj.course)
+
+
+type(Training.purchase)
+# &lt;class 'function'&gt;
+
+Training.purchase = classmethod(Training.purchase)
+
+Training.purchase()
+# Puchase course :  Python for Data Analysis
+
+type(Training.purchase)
+# &lt;class 'method'&gt;
+</code></pre>
+<p>例2：使用装饰器<code>@classmethod</code>创建工厂类。</p>
+<pre><code>class Training:
+    def __init__(self, course):
+        self.course = course
+
+    @classmethod
+    def purchase(cls, course):
+        return cls(course)
+
+    def display(self):
+        print('Purchase course: ', self.course)
+
+
+training = Training(&quot;Python for Data Analysis&quot;)
+training.display()
+# Purchase course:  Python for Data Analysis
+</code></pre>
+<p>例3：通过<code>staticmethod()</code>和<code>classmethod()</code>来检查一个person是否是adult。
+person1是通过姓名和年龄创建的实例。person2是通过姓名和年份创建的实例。</p>
+<pre><code>from datetime import date
+
+
+class Person:
+
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+
+    @classmethod
+    def fromBirthYear(cls, name, year):
+        return cls(name, date.today().year - year)
+
+    @staticmethod
+    def isAdult(age):
+        return age &gt; 18
+
+
+person1 = Person('mayank', 21)
+person2 = Person.fromBirthYear('mayank', 1996)
+
+print(person1.age)
+# 21
+print(person2.age)
+# 26
+print(Person.isAdult(22))
+# True
+</code></pre>
+<p>小结：
+若类中需要一个功能，该功能的实现代码中需要引用对象，则将其定义成对象方法；需要引用类，则将其定义成类方法；无需引用类或对象，则将其定义成静态方法。</p>
 <h2 id="private-variables">私有变量 Private Variables</h2>
 <p>那种仅限从一个对象内部访问的“私有”实例变量（“Private” instance variables）在 Python 中并不存在。 但是，大多数 Python 代码都遵循这样一个约定：带有<em>一个前缀下划线</em>的名称 (例如<code>_spam</code>) 应该被当作是 API 的非公有（non-public）部分 (无论它是函数、方法或是数据成员)。 这应当被视为一个实现细节，可能不经通知即加以改变。</p>
 <p>由于存在对于类私有成员（class-private members）的有效使用场景（例如避免名称与子类所定义的名称相冲突），因此存在对此种机制的有限支持，称为<strong>名称改写（name mangling）</strong>。 任何形式为<code>__spam</code>的标识符（至少带有<em>两个前缀下划线</em>，至多一个后缀下划线）的文本将被替换为 <code>_classname__spam</code>，其中 <code>classname</code> 为去除了前缀下划线的当前类名称。 这种改写不考虑标识符的句法位置，只要它出现在类定义内部就会进行。</p>
@@ -1027,6 +1136,71 @@ class MappingSubclass(Mapping):
 <p>上面的示例即使在 <code>MappingSubclass</code> 引入了一个 <code>__update</code> 标识符的情况下也不会出错，因为它会在 Mapping 类中被替换为 <code>_Mapping__update</code> 而在 <code>MappingSubclass</code> 类中被替换为 <code>_MappingSubclass__update</code>。</p>
 <p>请注意，改写规则（mangling rules）的设计主要是为了避免意外冲突；访问或修改私有变量仍然是可能的。这在特殊情况下甚至会很有用，例如在调试器（debugger）中。</p>
 <p>请注意传递给 <code>exec()</code> 或 <code>eval()</code> 的代码不会把发起调用类的类名视作当前类；这类似于 <code>global</code> 语句的效果，因此这种效果仅限于同时经过字节码编译的代码。 同样的限制也适用于 <code>getattr()</code>, <code>setattr()</code> 和 <code>delattr()</code>，以及对于 <code>__dict__</code> 的直接引用。</p>
+<h2 id="reflection">反射(reflection)</h2>
+<p>反射(reflection)是动态语言的一个特性。<strong>反射机制</strong>指的是在程序的运行状态中，对于任意一个类，都可以知道这个类的所有属性和方法；对于任意一个对象，都能够调用他的任意方法和属性。这种动态获取程序信息以及动态调用对象的功能称为反射机制。</p>
+<p>通过下面例子可知，通过<code>dir(person)</code>获取任意一个类或者对象的属性列表。通过内置函数<code>hasattr</code>、<code>getattr</code>、<code>setattr</code>、<code>delattr</code>操作类和对象。</p>
+<pre><code>class Person:
+
+    def __init__(self, name, age, gender):
+        self.name = name
+        self.age = age
+        self.gender = gender
+
+
+person = Person('Tom', 21, 'Male')
+
+print(dir(person))
+# ['__class__', '__delattr__', '__dict__', '__dir__', '__doc__', '__eq__', '__format__', '__ge__', '__getattribute__', '__gt__', '__hash__', '__init__', '__init_subclass__', '__le__', '__lt__', '__module__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__', '__weakref__', 'age', 'gender', 'name']
+
+# hasattr(object,'name')
+# 按字符串'name'判断有无属性person.name
+hasattr(person, 'name')
+# True
+
+# getattr(object, 'name', default=None)
+# 等同于person.name,不存在该属性则返回默认值None
+getattr(person, 'name', None)
+# 'Tom'
+
+# setattr(x, 'y', v)
+# 等同于person.age = 18
+setattr(person, 'age', 18)
+print(person.age)
+# 18
+
+# delattr(x, 'y')
+# 等同于del person.age
+delattr(person, 'age')
+print(person.age)
+# AttributeError: 'Person' object has no attribute 'age'
+</code></pre>
+<p>下面是一个实际应用的例子。</p>
+<pre><code>class FtpServer():
+
+    def server_run(self):
+        while True:
+            inp = input('Input your command &gt;&gt;:').strip()
+            cmd, file = inp.split()
+
+            if hasattr(self, cmd):
+                func = getattr(self, cmd)
+                func(file)
+
+    def get(self, file):
+        print(f'Downloading {file}...')
+
+    def put(self, file):
+        print(f'Uploading  {file}...')
+
+
+ftp_server = FtpServer()
+
+ftp_server.server_run()
+# Input your command &gt;&gt;:get a.ext
+# Downloading a.ext...
+# Input your command &gt;&gt;:put a.txt
+# Uploading  a.txt...
+</code></pre>
 <h2 id="iterators">迭代器 Iterators</h2>
 <p>在Python中，大多数容器对象（container object）都可以使用 for 语句:</p>
 <pre><code>for element in [1, 2, 3]:
@@ -1040,7 +1214,9 @@ for char in &quot;123&quot;:
 for line in open(&quot;myfile.txt&quot;):
     print(line, end='')
 </code></pre>
-<p><code>for</code> 语句会在容器对象上调用 iter()。 该函数返回一个定义了 <code>__next__()</code> 方法的迭代器对象，此方法将逐一访问容器中的元素。 当元素用尽时，<code>__next__()</code> 将引发 <code>StopIteration</code> 异常来通知终止 <code>for</code> 循环。 可以使用 <code>next()</code> 内置函数来调用 <code>__next__()</code> 方法；下面这个例子展示了刚刚描述的具体运行方式:</p>
+<p><code>for</code> 语句会在容器对象上调用 iter()。 该函数返回一个定义了 <code>__next__()</code> 方法的迭代器对象，此方法将逐一访问容器中的元素。 
+当元素用尽时，<code>__next__()</code> 将引发 <code>StopIteration</code> 异常来通知终止 <code>for</code> 循环。 
+可以使用 <code>next()</code> 内置函数来调用 <code>__next__()</code> 方法；下面这个例子展示了刚刚描述的具体运行方式:</p>
 <pre><code>&gt;&gt;&gt; s = 'abc'
 &gt;&gt;&gt; it = iter(s)
 &gt;&gt;&gt; it
@@ -1057,7 +1233,9 @@ Traceback (most recent call last):
     next(it)
 StopIteration
 </code></pre>
-<p>在了解了迭代器协议（iterator protocol）的机制后，给类添加迭代器就很容易了。 定义一个 <code>__iter__()</code> 方法来返回一个带有 <code>__next__()</code> 方法的对象。 如果类已定义了 <code>__next__()</code>，则 <code>__iter__()</code> 可以简单地返回 <code>self</code>:</p>
+<p>在了解了迭代器协议（iterator protocol）的机制后，给类添加迭代器就很容易了。 
+定义一个 <code>__iter__()</code> 方法来返回一个带有 <code>__next__()</code> 方法的对象。 
+如果类已定义了 <code>__next__()</code>，则 <code>__iter__()</code> 可以简单地返回 <code>self</code>:</p>
 <pre><code>class Reverse:
     &quot;&quot;&quot;Iterator for looping over a sequence backwards.&quot;&quot;&quot;
 
@@ -1128,6 +1306,109 @@ for char in reverse('golf'):
 &gt;&gt;&gt; data = 'golf'
 &gt;&gt;&gt; list(data[i] for i in range(len(data)-1, -1, -1))
 ['f', 'l', 'o', 'g']
+</code></pre>
+<h2 id="metaclass">元类（metaclass）</h2>
+<p>所有的对象都是实例化或者说调用类而得到的（调用类的过程称为类的实例化。</p>
+<pre><code>class StandfordProfessor(object):
+    university = 'Standford'
+
+    def __init__(self, name, gender):
+        self.name = name
+        self.gender = gender
+
+    def display(self):
+        print(f'Professor {self.name} says welcome to {self.university}!')
+
+professor = StandfordProfessor('Tom', 'Male')
+</code></pre>
+<p>上例中，对象<code>professor</code>是调用类<code>StandfordProfessor</code>得到的。类<code>StandfordProfessor</code>本质也是一个对象，
+下面可以验证，<code>StandfordProfessor</code>是调用了内置的类<code>type</code>得到的。这个<code>type</code>称为元类。</p>
+<pre><code>print(type(StandfordProfessor))
+# &lt;class 'type'&gt;
+</code></pre>
+<p>如果一个类没有声明自己的元类，默认它的元类就是<code>type</code>，除了使用内置元类<code>type</code>，我们也可以通过继承<code>type</code>来自定义元类，然后使用<code>metaclass</code>关键字参数为一个类的指定元类。</p>
+<p>只有继承了type类才能称之为一个元类，否则就是一个普通的自定义类。</p>
+<pre><code>class Mymeta(type):
+    pass
+
+
+class StandfordProfessor(object, metaclass=Mymeta):
+    university = 'Standford'
+
+    def __init__(self, name, gender):
+        self.name = name
+        self.gender = gender
+
+    def display(self):
+        print(f'Professor {self.name} says welcome to {self.university}!')
+
+
+professor = StandfordProfessor('Tom', 'Male')
+</code></pre>
+<p>下面进行自定义元类，控制类<code>StandfordProfessor</code>的调用。</p>
+<p>要想让<code>professor</code>这个对象变成一个可调用的对象，需要在该对象的类中定义一个方法<code>__call__</code>，该方法会在调用对象时自动触发。调用<code>professor</code>的返回值就是<code>__call__</code>方法的返回值。</p>
+<pre><code>class Mymeta(type):
+
+    def __call__(self, *args, **kwargs):
+        print(self)  # 类名
+        print(args)  # 输入参数
+        print(kwargs)  # 输入参数
+        return 10086
+
+
+class StandfordProfessor(object, metaclass=Mymeta):
+    university = 'Standford'
+
+    def __init__(self, name, gender):
+        self.name = name
+        self.gender = gender
+
+    def display(self):
+        print(f'Professor {self.name} says welcome to {self.university}!')
+
+
+professor = StandfordProfessor('Tom', 'Male')
+# &lt;class '__main__.StandfordProfessor'&gt;
+# ('Tom', 'Male')
+# {}
+</code></pre>
+<p>类的产生过程其实就是元类的调用过程,即<code>StandfordProfessor = Mymeta('StandfordProfessor', (object), {...})</code>，调用<code>Mymeta</code>会先产生一个空对象<code>StandfordProfessor</code>，然后连同调用<code>Mymeta</code>括号内的参数一同传给<code>Mymeta</code>下的<code>__init__</code>方法，完成初始化。我们可以基于上例做如下改写。</p>
+<pre><code>class Mymeta(type):
+
+    def __init__(self, class_name, class_bases, class_dic):
+        super(Mymeta, self).__init__(class_name, class_bases, class_dic)
+
+        if class_name.islower():
+            raise TypeError(f'Please follow Camel-Case to change class name {class_name}')
+        if '__doc__' not in class_dic or len(class_dic['__doc__'].strip(' \n')) == 0:
+            raise TypeError('Please add documentation in class {class_name}, which is mandatory.')
+
+
+class StandfordProfessor(object, metaclass=Mymeta):
+    &quot;&quot;&quot;
+    Documentation of class StanfordTeacher
+    &quot;&quot;&quot;
+
+    university = 'Standford'
+
+    def __init__(self, name, gender):
+        self.name = name
+        self.gender = gender
+
+    def display(self):
+        print(f'Professor {self.name} says welcome to {self.university}!')
+
+
+professor = StandfordProfessor('Tom', 'Male')
+
+professor.display()
+# Professor Tom says welcome to Standford!
+
+print(professor.__dict__)
+# {'name': 'Tom', 'gender': 'Male'}
+
+StandfordProfessor.mro()
+# [&lt;class '__main__.StandfordProfessor'&gt;, &lt;class 'object'&gt;]
 </code></pre>
 
               
