@@ -1,4 +1,4 @@
-# Python 从零到一
+# Python from ZERO to ONE
 
 1. [Foundation(Chinese)](./python/Foundation/python_foundation_index.md)
 2. [Data Analysis(Chinese)](./python/DataAnalysis/python_data_analysis_index.md)
