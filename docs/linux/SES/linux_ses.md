@@ -2,6 +2,51 @@
 
 ## [SUSE Enterprise Storage Foundation](./linux_ses_memo.md)
 
+* Ceph’s RADOS
+* Ceph architecture
+* Enhanced SES Architecture Diagram
+* Object Storage
+* Ceph OSDs (Object Storage Daemon)
+* Ceph Mons (Monitor Servers)
+* Ceph MGRs (Manager Daemon)
+* Ceph MDS (Metadata)
+* Ceph Admin Node
+* Ceph Dashboard
+* Client Access
+* Objects in Ceph
+* CRUSH (Controllable Replication Under Scalable Hashing)
+* CRUSH Algorithm
+* CRUSH Maps and Rulesets
+* CRUSH Weight
+* The Monitor’s Cluster Map contains
+* CRUSH Hierarchy
+* CRUSH Map Sections (Six main sections)
+* Erasure Coding
+* Erasure Coding in SES
+* Replication vs Erasure Code
+* EC Overwrites
+* EC Profiles
+* Creating Erasure Code Profiles and Pools
+* BlueStore
+* BlueStore Cache Parameters
+* BlueStore Device Types
+* BlueStore Configuration Recommendations
+* Architecture Overview of Object, Block, Filesystem Access
+* Object Storage
+* Block Storage
+* RADOS Block Device (RBD)
+* File Storage
+* Ceph Users and Authentication
+* Ceph Configuration
+* Health
+* Scrub and Deep-Scrub
+* Repair
+* Ceph Manager Modules
+* Ceph Tell
+* Ceph Dashboard
+* Basic Troubleshooting
+
+
 ## [SUSE Enterprise Storage Basic Operation](./linux_ses_demo.md)
 
 ### 1. Installation
