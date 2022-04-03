@@ -1,6 +1,15 @@
 #!/usr/bin/env python3
 # -*-coding:utf-8 -*-
 
-# 启动文件入口
+# Start entry
+import sys
+import os
+from core import src
 
-import os, sys
+sys.path.append(
+    os.path.dirname(__file__)
+)
+
+
+if __name__ == '__main__':
+    src.run()
