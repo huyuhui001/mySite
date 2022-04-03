@@ -1,3 +1,15 @@
 site/
 .idea/
 _00.py
+Demo/CourseSystem/conf/__pycache__/
+Demo/CourseSystem/core/__pycache__/
+Demo/CourseSystem/db/__pycache__/
+Demo/CourseSystem/db/Admin/
+Demo/CourseSystem/db/Student/
+Demo/CourseSystem/db/Teacher/
+Demo/CourseSystem/interface/__pycache__/
+Demo/CourseSystem/lib/__pycache__/
+
+
+
+
