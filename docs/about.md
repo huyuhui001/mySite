@@ -1,14 +1,9 @@
-# 武功不能废，学习不能停
+# Get busy living or get busy dying
 
-虽然自己每天都非常忙碌，但明显感到知识和技术都停滞了，甚至不如以前。把自己放回到原点，重新审视自己，放下内心的浮躁，认真修炼内功。
+At the beginning of year 2019, I made a decision that I need improve my technical skills and mindset. The purpose is to summarize my learning memo on git website as reference and reminder. My apologies that my English is not good enough, hence some are in Chinese.
 
-武功不能废，学习不能停。通过这个网站，把这两年学习笔记梳理一下，也方便自己记忆和查找。网站内容以中文为主，重要地方中英互补。如果对其他朋友也能有帮助，我会感到非常高兴。
+It’s never too late to do. What's past is prologue.
 
-重点提升把想法转化为一个产品或者实物的能力，而不是单纯的去掌握更多的技术。所以，我觉得基础学习很重要，实践才是检验能力的唯一标准。
+I am from Shanghai and like reading and gym.
 
-凡是过去，皆为序章（What's past is prologue）。
-
---詹姆士，坐标上海，喜欢阅读和健身的IT人士。
-
-
-
+--James
