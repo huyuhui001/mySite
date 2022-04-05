@@ -1,9 +1,8 @@
-Guidance
+Short introduction
 
-This website is built by [mkdocs](https://www.mkdocs.org/).
+This website  [ZERO-ONE-ZERO](https://huyuhui001.github.io/mySite/) is my learning memo, which is built by [mkdocs](https://www.mkdocs.org/).
 
-Install mkdocs, [material Theme](https://github.com/squidfunk/mkdocs-material) and [mermaid plugin](https://mermaid-js.github.io/mermaid/#/) via pip3.
-By adding mermaid, we can also generate diagram in markdown file.
+To set up local environment, Python3 and pip3 are needed locally. Beyond that, [mkdocs](https://www.mkdocs.org/), [material Theme](https://github.com/squidfunk/mkdocs-material) and [mermaid plugin](https://mermaid-js.github.io/mermaid/#/) need to be installed via pip3.
 
 ```
 pip3 install mkdocs
@@ -11,17 +10,15 @@ pip3 install mkdocs-material
 pip3 install mkdocs-mermaid2-plugin
 ```
 
-Clone branch hjmain of the git repository [mySite](https://github.com/huyuhui001/mySite) to local environment.
+Clone branch hjmain of the git repository [mySite](https://github.com/huyuhui001/mySite) to local environment. 
+All makdown files are under folder /docs, which are committed to branch hjmain on git repository.
+All website files are under folder /site, which are commited to branch gh-deploy on git repository
 
-Put makdown files under folder /docs, which will be committed to branch hjmain on git repository.
+#Here are steps to deploy changes of website.#
 
-Generate website files for [mySite](https://github.com/huyuhui001/mySite).
+Generate website files, and commit them to branch gh-deploy on git repository.
 ```
 mkdocs build
-```
-
-Commit generated website files to branch gh-deploy on git repository.
-```
 mkdocs gh-deploy
 ```
 
@@ -30,4 +27,3 @@ Start up local service for testing.
 mkdocs serve
 ```
 
-The website [ZERO-ONE-ZERO](https://huyuhui001.github.io/mySite/) is my learning memo.
