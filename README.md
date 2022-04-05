@@ -1,6 +1,6 @@
 Short introduction
 
-This website  [ZERO-ONE-ZERO](https://huyuhui001.github.io/mySite/) is my learning memo, which is built by [mkdocs](https://www.mkdocs.org/).
+This website  [from ZERO to ONE](https://huyuhui001.github.io/mySite/) is my learning memo, which is built by [mkdocs](https://www.mkdocs.org/).
 
 To set up local environment, Python3 and pip3 are needed locally. Beyond that, [mkdocs](https://www.mkdocs.org/), [material Theme](https://github.com/squidfunk/mkdocs-material) and [mermaid plugin](https://mermaid-js.github.io/mermaid/#/) need to be installed via pip3.
 
