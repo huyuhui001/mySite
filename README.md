@@ -1,6 +1,6 @@
 Guidance
 
-This website is based on [mkdocs](https://www.mkdocs.org/).
+This website is built by [mkdocs](https://www.mkdocs.org/).
 
 Install mkdocs, [material Theme](https://github.com/squidfunk/mkdocs-material) and [mermaid plugin](https://mermaid-js.github.io/mermaid/#/) via pip3.
 By adding mermaid, we can also generate diagram in markdown file.
@@ -30,4 +30,4 @@ Start up local service for testing.
 mkdocs serve
 ```
 
-
+The website [ZERO-ONE-ZERO](https://huyuhui001.github.io/mySite/) is my learning memo.
