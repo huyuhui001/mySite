@@ -6,6 +6,15 @@
 #
 
 
+from lib import common
+
+
+# Record active users' status
+user_info = {
+    'user': None
+}
+
+
 # Student register
 def register():
     pass
@@ -17,21 +26,25 @@ def login():
 
 
 # Student choose school
+@common.auth('student')
 def choose_school():
     pass
 
 
 # Student register course
+@common.auth('student')
 def register_course():
     pass
 
 
 # Student check score
+@common.auth('student')
 def check_score():
     pass
 
 
 # Student pay training fee
+@common.auth('student')
 def training_fee():
     pass
 
@@ -51,13 +64,14 @@ menu_dict = {
 def student_view():
     while True:
         print('''
-        ======Welcome to Course System======
+        ============Student Menu============
         1. Register
         2. Login
         3. Choose School
         4. Register Course
         5. Check Score
         6. Training Fee
+        q. Return
         ====================================
         ''')
 

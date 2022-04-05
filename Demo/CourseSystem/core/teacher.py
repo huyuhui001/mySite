@@ -5,6 +5,14 @@
 # Teacher Views
 #
 
+from lib import common
+
+
+# Record active users' status
+user_info = {
+    'user': None
+}
+
 
 # Teacher register
 def register():
@@ -17,21 +25,25 @@ def login():
 
 
 # Teacher check courses assigned to them
+@common.auth('teacher')
 def check_assigned_course():
     pass
 
 
 # Teacher assign course to themselves
+@common.auth('teacher')
 def assign_course():
     pass
 
 
 # Teacher check registered student of a course
+@common.auth('teacher')
 def check_registered_student_of_course():
     pass
 
 
 # Teacher update students' score
+@common.auth('teacher')
 def update_student_score():
     pass
 
@@ -52,12 +64,13 @@ menu_dict = {'1': '', '2': '', '3': ''}
 def teacher_view():
     while True:
         print('''
-        ======Welcome to Course System======
+        ============Teacher Menu============
         1. Login
         2. Check Assigned Courses
         3. Assign Course
         4. Check Registered Student of Course
         5. Update Student Scores
+        q. Return
         ====================================
         ''')
 

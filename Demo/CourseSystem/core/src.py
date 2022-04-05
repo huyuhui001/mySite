@@ -24,13 +24,17 @@ def run():
         1. Admin Menu
         2. Student Menu
         3. Teacher Menu
+        q. Exit
         ====================================
         ''')
 
         choice = input("Please enter your selection (1/2/3):").strip()
 
+        if choice == 'q':
+            break
+
         if choice not in menu_dict:
             print("Invalid selection, please select menu again")
             continue
-        else:
-            menu_dict.get(choice)()
+
+        menu_dict.get(choice)()
