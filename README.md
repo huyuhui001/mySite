@@ -1,8 +1,9 @@
-安装指引
+Guidance
 
-网站基于[mkdocs](https://www.mkdocs.org/)构建。
+This website is based on [mkdocs](https://www.mkdocs.org/).
 
-通过pip3安装mkdocs，[material主题](https://github.com/squidfunk/mkdocs-material)，和[mermaid插件](https://mermaid-js.github.io/mermaid/#/)，可以通过在markdown文件中添加mermaid代码来实现流程图等图表。
+Install mkdocs, [material Theme](https://github.com/squidfunk/mkdocs-material) and [mermaid plugin](https://mermaid-js.github.io/mermaid/#/) via pip3.
+By adding mermaid, we can also generate diagram in markdown file.
 
 ```
 pip3 install mkdocs
@@ -10,21 +11,21 @@ pip3 install mkdocs-material
 pip3 install mkdocs-mermaid2-plugin
 ```
 
-克隆当前git仓库[mySite](https://github.com/huyuhui001/mySite)的主分支hjmain到本地系统。
+Clone branch hjmain of the git repository [mySite](https://github.com/huyuhui001/mySite) to local environment.
 
-在/docs目录下添加markdown文件。这些markdown文件通过git提交到主分支hjmain下。
+Put makdown files under folder /docs, which will be committed to branch hjmain on git repository.
 
-本地生成网站代码。
+Generate website files for [mySite](https://github.com/huyuhui001/mySite).
 ```
 mkdocs build
 ```
 
-提交网站代码到git的gh-deploy分支。
+Commit generated website files to branch gh-deploy on git repository.
 ```
 mkdocs gh-deploy
 ```
 
-本地测试。
+Start up local service for testing.
 ```
 mkdocs serve
 ```
