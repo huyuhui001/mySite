@@ -53,6 +53,7 @@ class Admin(Base):
         teacher_obj.save()
 
 
+
 class School(Base):
     def __init__(self, school_name, school_addr):
         self.usr = school_name  # School name (It's hardcode here because obj.usr in db_handler)
@@ -72,12 +73,65 @@ class Teacher(Base):
     def __init__(self, teacher_name, teacher_pwd):
         self.usr = teacher_name  # Teacher's name
         self.pwd = teacher_pwd  # Teacher's password
-        self.course_list_assigned=[]  # Course list assigned to teacher
+        self.course_list_assigned = []  # Course list assigned to teacher
+
+    def assign_course(self, course_name):
+        self.course_list_assigned.append(course_name)
+        self.save()
+    
+    def check_assigned_course(self):
+        return self.course_list_assigned
+
+    def get_registered_student(self, course_name):
+        course_obj = Course.get(course_name)
+        return course_obj.student_list
+
+    def change_score(self, course_name, student_name, score):
+        student_obj = Student.get(student_name)
+        student_obj.score_dict[course_name] = score
+        student_obj.save()
 
 
 
 class Student(Base):
-    pass
+    def __init__(self, usr, pwd):        
+        self.usr = usr  # Username
+        self.pwd = pwd  # Password
+        self.school_name = None  # A student can register one school
+        self.course_list = []  # Course list for each student
+        self.score_dict = {}  # Score of course for each student: {"course_name": 0}
+        self.payed = {}  # {"course_name": True/False}
+
+    # Student register new school
+    def add_school(self, school_name):
+        self.school_name = school_name
+        self.save()
+
+    # Student register new course
+    def register_course(self, course_name):
+        # Add course name to student's course list
+        self.course_list.append(course_name)
+        # Add default score to the course
+        self.score_dict[course_name] = 0
+        # Save object
+        self.save()
+        # Bind student info to course list
+        course_obj = Course.get(course_name)
+        course_obj.student_list.append(self.usr)
+        course_obj.save()
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

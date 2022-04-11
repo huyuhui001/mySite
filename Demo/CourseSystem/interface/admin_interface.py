@@ -31,19 +31,19 @@ def admin_register_interface(username, password):
 
 
 # Login Interface
-def admin_login_interface(username, password):
-    # Check if user exists
-    admin_obj = models.Admin.get(username)
+# def admin_login_interface(username, password):
+#     # Check if user exists
+#     admin_obj = models.Admin.get(username)
 
-    # If user does not exist, return error info
-    if not admin_obj:
-        return False, "User does not exist!"
+#     # If user does not exist, return error info
+#     if not admin_obj:
+#         return False, "User does not exist!"
 
-    # If user exists, validate password
-    if password == admin_obj.pwd:
-        return True, "Login successfully!"
-    else:
-        return False, "Password error!"
+#     # If user exists, validate password
+#     if password == admin_obj.pwd:
+#         return True, "Login successfully!"
+#     else:
+#         return False, "Password error!"
 
 
 

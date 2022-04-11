@@ -47,7 +47,8 @@ def login():
         password = input("Please enter password:").strip()
         
         # Call Admin interface to login
-        flag, msg = admin_interface.admin_login_interface(username, password)
+        # flag, msg = admin_interface.admin_login_interface(username, password)
+        flag, msg = common_interface.login_interface(username, password, usr_type='admin')
 
         if flag:  # If logon successfully
             # Record user status
