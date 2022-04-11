@@ -1,5 +1,6 @@
 site/
 .idea/
+.vscode/
 _00.py
 Demo/CourseSystem/conf/__pycache__/
 Demo/CourseSystem/core/__pycache__/
