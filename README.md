@@ -14,7 +14,7 @@ Clone branch hjmain of the git repository [mySite](https://github.com/huyuhui001
 All makdown files are under folder /docs, which are committed to branch hjmain on git repository.
 All website files are under folder /site, which are commited to branch gh-deploy on git repository
 
-#Here are steps to deploy changes of website.#
+Here are steps to deploy changes of website.
 
 Generate website files, and commit them to branch gh-deploy on git repository.
 ```
