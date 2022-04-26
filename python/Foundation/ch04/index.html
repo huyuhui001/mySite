@@ -363,7 +363,7 @@
         
           <li class="md-nav__item">
   <a href="#__init__" class="md-nav__link">
-    __init__初始化方法
+    __init__初始化方法，也称作构造方法
   </a>
   
 </li>
@@ -377,6 +377,13 @@
         
       </ul>
     </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#python_1" class="md-nav__link">
+    Python函数内省内省
+  </a>
   
 </li>
         
@@ -809,10 +816,10 @@ class C:
 魔术方法名称前后各有2个下划线，比如 <code>__init__</code>
 魔术方法是不需要手动调用的，会在某种情况下自动触发（自动执行）。
 魔术方法是系统定义好的，不是用户定义的。</p>
-<h4 id="__init__"><code>__init__</code>初始化方法</h4>
+<h4 id="__init__"><code>__init__</code>初始化方法，也称作<strong>构造方法</strong></h4>
 <p>类实例化对象创建后自动触发。</p>
 <p><code>__init__</code>初始化方法可以用来在对象实例化后完成对象的初始化，比如属性赋值，方法调用等。</p>
-<h4 id="__del__"><code>__del__</code>析构方法</h4>
+<h4 id="__del__"><code>__del__</code><strong>析构方法</strong></h4>
 <p>类实例化对象被销毁时自动触发。</p>
 <p><code>__del__</code>析构方法可以在销毁对象时完成一些特殊任务，关闭对象打开的一些资源，如文件等。</p>
 <p>注意，是对象被销毁时触发了析构方法，而不是这个析构方法销毁了对象。</p>
@@ -864,6 +871,143 @@ Car('VW')
 delete method called, destroy BMW car
 initial method called, create VW car
 delete method called, destroy VW car
+</code></pre>
+<h3 id="python_1">Python函数内省内省</h3>
+<p>从魔术方法可以延申到Python的<strong>函数内省</strong>，函数内省的意思是说，当你拿到一个“函数对象”的时候，你可以继续知道，它的名字，参数定义等信息。这些信息可以通过函数对象的属性（一些双下划线的魔法方法）得到。简言之，内省是在运行时确定对象类型的能力。</p>
+<p>下面的例子列出了常规对象没有而函数有的属性。</p>
+<pre><code>class C: 
+    pass
+
+obj = C()
+
+def func():
+    pass
+
+sorted(set(dir(obj)) - set(dir(func)))
+# ['__weakref__']
+
+sorted(set(dir(func)) - set(dir(obj)))
+# ['__annotations__', '__call__', '__closure__', '__code__', '__defaults__', '__get__', '__globals__', '__kwdefaults__', '__name__', '__qualname__']
+</code></pre>
+<p>下表总结了用户定义的函数的属性。</p>
+<p><img alt="用户定义的函数的属性" src="../assets/python_foundation_05.png" /></p>
+<p>下面的例子是演示了在指定长度附近截断字符串的函数，以及提取关于函数参数的信息的方法。</p>
+<p>参数名称在<code>__code__.co_varnames</code>中，但这里面也包含函数定义体中创建的局部变量。因此，参数名称是前<code>N</code>个字符串，<code>N</code>的值由<code>__code__.co_argcount</code>确定，例子里面N是2，即参数名称是<code>text</code>和<code>max_len</code>，局部变量是<code>end</code>、<code>space_before</code>、<code>space_after</code>。</p>
+<pre><code>def clip(text, max_len=80):
+    &quot;&quot;&quot;
+    Get sub-string by the first blank before or after specified position.
+    rfind() 返回字符串最后一次出现的位置，如果没有匹配项则返回 -1.
+    &quot;&quot;&quot;
+    end = None
+
+    if len(text) &gt; max_len:
+        space_before = text.rfind(' ', 0, max_len)
+
+        if space_before &gt;= 0:
+            end = space_before
+    else:
+        space_after = text.rfind(' ', max_len)
+
+        if space_after &gt;= 0:
+            end = space_after
+
+    if end is None:
+        end = len(text)
+
+    return text[:end].rstrip()
+
+
+
+clip('This is the string', max_len=10)
+# 'This is'
+
+clip.__defaults__
+# (80,)
+
+clip.__code__
+# &lt;code object clip at 0x7f1e04a5c8a0, file &quot;&lt;stdin&gt;&quot;, line 1&gt;
+
+clip.__code__.co_varnames
+# ('text', 'max_len', 'end', 'space_before', 'space_after')
+
+clip.__code__.co_argcount
+# 2
+
+clip.__doc__
+# '\n    Get sub-string by the first blank before or after specified position.\n    rfind() 返回字符串最后一次出现的位置，如果没有匹配项则返回 -1.\n    '
+</code></pre>
+<p>上例中，参数的默认值只能通过它们在<code>__defaults__</code>元组中的位置确定，因此要从后向前扫描才能把参数和默认值对应起来，有些不合理。引入<code>inspect</code>模块后，上面的操作就更容易了。</p>
+<p><code>inspect.signature</code>函数返回一个<code>inspect.Signature</code>对象，它有一个<code>parameters</code>属性，这是一个有序映射，把参数名和<code>inspect.Parameter</code>对象对应起来。各个<code>Parameter</code>属性也有自己的属性，例如<code>name</code>、<code>default</code>和<code>kind</code>。</p>
+<pre><code>from inspect import signature
+
+sig = signature(clip)
+
+type(sig)
+# &lt;class 'inspect.Signature'&gt;
+print(sig)
+# (text, max_len=80)
+print(str(sig))
+# (text, max_len=80)
+
+for name, param in sig.parameters.items():
+    print(f'{param.kind} : {name} = {param.default}')
+
+# 1 : text = &lt;class 'inspect._empty'&gt;
+# 1 : max_len = 80
+</code></pre>
+<p><strong>函数注解</strong></p>
+<p>Python 3 提供了一种句法，用于为函数声明中的参数和返回值附加元数据。对上例添加注解后如下所示，二者唯一的区别在第一行。</p>
+<p>函数声明中的各个参数可以在:之后增加注解表达式。
+如果参数有默认值，注解放在参数名和<code>=</code>号之间。
+如果想注解返回值，在)和函数声明末尾的<code>:</code>之间添加<code>-&gt;</code>和一个表达式。那个表达式可以是任何类型。
+注解中最常用的类型是类（如<code>str</code>或<code>int</code>）和字符串（如'int &gt; 0'）。在下例中，max_len参数的注解用的是字符串。</p>
+<p>注解不会做任何处理，只是存储在函数的<code>__annotations__</code>属性（一个字典）中。换句话说，注解对Python解释器没有任何意义。<strong>注解只是元数据</strong>，可以供IDE、框架和装饰器等工具使用。</p>
+<p><code>return</code>键保存的是返回值注解，即下例中函数声明里以<code>-&gt;</code>标记的部分。</p>
+<pre><code>def clip(text:str, max_len:'int &gt; 0'=80) -&gt; str:
+    &quot;&quot;&quot;
+    Get sub-string by the first blank before or after specified position.
+    rfind() 返回字符串最后一次出现的位置，如果没有匹配项则返回 -1.
+    &quot;&quot;&quot;
+    end = None
+
+    if len(text) &gt; max_len:
+        space_before = text.rfind(' ', 0, max_len)
+
+        if space_before &gt;= 0:
+            end = space_before
+    else:
+        space_after = text.rfind(' ', max_len)
+
+        if space_after &gt;= 0:
+            end = space_after
+
+    if end is None:
+        end = len(text)
+
+    return text[:end].rstrip()
+
+
+
+clip('This is the string', max_len=10)
+# 'This is'
+
+clip.__annotations__
+# {'text': &lt;class 'str'&gt;, 'max_len': 'int &gt; 0', 'return': &lt;class 'str'&gt;}
+</code></pre>
+<p><code>signature</code>函数返回一个<code>Signature</code>对象，它有一个<code>return_annotation</code>属性和一个<code>parameters</code>属性，后者是一个字典，把参数名映射到<code>Parameter</code>对象上。每个<code>Parameter</code>对象自己也有<code>annotation</code>属性。</p>
+<pre><code>from inspect import signature
+
+sig = signature(clip)
+
+print(sig.return_annotation)
+# &lt;class 'str'&gt;
+
+for param in sig.parameters.values():
+    note = repr(param.annotation).ljust(13)
+    print(f'{note} : {param.name} = {param.default}')
+
+# &lt;class 'str'&gt; : text = &lt;class 'inspect._empty'&gt;
+# 'int &gt; 0'     : max_len = 80
 </code></pre>
 
               

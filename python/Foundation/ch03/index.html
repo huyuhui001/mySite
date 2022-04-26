@@ -1340,6 +1340,48 @@ can_run = False
 print(func())
 # Output: Function will not run
 </code></pre>
+<p>下面还是一个装饰器的例子。把下面的代码段保存到文件<code>test.py</code>。</p>
+<pre><code>registry = []
+
+def register(func):
+    print(f'running register {func}')
+    registry.append(func)
+    return func
+
+@register
+def f1():
+    print('running f1()')
+
+@register
+def f2():
+    print('running f2()')
+
+def f3():
+    print('running f3()')
+
+def main():
+    print('runnning main()')
+    print(f'registry--&gt; {registry}')
+    f1()
+    f2()
+    f3()
+
+if __name__ == '__main__':
+    main()
+</code></pre>
+<p>执行上述代码段<code>python3 test.py</code>，得到下面的结果。</p>
+<pre><code>running register &lt;function f1 at 0x7f70847bec80&gt;
+running register &lt;function f2 at 0x7f70705aa9d8&gt;
+runnning main()
+registry--&gt; [&lt;function f1 at 0x7f70847bec80&gt;, &lt;function f2 at 0x7f70705aa9d8&gt;]
+running f1()
+running f2()
+running f3()
+</code></pre>
+<p><code>register</code>在模块中其他函数之前运行（两次）。调用<code>register</code>时，传给它的参数是被装饰的函数，例如<code>function f1 at 0x7f70847bec80&gt;</code>。加载模块后，<code>registry</code>中有两个被装饰函数的引用：<code>f1</code>和<code>f2</code>。这两个函数，以及<code>f3</code>，只在<code>main</code>明确调用它们时才执行。</p>
+<p>由此得，函数装饰器在导入模块时立即执行，而被装饰的函数只在明确调用时运行，即Python中提到的<strong>导入时</strong>和<strong>运行时</strong>之间的区别。</p>
+<p>上面例子中装饰器函数与被装饰的函数在同一个模块中定义。实际应用中，装饰器通常在一个模块中定义，然后应用到其他模块中的函数上。</p>
+<p>上面例子中register装饰器返回的函数与通过参数传入的相同。实际应用中，大多数装饰器会在内部定义一个函数，然后将其返回。</p>
 
               
             </article>
