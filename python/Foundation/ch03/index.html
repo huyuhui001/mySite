@@ -1192,8 +1192,110 @@ with open(path2, 'r+', encoding='utf-8') as f:
 <h2 id="10">10. 装饰器</h2>
 <h3 id="_8">闭包</h3>
 <p>维基百科中的解释：<strong>闭包（Closure）</strong>，又称词法闭包（Lexical Closure）或函数闭包（function closures），是引用了自由变量的函数。这个被引用的自由变量将和这个函数一同存在，即使已经离开了创造它的环境也不例外。</p>
-<p>先看下面的例子。</p>
-<p><code>money</code>是一个局部变量，在<code>get_money</code>是外围函数，函数执行之后应该就不会存在了。
+<p>闭包延伸了作用域的函数，其中包含函数定义体中引用、但是不在定义体中定义的非全局变量。函数是不是匿名的没有关系，关键是它能访问定义体之外定义的非全局变量。</p>
+<p>例一，计算移动平均值。</p>
+<p>下面是是传统类实现方式，Avg的实例是可调用的对象。</p>
+<pre><code>class Avg():
+
+    def __init__(self):
+        self.mylist = []
+
+    def __call__(self, newValue):
+        self.mylist.append(newValue)
+        total = sum(self.mylist)
+        return total/len(self.mylist)
+
+
+avg = Avg()
+
+avg(10)
+# 10.0
+avg(20)
+# 15.0
+avg(30)
+# 20.0
+</code></pre>
+<p>下面是高阶函数实现方式。调用<code>make_avg</code>时，返回一个<code>my_avg</code>函数对象。每次调用<code>my_avg</code>时，它会把参数添加到系列值中，然后计算当前平均值。</p>
+<pre><code>def make_avg():
+
+    my_list = []
+
+    def avg(newValue):
+        my_list.append(newValue)
+        total = sum(my_list)
+        return total/len(my_list)
+
+    return avg
+
+my_avg = make_avg()
+
+my_avg(10)
+# 10.0
+my_avg(20)
+# 15.0
+my_avg(30)
+# 20.0
+
+my_avg.__code__.co_varnames
+# ('newValue', 'total')
+
+my_avg.__code__.co_freevars
+# ('my_list',)
+
+my_avg.__closure__
+# (&lt;cell at 0x7fe93d347468: list object at 0x7fe93d0e2f48&gt;,)
+
+my_avg.__closure__[0].cell_contents
+# [10, 20, 30]
+</code></pre>
+<p>这两个示例有共通之处：调用<code>Avg()</code>或<code>make_avg()</code>得到一个可调用对象<code>avg</code>，它会更新历史值，然后计算当前均值。
+在类实现中，<code>avg</code>是<code>Avg</code>的实例；在高阶函数实现中是内部函数<code>avg</code>。</p>
+<p>两种实现方式中，我们都只需调用<code>avg(n)</code>，把<code>n</code>放入系列值中，然后重新计算均值。</p>
+<p>第一个例子中，<code>Avg</code>类的实例<code>avg</code>在<code>self.series</code>实例属性中存储历史值。</p>
+<p>第二个例子中的<code>my_list</code>是函数<code>make_avg()</code>的局部变量，也称为该函数的<strong>自由变量（free variable）</strong>，指未在本地作用域中绑定的变量。
+<code>avg()</code>函数的闭包延伸到函数的作用域之外，包含了<code>make_avg()</code>的自由变量<code>my_list</code>的绑定。</p>
+<p>对于返回的<code>my_avg</code>对象，其<code>__code__</code>属性（表示编译后的函数定义体）中保存了局部变量和自由变量的名称，即<code>my_avg.__code__.co_varnames</code>返回了局部变量<code>('newValue', 'total')</code>和<code>my_avg.__code__.co_freevars</code>返回了自由变量<code>('my_list',)</code>。</p>
+<p>自由变量<code>my_list</code>绑定在返回的<code>my_avg</code>的<code>__closure__</code>的属性中，<code>my_avg.__closure__</code>中的各个元素对应了<code>my_avg.__code__.co_freevars</code>中的一个名称。这些元素是<code>cell</code>对象，有个<code>cell_contents</code>属性，如：<code>my_avg.__closure__</code>返回<code>(&lt;cell at 0x7fe93d347468: list object at 0x7fe93d0e2f48&gt;,)</code>，里面保存着真正的值，如<code>my_avg.__closure__[0].cell_contents</code>里面保存每次调用的真实值<code>[10, 20, 30]</code>。</p>
+<p>上面<code>my_list</code>是一个可变类型，如果用不可变类型改写，并实现闭包，可以使用<code>nolocal</code>进行声明。它的作用是把变量标记为自由变量，即使在函数中为变量赋予新值了，也会变成自由变量。如果为nonlocal声明的变量赋予新值，闭包中保存的绑定会更新。</p>
+<p><code>my_avg.__code__.co_freevars</code>返回了2个自由变量<code>('count', 'total')</code>，并在<code>my_avg.__closure__[0].cell_contents</code>和<code>my_avg.__closure__[1].cell_contents</code>里面保存了最后一次执行的真实值。</p>
+<pre><code>def make_avg():
+    count = 0
+    total = 0
+
+    def avg(newValue):
+        nonlocal count, total
+        count += 1
+        total += newValue
+        return total / count
+
+    return avg
+
+
+my_avg = make_avg()
+
+my_avg(10)
+# 10.0
+my_avg(20)
+# 15.0
+my_avg(30)
+# 20.0
+
+my_avg.__code__.co_varnames
+# ('newValue',)
+
+my_avg.__code__.co_freevars
+# ('count', 'total')
+
+my_avg.__closure__
+# (&lt;cell at 0x7fe93d3474c8: int object at 0x7fe93e865240&gt;, &lt;cell at 0x7fe93d347318: int object at 0x7fe93e865960&gt;)
+
+my_avg.__closure__[0].cell_contents
+# 3
+my_avg.__closure__[1].cell_contents
+# 60
+</code></pre>
+<p>例二：
+<code>money</code>是一个局部变量，在<code>get_money</code>是外围函数，函数执行之后应该就不会存在了。
 但是嵌套函数<code>work</code>引用了<code>money</code>这个自由变量，将这个局部变量封闭在了嵌套函数<code>work</code>中，这样就形成了一个闭包。
 <code>closure = get_money()</code>获得的就是一个闭包。<code>closure()</code>输出闭包，即，执行了<code>work()</code>，打印输出<code>money</code>的值。</p>
 <p>本地函数通过global声明对全局变量进行引用修改，那么对于内嵌函数<code>work()</code>作用域中的变量进行修改，就要使用<code>nonlocal</code>进行声明。</p>
@@ -1211,8 +1313,13 @@ with open(path2, 'r+', encoding='utf-8') as f:
 closure = get_money()
 
 closure()
+# 100
+closure()
+# 200
+closure()
+# 300
 </code></pre>
-<p>再看一个例子。</p>
+<p>例三：</p>
 <p>函数<code>maker</code>中定义了函数<code>action</code>，<code>action</code>引用了<code>maker</code>嵌套作用域内的变量<code>k</code>，并且，<code>maker</code>将函数<code>action</code>作为返回对象进行返回。</p>
 <p>这样，我们通过执行<code>f = maker(2)</code>，<code>f</code>获取了返回对象<code>action</code>，虽然此时<code>maker</code>函数以及结束退出了，但对象<code>f</code>仍然记住了函数<code>maker</code>嵌套作用域内的变量<code>k</code>和<code>n</code>，并在执行<code>f(3)</code>时，将<code>x=3</code>以及之前记住的<code>k</code>和<code>n</code>，一并传入<code>action()</code>，计算并返回<code>x + n + k</code>值。<code>make</code>也称为<strong>工厂函数</strong>。</p>
 <pre><code>def maker(n):
@@ -1381,7 +1488,7 @@ running f3()
 <p><code>register</code>在模块中其他函数之前运行（两次）。调用<code>register</code>时，传给它的参数是被装饰的函数，例如<code>function f1 at 0x7f70847bec80&gt;</code>。加载模块后，<code>registry</code>中有两个被装饰函数的引用：<code>f1</code>和<code>f2</code>。这两个函数，以及<code>f3</code>，只在<code>main</code>明确调用它们时才执行。</p>
 <p>由此得，函数装饰器在导入模块时立即执行，而被装饰的函数只在明确调用时运行，即Python中提到的<strong>导入时</strong>和<strong>运行时</strong>之间的区别。</p>
 <p>上面例子中装饰器函数与被装饰的函数在同一个模块中定义。实际应用中，装饰器通常在一个模块中定义，然后应用到其他模块中的函数上。</p>
-<p>上面例子中register装饰器返回的函数与通过参数传入的相同。实际应用中，大多数装饰器会在内部定义一个函数，然后将其返回。</p>
+<p>上面例子中<code>register</code>装饰器返回的函数与通过参数传入的相同。实际应用中，大多数装饰器会在内部定义一个函数，然后将其返回。</p>
 
               
             </article>
