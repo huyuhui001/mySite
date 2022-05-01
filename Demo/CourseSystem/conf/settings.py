@@ -14,7 +14,7 @@ import os
 # The os.path.join will automatically add '/' between two parameters
 
 BASE_PATH = os.path.dirname(
-    os.path.dirname(__file__)
+    os.path.os.path.realpath(__file__)
 )
 
 DB_PATH = os.path.join(
