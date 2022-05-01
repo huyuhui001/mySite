@@ -341,7 +341,7 @@
         
           <li class="md-nav__item">
   <a href="#ducking-typing" class="md-nav__link">
-    鸭子类型(Ducking Typing)
+    鸭子类型（Ducking Typing）和白鹅类型
   </a>
   
 </li>
@@ -349,6 +349,13 @@
           <li class="md-nav__item">
   <a href="#class-methodstatic-method" class="md-nav__link">
     类方法（Class method）和静态方法（Static Method）
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#monkey-patch" class="md-nav__link">
+    猴子补丁（monkey patch）
   </a>
   
 </li>
@@ -1006,24 +1013,63 @@ func(obj_usa)
 # English is the primary language of USA.
 # USA is a developed country.
 </code></pre>
-<h3 id="ducking-typing">鸭子类型(Ducking Typing)</h3>
-<p>鸭子类型是多态一种形式。我们可以验证，一个对象如果实现了迭代器协议，那它一定是可以迭代的。</p>
-<pre><code>def isiterable(obj):
-    try:
-        iter(obj)
-        return True
-    except TypeError:
-        return False
+<h3 id="ducking-typing">鸭子类型（Ducking Typing）和白鹅类型</h3>
+<p>在Python中实现多态主要有两种机制：白鹅类型和鸭子类型。白鹅类型和鸭子类型不仅是两种机制，也是两种不同的编程风格。</p>
+<p>下面是一个打印商品价格的例子，分别用鸭子类型和白鹅类型实现。</p>
+<p><strong>鸭子类型</strong></p>
+<p>在鸭子类型的实现中，我们只需要保证调用<code>price</code>方法的每个对象都有<code>price</code>方法即可。</p>
+<pre><code>class Food:
+    def price(self):
+       print(&quot;{} price:$4&quot;.format(__class__.__name__))
+
+class Clothes:
+    def price(self):
+       print(&quot;{} price:$5&quot;.format(__class__.__name__))
+
+class Coffee:
+    def price(self):
+       print(&quot;{} price:$6&quot;.format(__class__.__name__))
+
+
+if __name__ == '__main__':
+
+    goods = [Food(), Clothes(), Coffee()]
+
+    for good in goods:
+       good.price()
+
+# Food price:$4
+# Clothes price:$5
+# Coffee price:$6
 </code></pre>
-<p>只能输入一个object, 接受多种类型输入。</p>
-<pre><code>print(isiterable('a string'))  
-# True
+<p><strong>白鹅类型</strong></p>
+<p>在白鹅类型中，直接让所有对象的类继承父类<code>Good</code>中的抽象方法<code>price</code>。Python中的白鹅类型机制就是强类型语言中实现多态的标准模式，即通过调取父类的虚函数或者继承的函数来完成不同的行为。</p>
+<pre><code>import abc
 
-print(isiterable([1, 2, 3]))  
-# True
+class Good(abc.ABC):
+    @abc.abstractmethod
+    def price(self):
+        pass
 
-print(isiterable(5))  
-# False
+class Food(Good):
+    def price(self):
+        print(&quot;{} price:$4&quot;.format(__class__.__name__))
+
+class Clothes(Good):
+    def price(self):
+        print(&quot;{} price:$5&quot;.format(__class__.__name__))
+
+
+if __name__ == '__main__':
+
+    goods = [Food(), Clothes(), Coffee()]
+
+    for good in goods:
+        good.price()
+
+# Food price:$4
+# Clothes price:$5
+# Coffee price:$6
 </code></pre>
 <h3 id="class-methodstatic-method">类方法（Class method）和静态方法（Static Method）</h3>
 <p>类方法（Class method）也叫绑定方法，必须把类作为传入参数，使用<code>cls</code>作为第一个传入参数，而静态方法（Static Method），也叫非绑定方法，不需要特定的参数。</p>
@@ -1110,6 +1156,67 @@ print(Person.isAdult(22))
 </code></pre>
 <p>小结：
 若类中需要一个功能，该功能的实现代码中需要引用对象，则将其定义成对象方法；需要引用类，则将其定义成类方法；无需引用类或对象，则将其定义成静态方法。</p>
+<h3 id="monkey-patch">猴子补丁（monkey patch）</h3>
+<p>猴子补丁是动态为已经创建出的对象增加新的方法和属性成员的一种机制，也就是动态打补丁。</p>
+<p>实例化对象的猴子补丁。</p>
+<pre><code>class Test:
+    def __init__(self):
+       self.a = 1
+
+    def func1(self, x, y):
+       print(x + y)
+
+
+# 正常实例化
+test = Test()
+test.func1(1, 1)
+# 2
+
+# 修改实例
+test.func1 = lambda x, y : print(x + 2 * y)
+test.func1(1, 1)
+# 3
+
+# 通过修改实例，访问内部成员变量。
+test.func1 = lambda x, y : print(x + 2 * y + self.a)
+test.func1(1, 1)
+# NameError: name 'self' is not defined
+test.func1 = lambda self, x, y : print(x + 2 * y + self.a)
+test.func1(test, 1, 1)
+# 4
+</code></pre>
+<p>类对象的猴子补丁。</p>
+<pre><code>class Test:
+    def __init__(self):
+       self.a = 1
+
+    def func1(self, x, y):
+       print(x + y)
+
+
+# 修改类成员，实例化后的结果已修改。
+Test.func1 = lambda self, x, y : print(x + 2 * y)
+
+test = Test()
+test.func1(1, 1)
+# 3
+
+
+# 修改类成员，并访问成员变量，实例化后的结果已修改。
+Test.func1 = lambda self, x, y : print(x + 2 * y + self.a)
+
+test = Test()
+test.func1(1, 1)
+# 4
+
+# 增加类成员。
+Test.func2 = lambda self, p, q: print(p + 3 * q + self.a)
+test = Test()
+test.func1(1, 1)
+# 4
+test.func2(1, 3)
+# 11
+</code></pre>
 <h2 id="private-variables">私有变量 Private Variables</h2>
 <p>那种仅限从一个对象内部访问的“私有”实例变量（“Private” instance variables）在 Python 中并不存在。 但是，大多数 Python 代码都遵循这样一个约定：带有<em>一个前缀下划线</em>的名称 (例如<code>_spam</code>) 应该被当作是 API 的非公有（non-public）部分 (无论它是函数、方法或是数据成员)。 这应当被视为一个实现细节，可能不经通知即加以改变。</p>
 <p>由于存在对于类私有成员（class-private members）的有效使用场景（例如避免名称与子类所定义的名称相冲突），因此存在对此种机制的有限支持，称为<strong>名称改写（name mangling）</strong>。 任何形式为<code>__spam</code>的标识符（至少带有<em>两个前缀下划线</em>，至多一个后缀下划线）的文本将被替换为 <code>_classname__spam</code>，其中 <code>classname</code> 为去除了前缀下划线的当前类名称。 这种改写不考虑标识符的句法位置，只要它出现在类定义内部就会进行。</p>
