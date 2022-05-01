@@ -2,6 +2,7 @@ site/
 .idea/
 .vscode/
 _00.py
+__myscript.py
 Demo/CourseSystem/conf/__pycache__/
 Demo/CourseSystem/core/__pycache__/
 Demo/CourseSystem/db/__pycache__/
@@ -12,7 +13,9 @@ Demo/CourseSystem/db/Student/
 Demo/CourseSystem/db/Teacher/
 Demo/CourseSystem/interface/__pycache__/
 Demo/CourseSystem/lib/__pycache__/
-
+Demo/Spider/__pycache__
+Demo/Spider/images
+Demo/Spider/image_link.txt
 
 
 
