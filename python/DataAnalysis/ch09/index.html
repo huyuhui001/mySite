@@ -15,7 +15,7 @@
     
     
       
-        <title>Ch09 - from ZERO to ONE</title>
+        <title>高阶pandas - from ZERO to ONE</title>
       
     
     
@@ -65,7 +65,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#_1" class="md-skip">
+        <a href="#pandas" class="md-skip">
           Skip to content
         </a>
       
@@ -98,7 +98,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Ch09
+              高阶pandas
             
           </span>
         </div>
@@ -252,6 +252,8 @@
 <nav class="md-nav md-nav--secondary" aria-label="Table of contents">
   
   
+  
+    
   
   
     <label class="md-nav__title" for="__toc">
@@ -415,15 +417,14 @@
                 
 
 
-  <h1>Ch09</h1>
-
-<h3 id="_1">分类数据</h3>
+<h1 id="pandas">高阶pandas</h1>
+<h2 id="_1">分类数据</h2>
 <pre><code>import numpy as np
 import pandas as pd
 </code></pre>
-<h4 id="_2">背景和目标</h4>
-<p>一个列经常会包含重复值，这些重复值是一个小型的不同值的集合。\
- unique和value_counts这样的函数允许我们从一个数组中提取不同值并分别计算这些不同值的频率：</p>
+<h3 id="_2">背景和目标</h3>
+<p>一个列经常会包含重复值，这些重复值是一个小型的不同值的集合。
+<code>unique</code>和<code>value_counts</code>这样的函数允许我们从一个数组中提取不同值并分别计算这些不同值的频率：</p>
 <pre><code>values = pd.Series(['apple', 'orange', 'apple', 'apple'] * 2)
 print(values)
 # 0     apple
@@ -448,7 +449,7 @@ print(pd.value_counts(values))
 <pre><code>values = pd.Series([0, 1, 0, 0] * 2)
 dim = pd.Series(['apple', 'oragne'])
 </code></pre>
-<p>使用take方法来恢复原来的字符串Series。（0对应到apple)\
+<p>使用<code>take</code>方法来恢复原来的字符串Series。（0对应到apple)。
 这种按照整数展现的方式被称为分类或字典编码展现。不同值的数组可以被称为数据的类别、字典或层级。</p>
 <pre><code>print(dim.take(values))
 # 0     apple
@@ -461,13 +462,14 @@ dim = pd.Series(['apple', 'oragne'])
 # 0     apple
 # dtype: object
 </code></pre>
-<p>在做数据分析时，分类展示会产生显著的性能提升。\
-可以在类别上进行转换同时不改变代码。\
-以下是一些相对低开销的转换示例：
-* 重命名类别
-* 在不改变已有的类别顺序的情况下添加一个新的类别</p>
-<h4 id="pandascategorical">pandas中的Categorical类型</h4>
-<p>pandas拥有特殊的Categorical类型，用于承载基于整数的类别展示或编码的数据。</p>
+<p>在做数据分析时，分类展示会产生显著的性能提升。可以在类别上进行转换同时不改变代码。</p>
+<p>以下是一些相对低开销的转换示例：</p>
+<ul>
+<li>重命名类别</li>
+<li>在不改变已有的类别顺序的情况下添加一个新的类别</li>
+</ul>
+<h3 id="pandascategorical">pandas中的Categorical类型</h3>
+<p>pandas拥有特殊的<code>Categorical</code>类型，用于承载基于整数的类别展示或编码的数据。</p>
 <pre><code>fruits = ['apple', 'orange', 'apple', 'apple'] * 2
 N = len(fruits)
 df = pd.DataFrame(
@@ -490,7 +492,7 @@ print(df)
 # 6          6   apple      4  0.784816
 # 7          7   apple     10  3.140607
 </code></pre>
-<p>df['fruit']是一个Python字符串对象组成的数组。可以通过调用函数将它转换为Categorical对象：</p>
+<p><code>df['fruit']</code>是一个Python字符串对象组成的数组。可以通过调用函数将它转换为<code>Categorical</code>对象：</p>
 <pre><code>fruit_cat = df['fruit'].astype('category')
 print(fruit_cat)
 # 0     apple
@@ -504,7 +506,7 @@ print(fruit_cat)
 # Name: fruit, dtype: category
 # Categories (2, object): ['apple', 'orange']
 </code></pre>
-<p>fruit_cat的值并不是NumPy数组，而是pandas.Categorical的实例：</p>
+<p><code>fruit_cat</code>的值并不是NumPy数组，而是<code>pandas.Categorical</code>的实例：</p>
 <pre><code>c = fruit_cat.values
 print(type(c))
 # &lt;class 'pandas.core.arrays.categorical.Categorical'&gt;
@@ -512,13 +514,13 @@ print(c)
 # ['apple', 'orange', 'apple', 'apple', 'apple', 'orange', 'apple', 'apple']
 # Categories (2, object): ['apple', 'orange']
 </code></pre>
-<p>Categorical对象拥有categories和codes属性：</p>
+<p><code>Categorical</code>对象拥有<code>categories</code>和<code>codes</code>属性：</p>
 <pre><code>print(c.categories)
 # Index(['apple', 'orange'], dtype='object')
 print(c.codes)
 # [0 1 0 0 0 1 0 0]
 </code></pre>
-<p>通过分配已转换的结果将DataFrame的一列转换为Categorical对象：</p>
+<p>通过分配已转换的结果将DataFrame的一列转换为<code>Categorical</code>对象：</p>
 <pre><code>print(df['fruit'])
 # 0     apple
 # 1    orange
@@ -542,13 +544,13 @@ print(df['fruit'])
 # Name: fruit, dtype: category
 # Categories (2, object): ['apple', 'orange']
 </code></pre>
-<p>也可以从其他Python序列类型直接生成pandas.Categorical：</p>
+<p>也可以从其他Python序列类型直接生成<code>pandas.Categorical</code>：</p>
 <pre><code>my_categories = pd.Categorical(['foo', 'bar', 'baz', 'foo', 'bar'])
 print(my_categories)
 # ['foo', 'bar', 'baz', 'foo', 'bar']
 # Categories (3, object): ['bar', 'baz', 'foo']
 </code></pre>
-<p>也可以使用from_codes构造函数来转换其他数据源的分类编码数据：</p>
+<p>也可以使用<code>from_codes</code>构造函数来转换其他数据源的分类编码数据：</p>
 <pre><code>categories = ['foo', 'bar', 'baz']
 codes = [0, 1, 2, 0, 0, 1]
 my_cats_2 = pd.Categorical.from_codes(codes, categories)
@@ -556,27 +558,25 @@ print(my_cats_2)
 # ['foo', 'bar', 'baz', 'foo', 'foo', 'bar']
 # Categories (3, object): ['foo', 'bar', 'baz']
 </code></pre>
-<p>这个未排序的分类实例可以使用as_ordered进行排序：</p>
+<p>这个未排序的分类实例可以使用<code>as_ordered</code>进行排序：</p>
 <pre><code>print(my_cats_2.as_ordered())
 # ['foo', 'bar', 'baz', 'foo', 'foo', 'bar']
 # Categories (3, object): ['foo' &lt; 'bar' &lt; 'baz']
 </code></pre>
-<p>除非显式地指定，分类转换是不会指定类别的顺序的。\
-因此categories数组可能会与输入数据的顺序不同。\
-当使用from_codes或其他任意构造函数时，可以为类别指定一个有意义的顺序：\
-输出的[foo&lt;bar&lt;baz]表明’foo’的顺序在’bar’之前，以此类推。</p>
+<p>除非显式地指定，分类转换是不会指定类别的顺序的。因此<code>categories</code>数组可能会与输入数据的顺序不同。
+当使用<code>from_codes</code>或其他任意构造函数时，可以为类别指定一个有意义的顺序：输出的<code>[foo&lt;bar&lt;baz]</code>表明<code>foo</code>的顺序在<code>bar</code>之前，以此类推。</p>
 <pre><code>my_categories_ordered = pd.Categorical.from_codes(codes=codes, categories=categories, ordered=True)
 print(my_categories_ordered)
 # ['foo', 'bar', 'baz', 'foo', 'foo', 'bar']
 # Categories (3, object): ['foo' &lt; 'bar' &lt; 'baz']
 </code></pre>
 <p>分类数据可以不是字符串，尽管举的例子都是字符串例子。一个分类数组可以包含任一不可变的值类型。</p>
-<h4 id="categorical">使用Categorical对象进行计算</h4>
-<p>在pandas中使用Categorical与非编码版本相比（例如字符串数组）整体上是一致的。\
-pandas中的某些部分，比如groupby函数，在与Categorical对象协同工作时性能更好。\
-还有一些函数可以利用ordered标识。\
-下面考虑一些随机数字数据，并使用pandas.qcut分箱函数。结果会返回pandas.Categorical；\
-在前面章节使用过pandas.cut，但当时没有分析分类是如何工作的细节。</p>
+<h3 id="categorical">使用Categorical对象进行计算</h3>
+<p>在pandas中使用<code>Categorical</code>与非编码版本相比（例如字符串数组）整体上是一致的。
+pandas中的某些部分，比如<code>groupby</code>函数，在与<code>Categorical</code>对象协同工作时性能更好。
+还有一些函数可以利用ordered标识。
+下面考虑一些随机数字数据，并使用<code>pandas.qcut</code>分箱函数。结果会返回<code>pandas.Categorical</code>；
+在前面章节使用过<code>pandas.cut</code>，但当时没有分析分类是如何工作的细节。</p>
 <pre><code>np.random.seed(12345)
 draws = np.random.randn(1000)
 print(draws[:5])
@@ -589,7 +589,7 @@ print(bins)
 # Length: 1000
 # Categories (4, interval[float64, right]): [(-2.9499999999999997, -0.684] &lt; (-0.684, -0.0101] &lt; (-0.0101, 0.63] &lt; (0.63, 3.928]]
 </code></pre>
-<p>通过在qcut函数中使用labels参数来四分位数名称：</p>
+<p>通过在<code>qcut</code>函数中使用<code>labels</code>参数来四分位数名称：</p>
 <pre><code>bins = pd.qcut(draws, 4, labels=['Q1', 'Q2', 'Q3', 'Q4'])
 print(bins)
 # ['Q2', 'Q3', 'Q2', 'Q2', 'Q4', ..., 'Q3', 'Q2', 'Q1', 'Q3', 'Q4']
@@ -598,7 +598,7 @@ print(bins)
 print(bins.codes[:10])
 # [1 2 1 1 3 3 2 2 3 3]
 </code></pre>
-<p>被标记的bins分类数据并不包含数据中箱体边界的相关信息，因此可以使用groupby来提取一些汇总统计值：</p>
+<p>被标记的<code>bins</code>分类数据并不包含数据中箱体边界的相关信息，因此可以使用<code>groupby</code>来提取一些汇总统计值：</p>
 <pre><code>bins = pd.Series(bins, name='quartile')
 result = (pd.Series(draws).groupby(bins).agg(['count', 'min', 'max']).reset_index())
 print(result)
@@ -608,7 +608,7 @@ print(result)
 # 2       Q3    250 -0.010032  0.628894
 # 3       Q4    250  0.634238  3.927528
 </code></pre>
-<p>结果中的’quartile’列保留了bins中原始的分类信息，包括顺序：</p>
+<p>结果中的<code>quartile</code>列保留了<code>bins</code>中原始的分类信息，包括顺序：</p>
 <pre><code>print(result['quartile'])
 # 0    Q1
 # 1    Q2
@@ -617,24 +617,22 @@ print(result)
 # Name: quartile, dtype: category
 # Categories (4, object): ['Q1' &lt; 'Q2' &lt; 'Q3' &lt; 'Q4']
 </code></pre>
-<h5 id="_3">使用分类获得更高性能</h5>
-<p>如果对特定的数据集上做了大量的分析，将数据转换为分类数据可以产生大幅的性能提升。\
-DateFrame中一列的分类版本通常也会明显使用更少内存。</p>
+<h4 id="_3">使用分类获得更高性能</h4>
+<p>如果对特定的数据集上做了大量的分析，将数据转换为分类数据可以产生大幅的性能提升。DateFrame中一列的分类版本通常也会明显使用更少内存。</p>
 <p>下面的例子含有一千万元素的Series以及少量的不同类别：</p>
 <pre><code>N = 10000000
 draws = pd.Series(np.random.randn(N))
 labels = pd.Series(['foo', 'bar', 'baz', 'qux'] * (N // 4))
 </code></pre>
-<p>现在将labels转换为Categorical对象：</p>
+<p>现在将<code>labels</code>转换为<code>Categorical</code>对象：</p>
 <pre><code>categories = labels.astype('category')
 print(labels.memory_usage())  # labels比categories使用了明显更多的内存
 # 80000128
 print(categories.memory_usage())
 # 10000332
 </code></pre>
-<h4 id="_4">分类方法</h4>
-<p>Series包含的分类数据拥有一些特殊方法，这些方法类似于Series.str的特殊字符串方法。\
-这些方法提供了快捷访问类别和代码的方式。</p>
+<h3 id="_4">分类方法</h3>
+<p>Series包含的分类数据拥有一些特殊方法，这些方法类似于Series.str的特殊字符串方法。这些方法提供了快捷访问类别和代码的方式。</p>
 <pre><code>s = pd.Series(['a', 'b', 'c', 'd'] * 2)
 cat_s = s.astype('category')
 print(cat_s)
@@ -649,7 +647,7 @@ print(cat_s)
 # dtype: category
 # Categories (4, object): ['a', 'b', 'c', 'd']
 </code></pre>
-<p>特殊属性cat提供了对分类方法的访问：</p>
+<p>特殊属性<code>cat</code>提供了对分类方法的访问：</p>
 <pre><code>print(cat_s.cat.codes)
 # 0    0
 # 1    1
@@ -663,7 +661,7 @@ print(cat_s)
 print(cat_s.cat.categories)
 # Index(['a', 'b', 'c', 'd'], dtype='object')
 </code></pre>
-<p>假设数据的实际类别集合超出了数据中观察到的四个值，可以使用set_categories方法来改变类别：</p>
+<p>假设数据的实际类别集合超出了数据中观察到的四个值，可以使用<code>set_categories</code>方法来改变类别：</p>
 <pre><code>actual_categories = ['a', 'b', 'c', 'd', 'e']
 cat_s2 = cat_s.cat.set_categories(actual_categories)
 print(cat_s2)
@@ -678,7 +676,7 @@ print(cat_s2)
 # dtype: category
 # Categories (5, object): ['a', 'b', 'c', 'd', 'e']
 </code></pre>
-<p>虽然看起来数据并未改变，但新类别将反映在使用它们的操作中。例如，value_counts将遵循新的类别（如果存在）：</p>
+<p>虽然看起来数据并未改变，但新类别将反映在使用它们的操作中。例如，<code>value_counts</code>将遵循新的类别（如果存在）：</p>
 <pre><code>print(cat_s.value_counts())
 # a    2
 # b    2
@@ -693,9 +691,9 @@ print(cat_s2.value_counts())
 # e    0
 # dtype: int64
 </code></pre>
-<p>大型数据集中，分类数据经常被用于节省内存和更高性能的便捷工具。\
-在过滤了一个大型DataFrame或Series之后，很多类别将不会出现在数据中。\
-可以使用remove_unused_categories方法来去除未观察到的类别：</p>
+<p>大型数据集中，分类数据经常被用于节省内存和更高性能的便捷工具。
+在过滤了一个大型DataFrame或Series之后，很多类别将不会出现在数据中。
+可以使用<code>remove_unused_categories</code>方法来去除未观察到的类别：</p>
 <pre><code>cat_s3 = cat_s[cat_s.isin(['a', 'b'])]
 print(cat_s3)
 # 0    a
@@ -713,12 +711,12 @@ print(cat_s3.cat.remove_unused_categories())
 # dtype: category
 # Categories (2, object): ['a', 'b']
 </code></pre>
-<h5 id="_5">创建用于建模的虚拟变量</h5>
-<p>当使用统计数据或机器学习工具时，通常会将分类数据转换为虚拟变量，也称为one-hot编码。\
+<h4 id="_5">创建用于建模的虚拟变量</h4>
+<p>当使用统计数据或机器学习工具时，通常会将分类数据转换为虚拟变量，也称为one-hot编码。
 这会产生一个DataFrame，每个不同的类别都是它的一列。这些列包含一个特定类别的出现次数，否则为0。</p>
 <pre><code>cat_s = pd.Series(['a', 'b', 'c', 'd'] * 2, dtype='category')
 </code></pre>
-<p>使用pandas.get_dummies函数将一维的分类数据转换为一个包含虚拟变量的DataFrame：</p>
+<p>使用<code>pandas.get_dummies</code>函数将一维的分类数据转换为一个包含虚拟变量的DataFrame：</p>
 <pre><code>print(pd.get_dummies(cat_s))
 #    a  b  c  d
 # 0  1  0  0  0
@@ -730,16 +728,17 @@ print(cat_s3.cat.remove_unused_categories())
 # 6  0  0  1  0
 # 7  0  0  0  1
 </code></pre>
-<h3 id="groupby">高阶GroupBy应用</h3>
+<h2 id="groupby">高阶GroupBy应用</h2>
 <pre><code>import numpy as np
 import pandas as pd
 </code></pre>
-<h4 id="groupby_1">分组转换和“展开”GroupBy</h4>
-<p>在分组操作中可以使用apply方法实现转换操作。\
-还有另一个内建方法transform，与apply方法类似但是可以对使用的函数加上更多的限制：\
-transform可以产生一个标量值，并广播到各分组的尺寸数据中。\
-transform可以产生一个与输入分组尺寸相同的对象。\
-transform不可改变它的输入。</p>
+<h3 id="groupby_1">分组转换和“展开”GroupBy</h3>
+<p>在分组操作中可以使用apply方法实现转换操作。还有另一个内建方法transform，与apply方法类似但是可以对使用的函数加上更多的限制：</p>
+<ul>
+<li>transform可以产生一个标量值，并广播到各分组的尺寸数据中。</li>
+<li>transform可以产生一个与输入分组尺寸相同的对象。</li>
+<li>transform不可改变它的输入。</li>
+</ul>
 <pre><code>df = pd.DataFrame(
     {
         'key': ['a', 'b', 'c'] * 4,
@@ -761,7 +760,7 @@ print(df)
 # 10   b     10
 # 11   c     11
 </code></pre>
-<p>按'key'分组的均值：</p>
+<p>按<code>key</code>分组的均值：</p>
 <pre><code>g = df.groupby('key').value
 print(g.mean())
 # key
@@ -770,8 +769,8 @@ print(g.mean())
 # c    6.5
 # Name: value, dtype: float64
 </code></pre>
-<p>假设要产生一个Series，它的尺寸和df['value']一样，但值都被按’key'分组的均值替代。\
-可以向transfrom传递匿名函数lambda x: x.mean()：</p>
+<p>假设要产生一个Series，它的尺寸和<code>df['value']</code>一样，但值都被按<code>key</code>分组的均值替代。
+可以向<code>transfrom</code>传递匿名函数<code>lambda x: x.mean()</code>：</p>
 <pre><code>result = g.transform(lambda x: x.mean())
 print(result)
 # 0     4.5
@@ -788,7 +787,7 @@ print(result)
 # 11    6.5
 # Name: value, dtype: float64
 </code></pre>
-<p>对于内建的聚合函数，可以像GroupBy的agg方法一样传递一个字符串别名：</p>
+<p>对于内建的聚合函数，可以像<code>GroupBy</code>的<code>agg</code>方法一样传递一个字符串别名：</p>
 <pre><code>result = g.transform('mean')
 print(result)
 # 0     4.5
@@ -805,8 +804,8 @@ print(result)
 # 11    6.5
 # Name: value, dtype: float64
 </code></pre>
-<p>与apply类似，transform可以与返回Series的函数一起使用，但结果必须和输入有相同的大小。</p>
-<p>例如，可以使用lambda函数给每个组乘以2：</p>
+<p>与<code>apply</code>类似，<code>transform</code>可以与返回<code>Series</code>的函数一起使用，但结果必须和输入有相同的大小。</p>
+<p>例如，可以使用<code>lambda</code>函数给每个组乘以2：</p>
 <pre><code>result = g.transform(lambda x: x * 2)
 print(result)
 # 0      0
@@ -844,7 +843,7 @@ print(result)
 <pre><code>def normalize(x):
     return (x - x.mean()) / x.std()
 </code></pre>
-<p>使用transform或apply可以获得等价的结果：</p>
+<p>使用<code>transform</code>或<code>apply</code>可以获得等价的结果：</p>
 <pre><code>result = g.transform(normalize)
 print(result)
 # 0    -1.161895
@@ -877,9 +876,9 @@ print(result)
 # 11    1.161895
 # Name: value, dtype: float64
 </code></pre>
-<p>内建的聚合函数如’mean’或’sum’通常会比apply函数更快。\
-这些函数在与transform一起使用时也会存在一个"快速通过"。\
-这允许我们执行一个所谓的展开分组操作。\
+<p>内建的聚合函数如<code>mean</code>或<code>sum</code>通常会比<code>apply</code>函数更快。
+这些函数在与<code>transform</code>一起使用时也会存在一个"快速通过"。
+这允许我们执行一个所谓的展开分组操作。
 一个展开分组操作可能会包含多个分组聚合，矢量化操作的整体优势往往超过了这一点。</p>
 <pre><code>result = g.transform('mean')
 print(result)
@@ -913,8 +912,8 @@ print(normalized)
 # 11    1.161895
 # Name: value, dtype: float64
 </code></pre>
-<h4 id="_6">分组的时间重新采样</h4>
-<p>对于时间序列数据，resample方法在语义上是一种基于时间分段的分组操作。</p>
+<h3 id="_6">分组的时间重新采样</h3>
+<p>对于时间序列数据，<code>resample</code>方法在语义上是一种基于时间分段的分组操作。</p>
 <pre><code>N = 15
 times = pd.date_range('2020-5-20 00:00', freq='1min', periods=N)
 df = pd.DataFrame(
@@ -942,7 +941,7 @@ print(df)
 # 13 2020-05-20 00:13:00     13
 # 14 2020-05-20 00:14:00     14
 </code></pre>
-<p>这里，可以按’time’进行索引，然后重新采样：</p>
+<p>这里，可以按<code>time</code>进行索引，然后重新采样：</p>
 <pre><code>result = df.set_index('time').resample('5min').count()
 print(result)
 #                      value
@@ -969,9 +968,9 @@ print(df2)
 # 43 2020-05-20 00:14:00   b     43
 # 44 2020-05-20 00:14:00   c     44
 </code></pre>
-<p>使用pandas.TimeGrouper对象，每个’key’的值进行相同的重新采样：\
+<p>使用<code>pandas.TimeGrouper</code>对象，每个<code>key</code>的值进行相同的重新采样：
 pd.TimeGrouper() was formally deprecated in pandas v0.21.0 in favor of pd.Grouper().</p>
-<h3 id="_7">方法链技术</h3>
+<h2 id="_7">方法链技术</h2>
 <pre><code>import numpy as np
 import pandas as pd
 from numpy import nan as NA
@@ -990,7 +989,7 @@ print(df)
 # 2  NaN  NaN  NaN
 # 3  NaN  2.0  3.0
 </code></pre>
-<p>非函数赋值的方式</p>
+<p>非函数赋值的方式。</p>
 <pre><code>df2 = df.copy()
 df2['k'] = v
 print(df2)
@@ -1000,8 +999,8 @@ print(df2)
 # 2  NaN  NaN  NaN  c
 # 3  NaN  2.0  3.0  d
 </code></pre>
-<p>函数赋值的方式\
-DataFrame.assign方法是对df[k] = v的赋值方式的一种功能替代。它返回的是一个按指定修改的新的DataFrame，而不是在原对象上进行修改。</p>
+<p>函数赋值的方式。
+<code>DataFrame.assign</code>方法是对<code>df[k] = v</code>的赋值方式的一种功能替代。它返回的是一个按指定修改的新的DataFrame，而不是在原对象上进行修改。</p>
 <pre><code>df2 = df.assign(k=v)
 print(df2)
 #      0    1    2  k
@@ -1010,17 +1009,21 @@ print(df2)
 # 2  NaN  NaN  NaN  c
 # 3  NaN  2.0  3.0  d
 </code></pre>
-<h4 id="pipe">pipe方法</h4>
-<p>对数据连续操作形成方法链（多个方法连续调用对数据进行处理）。\
-Series.pipe，DataFrame.pipe 意味着 x.pipe(f, <em>args, </em><em>kwargs) 和 f(x, </em>args, **kwargs) 效果相同。换句话说，该函数应用于整个数据。\</p>
-<p>以 DataFrame 为例：
-* 语法: DataFrame.pipe(func, <em>args, </em>*kwargs)
-* 参数：
-  * func：函数，应用于系列/数据帧的函数。args 和 kwargs 被传递到 func。或者是一个（callable，data_keyword）元组，其中 data_keyword 是一个字符串，表示需要Series/DataFrame 的 callable 关键字
-  * args：可迭代对象, 可选，函数的位置参数
-  * kwargs：mapping, 可选，传入 func 的关键字参数字典
-* 返回：object：func 处理后的任意数据类型</p>
-<h5 id="dataframe">DataFrame示例：</h5>
+<h3 id="pipe">pipe方法</h3>
+<p>对数据连续操作形成方法链（多个方法连续调用对数据进行处理）。
+<code>Series.pipe</code>，<code>DataFrame.pipe</code>意味着 <code>x.pipe(f, *args, **kwargs)</code> 和 <code>f(x, *args, **kwargs)</code> 效果相同。换句话说，该函数应用于整个数据。</p>
+<p>以 DataFrame 为例：</p>
+<ul>
+<li>语法: <code>DataFrame.pipe(func, *args, **kwargs)</code></li>
+<li>参数：<ul>
+<li>func：函数，应用于系列/数据帧的函数。args 和 kwargs 被传递到 func。或者是一个（callable，data_keyword）元组，其中 data_keyword 是一个字符串，表示需要Series/DataFrame 的 callable 关键字</li>
+<li>args：可迭代对象, 可选，函数的位置参数</li>
+<li>kwargs：mapping, 可选，传入 func 的关键字参数字典</li>
+</ul>
+</li>
+<li>返回：object：func 处理后的任意数据类型</li>
+</ul>
+<h4 id="dataframe">DataFrame示例：</h4>
 <pre><code>df = pd.DataFrame(
     [[1., 2., 3.],
      [1., NA, NA],
@@ -1028,7 +1031,7 @@ Series.pipe，DataFrame.pipe 意味着 x.pipe(f, <em>args, </em><em>kwargs) 和 
      [NA, 2., 3.]]
 )
 </code></pre>
-<p>被传递的类型是调用的实例</p>
+<p>被传递的类型是调用的实例。</p>
 <pre><code>df.pipe(type)  # 传递的是type实例
 # &lt;class 'pandas.core.frame.DataFrame'&gt;
 
@@ -1061,7 +1064,7 @@ df.pipe((fun2, 'df'), 2)  # 注意传值
 # 2  NaN  NaN  NaN
 # 3  NaN  6.0  9.0
 </code></pre>
-<h5 id="series">Series 示例：</h5>
+<h4 id="series">Series 示例：</h4>
 <pre><code>s = pd.Series([1, 2, 3, 4, 5])
 
 s.pipe(type)
@@ -1080,7 +1083,7 @@ s.pipe((fun3, 'ss'), 2)
 # 4    15
 # dtype: int64
 </code></pre>
-<h5 id="groupby_2">GroupBy 示例：</h5>
+<h4 id="groupby_2">GroupBy 示例：</h4>
 <pre><code>df = pd.DataFrame({'A': 'a b a b'.split(), 'B': [1, 2, 3, 4]})
 print(df)
 #    A  B
@@ -1089,7 +1092,7 @@ print(df)
 # 2  a  3
 # 3  b  4
 </code></pre>
-<p>求每组最大值和最小值之间的差异</p>
+<p>求每组最大值和最小值之间的差异。</p>
 <pre><code>df.groupby('A').pipe(lambda x: x.max() - x.min())
 #    B
 # A

@@ -15,7 +15,7 @@
     
     
       
-        <title>Ch07 - from ZERO to ONE</title>
+        <title>数据聚合与分组操作 - from ZERO to ONE</title>
       
     
     
@@ -65,7 +65,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#groupby" class="md-skip">
+        <a href="#_1" class="md-skip">
           Skip to content
         </a>
       
@@ -98,7 +98,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Ch07
+              数据聚合与分组操作
             
           </span>
         </div>
@@ -253,6 +253,8 @@
   
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -269,21 +271,21 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#_1" class="md-nav__link">
+  <a href="#_2" class="md-nav__link">
     分组机制
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#_2" class="md-nav__link">
+  <a href="#_3" class="md-nav__link">
     遍历各分组
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#_3" class="md-nav__link">
+  <a href="#_4" class="md-nav__link">
     选择一列或所有列的子集
   </a>
   
@@ -297,14 +299,14 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#_4" class="md-nav__link">
+  <a href="#_5" class="md-nav__link">
     使用函数分组
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#_5" class="md-nav__link">
+  <a href="#_6" class="md-nav__link">
     根据索引层级分组
   </a>
   
@@ -316,14 +318,14 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_6" class="md-nav__link">
+  <a href="#_7" class="md-nav__link">
     数据聚合
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#_7" class="md-nav__link">
+  <a href="#_8" class="md-nav__link">
     逐列及多函数应用
   </a>
   
@@ -331,7 +333,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#_8" class="md-nav__link">
+  <a href="#_9" class="md-nav__link">
     返回不含行索引的聚合数据
   </a>
   
@@ -351,42 +353,42 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#_9" class="md-nav__link">
+  <a href="#_10" class="md-nav__link">
     压缩分组键
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#_10" class="md-nav__link">
+  <a href="#_11" class="md-nav__link">
     分位数与桶分析
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#_11" class="md-nav__link">
+  <a href="#_12" class="md-nav__link">
     示例：使用指定分组值填充缺失值
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#_12" class="md-nav__link">
+  <a href="#_13" class="md-nav__link">
     示例：随机采样与排列
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#_13" class="md-nav__link">
+  <a href="#_14" class="md-nav__link">
     示例：分组加权平均和相关性
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#_14" class="md-nav__link">
+  <a href="#_15" class="md-nav__link">
     示例：逐组线性回归
   </a>
   
@@ -398,7 +400,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_15" class="md-nav__link">
+  <a href="#_16" class="md-nav__link">
     数据透视表与交叉表
   </a>
   
@@ -406,7 +408,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#_16" class="md-nav__link">
+  <a href="#_17" class="md-nav__link">
     数据透视表
   </a>
   
@@ -438,23 +440,23 @@
                 
 
 
-  <h1>Ch07</h1>
-
-<h4 id="groupby">GroupBy机制</h4>
+<h1 id="_1">数据聚合与分组操作</h1>
+<h2 id="groupby">GroupBy机制</h2>
 <pre><code>import pandas as pd
 import numpy as np
 </code></pre>
-<h5 id="_1">分组机制</h5>
-<p>分组操作第一步，数据包含在pandas对象中，可以是Series、DataFrame或其他数据结构。\
-之后根据你提供的一个或多个键分离到各个组中。分组键可是多种形式的，并且键不一定是完全相同的类型(注意后面介绍的三个方法是可以产生用于分隔对象的值数组的快捷方式)：
-* 与需要分组的轴向长度一致的值列表或值数组。默认情况下，groupby在axis=0的轴向上分组。
-* DataFrame的列名的值。
-* 可以将分组轴向上的值和分组名称相匹配的字典或Series。
-* 可以在轴索引或索引中的单个标签上调用的函数。</p>
-<p>请注意，分组键中的任何缺失值将被排除在结果之外。\
-分离操作是在数据对象的特定轴向上进行的。例如，DataFrame可以在它的行方向（axis=0）或列方向（axis=1）进行分组。\
-分组操作后，一个函数就可以应用到各个组中，产生新的值。\
-最终，所有函数的应用结果会联合为一个结果对象。</p>
+<h3 id="_2">分组机制</h3>
+<p>分组操作第一步，数据包含在pandas对象中，可以是Series、DataFrame或其他数据结构。之后根据提供的一个或多个键分离到各个组中。</p>
+<p>分组键可是多种形式的，并且键不一定是完全相同的类型(注意后面介绍的三个方法是可以产生用于分隔对象的值数组的快捷方式)：</p>
+<ul>
+<li>与需要分组的轴向长度一致的值列表或值数组。默认情况下，groupby在axis=0的轴向上分组。</li>
+<li>DataFrame的列名的值。</li>
+<li>可以将分组轴向上的值和分组名称相匹配的字典或Series。</li>
+<li>可以在轴索引或索引中的单个标签上调用的函数。</li>
+</ul>
+<p>请注意，分组键中的任何缺失值将被排除在结果之外。</p>
+<p>分离操作是在数据对象的特定轴向上进行的。例如，DataFrame可以在它的行方向（axis=0）或列方向（axis=1）进行分组。</p>
+<p>分组操作后，一个函数就可以应用到各个组中，产生新的值。最终，所有函数的应用结果会联合为一个结果对象。</p>
 <pre><code>df = pd.DataFrame(
     {
         'key1': ['a', 'a', 'b', 'b', 'a'],
@@ -464,12 +466,12 @@ import numpy as np
     }
 )
 </code></pre>
-<p>根据key1标签计算data1列的均值，方法一，访问data1并使用key1列（它是一个Series）调用groupby方法：</p>
+<p>根据key1标签计算data1列的均值，方法一，访问<code>data1</code>并使用<code>key1</code>列（它是一个Series）调用<code>groupby</code>方法：</p>
 <pre><code>grouped = df['data1'].groupby(df['key1'])
 print(grouped)  # &lt;pandas.core.groupby.generic.SeriesGroupBy object at 0x7fdd2cb01430&gt;
 </code></pre>
-<p>grouped变量现在是一个GroupBy对象，它实际上还没有进行任何计算，拥有一些关于分组键df['key1']的一些中间数据的信息</p>
-<p>下面对grouped对象做一些操作：</p>
+<p><code>grouped</code>变量现在是一个<code>GroupBy</code>对象，它实际上还没有进行任何计算，拥有一些关于分组键df['key1']的一些中间数据的信息。</p>
+<p>下面对<code>grouped</code>对象做一些操作：</p>
 <pre><code>result = grouped.mean()  # 计算平均值
 print(result)
 # key1
@@ -485,8 +487,8 @@ print(grouped_means)
 #       two     7.0
 # Name: data1, dtype: float64
 </code></pre>
-<p>上面例子使用了两个键对数据进行分组，并且结果Series现在拥有一个包含唯一键对的多层索引</p>
-<p>下面对计算的平均值（mean）进行重塑（unstack）</p>
+<p>上面例子使用了两个键对数据进行分组，并且结果Series现在拥有一个包含唯一键对的多层索引。</p>
+<p>下面对计算的平均值（mean）进行重塑（unstack）。</p>
 <pre><code>print(grouped_means.unstack())
 # key2  one  two
 # key1
@@ -494,7 +496,7 @@ print(grouped_means)
 # b     5.0  7.0
 </code></pre>
 <p>分组信息通常包含在同一个DataFrame中。在这种情况下，可以传递列名（无论那些列名是字符串、数字或其他Python对象）作为分组键：</p>
-<p>下面例子中df.groupby('key1').mean()的结果里并没有key2列。这是因为df['key2']并不是数值数据，即df['key2']是一个冗余列，因此被排除在结果之外</p>
+<p>下面例子中<code>df.groupby('key1').mean()</code>的结果里并没有<code>key2</code>列。这是因为<code>df['key2']</code>并不是数值数据，即<code>df['key2']</code>是一个冗余列，因此被排除在结果之外。</p>
 <pre><code>result = df.groupby('key1').mean()
 print(result)
 #          data1     data2
@@ -513,15 +515,15 @@ print(result)
 
 result = df.groupby(['key1', 'key2']).size()
 print(result)
-# key1  key2https://zhuanlan.zhihu.com/p/126206923
+# key1  key
 # a     one     2
 #       two     1
 # b     one     1
 #       two     1
 # dtype: int64
 </code></pre>
-<h5 id="_2">遍历各分组</h5>
-<p>GroupBy对象支持迭代，会生成一个包含组名和数据块的2维元组序列。</p>
+<h3 id="_3">遍历各分组</h3>
+<p><code>GroupBy</code>对象支持迭代，会生成一个包含组名和数据块的2维元组序列。</p>
 <pre><code>df = pd.DataFrame(
     {
         'key1': ['a', 'a', 'b', 'b', 'a'],
@@ -545,7 +547,7 @@ print(result)
 # 2    b  one      5      6
 # 3    b  two      7      8
 </code></pre>
-<p>多个分组键的情况: 元组中的第一个元素是键值的元组</p>
+<p>多个分组键的情况: 元组中的第一个元素是键值的元组。</p>
 <pre><code>for (k1, k2), group in df.groupby(['key1', 'key2']):
     print((k1, k2))
     print(group)
@@ -592,7 +594,7 @@ print(result['b'])
 # 2    b  one      5      6
 # 3    b  two      7      8
 </code></pre>
-<p>默认情况下，groupby在axis=0的轴向上分组，也可以在其他任意轴向上进行分组。</p>
+<p>默认情况下，<code>groupby</code>在<code>axis=0</code>的轴向上分组，也可以在其他任意轴向上进行分组。</p>
 <pre><code>print(df.dtypes)
 # key1     object
 # key2     object
@@ -637,10 +639,9 @@ print(list(grouped))
 # 3         b    two
 # 4         a    one
 </code></pre>
-<h5 id="_3">选择一列或所有列的子集</h5>
-<p>对于从DataFrame创建的GroupBy对象，用列名称或列名称数组进行索引时，会产生用于聚合的列子集的效果\
-如果传递的是列表或数组，则此索引操作返回的对象是分组的DataFrame；\
-如果只有单个列名作为标量传递，则为分组的Series；</p>
+<h3 id="_4">选择一列或所有列的子集</h3>
+<p>对于从DataFrame创建的<code>GroupBy</code>对象，用列名称或列名称数组进行索引时，会产生用于聚合的列子集的效果。</p>
+<p>如果传递的是列表或数组，则此索引操作返回的对象是分组的DataFrame；如果只有单个列名作为标量传递，则为分组的Series；</p>
 <p>对比下面4句： </p>
 <pre><code>result = df.groupby('key1')['data1']  # 单个列名
 print(result)  # &lt;pandas.core.groupby.generic.SeriesGroupBy object at 0x7fa988609040&gt;
@@ -690,9 +691,9 @@ for key, data in result:
 # 2      5
 # 3      7
 </code></pre>
-<h5 id="series">使用字典和Series分组</h5>
+<h3 id="series">使用字典和Series分组</h3>
 <p>分组信息可能会以非数组形式存在。</p>
-<p>生成一个示例DataFrame</p>
+<p>生成一个示例DataFrame。</p>
 <pre><code>people = pd.DataFrame(
     [[1, 3, 5, 7, 9],
      [0, 2, 4, 6, 8],
@@ -703,7 +704,7 @@ for key, data in result:
     index=['Joe', 'Steve', 'Wes', 'Jim', 'Travis']
 )
 </code></pre>
-<p>添加一些NA值</p>
+<p>添加一些NA值。</p>
 <pre><code>people.iloc[2:3, [1, 2]] = np.nan
 print(people)
 #         a    b    c  d  e
@@ -713,7 +714,7 @@ print(people)
 # Jim     1  3.0  5.0  7  9
 # Travis  1  2.0  3.0  4  5
 </code></pre>
-<p>假设有如下各列的分组对应关系，并且想把各列按组累加：</p>
+<p>假设有如下各列的分组对应关系，并且想把各列按组累加。</p>
 <pre><code>mapping = {
     'a': 'red',
     'b': 'red',
@@ -723,7 +724,7 @@ print(people)
     'f': 'orange'  # 注意：健f虽然没有被用到，但不影响在这里定义。
 }
 </code></pre>
-<p>把mapping这个字典传给groupby()</p>
+<p>把<code>mapping</code>这个字典传给<code>groupby()</code>。</p>
 <pre><code>by_column = people.groupby(mapping, axis=1)
 print(by_column.sum())
 #         blue   red
@@ -733,7 +734,7 @@ print(by_column.sum())
 # Jim     12.0  13.0
 # Travis   7.0   8.0
 </code></pre>
-<p>Series也有相同的功能，可以视为固定大小的映射：</p>
+<p>Series也有相同的功能，可以视为固定大小的映射。</p>
 <pre><code>map_services = pd.Series(mapping)
 print(map_services)
 # a       red
@@ -752,9 +753,9 @@ print(result)
 # Jim        2    3
 # Travis     2    3
 </code></pre>
-<h5 id="_4">使用函数分组</h5>
-<p>与使用字典或Series分组相比，使用Python函数是定义分组关系的一种更为通用的方式。\
-作为分组键传递的函数将会按照每个索引值调用一次，同时返回值会被用作分组名称。注意：函数是作用在索引上。</p>
+<h3 id="_5">使用函数分组</h3>
+<p>与使用字典或Series分组相比，使用Python函数是定义分组关系的一种更为通用的方式。</p>
+<p>作为分组键传递的函数将会按照每个索引值调用一次，同时返回值会被用作分组名称。注意：函数是作用在索引上。</p>
 <pre><code>result = people.groupby(len).sum()  # 人的名字是索引值，根据名字的长度来进行分组
 print(result)
 #    a    b     c   d   e
@@ -762,7 +763,7 @@ print(result)
 # 5  0  2.0   4.0   6   8
 # 6  1  2.0   3.0   4   5
 </code></pre>
-<p>可以将函数与数组、字典或Series进行混合，所有的对象都会在内部转换为数组</p>
+<p>可以将函数与数组、字典或Series进行混合，所有的对象都会在内部转换为数组。</p>
 <pre><code>key_list = ['one', 'one', 'one', 'two', 'two']
 result = people.groupby([len, key_list]).min()
 print(result)
@@ -772,8 +773,8 @@ print(result)
 # 5 one  0  2.0  4.0  6  8
 # 6 two  1  2.0  3.0  4  5
 </code></pre>
-<h5 id="_5">根据索引层级分组</h5>
-<p>根据层级分组时，将层级数值或层级名称传递给level关键字：</p>
+<h3 id="_6">根据索引层级分组</h3>
+<p>根据层级分组时，将层级数值或层级名称传递给<code>level</code>关键字。</p>
 <pre><code>columns = pd.MultiIndex.from_arrays(
     [['US', 'US', 'US', 'JP', 'JP'],
      [1, 3, 5, 1, 3]],
@@ -802,19 +803,21 @@ print(result)
 # 2     2   3
 # 3     2   3
 </code></pre>
-<h4 id="_6">数据聚合</h4>
-<p>聚合是指所有根据数组产生标量值的数据转换过程，比如：mean、count、min和sum等一些聚合操作。</p>
+<h2 id="_7">数据聚合</h2>
+<p>聚合是指所有根据数组产生标量值的数据转换过程，比如：<code>mean</code>、<code>count</code>、<code>min</code>和<code>sum</code>等一些聚合操作。</p>
 <pre><code>import pandas as pd
 import numpy as np
 </code></pre>
-<p>预备知识：\
-分位数（Quantile），也称分位点，是指将一个随机变量的概率分布范围分为几个等份的数值点，分析其数据变量的趋势。\
-常用的分位数有 中位数、四分位数、百分位数等。\
-中位数（Medians）是一个统计学的专有名词，代表一个样本、种群或概率分布中的一个数值，可以将数值集合划分为相等的两部分。\</p>
-<p>利用pandas库计算data = [6, 47, 49, 15, 42, 41, 7, 39, 43, 40, 36]的分位数。\
-确定p分位数位置的两种方法(n为数据的总个数，p为0-1之间的值)。在python中计算分位数位置的方案采用position=1+(n-1)<em>p\
-* position = (n+1)</em>p
-* position = 1 + (n-1)*p</p>
+<p>预备知识：</p>
+<p>分位数（Quantile），也称分位点，是指将一个随机变量的概率分布范围分为几个等份的数值点，分析其数据变量的趋势。
+常用的分位数有 中位数、四分位数、百分位数等。</p>
+<p>中位数（Medians）是一个统计学的专有名词，代表一个样本、种群或概率分布中的一个数值，可以将数值集合划分为相等的两部分。</p>
+<p>利用pandas库计算<code>data = [6, 47, 49, 15, 42, 41, 7, 39, 43, 40, 36]</code>的分位数。</p>
+<p>确定<code>p</code>分位数位置的两种方法(<code>n</code>为数据的总个数，<code>p</code>为<code>0-1</code>之间的值)。在python中计算分位数位置的方案采用<code>position=1+(n-1)*p</code>：</p>
+<ul>
+<li><code>position = (n+1)*p</code></li>
+<li><code>position = 1 + (n-1)*p</code></li>
+</ul>
 <p>案例1</p>
 <pre><code>data = pd.Series(np.array([6, 47, 49, 15, 42, 41, 7, 39, 43, 40, 36]))
 print(&quot;数据格式：&quot;)
@@ -857,15 +860,17 @@ print(df.quantile(.1))
 # position=1+(4-1)*0.1=1.3 (取第1位)
 # Q1=1+(10-1)*0.3=3.7  (第1、2位的差乘以余数0.3)
 </code></pre>
-<p>优化的groupby方法：
-* count: 分组中非NA值的数量
-* sum: 非NA值的累加和
-* mean: 非NA值的平均值
-* median: 非NA值的算术中位数
-* std, var: 无偏的(n-1分母)标准差和方差
-* min, max: 非NA值的最小值、最大值
-* prod: 非NA值的乘积
-* first, last: 非NA值的第一个、最后一个值</p>
+<p>优化的<code>groupby</code>方法：</p>
+<ul>
+<li>count: 分组中非NA值的数量</li>
+<li>sum: 非NA值的累加和</li>
+<li>mean: 非NA值的平均值</li>
+<li>median: 非NA值的算术中位数</li>
+<li>std, var: 无偏的(n-1分母)标准差和方差</li>
+<li>min, max: 非NA值的最小值、最大值</li>
+<li>prod: 非NA值的乘积</li>
+<li>first, last: 非NA值的第一个、最后一个值</li>
+</ul>
 <pre><code>df = pd.DataFrame(
     {
         'key1': ['a', 'a', 'b', 'b', 'a'],
@@ -928,7 +933,7 @@ print(result)
 # a      3.0  4.333333  4.163332  1.0  2.0  ...   2.0  3.0  4.0  7.0  10.0
 # b      2.0  6.000000  1.414214  5.0  5.5  ...   6.0  6.5  7.0  7.5   8.0
 </code></pre>
-<h4 id="_7">逐列及多函数应用</h4>
+<h2 id="_8">逐列及多函数应用</h2>
 <pre><code>tips = pd.read_csv('../examples/tips.csv')
 tips['tip_pct'] = tips['tip'] / (tips['total_bill'] - tips['tip'])
 print(tips.head(5))
@@ -966,7 +971,7 @@ for i in grouped_pct:
 # Name: tip_pct, dtype: float64)
 # ......
 </code></pre>
-<p>将函数名以字符串形式传递</p>
+<p>将函数名以字符串形式传递。</p>
 <pre><code>result = grouped_pct.agg('mean')
 print(result)
 # day   smoker
@@ -995,7 +1000,7 @@ print(result)
 # Thur No      0.193424  0.056065      0.284273
 #      Yes     0.198508  0.057170      0.219047
 </code></pre>
-<p>如果传递的是(name, function)元组的列表，每个元组的第一个元素将作为DataFrame的列名（可以认为二元元组的列表是一种有序的对应关系）：</p>
+<p>如果传递的是<code>(name, function)</code>元组的列表，每个元组的第一个元素将作为DataFrame的列名（可以认为二元元组的列表是一种有序的对应关系）：</p>
 <pre><code>result = grouped_pct.agg([('foo', 'mean'), ('bar', np.std)])  # foo是mean值的列名
 print(result)
 #                   foo       bar
@@ -1009,8 +1014,8 @@ print(result)
 # Thur No      0.193424  0.056065
 #      Yes     0.198508  0.057170
 </code></pre>
-<p>可以指定应用到所有列上的函数列表或每一列上要应用的不同函数。\
-下面产生的DataFrame拥有分层列，与分别聚合每一列，再以列名作为keys参数使用concat将结果拼接在一起的结果相同。</p>
+<p>可以指定应用到所有列上的函数列表或每一列上要应用的不同函数。</p>
+<p>下面产生的DataFrame拥有分层列，与分别聚合每一列，再以列名作为<code>keys</code>参数使用<code>concat</code>将结果拼接在一起的结果相同。</p>
 <pre><code>functions = ['count', 'mean', 'max']
 result = grouped[['tip_pct', 'total_bill']].agg(functions)
 print(result)
@@ -1056,7 +1061,7 @@ print(result)
 # Thur No         0.193424   0.003143    17.113111   59.625081
 #      Yes        0.198508   0.003268    19.190588   69.808518
 </code></pre>
-<p>要将不同的函数应用到一个或多个列上，需要将含有列名与函数对应关系的字典传递给agg：</p>
+<p>要将不同的函数应用到一个或多个列上，需要将含有列名与函数对应关系的字典传递给<code>agg</code>：</p>
 <pre><code>result = grouped.agg({'tip': np.max, 'size': 'sum'})
 print(result)
 #                tip  size
@@ -1084,9 +1089,9 @@ print(result)
 #      Yes     0.098918  0.317965  0.198508  0.057170
 </code></pre>
 <p>只有多个函数应用于至少一个列时，DataFrame才具有分层列。</p>
-<h5 id="_8">返回不含行索引的聚合数据</h5>
-<p>在前面所有的例子中，聚合数据返回时都是带有索引的，有时索引是分层的，由唯一的分组键联合形成。\
-因为不是所有的情况下都需要索引，所以在大多数情况下可以通过向groupby传递as_index=False来禁用分组键作为索引的行为：</p>
+<h3 id="_9">返回不含行索引的聚合数据</h3>
+<p>在前面所有的例子中，聚合数据返回时都是带有索引的，有时索引是分层的，由唯一的分组键联合形成。</p>
+<p>因为不是所有的情况下都需要索引，所以在大多数情况下可以通过向groupby传递as_index=False来禁用分组键作为索引的行为：</p>
 <pre><code>result = tips.groupby(['day', 'smoker'], as_index=False).mean()
 print(result)
 #     day smoker  total_bill       tip      size   tip_pct
@@ -1123,12 +1128,12 @@ print(result)
 # Thur No       17.113111  2.673778  2.488889  0.193424
 #      Yes      19.190588  3.030000  2.352941  0.198508
 </code></pre>
-<h4 id="-">应用：通用拆分-应用-联合</h4>
+<h2 id="-">应用：通用拆分-应用-联合</h2>
 <pre><code>import pandas as pd
 import numpy as np
 import statsmodels.api as sm
 </code></pre>
-<p>GroupBy方法最常见的目的是apply（应用）。apply将对象拆分成多块，然后在每一块上调用传递的函数，之后尝试将每一块拼接到一起。</p>
+<p><code>GroupBy</code>方法最常见的目的是<code>apply</code>（应用）。<code>apply</code>将对象拆分成多块，然后在每一块上调用传递的函数，之后尝试将每一块拼接到一起。</p>
 <p>根据下面的小费数据集，按组选出小费百分比（tip-pct）最高的五组。</p>
 <pre><code>tips = pd.read_csv('../examples/tips.csv')
 tips['tip_pct'] = tips['tip'] / (tips['total_bill'] - tips['tip'])
@@ -1142,8 +1147,8 @@ tips['tip_pct'] = tips['tip'] / (tips['total_bill'] - tips['tip'])
 # 3       23.68  3.31     No  Sun  Dinner     2  0.162494
 # 4       24.59  3.61     No  Sun  Dinner     4  0.172069
 </code></pre>
-<p>首先，写一个可以在特定列中选出最大值所在行的函数：\
-添加了升序，结果输出最后5行（最后的5行也是最大的5个tip_tcp记录）</p>
+<p>首先，写一个可以在特定列中选出最大值所在行的函数：</p>
+<p>添加了升序，结果输出最后5行（最后的5行也是最大的5个<code>tip_tcp</code>记录）。</p>
 <pre><code>def top(df, n=5, column='tip_pct'):
     return df.sort_values(by=column, ascending=True)[-n:]
 
@@ -1161,8 +1166,8 @@ print(result)
 # 178        9.60  4.00    Yes  Sun  Dinner     2  0.714286
 # 172        7.25  5.15    Yes  Sun  Dinner     2  2.452381
 </code></pre>
-<p>如果按照smoker进行分组，之后调用apply，会得到以下结果：\
-top函数在DataFrame的每一行分组上被调用，之后使用pandas.concat将函数结果粘贴在一起，并使用分组名作为各组的标签。\
+<p>如果按照<code>smoker</code>进行分组，之后调用<code>apply</code>，会得到以下结果：</p>
+<p><code>top</code>函数在DataFrame的每一行分组上被调用，之后使用<code>pandas.concat</code>将函数结果粘贴在一起，并使用分组名作为各组的标签。
 因此结果包含一个分层索引，该分层索引的内部层级包含原DataFrame的索引值。</p>
 <pre><code>result = tips.groupby('smoker').apply(top)
 print(result)
@@ -1179,7 +1184,7 @@ print(result)
 #        178        9.60  4.00    Yes   Sun  Dinner     2  0.714286
 #        172        7.25  5.15    Yes   Sun  Dinner     2  2.452381
 </code></pre>
-<p>如果除了向apply传递函数，还传递其他参数或关键字的话，你可以把这些放在函数后进行传递</p>
+<p>如果除了向<code>apply</code>传递函数，还传递其他参数或关键字的话，你可以把这些放在函数后进行传递。</p>
 <pre><code>result = tips.groupby('smoker').apply(top, n=1, column='total_bill')
 print(result)
 # 这2行都是smoker是yes和no时最大total_bill值所在行。
@@ -1188,7 +1193,7 @@ print(result)
 # No     212       48.33   9.0     No  Sat  Dinner     4  0.228833
 # Yes    170       50.81  10.0    Yes  Sat  Dinner     3  0.245038
 </code></pre>
-<p>在GroupBy对象上调用describe方法</p>
+<p>在<code>GroupBy</code>对象上调用<code>describe</code>方法。</p>
 <pre><code>result = tips.groupby('smoker')['tip_pct'].describe()
 print(result)
 #         count      mean       std  ...       50%       75%       max
@@ -1216,7 +1221,7 @@ print(result.unstack('smoker'))  # 类似于转置
 #        Yes         2.452381
 # dtype: float64
 </code></pre>
-<p>在GroupBy对象的内部，当调用像describe这样的方法时，实际上是以下代码的简写：</p>
+<p>在<code>GroupBy</code>对象的内部，当调用像<code>describe</code>这样的方法时，实际上是以下代码的简写：</p>
 <pre><code>grouped = tips.groupby(['smoker'])
 f = lambda x: x.describe()
 result = grouped.apply(f)
@@ -1240,9 +1245,9 @@ print(result)
 #        75%     26.860000    3.680000    3.000000    0.242326
 #        max     50.810000   10.000000    5.000000    2.452381
 </code></pre>
-<h5 id="_9">压缩分组键</h5>
-<p>在前面的例子中所得到的对象，都具有分组键所形成的分层索引以及每个原始对象的索引。\
-也可以通过向groupby传递group_keys=False来禁用这个功能。</p>
+<h3 id="_10">压缩分组键</h3>
+<p>在前面的例子中所得到的对象，都具有分组键所形成的分层索引以及每个原始对象的索引。
+也可以通过向<code>groupby</code>传递<code>group_keys=False</code>来禁用这个功能。</p>
 <pre><code>result = tips.groupby('smoker', group_keys=True).apply(top)
 print(result)
 #             total_bill   tip smoker   day    time  size   tip_pct
@@ -1271,17 +1276,18 @@ print(result)
 # 178        9.60  4.00    Yes   Sun  Dinner     2  0.714286
 # 172        7.25  5.15    Yes   Sun  Dinner     2  2.452381
 </code></pre>
-<h5 id="_10">分位数与桶分析</h5>
-<p>第8章中，pandas有一些工具，尤其是cut和qcut，用于将数据按照你选择的箱位或样本分位数进行分桶。\
-与groupby方法一起使用这些函数可以对数据集更方便地进行分桶或分位分析。</p>
-<p>复习：\
-机械学习中的分箱处理\
-在机械学习中经常会对数据进行分箱处理的操作， 也就是把一段连续的值切分成若干段，每一段的值看成一个分类。这个把连续值转换成离散值的过程，我们叫做分箱处理。\
-比如，把年龄按15岁划分成一组，0-15岁叫做少年，16-30岁叫做青年，31-45岁叫做壮年。在这个过程中，我们把连续的年龄分成了三个类别，“少年”，“青年”和“壮年”就是各个类别的名称，或者叫做标签。\
-在pandas中，cut和qcut函数都可以进行分箱处理操作。
-* cut()按照变量的值对变量进行分割，每个分组里数据的个数并不一样。
-* qcut()是按变量的数量来对变量进行分割，并且尽量保证每个分组里变量的个数相同。</p>
-<p>考虑下面一个简单的随机数据集和一个使用cut的等长桶分类： </p>
+<h3 id="_11">分位数与桶分析</h3>
+<p>第8章中，pandas有一些工具，尤其是<code>cut</code>和<code>qcut</code>，用于将数据按照你选择的箱位或样本分位数进行分桶。
+与<code>groupby</code>方法一起使用这些函数可以对数据集更方便地进行分桶或分位分析。</p>
+<p>复习：机械学习中的分箱处理。</p>
+<p>在机械学习中经常会对数据进行分箱处理的操作， 也就是把一段连续的值切分成若干段，每一段的值看成一个分类。这个把连续值转换成离散值的过程，我们叫做分箱处理。</p>
+<p>比如，把年龄按15岁划分成一组，0-15岁叫做少年，16-30岁叫做青年，31-45岁叫做壮年。在这个过程中，我们把连续的年龄分成了三个类别，“少年”，“青年”和“壮年”就是各个类别的名称，或者叫做标签。</p>
+<p>在pandas中，<code>cut</code>和<code>qcut</code>函数都可以进行分箱处理操作。</p>
+<ul>
+<li><code>cut()</code>按照变量的值对变量进行分割，每个分组里数据的个数并不一样。</li>
+<li><code>qcut()</code>是按变量的数量来对变量进行分割，并且尽量保证每个分组里变量的个数相同。</li>
+</ul>
+<p>考虑下面一个简单的随机数据集和一个使用<code>cut</code>的等长桶分类： </p>
 <pre><code>df = pd.DataFrame(
     {
         'data1': np.random.randn(1000),
@@ -1307,7 +1313,7 @@ print(quartiles[:10])
 #         (-3.687, -1.877] &lt; (-1.877, -0.0743] &lt; (-0.0743, 1.729] &lt; (1.729, 3.531]
 #     ]
 </code></pre>
-<p>上面cut返回的Categorical对象可以直接传递给groupby。利用它计算出data2列的一个统计值集合，如下：</p>
+<p>上面<code>cut</code>返回的<code>Categorical</code>对象可以直接传递给<code>groupby</code>。利用它计算出<code>data2</code>列的一个统计值集合，如下：</p>
 <pre><code>def get_stats(group):
     return {
         'min': group.min(),
@@ -1327,7 +1333,7 @@ print(result)
 # (0.29, 2.005]    -3.557136  3.261635  376.0  0.015715
 # (2.005, 3.719]   -2.829458  1.766352   23.0 -0.198780
 </code></pre>
-<p>使用qcut，根据样本分位数计算出等大小的桶，就是等长桶。通过传递labels=False来获得分位数数值。</p>
+<p>使用<code>qcut</code>，根据样本分位数计算出等大小的桶，就是等长桶。通过传递<code>labels=False</code>来获得分位数数值。</p>
 <pre><code>grouping = pd.qcut(df.data1, 10, labels=False)
 grouped = df.data2.groupby(grouping)
 result = grouped.apply(get_stats).unstack()
@@ -1345,10 +1351,10 @@ print(result)
 # 8     -3.405679  1.792581  100.0 -0.009705
 # 9     -2.469285  2.600849  100.0 -0.061721
 </code></pre>
-<h5 id="_11">示例：使用指定分组值填充缺失值</h5>
-<p>在清除缺失值时，有时会使用dropna来去除缺失值，有时使用修正值或来自于其他数据的值来输入（填充）到null值（NA）。\
-fillna是一个可以使用的正确工具。\
-例如下面例子中使用使用平均值来填充NA值：</p>
+<h3 id="_12">示例：使用指定分组值填充缺失值</h3>
+<p>在清除缺失值时，有时会使用<code>dropna</code>来去除缺失值，有时使用修正值或来自于其他数据的值来输入（填充）到<code>null</code>值（<code>NA</code>）。
+<code>fillna</code>是一个可以使用的正确工具。</p>
+<p>例如下面例子中使用使用平均值来填充NA值：</p>
 <pre><code>data = (100, 110, 120, 130, 140, 150)
 s = pd.Series(data)
 print(s)
@@ -1380,9 +1386,11 @@ print(result)
 # 5    150.0
 # dtype: float64
 </code></pre>
-<p>下面的例子是按组填充NA值
-* 方法1,对数据分组后使用apply。
-* 方法2,在每个数据块上都调用fillna的函数。</p>
+<p>下面的例子是按组填充NA值：</p>
+<ul>
+<li>方法1,对数据分组后使用<code>apply</code>。</li>
+<li>方法2,在每个数据块上都调用<code>fillna</code>的函数。</li>
+</ul>
 <pre><code>data = (100, 110, 120, 130, 140, 150, 160, 170)
 states = ['Ohio', 'New York', 'Vermont', 'Florida', 'Oregon', 'Nevada', 'California', 'Idaho']
 group_key = ['East'] * 4 + ['West'] * 4  # 4个East和4个West拼接的列表list
@@ -1418,7 +1426,7 @@ print(result)
 # West    150.000000
 # dtype: float64
 </code></pre>
-<p>用上面得出的分组平均值来填充NA</p>
+<p>用上面得出的分组平均值来填充NA。</p>
 <pre><code>fill_mean = lambda g: g.fillna(g.mean())
 result = s.groupby(group_key).apply(fill_mean)
 print(result)
@@ -1432,7 +1440,7 @@ print(result)
 # Idaho         150.000000
 # dtype: float64
 </code></pre>
-<p>如果已经在代码中为每个分组预定义了填充值，可以利用每个分组都有的内置的name属性，实现填充NA。</p>
+<p>如果已经在代码中为每个分组预定义了填充值，可以利用每个分组都有的内置的<code>name</code>属性，实现填充<code>NA</code>。</p>
 <pre><code>fill_value = {'East': 0.5, 'West': -1}
 fill_func = lambda g: g.fillna(fill_value[g.name])
 result = s.groupby(group_key).apply(fill_func)
@@ -1447,10 +1455,10 @@ print(result)
 # Idaho          -1.0
 # dtype: float64
 </code></pre>
-<h5 id="_12">示例：随机采样与排列</h5>
-<p>假设想从大数据集中抽取随机样本（有或没有替换）以用于蒙特卡罗模拟目的或某些其他应用程序。\
-有很多方法来执行“抽取”，这里使用Series的sample方法。\
-为了演示，这里介绍一种构造一副英式扑克牌的方法：</p>
+<h3 id="_13">示例：随机采样与排列</h3>
+<p>假设想从大数据集中抽取随机样本（有或没有替换）以用于蒙特卡罗模拟目的或某些其他应用程序。
+有很多方法来执行“抽取”，这里使用Series的sample方法。</p>
+<p>为了演示，这里介绍一种构造一副英式扑克牌的方法：</p>
 <pre><code># 梅花clubs、方块diamonds、红桃hearts、黑桃spades。
 suits = ['H', 'S', 'C', 'D']
 card_val = (list(range(1, 11)) + [10] * 3) * 4
@@ -1463,7 +1471,7 @@ card_val = (list(range(1, 11)) + [10] * 3) * 4
 base_names = ['A'] + list(range(2, 11)) + ['J', 'K', 'Q']
 # base_names： ['A', 2, 3, 4, 5, 6, 7, 8, 9, 10, 'J', 'K', 'Q']
 </code></pre>
-<p>生成了一个长度为52的Series, Series的索引包含了牌名，Series的值可以用游戏（为了保持简单，让’A’为1 ）：</p>
+<p>生成了一个长度为<code>52</code>的Series, Series的索引包含了牌名，Series的值可以用游戏（为了保持简单，让’A’为1 ）：</p>
 <pre><code>cards = []
 for suit in ['H', 'S', 'C', 'D']:
     cards.extend(str(num) + suit for num in base_names)
@@ -1537,7 +1545,7 @@ print(draw(deck))
 # QD    10
 # dtype: int64
 </code></pre>
-<p>假设要从每个花色中随机抽取两张牌。由于花色是牌名的最后两个字符，可以基于这点进行分组，并使用apply：</p>
+<p>假设要从每个花色中随机抽取两张牌。由于花色是牌名的最后两个字符，可以基于这点进行分组，并使用<code>apply</code>：</p>
 <pre><code>get_suit = lambda card: card[-1]  # 最后一个字母是花色
 result = deck.groupby(get_suit).apply(draw, n=2)
 print(result)
@@ -1564,9 +1572,9 @@ print(result)
 # KS     10
 # dtype: int64
 </code></pre>
-<h5 id="_13">示例：分组加权平均和相关性</h5>
-<p>在groupby的拆分-应用-联合的范式下，DataFrame的列间操作或两个Seriese之间的操作，例如实现分组加权平均。\
-下面例子，使用一个包含分组键和权重值的数据集：</p>
+<h3 id="_14">示例：分组加权平均和相关性</h3>
+<p>在<code>groupby</code>的拆分-应用-联合的范式下，DataFrame的列间操作或两个Seriese之间的操作，例如实现分组加权平均。</p>
+<p>下面例子，使用一个包含分组键和权重值的数据集：</p>
 <pre><code>dt = np.random.randn(8)
 wt = np.random.randn(8)
 df = pd.DataFrame(
@@ -1587,7 +1595,7 @@ print(df)
 # 6        b -1.029627 -0.845340
 # 7        b -0.294204  1.253965
 </code></pre>
-<p>通过category进行分组加权平均如下：</p>
+<p>通过<code>category</code>进行分组加权平均如下：</p>
 <pre><code>grouped = df.groupby('category')
 get_wavg = lambda g: np.average(g['data'], weights=g['weight'])
 result = grouped.apply(get_wavg)
@@ -1625,7 +1633,7 @@ print(close_px[-4:])
 <p>首先创建一个计算每列与’SPX’列成对关联的函数：</p>
 <pre><code>spx_corr = lambda x: x.corrwith(x['SPX'])
 </code></pre>
-<p>之后，使用pct_change计算close-px百分比的变化：</p>
+<p>之后，使用<code>pct_change</code>计算<code>close-px</code>百分比的变化：</p>
 <pre><code>rets = close_px.pct_change().dropna()  # Percentage change between the current and a prior element.
 print(rets)
 #                 AAPL      MSFT       XOM       SPX
@@ -1635,7 +1643,7 @@ print(rets)
 # 2011-10-14  0.033225  0.003311  0.022784  0.017380
 # [2213 rows x 4 columns]
 </code></pre>
-<p>最后，按年对百分比变化进行分组，可以使用单行函数从每个行标签中提取每个datetime标签的year属性：</p>
+<p>最后，按年对百分比变化进行分组，可以使用单行函数从每个行标签中提取每个<code>datetime</code>标签的<code>year</code>属性：</p>
 <pre><code>get_year = lambda x: x.year
 by_year = rets.groupby(get_year)
 result = by_year.apply(spx_corr)
@@ -1665,8 +1673,8 @@ print(result)
 # 2011    0.581987
 # dtype: float64
 </code></pre>
-<h5 id="_14">示例：逐组线性回归</h5>
-<p>定义以下regress（回归）函数（使用statsmodels计量经济学库），该函数对每个数据块执行普通最小二乘（OLS）回归：</p>
+<h3 id="_15">示例：逐组线性回归</h3>
+<p>定义以下<code>regress</code>（回归）函数（使用<code>statsmodels</code>计量经济学库），该函数对每个数据块执行普通最小二乘（OLS）回归：</p>
 <pre><code>def regress(data, yvar, xvars):
     Y = data[yvar]
     X = data[xvars]
@@ -1688,24 +1696,26 @@ print(result)
 # 2010  1.052608   0.001261
 # 2011  0.806605   0.001514
 </code></pre>
-<h4 id="_15">数据透视表与交叉表</h4>
-<h5 id="_16">数据透视表</h5>
-<p>数据透视表是电子表格程序和其他数据分析软件中常见的数据汇总工具。\
+<h2 id="_16">数据透视表与交叉表</h2>
+<h3 id="_17">数据透视表</h3>
+<p>数据透视表是电子表格程序和其他数据分析软件中常见的数据汇总工具。
 它根据一个或多个键聚合一张表的数据，将数据在矩形格式中排列，其中一些分组键是沿着行的，另一些是沿着列的。</p>
-<p>Python中的pandas透视表是通过本章所介绍的groupby工具以及使用分层索引的重塑操作实现的。\
-DataFrame拥有一个pivot_table方法，并且还有还一个顶层的pandas.pivot_table函数。\
-除了为groupby提供一个方便接口，pivot_table还可以添加部分总计，也称作边距。</p>
+<p>Python中的pandas透视表是通过这里所介绍的groupby工具以及使用分层索引的重塑操作实现的。</p>
+<p>DataFrame拥有一个<code>pivot_table</code>方法，并且还有还一个顶层的<code>pandas.pivot_table</code>函数。</p>
+<p>除了为<code>groupby</code>提供一个方便接口，<code>pivot_table</code>还可以添加部分总计，也称作边距。</p>
 <pre><code>import pandas as pd
 import numpy as np
 </code></pre>
-<p>根据下面的小费数据集，计算一张在行方向上按day和smoker排列的分组平均值（默认的pivot_table聚合类型）的表。</p>
-<p>pivot_table选项：
-* values: 需要聚合的列名，默认情况下聚合所有数值型的列。
-* index: 在结果透视表的行上进行分组的列名或者其他分组键。</p>
+<p>根据下面的小费数据集，计算一张在行方向上按<code>day</code>和<code>smoker</code>排列的分组平均值（默认的<code>pivot_table</code>聚合类型）的表。</p>
+<p><code>pivot_table</code>选项：</p>
+<ul>
+<li>values: 需要聚合的列名，默认情况下聚合所有数值型的列。</li>
+<li>index: 在结果透视表的行上进行分组的列名或者其他分组键。</li>
+</ul>
 <pre><code>tips = pd.read_csv('../examples/tips.csv')
 tips['tip_pct'] = tips['tip'] / (tips['total_bill'] - tips['tip'])
 </code></pre>
-<p>样本数据</p>
+<p>样本数据。</p>
 <pre><code>print(tips.head(5))
 #    total_bill   tip smoker  day    time  size   tip_pct
 # 0       16.99  1.01     No  Sun  Dinner     2  0.063204
@@ -1714,7 +1724,7 @@ tips['tip_pct'] = tips['tip'] / (tips['total_bill'] - tips['tip'])
 # 3       23.68  3.31     No  Sun  Dinner     2  0.162494
 # 4       24.59  3.61     No  Sun  Dinner     4  0.172069
 </code></pre>
-<p>计算在行方向上按day和smoker排列的分组平均值。也可以直接使用groupby实现</p>
+<p>计算在行方向上按<code>day</code>和<code>smoker</code>排列的分组平均值。也可以直接使用<code>groupby</code>实现。</p>
 <pre><code>result = tips.pivot_table(index=['day', 'smoker'])
 print(result)
 #                  size       tip   tip_pct  total_bill
@@ -1728,7 +1738,7 @@ print(result)
 # Thur No      2.488889  2.673778  0.193424   17.113111
 #      Yes     2.352941  3.030000  0.198508   19.190588
 </code></pre>
-<p>在tip_pct和size上进行聚合，并根据time分组。我将把smoker放入表的列，而将day放入表的行：</p>
+<p>在<code>tip_pct</code>和<code>size</code>上进行聚合，并根据<code>time</code>分组。将把<code>smoker</code>放入表的列，而将<code>day</code>放入表的行：</p>
 <pre><code>result = tips.pivot_table(
     ['tip_pct', 'size'],
     index=['time', 'day'],
@@ -1745,9 +1755,8 @@ print(result)
 # Lunch  Fri   3.000000  1.833333  0.231125  0.236915
 #        Thur  2.500000  2.352941  0.193499  0.198508
 </code></pre>
-<p>通过传递margins=True来扩充这个表来包含部分总计。\
-这会添加All行和列标签，其中相应的值是单层中所有数据的分组统计值：\
-这里All的值是均值，且该均值是不考虑吸烟者与非吸烟者（All列）或行分组中任何两级的（All行）。</p>
+<p>通过传递<code>margins=True</code>来扩充这个表来包含部分总计。这会添加<code>All</code>行和列标签，其中相应的值是单层中所有数据的分组统计值。</p>
+<p>这里<code>All</code>的值是均值，且该均值是不考虑吸烟者与非吸烟者（<code>All</code>列）或行分组中任何两级的（<code>All</code>行）。</p>
 <pre><code>result = tips.pivot_table(
     ['tip_pct', 'size'],
     index=['time', 'day'],
@@ -1766,8 +1775,7 @@ print(result)
 #        Thur  2.500000  2.352941  2.459016  0.193499  0.198508  0.194895
 # All          2.668874  2.408602  2.569672  0.192237  0.218176  0.202123
 </code></pre>
-<p>要使用不同的聚合函数时，将函数传递给aggfunc。\
-例如，'count’或者len将给出一张分组大小的交叉表（计数或出现频率）：</p>
+<p>要使用不同的聚合函数时，将函数传递给<code>aggfunc</code>。例如，<code>count</code>或者<code>len</code>将给出一张分组大小的交叉表（计数或出现频率）：</p>
 <pre><code>result = tips.pivot_table(
     ['tip_pct', 'size'],
     index=['time', 'day'],
@@ -1787,7 +1795,7 @@ print(result)
 #        Thur   44.0  17.0   61    44.0  17.0   61
 # All          151.0  93.0  244   151.0  93.0  244
 </code></pre>
-<p>对于空值NA，传递一个fill_value</p>
+<p>对于空值<code>NA</code>，传递一个<code>fill_value</code>。</p>
 <pre><code>result = tips.pivot_table(
     ['tip_pct', 'size'],
     index=['time', 'day'],
@@ -1808,9 +1816,8 @@ print(result)
 #        Thur  2.500000  2.352941  2.459016  0.193499  0.198508  0.194895
 # All          2.668874  2.408602  2.569672  0.192237  0.218176  0.202123
 </code></pre>
-<h5 id="crosstab">交叉表：crosstab</h5>
-<p>交叉表（简写为crosstab）是数据透视表的一个特殊情况，计算的是分组中的频率。\
-crosstab的前两个参数可是数组、Series或数组的列表。</p>
+<h3 id="crosstab">交叉表：crosstab</h3>
+<p>交叉表（简写为crosstab）是数据透视表的一个特殊情况，计算的是分组中的频率。<code>crosstab</code>的前两个参数可是数组、Series或数组的列表。</p>
 <pre><code>sample = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 nationality = ['USA', 'Japan', 'USA', 'Japan', 'Japan', 'Japan', 'USA', 'USA', 'Japan', 'USA']
 handedness = ['Right-handed', 'Left-handed', 'Right-handed', 'Right-handed', 'Left-handed', 'Right-handed',
@@ -1835,7 +1842,7 @@ print(df)
 # 8       9       Japan  Right-handed
 # 9      10         USA  Right-handed
 </code></pre>
-<p>按照国籍和惯用性来总结这些数据，可以使用pivot_table来实现这个功能，但是pandas.crosstable函数更为方便：</p>
+<p>按照国籍和惯用性来总结这些数据，可以使用<code>pivot_table</code>来实现这个功能，但是<code>pandas.crosstable</code>函数更为方便：</p>
 <pre><code>result = pd.crosstab(df.nationality, df.handedness, margins=True)
 print(result)
 # handedness   Left-handed  Right-handed  All

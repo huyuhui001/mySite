@@ -15,7 +15,7 @@
     
     
       
-        <title>Ch05 - from ZERO to ONE</title>
+        <title>数据规整：连接、联合与重塑 - from ZERO to ONE</title>
       
     
     
@@ -98,7 +98,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Ch05
+              数据规整：连接、联合与重塑
             
           </span>
         </div>
@@ -253,6 +253,8 @@
   
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -261,7 +263,7 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#_1" class="md-nav__link">
+  <a href="#_2" class="md-nav__link">
     分层索引
   </a>
   
@@ -317,14 +319,14 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#_2" class="md-nav__link">
+  <a href="#_3" class="md-nav__link">
     重排序和层级排序
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#_3" class="md-nav__link">
+  <a href="#_4" class="md-nav__link">
     按层级进行汇总统计
   </a>
   
@@ -343,7 +345,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_4" class="md-nav__link">
+  <a href="#_5" class="md-nav__link">
     联合与合并数据集
   </a>
   
@@ -358,21 +360,21 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#_5" class="md-nav__link">
+  <a href="#_6" class="md-nav__link">
     根据索引合并
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#_6" class="md-nav__link">
+  <a href="#_7" class="md-nav__link">
     沿轴向连接
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#_7" class="md-nav__link">
+  <a href="#_8" class="md-nav__link">
     联合重叠数据
   </a>
   
@@ -384,7 +386,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_8" class="md-nav__link">
+  <a href="#_9" class="md-nav__link">
     重塑和透视
   </a>
   
@@ -392,21 +394,21 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#_9" class="md-nav__link">
+  <a href="#_10" class="md-nav__link">
     使用多层索引进行重塑
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#_10" class="md-nav__link">
+  <a href="#_11" class="md-nav__link">
     将“长”透视为“宽”
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#_11" class="md-nav__link">
+  <a href="#_12" class="md-nav__link">
     将“宽”透视为“长”
   </a>
   
@@ -431,24 +433,23 @@
                 
 
 
-  <h1>Ch05</h1>
-
-<h3 id="_1">分层索引</h3>
+<h1 id="_1">数据规整：连接、联合与重塑</h1>
+<h2 id="_2">分层索引</h2>
 <pre><code>import pandas as pd
 import numpy as np
 import re
 </code></pre>
-<p>分层索引是pandas的重要特性，允许你在一个轴向上拥有多个（两个或两个以上）索引层级。\
-分层索import re引提供了一种在更低维度的形式中处理更高维度数据的方式。</p>
-<h4 id="series">Series索引分层</h4>
+<p>分层索引是pandas的重要特性，允许你在一个轴向上拥有多个（两个或两个以上）索引层级。
+分层索<code>import re</code>引提供了一种在更低维度的形式中处理更高维度数据的方式。</p>
+<h3 id="series">Series索引分层</h3>
 <pre><code>data = pd.Series(
     np.random.randn(9),
     index=[['a', 'a', 'a', 'b', 'b', 'c', 'c', 'd', 'd'],
            [1, 2, 3, 1, 3, 1, 2, 2, 3]]
 )
 </code></pre>
-<p>输出是一个以MultiIndex作为索引的Series的美化视图。\
-索引中的"间隙"表示"直接使用上面的标签"</p>
+<p>输出是一个以<code>MultiIndex</code>作为索引的Series的美化视图。
+索引中的"间隙"表示"直接使用上面的标签"。</p>
 <pre><code>print(data)
 # a  1    0.163468
 #    2   -1.525926
@@ -473,7 +474,7 @@ print(data.index)
 #             ('d', 3)],
 #            )
 </code></pre>
-<p>通过分层索引对象，也可以称为部分索引，可以简洁地选择出数据的子集</p>
+<p>通过分层索引对象，也可以称为部分索引，可以简洁地选择出数据的子集。</p>
 <pre><code>m = data['b']
 print(m)
 # 1   -0.956063
@@ -502,8 +503,8 @@ print(m)
 # d    0.034305
 # dtype: float64
 </code></pre>
-<p>分层索引在重塑数据和数组透视表等分组操作中扮演了重要角色。\
-例如，你可以使用unstack方法将数据在DataFrame中重新排列</p>
+<p>分层索引在重塑数据和数组透视表等分组操作中扮演了重要角色。
+例如，你可以使用<code>unstack</code>方法将数据在DataFrame中重新排列。</p>
 <pre><code>m = data.unstack()
 print(m)
 #           1         2         3
@@ -524,11 +525,10 @@ print(n)  # 或者 print(data.unstack().stack())
 #    3   -0.896078
 # dtype: float64
 </code></pre>
-<h4 id="dataframe">DataFrame索引分层</h4>
-<p>在DataFrame中，每个轴都可以拥有分层索引\
-参考：https://www.jianshu.com/p/2c1c8fbee55a</p>
-<h5 id="1">方法1：直接创建</h5>
-<p>直接通过给index（columns）参数传递多维数组，进而构建多维索引。\
+<h3 id="dataframe">DataFrame索引分层</h3>
+<p>在DataFrame中，每个轴都可以拥有分层索引。<a href="https://www.jianshu.com/p/2c1c8fbee55a">参考</a></p>
+<h4 id="1">方法1：直接创建</h4>
+<p>直接通过给<code>index</code>（columns）参数传递多维数组，进而构建多维索引。
 数组中每个维度对应位置的元素，组成每个索引值。</p>
 <pre><code>frame = pd.DataFrame(
     np.arange(12).reshape((4, 3)),
@@ -546,15 +546,15 @@ print(frame)
 # b 1     6   7        8
 #   2     9  10       11
 </code></pre>
-<p>上面输出中的2个层级是没有名字。\
-分层的层级可以有名称（可以是字符串或Python对象）。\
+<p>上面输出中的2个层级是没有名字。
+分层的层级可以有名称（可以是字符串或Python对象）。
 如果层级有名称，这些名称会在控制台输出中显示。</p>
 <pre><code>print(frame.index.names)
 # [None, None]
 print(frame.columns.names)
 # [None, None]
 </code></pre>
-<p>给层级赋予名称。注意区分行标签中的索引名称’state’和’color'。</p>
+<p>给层级赋予名称。注意区分行标签中的索引名称<code>state</code>和<code>color</code>。</p>
 <pre><code>frame.index.names = ['key1', 'key2']
 frame.columns.names = ['state', 'color']
 print(frame)
@@ -580,10 +580,9 @@ print(frame.index)
 #             ('b', 2)],
 #            names=['key1', 'key2'])
 </code></pre>
-<p>通过MultiIndex类的相关方法，预先创建一个MultiIndex对象，然后作为Series与DataFrame中的index（或columns）参数值。
-同时，可以通过names参数指定多层索引的名称。</p>
-<h5 id="2from_arrays">方法2：from_arrays</h5>
-<p>from_arrays：接收一个多维数组参数，高维指定高层索引，低维指定底层索引。</p>
+<p>通过<code>MultiIndex</code>类的相关方法，预先创建一个<code>MultiIndex</code>对象，然后作为Series与DataFrame中的<code>index</code>（或columns）参数值。同时，可以通过<code>names</code>参数指定多层索引的名称。</p>
+<h4 id="2from_arrays">方法2：from_arrays</h4>
+<p><code>from_arrays</code>：接收一个多维数组参数，高维指定高层索引，低维指定底层索引。</p>
 <pre><code>mindex = pd.MultiIndex.from_arrays(
     [['a', 'a', 'b', 'b'],
      [1, 2, 1, 2]],
@@ -605,8 +604,8 @@ print(frame)
 # b    1        6   7        8
 #      2        9  10       11
 </code></pre>
-<h5 id="3from_tuples">方法3：from_tuples</h5>
-<p>from_tuples：接收一个元组的列表，每个元组指定每个索引（高维索引，低维索引）。</p>
+<h4 id="3from_tuples">方法3：from_tuples</h4>
+<p><code>from_tuples</code>：接收一个元组的列表，每个元组指定每个索引（高维索引，低维索引）。</p>
 <pre><code>mindex = pd.MultiIndex.from_tuples(
     [('a', 1),
      ('a', 2),
@@ -630,9 +629,9 @@ print(frame)
 # b    1        6   7        8
 #      2        9  10       11
 </code></pre>
-<h5 id="4from_product">方法4：from_product</h5>
-<p>from_product：接收一个可迭代对象的列表，根据多个可迭代对象元素的笛卡尔积进行创建索引。\
-使用笛卡尔积的方式来创建多层索引。参数为嵌套的可迭代对象。结果为使用每个一维数组中的元素与其他一维数组中的元素来生成\
+<h4 id="4from_product">方法4：from_product</h4>
+<p><code>from_product</code>：接收一个可迭代对象的列表，根据多个可迭代对象元素的笛卡尔积进行创建索引。
+使用笛卡尔积的方式来创建多层索引。参数为嵌套的可迭代对象。结果为使用每个一维数组中的元素与其他一维数组中的元素来生成。
 笛卡尔积的方式的局限：两两组合必须都存在，否则，就不能使用这种方式。</p>
 <pre><code>mindex = pd.MultiIndex.from_product(
     [['a', 'b'],
@@ -655,9 +654,9 @@ print(frame)
 # b    1        6   7        8
 #      2        9  10       11
 </code></pre>
-<h4 id="_2">重排序和层级排序</h4>
-<p>如果需要重新排列轴上的层级顺序，或者按照特定层级的值对数据进行排序，\
-可以通过swaplevel接收两个层级序号或层级名称，返回一个进行了层级变更的新对象（但是数据是不变的）</p>
+<h3 id="_3">重排序和层级排序</h3>
+<p>如果需要重新排列轴上的层级顺序，或者按照特定层级的值对数据进行排序，
+可以通过swaplevel接收两个层级序号或层级名称，返回一个进行了层级变更的新对象（但是数据是不变的）。</p>
 <pre><code>print(frame)
 # state      Ohio     Colorado
 # color     Green Red    Green
@@ -676,8 +675,8 @@ print(m)
 # 1    b        6   7        8
 # 2    b        9  10       11
 </code></pre>
-<p>sort_index只能在单一层级上对数据进行排序。\
-在进行层级变换时，使用sort_index以使得结果按照层级进行字典排序</p>
+<p><code>sort_index</code>只能在单一层级上对数据进行排序。
+在进行层级变换时，使用<code>sort_index</code>以使得结果按照层级进行字典排序。</p>
 <pre><code>m = frame.sort_index(level=1)  # 对key2排序，底层索引
 print(m)
 # state      Ohio     Colorado
@@ -707,8 +706,8 @@ print(m)
 # 1    b        6   7        8
 # 2    b        9  10       11
 </code></pre>
-<h4 id="_3">按层级进行汇总统计</h4>
-<p>DataFrame和Series中很多描述性和汇总性统计有一个level选项，通过level选项你可以指定你想要在某个特定的轴上进行聚合。</p>
+<h3 id="_4">按层级进行汇总统计</h3>
+<p>DataFrame和Series中很多描述性和汇总性统计有一个<code>level</code>选项，通过<code>level</code>选项你可以指定你想要在某个特定的轴上进行聚合。</p>
 <pre><code>print(frame)
 # state      Ohio     Colorado
 # color     Green Red    Green
@@ -733,7 +732,7 @@ print(m)
 # b    1        14    7
 #      2        20   10
 </code></pre>
-<h4 id="dataframe_1">使用DataFrame的列进行索引</h4>
+<h3 id="dataframe_1">使用DataFrame的列进行索引</h3>
 <p>通常我们不会使用DataFrame中一个或多个列作为行索引；反而你可能想要将行索引移动到DataFrame的列中。</p>
 <pre><code>frame = pd.DataFrame(
     {'a': range(7),
@@ -752,8 +751,8 @@ print(frame)
 # 5  5  2  two  2
 # 6  6  1  two  3
 </code></pre>
-<p>DataFrame的set_index函数会生成一个新的DataFrame，新的DataFrame使用一个或多个列作为索引\
-默认情况下这些索引列会从DataFrame中移除，也可以将它们留在DataFrame中</p>
+<p>DataFrame的<code>set_index</code>函数会生成一个新的DataFrame，新的DataFrame使用一个或多个列作为索引。
+默认情况下这些索引列会从DataFrame中移除，也可以将它们留在DataFrame中。</p>
 <pre><code>frame2 = frame.set_index(['c', 'd'], drop=False)
 print(frame2)
 #        a  b    c  d
@@ -778,8 +777,8 @@ print(frame2)
 #     2  5  2
 #     3  6  1
 </code></pre>
-<p>reset_index是set_index的反操作，分层索引的索引层级会被移动到列中\
-注意：如果在set_index时使用了drop=False，在使用reset_index会报错</p>
+<p><code>reset_index</code>是<code>set_index</code>的反操作，分层索引的索引层级会被移动到列中。
+注意：如果在<code>set_index</code>时使用了<code>drop=False</code>，在使用<code>reset_index</code>会报错。</p>
 <pre><code>m = frame2.reset_index()
 print(m)
 #      c  d  a  b
@@ -791,20 +790,21 @@ print(m)
 # 5  two  2  5  2
 # 6  two  3  6  1
 </code></pre>
-<h3 id="_4">联合与合并数据集</h3>
-<p>包含在pandas对象的数据可以通过多种方式联合在一起：
-* pandas.merge根据一个或多个键将行进行连接。对于SQL或其他关系型数据库的用户来说，这种方式比较熟悉，它实现的是数据库的连接操作。
-* pandas.concat使对象在轴向上进行黏合或“堆叠”。
-* combine_first实例方法允许将重叠的数据拼接在一起，以使用一个对象中的值填充另一个对象中的缺失值。</p>
-<h4 id="dataframe_2">数据库风格的DataFrame连接</h4>
-<p>合并或连接操作通过一个或多个键连接行来联合数据集。\
-这些操作是关系型数据库的核心内容（例如基于SQL的数据库）。\
-pandas中的merge函数主要用于将各种join操作算法运用在数据上。\
-在进行列-列连接时，传递的DataFrame索引对象会被丢弃\
-合并操作也要考虑如何处理重叠的列名(suffixes后缀选项)。\
-\
-下面是一个多对一连接的例子。\
-df1的数据有多个行的标签为a和b，而df2在key列中每个值仅有一行。</p>
+<h2 id="_5">联合与合并数据集</h2>
+<p>包含在pandas对象的数据可以通过多种方式联合在一起：</p>
+<ul>
+<li><code>pandas.merge</code>根据一个或多个键将行进行连接。对于SQL或其他关系型数据库的用户来说，这种方式比较熟悉，它实现的是数据库的连接操作。</li>
+<li><code>pandas.concat</code>使对象在轴向上进行黏合或“堆叠”。</li>
+<li><code>combine_first</code>实例方法允许将重叠的数据拼接在一起，以使用一个对象中的值填充另一个对象中的缺失值。</li>
+</ul>
+<h3 id="dataframe_2">数据库风格的DataFrame连接</h3>
+<p>合并或连接操作通过一个或多个键连接行来联合数据集。
+这些操作是关系型数据库的核心内容（例如基于SQL的数据库）。
+pandas中的<code>merge</code>函数主要用于将各种<code>join</code>操作算法运用在数据上。
+在进行列-列连接时，传递的DataFrame索引对象会被丢弃。
+合并操作也要考虑如何处理重叠的列名(<code>suffixes</code>后缀选项)。</p>
+<p>下面是一个多对一连接的例子。
+<code>df1</code>的数据有多个行的标签为<code>a</code>和<code>b</code>，而<code>df2</code>在<code>key</code>列中每个值仅有一行。</p>
 <pre><code>df1 = pd.DataFrame(
     {
         'key': ['b', 'b', 'a', 'c', 'a', 'a', 'b'],
@@ -832,7 +832,7 @@ print(df2)
 # 1   b      1
 # 2   d      2
 </code></pre>
-<p>调用merge处理，推荐显式地指定连接键。</p>
+<p>调用<code>merge</code>处理，推荐显式地指定连接键。</p>
 <pre><code>result = pd.merge(df1, df2)
 print(result)
 #   key  data1
@@ -851,7 +851,7 @@ print(result)
 # 4   a        4        0
 # 5   a        5        0
 </code></pre>
-<p>如果每个对象的列名是不同的，可以分别为它们指定列名</p>
+<p>如果每个对象的列名是不同的，可以分别为它们指定列名。</p>
 <pre><code>df3 = pd.DataFrame(
     {
         'lkey': ['b', 'b', 'a', 'c', 'a', 'a', 'b'],
@@ -880,7 +880,7 @@ print(df4)
 # 1    b      1
 # 2    d      2
 </code></pre>
-<p>默认情况下，merge做的是内连接（'inner'join），结果中的键是两张表的交集。</p>
+<p>默认情况下，<code>merge</code>做的是内连接（'inner' join），结果中的键是两张表的交集。</p>
 <pre><code>result = pd.merge(df3, df4, left_on='lkey', right_on='rkey')  # df4的[a,0]对应df3的所有[a,?]记录（通过重复来填充不足）
 print(result)
 #   lkey  data1 rkey  data2
@@ -891,8 +891,8 @@ print(result)
 # 4    a      4    a      0
 # 5    a      5    a      0
 </code></pre>
-<p>外连接（outer join）是键的并集，联合了左连接和右连接的效果\
-多对多连接是行的笛卡尔积</p>
+<p>外连接（outer join）是键的并集，联合了左连接和右连接的效果。
+多对多连接是行的笛卡尔积。</p>
 <pre><code>df1 = pd.DataFrame(
     {
         'key': ['b', 'b', 'a', 'c', 'a', 'b'],
@@ -952,7 +952,7 @@ print(result.sort_values(by='key'))
 # 10   c    3.0    NaN
 # 11   d    NaN    4.0
 </code></pre>
-<p>多键合并</p>
+<p>多键合并。</p>
 <pre><code>df1 = pd.DataFrame(
     {
         'key1': ['foo', 'foo', 'bar'],
@@ -988,7 +988,7 @@ print(result.sort_values(by=['key1', 'key2']))
 # 1  foo  one   1.0   5.0  # 重复填充
 # 2  foo  two   2.0   NaN
 </code></pre>
-<p>处理重叠列名</p>
+<p>处理重叠列名。</p>
 <pre><code>result = pd.merge(df1, df2, on='key1')
 print(result.sort_values(by='key1'))
 #   key1 key2_x  lval key2_y  rval
@@ -1008,8 +1008,8 @@ print(result.sort_values(by='key1'))
 # 2  foo       two     2        one     4
 # 3  foo       two     2        one     5
 </code></pre>
-<h4 id="_5">根据索引合并</h4>
-<p>在某些情况下，DataFrame中用于合并的键是它的索引。可以传递left_index=True或right_index=True（或者都传）来表示索引需要用来作为合并的键</p>
+<h3 id="_6">根据索引合并</h3>
+<p>在某些情况下，DataFrame中用于合并的键是它的索引。可以传递<code>left_index=True</code>或<code>right_index=True</code>（或者都传）来表示索引需要用来作为合并的键。</p>
 <pre><code>df1 = pd.DataFrame(
     {
         'key1': ['foo', 'foo', 'bar'],
@@ -1055,8 +1055,8 @@ print(result.sort_index())
 # 2  bar       bar       one     3        bar        one     6
 # 2  bar       bar       one     3        bar        two     7
 </code></pre>
-<p>在更复杂多层索引数据的多键合并，在索引上连接是一个隐式的多键合并\
-必须以列表的方式指明合并所需多个列（注意使用how='outer’处理重复的索引值）</p>
+<p>在更复杂多层索引数据的多键合并，在索引上连接是一个隐式的多键合并。
+必须以列表的方式指明合并所需多个列（注意使用<code>how='outer'</code>处理重复的索引值）。</p>
 <pre><code>df1 = pd.DataFrame(
     {
         'key1': ['Ohio', 'Ohio', 'Ohio', 'Nevada', 'Nevada'],
@@ -1106,9 +1106,9 @@ print(result)
 # 4  Nevada  2002   4.0     NaN     NaN
 # 4  Nevada  2000   NaN     2.0     3.0
 </code></pre>
-<p>使用两边的索引进行合并也是可以的，# 前提是用两边用来合并的索引有交集（公共部分）。\
-在使用merge时，参数on=['key1', 'key2']不能和 left_index=True, right_index=True同时存在。\
-对于重复索引，如果值不同，则多行显示，和数据库SQL的full join类似概念。\
+<p>使用两边的索引进行合并也是可以的，前提是用两边用来合并的索引有交集（公共部分）。
+在使用<code>merge</code>时，参数<code>on=['key1', 'key2']</code>不能和 <code>left_index=True</code>, <code>right_index=True</code>同时存在。
+对于重复索引，如果值不同，则多行显示，和数据库SQL的<code>full join</code>类似概念。
 如果出现相同列名，则会自动添加后缀字符以示区别。</p>
 <pre><code>df1 = pd.DataFrame(
     [[1, 2], [3, 4], [5, 6]],
@@ -1168,7 +1168,7 @@ print(result)
 # c   3.0     4.0      11.0     12.0
 # e   5.0     6.0      13.0     14.0
 </code></pre>
-<p>也可以向join方法传入一个DataFrame列表，类似于对三个数据集进行join操作</p>
+<p>也可以向<code>join</code>方法传入一个DataFrame列表，类似于对三个数据集进行<code>join</code>操作。</p>
 <pre><code>result = df1.join([df2, df3])
 print(result)
 #    Ohio  Nevada_x  Missouri  Alabama_x  Nevada_y  Alabama_y
@@ -1177,18 +1177,17 @@ print(result)
 # c     3         4      11.0       12.0         9         10
 # e     5         6      13.0       14.0        11         12
 </code></pre>
-<h4 id="_6">沿轴向连接</h4>
-<p>另一种数据组合操作可称为拼接、绑定或堆叠。NumPy的concatenate函数可以在NumPy数组上实现该功能。\
-\
-基于Series的pandas的concat函数的工作机制分析\
-下面三个索引不重叠的Series</p>
+<h3 id="_7">沿轴向连接</h3>
+<p>另一种数据组合操作可称为拼接、绑定或堆叠。NumPy的<code>concatenate</code>函数可以在NumPy数组上实现该功能。</p>
+<p>基于Series的pandas的<code>concat</code>函数的工作机制分析。</p>
+<p>下面三个索引不重叠的Series。</p>
 <pre><code>s1 = pd.Series([0, 1], index=['a', 'b'])
 s2 = pd.Series([2, 3, 4], index=['c', 'd', 'e'])
 s3 = pd.Series([5, 6], index=['f', 'g'])
 </code></pre>
-<p>用列表中的这些对象调用concat方法会将值和索引粘在一起：\
-默认情况下，concat方法是沿着axis=0的轴向生效的，生成另一个Series。\
-如果传递axis=1，返回的结果则是一个DataFrame（axis=1时是列）</p>
+<p>用列表中的这些对象调用<code>concat</code>方法会将值和索引粘在一起：
+默认情况下，<code>concat</code>方法是沿着<code>axis=0</code>的轴向生效的，生成另一个Series。
+如果传递<code>axis=1</code>，返回的结果则是一个DataFrame（<code>axis=1</code>时是列）。</p>
 <pre><code>result = pd.concat([s1, s2, s3])
 print(result)
 # a    0
@@ -1310,7 +1309,7 @@ print(result)
 # b  1.0  1.0
 # e  NaN  NaN
 </code></pre>
-<p>基于DataFrame的pandas的concat函数的工作机制分析</p>
+<p>基于DataFrame的pandas的<code>concat</code>函数的工作机制分析。</p>
 <pre><code>df1 = pd.DataFrame(
     np.arange(12).reshape((6, 2)),
     index=[
@@ -1369,9 +1368,9 @@ result = np.concatenate([df1, df2], axis=None)  # 将数组展平
 print(result)
 # [ 0  1  2  3  4  5  6  7  8  9 10 11  0  1  2  3  4  5  6  7  8  9 10 11]
 </code></pre>
-<h4 id="_7">联合重叠数据</h4>
-<p>另一个数据联合场景，既不是合并操作，也不是连接操作。\
-假如有两个数据集，这两个数据集的索引全部或部分重叠，通过NumPy的where函数可以进行面向数组的if-else等价操作。</p>
+<h3 id="_8">联合重叠数据</h3>
+<p>另一个数据联合场景，既不是合并操作，也不是连接操作。
+假如有两个数据集，这两个数据集的索引全部或部分重叠，通过NumPy的<code>where</code>函数可以进行面向数组的if-else等价操作。</p>
 <pre><code>s1 = pd.Series(
     [np.nan, 2.5, 0.0, 3.5, 4.5, np.nan],
     index=['f', 'e', 'd', 'c', 'b', 'a']
@@ -1398,7 +1397,7 @@ print(s2)
 # f    5.0
 # dtype: float64
 </code></pre>
-<p>方法1，通过Numpy的where函数</p>
+<p>方法1，通过Numpy的<code>where</code>函数。</p>
 <pre><code>result = np.where(pd.isnull(s1), s2, s1)  # An array with elements from 'x'(s2) where 'condition'(isnull(s1)) is True, and elements from 'y'(s1) elsewhere.
 print(result)
 # [0.  2.5 0.  3.5 4.5 5. ]
@@ -1414,7 +1413,7 @@ result = np.where(pd.isnull(s2), s1, s2)
 print(result)
 # [0.  2.5 2.  3.5 4.5 5. ]
 </code></pre>
-<p>方法2，通过Series的combine_first方法</p>
+<p>方法2，通过Series的<code>combine_first</code>方法。</p>
 <pre><code>result = s2.combine_first(s1)  # 注意，combine_first是按照s2的索引顺序检索的，相同索引的s1的值会填充对应s2的null
 print(result)
 # a    0.0
@@ -1425,7 +1424,7 @@ print(result)
 # f    5.0
 # dtype: float64
 </code></pre>
-<p>方法3：Pandas的combine_first方法</p>
+<p>方法3：Pandas的<code>combine_first</code>方法。</p>
 <pre><code>df1 = pd.DataFrame(
     {
         'a': [1.0, np.nan, 5.0, np.nan],
@@ -1461,15 +1460,17 @@ print(result)
 # 3  3.0  6.0  15.0
 # 4  7.0  8.0   NaN
 </code></pre>
-<h3 id="_8">重塑和透视</h3>
+<h2 id="_9">重塑和透视</h2>
 <p>重新排列表格型数据有多种基础操作。这些操作被称为重塑或透视。</p>
 <pre><code>import numpy as np
 import pandas as pd
 </code></pre>
-<h4 id="_9">使用多层索引进行重塑</h4>
-<p>多层索引在DataFrame中提供了一种一致性方式用于重排列数据。以下是两个基础操作：
-* statck（堆叠）该操作会“旋转”或将列中的数据透视到行。
-* unstack（拆堆）该操作会将行中的数据透视到列。</p>
+<h3 id="_10">使用多层索引进行重塑</h3>
+<p>多层索引在DataFrame中提供了一种一致性方式用于重排列数据。以下是两个基础操作：</p>
+<ul>
+<li>statck（堆叠）该操作会“旋转”或将列中的数据透视到行。</li>
+<li>unstack（拆堆）该操作会将行中的数据透视到列。</li>
+</ul>
 <pre><code>df = pd.DataFrame(
     np.arange(6).reshape((2, 3)),
     index=pd.Index(['Ohio', 'Colorado'], name='state'),
@@ -1493,7 +1494,7 @@ print(result)
 #           three     5
 # dtype: int64
 </code></pre>
-<p>从一个多层索引序列中，你可以使用unstack方法将数据重排列后放入一个DataFrame中：</p>
+<p>从一个多层索引序列中，你可以使用<code>unstack</code>方法将数据重排列后放入一个DataFrame中：</p>
 <pre><code>print(result.unstack())
 # number    one  two  three
 # state
@@ -1548,7 +1549,7 @@ print(s3.unstack())
 # one  0.0  1.0  2.0  3.0  NaN
 # two  NaN  NaN  4.0  5.0  6.0
 </code></pre>
-<p>默认情况下，堆叠会过滤出缺失值，因此堆叠拆堆的操作是可逆的</p>
+<p>默认情况下，堆叠会过滤出缺失值，因此堆叠拆堆的操作是可逆的。</p>
 <pre><code>print(s3.unstack().stack())
 # one  a    0.0
 #      b    1.0
@@ -1571,8 +1572,8 @@ print(s3.unstack().stack(dropna=False))
 #      e    6.0
 # dtype: float64
 </code></pre>
-<p>在DataFrame中拆堆时，被拆堆的层级会变为结果中最低的层级\
-在调用stack方法时，我们可以指明需要堆叠的轴向名称</p>
+<p>在DataFrame中拆堆时，被拆堆的层级会变为结果中最低的层级。
+在调用<code>stack</code>方法时，我们可以指明需要堆叠的轴向名称。</p>
 <pre><code>df = pd.DataFrame(
     {'left': result, 'right': result + 5},
     columns=pd.Index(['left', 'right'], name='side')
@@ -1600,7 +1601,7 @@ print(df.unstack('state'))  # 被拆堆的层级(state)会变为结果中最低�
 # two       1        4     6        9
 # three     2        5     7       10
 </code></pre>
-<p>在调用stack方法时，可以指明需要堆叠的轴向名称：</p>
+<p>在调用<code>stack</code>方法时，可以指明需要堆叠的轴向名称：</p>
 <pre><code>print(df.unstack('state').stack('side'))
 # state         Colorado  Ohio
 # number side
@@ -1611,7 +1612,7 @@ print(df.unstack('state'))  # 被拆堆的层级(state)会变为结果中最低�
 # three  left          5     2
 #        right        10     7
 </code></pre>
-<h4 id="_10">将“长”透视为“宽”</h4>
+<h3 id="_11">将“长”透视为“宽”</h3>
 <p>在数据库和CSV中存储多时间序列的方式就是所谓的长格式或堆叠格式。</p>
 <pre><code>data = pd.read_csv('../examples/macrodata.csv')
 
@@ -1651,8 +1652,8 @@ print(data.index)
 #                '2009-09-30 23:59:59.999999999'],
 #               dtype='datetime64[ns]', name='date', length=203, freq=None)
 </code></pre>
-<p>下面是ldata的数据样本。\
-这种数据即所谓的多时间序列的长格式，或称为具有两个或更多个键的其他观测数据（这里，我们的键是date和item）。\
+<p>下面是ldata的数据样本。
+这种数据即所谓的多时间序列的长格式，或称为具有两个或更多个键的其他观测数据（这里，我们的键是date和item）。
 表中的每一行表示一个时间点上的单个观测值。</p>
 <pre><code>ldata = data.stack().reset_index().rename(columns={0: 'value'})
 print(ldata)
@@ -1670,13 +1671,13 @@ print(ldata)
 # 608 2009-09-30 23:59:59.999999999    unemp      9.600
 # [609 rows x 3 columns]
 </code></pre>
-<p>在上面的例子中：\
-数据通常以这种方式存储在关系型数据库中，比如MySQL，因为固定模式（列名称和数据类型）允许item列中不同值的数量随着数据被添加到表中而改变。\
-date和item通常是主键（使用关系型数据库的说法），提供了关系完整性和更简单的连接。\
-在某些情况下，处理这种格式的数据更为困难。可能更倾向于获取一个按date列时间戳索引的且每个不同的item独立一列的DataFrame。\
-DataFrame的pivot方法就是进行这种转换的：\
-下面例子中，传递的前两个值是分别用作行和列索引的列，然后是可选的数值列以填充DataFrame。\
-注意，pivot方法等价于使用set_index创建分层索引，然后调用unstack。</p>
+<p>在上面的例子中：</p>
+<p>数据通常以这种方式存储在关系型数据库中，比如MySQL，因为固定模式（列名称和数据类型）允许<code>item</code>列中不同值的数量随着数据被添加到表中而改变。</p>
+<p><code>date</code>和<code>item</code>通常是主键（使用关系型数据库的说法），提供了关系完整性和更简单的连接。
+在某些情况下，处理这种格式的数据更为困难。可能更倾向于获取一个按<code>date</code>列时间戳索引的且每个不同的<code>item</code>独立一列的DataFrame。</p>
+<p>DataFrame的pivot方法就是进行这种转换的：</p>
+<p>下面例子中，传递的前两个值是分别用作行和列索引的列，然后是可选的数值列以填充DataFrame。
+注意，<code>pivot</code>方法等价于使用<code>set_index</code>创建分层索引，然后调用unstack。</p>
 <pre><code>pivoted = ldata.pivot('date', 'item', 'value')
 print(pivoted)
 # item                           infl    realgdp  unemp
@@ -1697,7 +1698,7 @@ print(ldata[:5])
 # 3 1959-06-30 23:59:59.999999999  realgdp  2778.801  0.132797
 # 4 1959-06-30 23:59:59.999999999     infl     2.340  0.180290
 </code></pre>
-<p>此时ldata已经添加了一列。如果遗漏最后一个参数，会得到一个含有多层列的DataFrame，如下：</p>
+<p>此时<code>ldata</code>已经添加了一列。如果遗漏最后一个参数，会得到一个含有多层列的DataFrame，如下：</p>
 <pre><code>pivoted = ldata.pivot('date', 'item')
 print(pivoted)
 #                               value             ...    value2
@@ -1710,7 +1711,7 @@ print(pivoted)
 # 2009-09-30 23:59:59.999999999  3.56  12990.341  ...  0.547914  1.842967
 # [203 rows x 6 columns]
 </code></pre>
-<p>注意，pivot方法等价于使用set_index创建分层索引，然后调用unstack。</p>
+<p>注意，<code>pivot</code>方法等价于使用<code>set_index</code>创建分层索引，然后调用<code>unstack</code>。</p>
 <pre><code>unstacked = ldata.set_index(['date', 'item']).unstack('item')
 print(unstacked[:5])
 #                               value            ...    value2
@@ -1723,8 +1724,8 @@ print(unstacked[:5])
 # 1960-03-31 23:59:59.999999999  2.31  2847.699  ...  0.377330  2.272980
 # [5 rows x 6 columns]
 </code></pre>
-<h4 id="_11">将“宽”透视为“长”</h4>
-<p>在DataFrame中，pivot方法的反操作是pandas.melt。\
+<h3 id="_12">将“宽”透视为“长”</h3>
+<p>在DataFrame中，pivot方法的反操作是<code>pandas.melt</code>。
 与将一列变换为新的DataFrame中的多列不同，它将多列合并成一列，产生一个新的DataFrame，其长度比输入更长。</p>
 <pre><code>df = pd.DataFrame(
     {
@@ -1741,9 +1742,9 @@ print(df)
 # 1  bar  2  5  8
 # 2  baz  3  6  9
 </code></pre>
-<p>'key’列可以作为分组指标，其他列均为数据值。\
-当使用pandas.melt时，我们必须指明哪些列是分组指标（如果有的话）。\
-此处，让我们使用’key’作为唯一的分组指标：</p>
+<p><code>key</code>列可以作为分组指标，其他列均为数据值。
+当使用<code>pandas.melt</code>时，我们必须指明哪些列是分组指标（如果有的话）。</p>
+<p>此处，让我们使用<code>key</code>作为唯一的分组指标：</p>
 <pre><code>melted = pd.melt(df, ['key'])
 print(melted)
 #    key variable  value
@@ -1757,7 +1758,7 @@ print(melted)
 # 7  bar        C      8
 # 8  baz        C      9
 </code></pre>
-<p>使用pivot方法，我们可以将数据重塑回原先的布局</p>
+<p>使用<code>pivot</code>方法，我们可以将数据重塑回原先的布局。</p>
 <pre><code>reshaped = melted.pivot('key', 'variable', 'value')
 print(reshaped)
 # variable  A  B  C
@@ -1766,14 +1767,14 @@ print(reshaped)
 # baz       3  6  9
 # foo       1  4  7
 </code></pre>
-<p>由于pivot的结果根据作为行标签的列生成了索引，可使用reset_index来将数据回移一列：</p>
+<p>由于<code>pivot</code>的结果根据作为行标签的列生成了索引，可使用<code>reset_index</code>来将数据回移一列：</p>
 <pre><code>print(reshaped.reset_index())
 # variable  key  A  B  C
 # 0         bar  2  5  8
 # 1         baz  3  6  9
 # 2         foo  1  4  7
 </code></pre>
-<p>pandas.melt的使用也可以无须任何分组指标</p>
+<p><code>pandas.melt</code>的使用也可以无须任何分组指标。</p>
 <pre><code>result = pd.melt(df, value_vars=['A', 'B', 'C'])
 print(result)
 #   variable  value

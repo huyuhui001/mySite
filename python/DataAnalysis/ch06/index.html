@@ -15,7 +15,7 @@
     
     
       
-        <title>Ch06 - from ZERO to ONE</title>
+        <title>绘图与可视化 - from ZERO to ONE</title>
       
     
     
@@ -65,7 +65,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#matplotlib-api" class="md-skip">
+        <a href="#_1" class="md-skip">
           Skip to content
         </a>
       
@@ -98,7 +98,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Ch06
+              绘图与可视化
             
           </span>
         </div>
@@ -253,6 +253,8 @@
   
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -269,30 +271,36 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#_1" class="md-nav__link">
+  <a href="#_2" class="md-nav__link">
     图片与子图
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#_2" class="md-nav__link">
+  <a href="#_3" class="md-nav__link">
     颜色、标记和线类型
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#_3" class="md-nav__link">
+  <a href="#_4" class="md-nav__link">
     刻度、标签和图例
   </a>
   
-</li>
+    <nav class="md-nav" aria-label="刻度、标签和图例">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#matplotlib" class="md-nav__link">
     matplotlib设置
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -310,28 +318,28 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#_4" class="md-nav__link">
+  <a href="#_5" class="md-nav__link">
     折线图
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#_5" class="md-nav__link">
+  <a href="#_6" class="md-nav__link">
     直方图和密度图
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#_6" class="md-nav__link">
+  <a href="#_7" class="md-nav__link">
     散点图或点图
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#_7" class="md-nav__link">
+  <a href="#_8" class="md-nav__link">
     分面网格和分类数据
   </a>
   
@@ -363,46 +371,46 @@
                 
 
 
-  <h1>Ch06</h1>
-
-<h3 id="matplotlib-api">简明matplotlib API入门</h3>
+<h1 id="_1">绘图与可视化</h1>
+<h2 id="matplotlib-api">简明matplotlib API入门</h2>
 <pre><code>import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from io import BytesIO
 </code></pre>
-<p>执行plt.show()时报错：\
-UserWarning: Matplotlib is currently using agg, which is a non-GUI backend, so cannot show the figure.\
-\
-执行下面命令，得到plt的backend是用agg\
-import matplotlib.pyplot as plt\
-plt.get_backend()例如：下面两种表达方式效果一样\
-ax.plot(x, y, 'g--')\
-ax.plot(x, y, linestyle='--', color='g')\
-Out[6]: 'agg'\
-\
-安装下面几个包：\
-sudo zypper in python-tk python3-tk\
-sudo zypper in plplot-tcltk-devel plplot-tcltk-libs\
-pip install tk\</p>
-<p>添加下面到python代码中\
-import matplotlib.pyplot as plt\
-mpl.use('TkAgg')\
-\
-执行后报下面错误：\
-your Python may not be configured for Tk\</p>
-<p>进入python源码目录，重新编译例如：下面两种表达方式效果一样\
-ax.plot(x, y, 'g--')\
-ax.plot(x, y, linestyle='--', color='g')\
-james@lizard:/opt/Python-3.9.6&gt; sudo make\
-james@lizard:/opt/Python-3.9.6&gt; sudo make install\
-\
-问题解决，即使不加入mpl.use('TkAgg')，执行plt.show()也是可以输出图像。</p>
-<h4 id="_1">图片与子图</h4>
-<p>matplotlib所绘制的图位于图片（Figure）对象中。可以使用plt.figure生成一个新的图片。 \
-使用add_subplot创建一个或多个子图（subplot）。\</p>
-<p>plt与ax绘图</p>
+<p>执行<code>plt.show()</code>时报错：
+<code>UserWarning: Matplotlib is currently using agg, which is a non-GUI backend, so cannot show the figure.</code></p>
+<p>执行下面命令，得到<code>plt</code>的<code>backend</code>是用<code>agg</code>。</p>
+<pre><code>plt.get_backend()
+</code></pre>
+<p>例如：下面两种表达方式效果一样。</p>
+<pre><code>ax.plot(x, y, 'g--')
+ax.plot(x, y, linestyle='--', color='g')
+Out[6]: 'agg'
+</code></pre>
+<p>安装下面几个包：</p>
+<pre><code>sudo zypper in python-tk python3-tk
+sudo zypper in plplot-tcltk-devel plplot-tcltk-libs
+pip install tk
+</code></pre>
+<p>添加下面到python代码中。</p>
+<pre><code>import matplotlib.pyplot as plt
+mpl.use('TkAgg')
+</code></pre>
+<p>执行后报下面错误：
+<code>your Python may not be configured for Tk</code></p>
+<p>进入python源码目录，重新编译例如：下面两种表达方式效果一样。</p>
+<pre><code>ax.plot(x, y, 'g--')
+ax.plot(x, y, linestyle='--', color='g')
+james@lizard:/opt/Python-3.9.6&gt; sudo make
+james@lizard:/opt/Python-3.9.6&gt; sudo make install
+</code></pre>
+<p>问题解决，即使不加入<code>mpl.use('TkAgg')</code>，执行<code>plt.show()</code>也是可以输出图像。</p>
+<h3 id="_2">图片与子图</h3>
+<p><code>matplotlib</code>所绘制的图位于图片（Figure）对象中。可以使用<code>plt.figure</code>生成一个新的图片。 
+使用<code>add_subplot</code>创建一个或多个子图（subplot）。</p>
+<p><code>plt</code>与<code>ax</code>绘图。</p>
 <pre><code>fig = plt.figure()
 # plt: 先生成了一个画布，然后在这个画布上隐式的生成一个画图区域来进行画图
 # plt.plot([1, 2, 3, 4])
@@ -415,7 +423,7 @@ ax1.plot([1, 2, 3, 4], [1, 4, 3, 2])  # 输出图片到第一个区域。
 # 不是数学上常见的成对坐标点如(x1,y1)、(x2,y2)、...、(xn,yn)的格式，而是 (x1,x2,...,xn)和(y1,y2,...,yn) 。
 plt.show()
 </code></pre>
-<p>看下面例子，增加子图后的数据可视化效果</p>
+<p>看下面例子，增加子图后的数据可视化效果。</p>
 <pre><code>fig = plt.figure()
 ax1 = fig.add_subplot(2, 2, 1)
 ax2 = fig.add_subplot(2, 2, 2)
@@ -425,31 +433,34 @@ ax2.hist(np.random.randn(100), bins=20, color='k', alpha=0.3)
 ax3.scatter(np.arange(30), np.arange(30) + 3 * np.random.randn(30))
 plt.show()
 </code></pre>
-<p>plt.subplots\
-通过matplotlib的subplots方法，使用子图网格创建图片，然后返回包含了已生成子图对象的NumPy数组\
-数组axes可以像二维数组那样方便地进行索引，例如，axes[0, 1]。\
-plt.subplots参数选项：
-* nrows：可选的，整型，默认为1。子图网格的行数。
-* ncols：可选的，整型，默认为1。子图网格的列数。
-* sharex：可选的，默认为False。可选值如下：
-  * True或all，所有子图共享x轴
-  * False或none，每个子图的x轴都是独立的
-  * row，每行子图共享一个x轴
-  * col，每列子图共享一个x轴
-* sharey：类似于sharex，设置y轴的共享方式。当某列共享一个x轴时，只有底部的子图会创建x轴标记。同样的，如果某行共享一个y轴时，只有行的第一列子图会创建y轴标记。
-* squeeze ：可选的，布尔型，默认为True。是否压缩返回的Axes数组。如果为True，当只有一个子图，即nrows和ncols均为1时，返回一个单独的Axes对象，当有N<em>1和1</em>M个子图时，返回一个一维Axes对象数组。当有N*M个子图（N&gt;1，M&gt;1）时，返回二维数组。如果为False，则总是返回二维数组。
-* num：可选的，整型或字符串，默认为None。是matplotlib.pyplot.figure的关键字，用于设置图像数字或标签。如果未设置此参数，会创建一个新的图像，并递增图像编号，figure对象会将编号保存在number属性中。如果设置了此参数，并且存在参数指定的图像，则会返回此图像的引用，如果不存在则会创建新的图像并返回它的引用。如果是字符串，则窗口标题会被设置为此字符串的值。
-* subplot_kw：可选的，字典类型。包含传递给用于创建子图的调用add_subplot的关键字参数。
-* gridspec_kw：可选的，字典类型。包含传递给用于创建子图网格的GridSpec构造函数的关键字参数。</p>
+<p><code>plt.subplots</code> 通过<code>matplotlib</code>的<code>subplots</code>方法，使用子图网格创建图片，然后返回包含了已生成子图对象的NumPy数组。
+数组<code>axes</code>可以像二维数组那样方便地进行索引，例如，<code>axes[0, 1]</code>。</p>
+<p><code>plt.subplots</code>参数选项：</p>
+<ul>
+<li>nrows：可选的，整型，默认为1。子图网格的行数。</li>
+<li>ncols：可选的，整型，默认为1。子图网格的列数。</li>
+<li>sharex：可选的，默认为False。可选值如下：<ul>
+<li>True或all，所有子图共享x轴</li>
+<li>False或none，每个子图的x轴都是独立的</li>
+<li>row，每行子图共享一个x轴</li>
+<li>col，每列子图共享一个x轴</li>
+</ul>
+</li>
+<li>sharey：类似于sharex，设置y轴的共享方式。当某列共享一个x轴时，只有底部的子图会创建x轴标记。同样的，如果某行共享一个y轴时，只有行的第一列子图会创建y轴标记。</li>
+<li>squeeze ：可选的，布尔型，默认为True。是否压缩返回的Axes数组。如果为True，当只有一个子图，即nrows和ncols均为1时，返回一个单独的Axes对象，当有N<em>1和1</em>M个子图时，返回一个一维Axes对象数组。当有N*M个子图（N&gt;1，M&gt;1）时，返回二维数组。如果为False，则总是返回二维数组。</li>
+<li>num：可选的，整型或字符串，默认为None。是matplotlib.pyplot.figure的关键字，用于设置图像数字或标签。如果未设置此参数，会创建一个新的图像，并递增图像编号，figure对象会将编号保存在number属性中。如果设置了此参数，并且存在参数指定的图像，则会返回此图像的引用，如果不存在则会创建新的图像并返回它的引用。如果是字符串，则窗口标题会被设置为此字符串的值。</li>
+<li>subplot_kw：可选的，字典类型。包含传递给用于创建子图的调用add_subplot的关键字参数。</li>
+<li>gridspec_kw：可选的，字典类型。包含传递给用于创建子图网格的GridSpec构造函数的关键字参数。</li>
+</ul>
 <pre><code>fig, axes = plt.subplots(2, 3)
 print(axes)  # 将生成的axes对象放入NumPy数组。
 # [[&lt;AxesSubplot:&gt; &lt;AxesSubplot:&gt; &lt;AxesSubplot:&gt;]
 #  [&lt;AxesSubplot:&gt; &lt;AxesSubplot:&gt; &lt;AxesSubplot:&gt;]]
 </code></pre>
-<p>调整子图周围的间距\
-默认情况下，matplotlib会在子图的外部和子图之间留出一定的间距。\
-这个间距都是相对于图的高度和宽度来指定的，手动调整图的大小，那么间距会自动调整。\
-也可以使用图对象上的subplots_adjust方法更改间距，也可以用作顶层函数。</p>
+<p>调整子图周围的间距。
+默认情况下，<code>matplotlib</code>会在子图的外部和子图之间留出一定的间距。
+这个间距都是相对于图的高度和宽度来指定的，手动调整图的大小，那么间距会自动调整。
+也可以使用图对象上的<code>subplots_adjust</code>方法更改间距，也可以用作顶层函数。</p>
 <pre><code>fig, axes = plt.subplots(2, 2, sharex=True, sharey=True)
 
 for i in range(2):
@@ -459,12 +470,14 @@ for i in range(2):
 plt.subplots_adjust(wspace=0, hspace=0)
 plt.show()
 </code></pre>
-<p>上面输出图像的轴标签是存在重叠的。matplotlib并不检查标签是否重叠，因此在类似情况下你需要通过显式指定刻度位置和刻度标签的方法来修复轴标签。</p>
-<h4 id="_2">颜色、标记和线类型</h4>
-<p>matplotlib的主函数plot接收带有x和y轴的数组以及一些可选的字符串缩写参数来指明颜色和线类型。\
-例如：下面两种表达方式效果一样\
-ax.plot(x, y, 'g--')\
-ax.plot(x, y, linestyle='--', color='g')</p>
+<p>上面输出图像的轴标签是存在重叠的。<code>matplotlib</code>并不检查标签是否重叠，因此在类似情况下你需要通过显式指定刻度位置和刻度标签的方法来修复轴标签。</p>
+<h3 id="_3">颜色、标记和线类型</h3>
+<p><code>matplotlib</code>的主函数<code>plot</code>接收带有<code>x</code>和<code>y</code>轴的数组以及一些可选的字符串缩写参数来指明颜色和线类型。
+例如：下面两种表达方式效果一样。</p>
+<ul>
+<li><code>ax.plot(x, y, 'g--')</code></li>
+<li><code>ax.plot(x, y, linestyle='--', color='g')</code></li>
+</ul>
 <pre><code>data = np.random.randn(30).cumsum()
 plt.plot(data, 'ko--')
 plt.show()
@@ -476,14 +489,16 @@ plt.show()
 plt.plot(data, color='k', linestyle='dashed', marker='o', label='steps-post', drawstyle='steps-post')
 plt.show()
 </code></pre>
-<h4 id="_3">刻度、标签和图例</h4>
-<p>对于大多数图表修饰工作，有两种主要的方式：使用程序性的pyplot接口（即matplotlib.pyplot）和更多面向对象的原生matplotlib API。\
-pyplot接口设计为交互式使用，包含了像xlim、xticks和xticklabels等方法。这些方法分别控制了绘图范围、刻度位置以及刻度标签。
-* 在没有函数参数的情况下调用，返回当前的参数值（例如plt.xlim()返回当前的x轴绘图范围）。
-* 传入参数的情况下调用，并设置参数值（例如plt.xlim（[0, 10]）会将x轴的范围设置为0到10）。</p>
-<p>所有的这些方法都会在当前活动的或最近创建的AxesSubplot上生效。\
-这些方法中的每一个对应于子图自身的两个方法。比如xlim对应于ax.get_lim和ax.set_lim。\
-推荐使用subplot的实例方法，因为这样更为显式（尤其是在处理多个子图时）。</p>
+<h3 id="_4">刻度、标签和图例</h3>
+<p>对于大多数图表修饰工作，有两种主要的方式：使用程序性的pyplot接口（即matplotlib.pyplot）和更多面向对象的原生matplotlib API。</p>
+<p><code>pyplot</code>接口设计为交互式使用，包含了像<code>xlim</code>、<code>xticks</code>和<code>xticklabels</code>等方法。这些方法分别控制了绘图范围、刻度位置以及刻度标签。</p>
+<ul>
+<li>在没有函数参数的情况下调用，返回当前的参数值（例如<code>plt.xlim()</code>返回当前的x轴绘图范围）。</li>
+<li>传入参数的情况下调用，并设置参数值（例如<code>plt.xlim（[0, 10]）</code>会将<code>x</code>轴的范围设置为0到10）。</li>
+</ul>
+<p>所有的这些方法都会在当前活动的或最近创建的<code>AxesSubplot</code>上生效。
+这些方法中的每一个对应于子图自身的两个方法。比如<code>xlim</code>对应于<code>ax.get_lim</code>和<code>ax.set_lim</code>。
+推荐使用<code>subplot</code>的实例方法，因为这样更为显式（尤其是在处理多个子图时）。</p>
 <pre><code>data = np.random.randn(1000).cumsum()
 fig = plt.figure()
 
@@ -545,11 +560,11 @@ plot_data = buffer.getvalue()
 plt.show()
 </code></pre>
 <h4 id="matplotlib">matplotlib设置</h4>
-<p>matplotlib配置了配色方案和默认设置，通过全局参数来定制，包括图形大小、子图间距、颜色、字体大小和网格样式等等。\
-使用rc方法是使用Python编程修改配置的一种方式。\
-rc的第一个参数是你想要自定义的组件，比如’figure'、'axes'、'xtick'、'ytick'、'grid'、'legend’等等。之后，可以按照关键字参数的序列指定新参数。\
-字典是一种在程序中设置选项的简单方式。\
-比如</p>
+<p><code>matplotlib</code>配置了配色方案和默认设置，通过全局参数来定制，包括图形大小、子图间距、颜色、字体大小和网格样式等等。
+使用<code>rc</code>方法是使用Python编程修改配置的一种方式。
+<code>rc</code>的第一个参数是你想要自定义的组件，比如<code>'figure'、'axes'、'xtick'、'ytick'、'grid'、'legend'</code>等等。
+之后，可以按照关键字参数的序列指定新参数。</p>
+<p>字典是一种在程序中设置选项的简单方式。比如：</p>
 <pre><code>plt.rc('figure', figsize=(10, 10))
 font_options = {
     'family': 'monospace', 
@@ -558,97 +573,99 @@ font_options = {
 }
 plt.rc('font', **font_options)
 </code></pre>
-<h3 id="pandasseaborn">使用pandas和seaborn绘图</h3>
-<p>pandas自身有很多内建方法可以简化从DataFrame和Series对象生成可视化的过程。\
-另一个库是seaborn （https://seaborn.pydata.org/）。seaborn简化了很多常用可视化类型的生成。\
-导入seaborn会修改默认的matplotlib配色方案和绘图样式，这会提高图表的可读性和美观性。\
+<h2 id="pandasseaborn">使用pandas和seaborn绘图</h2>
+<p>pandas自身有很多内建方法可以简化从DataFrame和Series对象生成可视化的过程。
+另一个库是<a href="https://seaborn.pydata.org/">seaborn</a>。
+<code>seaborn</code>简化了很多常用可视化类型的生成。
+导入<code>seaborn</code>会修改默认的matplotlib配色方案和绘图样式，这会提高图表的可读性和美观性。
 即使不使用seaborn的API，也可以导入seaborn来为通用matplotlib图表提供更好的视觉美观度。</p>
 <pre><code>import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 </code></pre>
-<h4 id="_4">折线图</h4>
-<p>Series和DataFrame都有一个plot属性，用于绘制基本的图形。默认情况下，plot()绘制的是折线图\
-\
-Series的plot参数
-* ax: matplotlib子图对象axes，如果没有传值，则使用当前活动的子图默认使用gca()
-* alpha: 图片不透明度（0到1）
-* data: 数据序列Series
-* figsize: 图像尺寸，tuple(宽度，高度)，注意这里的单位是英寸
-* fontsize: 设置刻度标签（xticks, yticks）的大小
-* grid: 网格线（默认是打开的）
-* kind: 图类型：折线图，柱形图，横向柱形图，直方图，箱线图，密度图，面积图，饼图
-* label: 列的别名，作用在图例上
-* legend: 图例
-* loglog: x,y轴都使用对数刻度
-* logx: x轴使用对数刻度
-* logy: y轴使用对数刻度
-* mark_right: 双 y 轴时，在图例中的列标签旁增加显示 (right) 标识
-* position: 柱形图的柱子的位置设置
-* rot: 改变刻度标签（xticks, yticks）的旋转度（0到360）
-* secondary_y: 双 y 轴，在右边的第二个 y 轴
-* style: 线的样式，比如'ko--'
-* table: 将数据以表格的形式展示出来
-* title: 标题
-* use_index: 是否使用索引作为x刻度标签
-* xerr: 带误差线的柱形图
-* xlim: 横轴坐标刻度的取值范围
-* xticks: x轴刻度标签
-* yerr: 带误差线的柱形图
-* ylim: 纵轴坐标刻度的取值范围
-* yticks: y轴刻度标签
-* **kwds: matplotlib plot方法的其他参数</p>
-<p>\
-DataFrame的plot参数
-* x : 指数据框列的标签或位置参数
-* y : 指数据框列的标签或位置参数
-* kind :
-* 'line' : 折线图
-* 'bar' : 条形图
-* 'barh' : 横向条形图
-* 'hist' : 柱状图
-* 'box' : 箱线图
-* 'kde' : Kernel的密度估计图，主要对柱状图添加Kernel 概率密度线
-* 'density' : 'kde'
-* 'area' : area plot
-* 'pie' : 饼图
-* 'scatter' : 散点图 需要传入columns方向的索引
-* 'hexbin' : hexbin plot
-* ax : 子图(axes, 也可以理解成坐标轴) 要在其上进行绘制的matplotlib subplot对象。如果没有设置，则使用当前matplotlib subplot。其中，变量和函数通过改变figure和axes中的元素（例如：title,label,点和线等等）一起描述figure和axes，也就是在画布上绘图。
-* subplots : 判断图片中是否有子图
-* sharex : 如果有子图，子图共x轴刻度，标签
-* sharey : 如果有子图，子图共y轴刻度，标签
-* layout : 子图的行列布局
-* figsize : 图片尺寸大小
-* use_index : 默认用索引做x轴
-* title : 图片的标题用字符串
-* grid : 图片是否有网格
-* legend : 子图的图例，添加一个subplot图例(默认为True)
-* style : 对每列折线图设置线的类型
-* logx : 设置x轴刻度是否取对数
-* logy : 设置y轴刻度是否取对数
-* loglog : 同时设置x，y轴刻度是否取对数
-* xticks : 设置x轴刻度值，序列形式（比如列表）
-* yticks : 设置y轴刻度，序列形式（比如列表）
-* xlim : 设置坐标轴x的范围，列表或元组形式
-* ylim : 设置坐标轴y的范围，列表或元组形式
-* rot : 设置轴标签（轴刻度）的显示旋转度数
-* fontsize : 设置轴刻度的字体大小
-* colormap : 设置图的区域颜色
-* colorbar : 图片柱子
-* position : Specify relative alignments for bar plot layout. From 0 (left/bottom-end) to 1 (right/top-end). Default is 0.5 (center)
-* layout : 布局(rows, columns) for the layout of the plot
-* table : 如果为正，则选择DataFrame类型的数据并且转换匹配matplotlib的布局
-* yerr : 带误差线的柱形图
-* xerr : 带误差线的柱形图
-* stacked : 生成堆积柱状图
-* sort_columns : 以字母表顺序绘制各列，默认使用前列顺序
-* secondary_y : 设置第二个y轴（右y轴）
-* mark_right : When using a secondary_y axis, automatically mark the column labels with “(right)” in the legend
-* kwds : Options to pass to matplotlib plotting method</p>
-<p>\
-Series</p>
+<h3 id="_5">折线图</h3>
+<p>Series和DataFrame都有一个<code>plot</code>属性，用于绘制基本的图形。默认情况下，<code>plot()</code>绘制的是折线图。</p>
+<p>Series的<code>plot</code>参数：</p>
+<ul>
+<li>ax: matplotlib子图对象axes，如果没有传值，则使用当前活动的子图默认使用gca()</li>
+<li>alpha: 图片不透明度（0到1）</li>
+<li>data: 数据序列Series</li>
+<li>figsize: 图像尺寸，tuple(宽度，高度)，注意这里的单位是英寸</li>
+<li>fontsize: 设置刻度标签（xticks, yticks）的大小</li>
+<li>grid: 网格线（默认是打开的）</li>
+<li>kind: 图类型：折线图，柱形图，横向柱形图，直方图，箱线图，密度图，面积图，饼图</li>
+<li>label: 列的别名，作用在图例上</li>
+<li>legend: 图例</li>
+<li>loglog: x,y轴都使用对数刻度</li>
+<li>logx: x轴使用对数刻度</li>
+<li>logy: y轴使用对数刻度</li>
+<li>mark_right: 双 y 轴时，在图例中的列标签旁增加显示 (right) 标识</li>
+<li>position: 柱形图的柱子的位置设置</li>
+<li>rot: 改变刻度标签（xticks, yticks）的旋转度（0到360）</li>
+<li>secondary_y: 双 y 轴，在右边的第二个 y 轴</li>
+<li>style: 线的样式，比如'ko--'</li>
+<li>table: 将数据以表格的形式展示出来</li>
+<li>title: 标题</li>
+<li>use_index: 是否使用索引作为x刻度标签</li>
+<li>xerr: 带误差线的柱形图</li>
+<li>xlim: 横轴坐标刻度的取值范围</li>
+<li>xticks: x轴刻度标签</li>
+<li>yerr: 带误差线的柱形图</li>
+<li>ylim: 纵轴坐标刻度的取值范围</li>
+<li>yticks: y轴刻度标签</li>
+<li>**kwds: matplotlib plot方法的其他参数</li>
+</ul>
+<p>DataFrame的<code>plot</code>参数：</p>
+<ul>
+<li>x : 指数据框列的标签或位置参数</li>
+<li>y : 指数据框列的标签或位置参数</li>
+<li>kind :</li>
+<li>'line' : 折线图</li>
+<li>'bar' : 条形图</li>
+<li>'barh' : 横向条形图</li>
+<li>'hist' : 柱状图</li>
+<li>'box' : 箱线图</li>
+<li>'kde' : Kernel的密度估计图，主要对柱状图添加Kernel 概率密度线</li>
+<li>'density' : 'kde'</li>
+<li>'area' : area plot</li>
+<li>'pie' : 饼图</li>
+<li>'scatter' : 散点图 需要传入columns方向的索引</li>
+<li>'hexbin' : hexbin plot</li>
+<li>ax : 子图(axes, 也可以理解成坐标轴) 要在其上进行绘制的matplotlib subplot对象。如果没有设置，则使用当前matplotlib subplot。其中，变量和函数通过改变figure和axes中的元素（例如：title,label,点和线等等）一起描述figure和axes，也就是在画布上绘图。</li>
+<li>subplots : 判断图片中是否有子图</li>
+<li>sharex : 如果有子图，子图共x轴刻度，标签</li>
+<li>sharey : 如果有子图，子图共y轴刻度，标签</li>
+<li>layout : 子图的行列布局</li>
+<li>figsize : 图片尺寸大小</li>
+<li>use_index : 默认用索引做x轴</li>
+<li>title : 图片的标题用字符串</li>
+<li>grid : 图片是否有网格</li>
+<li>legend : 子图的图例，添加一个subplot图例(默认为True)</li>
+<li>style : 对每列折线图设置线的类型</li>
+<li>logx : 设置x轴刻度是否取对数</li>
+<li>logy : 设置y轴刻度是否取对数</li>
+<li>loglog : 同时设置x，y轴刻度是否取对数</li>
+<li>xticks : 设置x轴刻度值，序列形式（比如列表）</li>
+<li>yticks : 设置y轴刻度，序列形式（比如列表）</li>
+<li>xlim : 设置坐标轴x的范围，列表或元组形式</li>
+<li>ylim : 设置坐标轴y的范围，列表或元组形式</li>
+<li>rot : 设置轴标签（轴刻度）的显示旋转度数</li>
+<li>fontsize : 设置轴刻度的字体大小</li>
+<li>colormap : 设置图的区域颜色</li>
+<li>colorbar : 图片柱子</li>
+<li>position : Specify relative alignments for bar plot layout. From 0 (left/bottom-end) to 1 (right/top-end). Default is 0.5 (center)</li>
+<li>layout : 布局(rows, columns) for the layout of the plot</li>
+<li>table : 如果为正，则选择DataFrame类型的数据并且转换匹配matplotlib的布局</li>
+<li>yerr : 带误差线的柱形图</li>
+<li>xerr : 带误差线的柱形图</li>
+<li>stacked : 生成堆积柱状图</li>
+<li>sort_columns : 以字母表顺序绘制各列，默认使用前列顺序</li>
+<li>secondary_y : 设置第二个y轴（右y轴）</li>
+<li>mark_right : When using a secondary_y axis, automatically mark the column labels with “(right)” in the legend</li>
+<li>kwds : Options to pass to matplotlib plotting method</li>
+</ul>
+<p>Series</p>
 <pre><code>data1 = np.random.randn(10).cumsum(0)
 s1 = pd.Series(
     data1,
@@ -677,11 +694,10 @@ df1.plot.bar(ax=axes[1], grid='True', title='Line Figure', sharex=True, use_inde
 # stacked=True来生成堆积柱状图
 plt.show()
 </code></pre>
-<p>实例：绘制一个堆积柱状图，用于展示每个派对在每天的数据点占比\
-交叉表是一种常用的分类汇总表格，用于频数分布统计，主要价值在于描述了变量间关系的深刻含义。\
-虽然两个（或以上）变量可以是分类的或数量的，但是以都是分类的情形最为常见。\
-Pandas的crosstab()方法能够快速构建交叉表，并可以通过参数加以个性化的设置。其中，第一个参数将构成交叉表的行，第二个参数将构成交叉表的列\
-官方文档: https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.crosstab.html</p>
+<p>实例：绘制一个堆积柱状图，用于展示每个派对在每天的数据点占比。</p>
+<p><a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.crosstab.html">交叉表</a>是一种常用的分类汇总表格，用于频数分布统计，主要价值在于描述了变量间关系的深刻含义。</p>
+<p>虽然两个（或以上）变量可以是分类的或数量的，但是以都是分类的情形最为常见。
+Pandas的<code>crosstab()</code>方法能够快速构建交叉表，并可以通过参数加以个性化的设置。其中，第一个参数将构成交叉表的行，第二个参数将构成交叉表的列。</p>
 <pre><code>tips = pd.read_csv('../examples/tips.csv')
 print(tips)
 #      total_bill   tip smoker   day    time  size
@@ -730,9 +746,9 @@ print(party_pcts)
 party_counts.plot.bar()
 plt.show()
 </code></pre>
-<p>可以看到本数据集中的派对数量在周末会增加</p>
-<p>实例：使用seaborn进行按星期日期计算小费百分比\
-Seaborn要求数据的输入类型为pandas的Dataframe或Numpy 数组</p>
+<p>可以看到本数据集中的派对数量在周末会增加。</p>
+<p>实例：使用seaborn进行按星期日期计算小费百分比。</p>
+<p>Seaborn要求数据的输入类型为pandas的Dataframe或Numpy数组。</p>
 <pre><code>tips['tip_pct'] = tips['tip'] / (tips['total_bill'] - tips['tip'])
 print(tips)
 #      total_bill   tip smoker   day    time  size   tip_pct
@@ -760,27 +776,27 @@ sns.barplot(x='tip_pct', y='day', data=tips, hue='time', orient='h')  # 根据�
 sns.set(style=&quot;darkgrid&quot;, palette=&quot;deep&quot;)  # style=&quot;whitegrid&quot;
 plt.show()
 </code></pre>
-<h4 id="_5">直方图和密度图</h4>
+<h3 id="_6">直方图和密度图</h3>
 <p>直方图是一种条形图，用于给出值频率的离散显示。数据点被分成离散的，均匀间隔的箱，并且绘制每个箱中数据点的数量。</p>
 <pre><code>tips['tip_pct'].plot.hist(bins=50)  # 小费百分比的直方图
 plt.show()
 </code></pre>
-<p>密度图是一种与直方图相关的图表类型，它通过计算可能产生观测数据的连续概率分布估计而产生。\
-通常的做法是将这种分布近似为“内核”的混合，也就是像正态分布那样简单的分布。\
+<p>密度图是一种与直方图相关的图表类型，它通过计算可能产生观测数据的连续概率分布估计而产生。
+通常的做法是将这种分布近似为“内核”的混合，也就是像正态分布那样简单的分布。
 因此，密度图也被称为内核密度估计图（KDE）。</p>
 <pre><code>tips['tip_pct'].plot.density() # 小费百分比密度图
 plt.show()
 </code></pre>
-<p>绘制直方图和连续密度估计sns.displot()</p>
+<p>绘制直方图和连续密度估计<code>sns.displot()</code>。</p>
 <pre><code>sns.distplot(tips['tip_pct'], bins=100, color='k')
 plt.show()
 # FutureWarning: `distplot` is a deprecated function and will be removed in a future version.
 # Please adapt your code to use either `displot` (a figure-level function with similar flexibility)
 # or `histplot` (an axes-level function for histograms).
 </code></pre>
-<h4 id="_6">散点图或点图</h4>
-<p>点图或散点图可以用于检验两个一维数据序列之间的关系。\</p>
-<p>实例：从statsmodels项目中载入了macrodata数据集，并选择了一些变量，之后计算对数差。</p>
+<h3 id="_7">散点图或点图</h3>
+<p>点图或散点图可以用于检验两个一维数据序列之间的关系。</p>
+<p>实例：从<code>statsmodels</code>项目中载入了macrodata数据集，并选择了一些变量，之后计算对数差。</p>
 <pre><code>macro = pd.read_csv('../examples/macrodata.csv')
 print(macro.head(5))
 #      year  quarter   realgdp  realcons  ...  unemp      pop  infl  realint
@@ -809,20 +825,20 @@ print(trans_data[-5:])
 # 201  0.008419  0.037461 -0.200671  0.127339
 # 202  0.008894  0.012202 -0.405465  0.042560
 </code></pre>
-<p>用seaborn的regplot方法绘制散点图，并拟合出一个条线性回归线</p>
+<p>用<code>seaborn</code>的<code>regplot</code>方法绘制散点图，并拟合出一个条线性回归线。(<a href="https://seaborn.pydata.org/">seaborn文档</a>)</p>
 <pre><code>sns.regplot('m1', 'unemp', data=trans_data)
 plt.title('Changes in log %s versus log %s ' % ('m1', 'unemp'))
 plt.show()
 </code></pre>
-<p>在探索性数据分析中，能够查看一组变量中的所有散点图是有帮助的，这被称为成对图或散点图矩阵。\
-Seaborn有一个方便的pairplot函数，它支持在对角线上放置每个变量的直方图或密度估计值。\
-plot_ksw参数能够将配置选项传递给非对角元素上的各个绘图调用。</p>
+<p>在探索性数据分析中，能够查看一组变量中的所有散点图是有帮助的，这被称为成对图或散点图矩阵。
+Seaborn有一个方便的<code>pairplot</code>函数，它支持在对角线上放置每个变量的直方图或密度估计值。
+<code>plot_ksw</code>参数能够将配置选项传递给非对角元素上的各个绘图调用。</p>
 <pre><code>sns.pairplot(trans_data, diag_kind='kde', plot_kws={'alpha': 0.2})
 plt.show()
 </code></pre>
-<h4 id="_7">分面网格和分类数据</h4>
-<p>如果数据集有额外的分组维度怎么办？使用分面网格是利用多种分组变量对数据进行可视化的方式。\
-seaborn拥有一个有效的内建函数factorplot，它可以简化多种分面绘图。</p>
+<h3 id="_8">分面网格和分类数据</h3>
+<p>如果数据集有额外的分组维度怎么办？使用分面网格是利用多种分组变量对数据进行可视化的方式。
+seaborn拥有一个有效的内建函数<code>factorplot</code>，它可以简化多种分面绘图。</p>
 <pre><code>sns.factorplot(x='day', y='tip_pct', hue='time', col='smoker', kind='bar', data=tips[tips.tip_pct &lt; 1])
 plt.show()
 # UserWarning: The `factorplot` function has been renamed to `catplot`.
@@ -831,10 +847,9 @@ plt.show()
 sns.catplot(x='day', y='tip_pct', hue='time', col='smoker', kind='box', data=tips[tips.tip_pct &lt; 0.5])
 plt.show()
 </code></pre>
-<p>seaborn文档 https://seaborn.pydata.org/</p>
-<h3 id="python">其他Python可视化工具</h3>
-<p>自2010年以来，很多开发工作都集中在创建web交互式图形上。\
-借助像<a href="http://bokeh.pydata.org/">Bokeh</a> 和 <a href="https://github.com/plotly/plotly.py">Plotly</a> 这样的工具，在web浏览器中创建动态的、交互式图像的工作现在已经可以实现。\
+<h2 id="python">其他Python可视化工具</h2>
+<p>自2010年以来，很多开发工作都集中在创建web交互式图形上。
+借助像<a href="http://bokeh.pydata.org/">Bokeh</a> 和 <a href="https://github.com/plotly/plotly.py">Plotly</a> 这样的工具，在web浏览器中创建动态的、交互式图像的工作现在已经可以实现。
 可视化是一个活跃的研究领域。</p>
 
               
