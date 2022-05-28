@@ -1,3 +1,3 @@
 # Cloud Foundation
 
-1. [Hands-On Microservices with Kubernetes](./cloud/MicroservicesKubernetes.md)
+1. [Hands-On Microservices with Kubernetes](MicroservicesKubernetes.md)
