@@ -418,6 +418,19 @@
     Chapter 2 - Microservices
   </a>
   
+    <nav class="md-nav" aria-label="Chapter 2 - Microservices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#installing-go" class="md-nav__link">
+    Installing Go
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -500,6 +513,13 @@
         <li class="md-nav__item">
   <a href="#chapter-14-the-future" class="md-nav__link">
     Chapter 14 - The Future
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reference" class="md-nav__link">
+    Reference:
   </a>
   
 </li>
@@ -850,8 +870,86 @@ helm installed into /usr/local/bin/helm
 </ul>
 <h2 id="chapter-2-microservices">Chapter 2 - Microservices</h2>
 <p>Getting Started with Microservices, discusses various aspects,patterns, and approaches to common problems in microservice-basedsystems and how they compare to other common architectures, such asmonoliths and large services.</p>
+<h3 id="installing-go">Installing Go</h3>
+<p>Refer to <a href="https://go.dev/doc/install">installation guide</a> to download and install Go locally.</p>
+<p>Installation</p>
+<pre><code>james@lizard:/opt&gt; sudo zypper in go
+
+james@lizard:/opt&gt; go version
+go version go1.18.2 linux/amd64
+</code></pre>
+<p>Choosing source control strategy. There are two main approaches:</p>
+<ul>
+<li>monorepo<ul>
+<li>Your entire code base is in a single source controlrepository.</li>
+</ul>
+</li>
+<li>multiple repos<ul>
+<li>Each project, and often each library, has a separate source control repository. </li>
+</ul>
+</li>
+<li>Hybrid<ul>
+<li>Each repository contains multiple services and projects. </li>
+<li>Each repository is isolated from the other repositories, but within each repo, multiple services and projectscan be developed in lockstep. </li>
+<li>This approach balances the pros and cons ofmonorepo and multiple repos.</li>
+</ul>
+</li>
+</ul>
+<p>Choosing data strategy</p>
+<ul>
+<li>One data store per microservice, which is a crucial element of the microservicearchitecture.</li>
+<li>Running distributed queries. It recommends to start with API composition andtransition to CQRS only if the proper conditions exist.</li>
+</ul>
+<p>Employing Command Query Responsibility Segregation (CQRS).</p>
+<ul>
+<li>The CQRS service (responsible forqueries) receives a change notification from the three microservices (responsible for updates) and aggregates them into its own data store.</li>
+<li>When a query comes, the CQRS service responds by accessing its own aggregated view without hitting the microservices.</li>
+<li>It duplicates the data and adds complexity to the system.</li>
+<li>An illustration of CQRS in action.</li>
+</ul>
+<p><img alt="Illustration of CQRS in action" src="../assets/004.png" /></p>
+<p>Employing API composition.</p>
+<ul>
+<li>It exposes an API that can answer well-known queries across multiple microservices. </li>
+<li>A query to an API composer service is translated under the covers to queries to three microservices.</li>
+<li>The failure of any service will fail the query. </li>
+<li>An illustration of API composition in action</li>
+</ul>
+<p><img alt="Illustration of API composition in action" src="../assets/005.png" /></p>
+<p>Maintaining distributed dataintegrity is a complex problem. </p>
+<ul>
+<li>If you store all your data in a single relationaldatabase and specify proper constraints in your schema, then you can rely on the database engine to take care of data integrity. </li>
+<li>If multiple microservices maintain your data in isolated data stores (relational ornon-relational). Data integrity is essential, but it must be maintained by your code. The saga pattern addresses this concern. </li>
+<li>A common measure of data integrity is that all transactions that modify data havethe ACID properties.<ul>
+<li>Atomic: All operations in the transaction succeed or they all fail.</li>
+<li>Consistent: The state of the data complies with all constraints before and after the transaction.</li>
+<li>Isolated: Concurrent transactions behave as if serialized.</li>
+<li>Durable: When a transaction completes successfully, the results are persisted.</li>
+</ul>
+</li>
+</ul>
+<p>There are different levels of persistence:</p>
+<ul>
+<li>Persistence to disk: Can survive restart of the node, but no disk failure</li>
+<li>Redundant memory on multiple nodes: Can survive restart of a node and disk failure, but not temporary failure of all the nodes</li>
+<li>Redundant disks: Can survive the failure of a disk</li>
+<li>Geo-distributed replicas: Can survive a whole data center being down</li>
+<li>Backups: Cheaper to store a lot of information, but slower to restore and often lags behind real time</li>
+</ul>
+<p>The CAP theorem states that a distributed system can't have all three propertiesat the same time:</p>
+<ul>
+<li>Consistency</li>
+<li>Availability</li>
+<li>Partition resiliency</li>
+</ul>
+<p>The basic idea of the <strong>saga pattern</strong> is that there is centralized management of the operations across all the microservices and that, for each operation, there is a compensating operation that will be executed if, for some reason, the entire transaction can't be completed. 
+This achieves the atomicity property of ACID.</p>
+<p>A <strong>saga</strong> is a set of operations and corresponding compensating operations on microservices. When an operation fails, its compensating operation and the compensating operations of all the previous operations are called in reverse order to roll back the entire state of the system.</p>
 <h2 id="chapter-3-sample-application">Chapter 3 - Sample Application</h2>
 <p>Delinkcious – the Sample Application, explores why we should choose Go as the programming language of Delinkcious; then we will lookat Go kit.</p>
+<p><a href="https://github.com/the-gigi/delinkcious">Delinkcious source code</a></p>
+<p><a href="https://github.com/the-gigi/delinkcious/releases/tag/v0.1">Delinkcious source code release v0.1</a></p>
+<p><a href="https://gokit.io/">Go kit</a>, which is a toolkit for microservice.</p>
 <h2 id="chapter-4-cicd-pipeline">Chapter 4 - CI/CD Pipeline</h2>
 <p>Setting Up the CI/CD Pipeline, teaches you about the problem the CI/CD pipeline solves, covers the different options for CI/CD pipelinesfor Kubernetes, and finally looks at building a CI/CD pipeline forDelinkcious.</p>
 <h2 id="chapter-5-configuring-microservices">Chapter 5 - Configuring Microservices</h2>
@@ -874,6 +972,14 @@ helm installed into /usr/local/bin/helm
 <p>Service Mesh – Working with Istio, reviews the hot topic ofservice meshes and, in particular, Istio. This is exciting because service meshes are a real game changer.</p>
 <h2 id="chapter-14-the-future">Chapter 14 - The Future</h2>
 <p>The Future of Microservices and Kubernetes, covers the topicsof Kubernetes and microservices, and will help us learn how to decide whenit's the right time to adopt and invest in newer technologies.</p>
+<h2 id="reference">Reference:</h2>
+<ul>
+<li><a href="https://github.com/huyuhui001/Hands-On-Microservices-with-Kubernetes">The code of the book</a></li>
+<li><a href="https://kubernetes.io/docs/tasks/">Kubernetes document</a></li>
+<li><a href="https://minikube.sigs.k8s.io/docs/start/">Minikube documents</a></li>
+<li><a href="https://helm.sh/docs/intro/quickstart/">Helm document</a> and <a href="https://github.com/helm/helm">source code</a> and <a href="https://artifacthub.io/">artifact hub</a></li>
+<li><a href="https://go.dev/doc/install">Go language document</a></li>
+</ul>
 
               
             </article>
