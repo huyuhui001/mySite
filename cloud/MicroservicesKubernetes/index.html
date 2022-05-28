@@ -338,12 +338,73 @@
     Kubernetes and microservices
   </a>
   
+    <nav class="md-nav" aria-label="Kubernetes and microservices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#packaging-and-deploying-microservices" class="md-nav__link">
+    Packaging and deploying microservices
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exposing-and-discovering-microservices" class="md-nav__link">
+    Exposing and discovering microservices
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#securing-microservices" class="md-nav__link">
+    Securing microservices.
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#authenticating-and-authorizing-microservices" class="md-nav__link">
+    Authenticating and authorizing microservices.
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#upgrading-microservices" class="md-nav__link">
+    Upgrading microservices
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
   <a href="#creating-a-local-cluster" class="md-nav__link">
     Creating a local cluster
   </a>
+  
+    <nav class="md-nav" aria-label="Creating a local cluster">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#playing-with-your-cluster" class="md-nav__link">
+    Playing with your cluster
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#installing-helm" class="md-nav__link">
+    Installing Helm
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -571,7 +632,7 @@ CONTAINER ID   IMAGE                    COMMAND                  CREATED        
 <p><img alt="overall architecture" src="../assets/001.png" /></p>
 <p>The control plane in production will be distributed across multiple machines for high availability and robustness. 
 The control plane will deploy and run your pods (groups of containers) on these nodes, and then watch for changes and respond.</p>
-<p>The control plane:</p>
+<p><strong>The control plane:</strong></p>
 <ul>
 <li>API server.</li>
 <li>Exposes the Kubernetes APIto the world. </li>
@@ -589,8 +650,8 @@ The control plane will deploy and run your pods (groups of containers) on these 
 <li><strong>Endpoints controller</strong>: This assigns for each service an endpoints object that lists the service's pods.</li>
 <li><strong>Service account and token controllers</strong>: These initialize new namespaces with default service accounts and corresponding API access tokens.</li>
 </ul>
-<p>The data plane consists of multiplenodes, or workers. 
-The data plane is the collection of the nodes in the cluster that run your containerized workloads as pods. </p>
+<p><strong>The data plane:</strong> </p>
+<p>The data plane is the collection of the nodes in the cluster that run your containerized workloads as pods. </p>
 <ul>
 <li>The kubelet: <ul>
 <li>It is a Kubernetes agent. </li>
@@ -629,6 +690,7 @@ The data plane is the collection of the nodes in the cluster that run your conta
 </li>
 </ul>
 <h3 id="kubernetes-and-microservices">Kubernetes and microservices</h3>
+<h4 id="packaging-and-deploying-microservices">Packaging and deploying microservices</h4>
 <p>The packaging mechanism is simply containers.</p>
 <p>Every microservice you develop will have a Dockerfile. The resulting image represents the deployment unit for that microservice.</p>
 <p>In Kubernetes, your microservice image will run inside a pod (possibly alongside other containers).</p>
@@ -637,10 +699,11 @@ The data plane is the collection of the nodes in the cluster that run your conta
 <p>ReplicaSets are sets of pods with a certain number of replicas. 
 When you create a ReplicaSet, Kubernetes will make sure that the correct number of pods you specify always run in the cluster.</p>
 <p>We use a deployment YAML file to deploy our microservice.</p>
+<h4 id="exposing-and-discovering-microservices">Exposing and discovering microservices</h4>
 <p>We use a service YAML file to expose our microservice so that it can be used by other services in/out the cluster. 
 Kubernetes services are backed up by pods, identified by labels. 
 Services discover each other inside the cluster, using DNS or environment variables.</p>
-<p>Securing microservices.</p>
+<h4 id="securing-microservices">Securing microservices.</h4>
 <ul>
 <li>Namespaces.<ul>
 <li>Let you isolate different parts of your cluster from each other.</li>
@@ -653,9 +716,106 @@ Services discover each other inside the cluster, using DNS or environment variab
 <li>Each service account is associated with a secret used to authenticate it.</li>
 </ul>
 </li>
-<li>Secrets.</li>
+<li>Secrets.<ul>
+<li>Secrets are managed per namespace.</li>
+<li>Secrets are mounted in pods as either files (secret volumes) or environment variables.</li>
+<li>The secrets can be encrypted at rest on etcd, and are always encrypted on the wire (over HTTPS). </li>
+</ul>
+</li>
+<li>Secrets communication.<ul>
+<li>All communication to the Kubernetes API from outside should be over HTTP, which by default is not authenticated.</li>
+<li>Internal cluster communication between the API server and the kubelet on the node is over HTTPS too (the kubelet endpoint). </li>
+</ul>
+</li>
+<li>Network policies.<ul>
+<li>In a distributed system, beyond securing each container, pod, and node, it iscritical to also control communication over the network. </li>
+</ul>
+</li>
+</ul>
+<h4 id="authenticating-and-authorizing-microservices">Authenticating and authorizing microservices.</h4>
+<p>Role-based access control (RBAC) is is based on two concepts: role and binding.</p>
+<p>A role is a set of permissions on resources defined as rules. 
+There are two types of roles: Role, which applies to a single namespace, and ClusterRole, which applies to all namespaces in a cluster.
+Each role has three components: API groups, resources, and verbs.
+Cluster roles are very similar, except there is no namespace field because they apply to all namespaces.</p>
+<p>A binding is associating a list of <em>subjects</em> (users, user groups, or service accounts) with a role. 
+There are two types of binding, RoleBinding and ClusterRoleBinding, which correspond to Role and ClusterRole.
+You can bind a ClusterRole to a subject in a single namespace.</p>
+<h4 id="upgrading-microservices">Upgrading microservices</h4>
+<p>Scaling microservices. Two aspects:</p>
+<ul>
+<li>The first aspect is scaling the number of pods backing up a particular microservice. scaling out (horizontal scaling) by adding more servers to your architecture to spread the workload across more machines.</li>
+<li>The second aspect is the total capacity of the cluster. Scaling up (vertical scaling) by adding more hard drives and memory to increase the computing capacity of physical servers. </li>
+</ul>
+<p>Monitoring microservices.</p>
+<ul>
+<li>Third-party logs</li>
+<li>Application logs</li>
+<li>Application errors</li>
+<li>Kubernetes events</li>
+<li>Metrics, which are useful for detecting performance and system health problems or trends over time.</li>
+</ul>
+<p>Logging. Several ways:</p>
+<ul>
+<li>Have a logging agent that runs on every node</li>
+<li>Inject a logging sidecar container to every application pod</li>
+<li>Have your application send its logs directly to a central logging service</li>
+</ul>
+<p>Metrics. Kubernetes provide metrics server:</p>
+<ul>
+<li>heapster</li>
+<li>Prometheus</li>
 </ul>
 <h3 id="creating-a-local-cluster">Creating a local cluster</h3>
+<h4 id="playing-with-your-cluster">Playing with your cluster</h4>
+<p>Get all nodes deployed.</p>
+<pre><code>james@lizard:/opt&gt; kubectl get nodes
+NAME       STATUS   ROLES                  AGE     VERSION
+minikube   Ready    control-plane,master   4h49m   v1.23.3
+</code></pre>
+<p>Get all namespaces.</p>
+<pre><code>james@lizard:/opt&gt; kubectl get ns
+NAME              STATUS   AGE
+default           Active   4h51m
+kube-node-lease   Active   4h51m
+kube-public       Active   4h51m
+kube-system       Active   4h51m
+</code></pre>
+<p>Enbale Minikube addon - Dashboard.</p>
+<pre><code>james@lizard:/opt&gt; minikube addons list
+james@lizard:/opt&gt; minikube addons enable dashboard
+</code></pre>
+<p>Get all the services in all the namespaces.</p>
+<pre><code>james@lizard:/opt&gt; kubectl get service --all-namespaces
+NAMESPACE              NAME                        TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                  AGE
+default                kubernetes                  ClusterIP   10.96.0.1        &lt;none&gt;        443/TCP                  5h2m
+kube-system            kube-dns                    ClusterIP   10.96.0.10       &lt;none&gt;        53/UDP,53/TCP,9153/TCP   5h2m
+kubernetes-dashboard   dashboard-metrics-scraper   ClusterIP   10.110.44.98     &lt;none&gt;        8000/TCP                 49s
+kubernetes-dashboard   kubernetes-dashboard        ClusterIP   10.108.121.183   &lt;none&gt;        80/TCP                   49s
+
+james@lizard:/opt&gt; kubectl get svc --all-namespaces
+NAMESPACE              NAME                        TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                  AGE
+default                kubernetes                  ClusterIP   10.96.0.1        &lt;none&gt;        443/TCP                  5h2m
+kube-system            kube-dns                    ClusterIP   10.96.0.10       &lt;none&gt;        53/UDP,53/TCP,9153/TCP   5h2m
+kubernetes-dashboard   dashboard-metrics-scraper   ClusterIP   10.110.44.98     &lt;none&gt;        8000/TCP                 49s
+kubernetes-dashboard   kubernetes-dashboard        ClusterIP   10.108.121.183   &lt;none&gt;        80/TCP                   49s
+</code></pre>
+<p>Get details of deployment kubernetes-dashboard.</p>
+<pre><code>james@lizard:/opt&gt; kubectl get deployment -n kubernetes-dashboard
+NAME                        READY   UP-TO-DATE   AVAILABLE   AGE
+dashboard-metrics-scraper   1/1     1            1           5m54s
+kubernetes-dashboard        1/1     1            1           5m54s
+</code></pre>
+<p>Explore the dashboard, and verify it via <code>http://localhost:9090</code></p>
+<pre><code>james@lizard:/opt&gt; kubectl -n kubernetes-dashboard port-forward deployment/kubernetes-dashboard 9090
+</code></pre>
+<p>The dashboard looks like below.</p>
+<p><img alt="dashboard" src="../assets/003.png" /></p>
+<h4 id="installing-helm">Installing Helm</h4>
+<p>Helm is the Kubernetes package manager. It doesn't come with Kubernetes. 
+Helm has two components: a server-side component called <em>tiller</em>, and a CLI called <em>helm</em>.</p>
+<p>james@lizard:/opt&gt; curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+james@lizard:/opt&gt; chmod 700 get_helm.sh</p>
 <h2 id="chapter-2-microservices">Chapter 2 - Microservices</h2>
 <p>Getting Started with Microservices, discusses various aspects,patterns, and approaches to common problems in microservice-basedsystems and how they compare to other common architectures, such asmonoliths and large services.</p>
 <h2 id="chapter-3-sample-application">Chapter 3 - Sample Application</h2>
