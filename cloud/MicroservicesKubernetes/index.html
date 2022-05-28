@@ -8,21 +8,21 @@
       
       
       
-        <link rel="canonical" href="https://huyuhui001.github.io/mySite/index.html/python/DataAnalysis/python_data_analysis_index/">
+        <link rel="canonical" href="https://huyuhui001.github.io/mySite/index.html/cloud/MicroservicesKubernetes/">
       
-      <link rel="icon" href="../../../assets/images/favicon.png">
+      <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.2.9">
     
     
       
-        <title>Python data analysis index - MEMO</title>
+        <title>Hands-On Microservices with Kubernetes - MEMO</title>
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.120efc48.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.120efc48.min.css">
       
         
-        <link rel="stylesheet" href="../../../assets/stylesheets/palette.9647289d.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.9647289d.min.css">
         
           
           
@@ -41,7 +41,7 @@
       
     
     
-    <script>__md_scope=new URL("../../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -65,7 +65,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#numpy" class="md-skip">
+        <a href="#hands-on-microservices-with-kubernetes" class="md-skip">
           Skip to content
         </a>
       
@@ -79,7 +79,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../../.." title="MEMO" class="md-header__button md-logo" aria-label="MEMO" data-md-component="logo">
+    <a href="../.." title="MEMO" class="md-header__button md-logo" aria-label="MEMO" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
@@ -98,7 +98,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Python data analysis index
+              Hands-On Microservices with Kubernetes
             
           </span>
         </div>
@@ -165,7 +165,7 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../../.." title="MEMO" class="md-nav__button md-logo" aria-label="MEMO" data-md-component="logo">
+    <a href="../.." title="MEMO" class="md-nav__button md-logo" aria-label="MEMO" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
@@ -184,7 +184,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../.." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         Home
       </a>
     </li>
@@ -199,7 +199,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../linux/" class="md-nav__link">
+      <a href="../../linux/" class="md-nav__link">
         Linux
       </a>
     </li>
@@ -214,7 +214,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../" class="md-nav__link">
+      <a href="../../python/" class="md-nav__link">
         Python
       </a>
     </li>
@@ -229,7 +229,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../cloud/" class="md-nav__link">
+      <a href="../" class="md-nav__link">
         Cloud
       </a>
     </li>
@@ -244,7 +244,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../about/" class="md-nav__link">
+      <a href="../../about/" class="md-nav__link">
         About
       </a>
     </li>
@@ -268,6 +268,8 @@
   
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -276,85 +278,99 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#numpy" class="md-nav__link">
-    NumPy基础
+  <a href="#chapter-1-kubernetes" class="md-nav__link">
+    Chapter 1 - Kubernetes
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#numpy_1" class="md-nav__link">
-    NumPy进阶
+  <a href="#chapter-2-microservices" class="md-nav__link">
+    Chapter 2 - Microservices
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#pandas" class="md-nav__link">
-    Pandas入门
+  <a href="#chapter-3-sample-application" class="md-nav__link">
+    Chapter 3 - Sample Application
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#_1" class="md-nav__link">
-    数据载入、存储及文件格式
+  <a href="#chapter-4-cicd-pipeline" class="md-nav__link">
+    Chapter 4 - CI/CD Pipeline
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#_2" class="md-nav__link">
-    数据清洗与准备
+  <a href="#chapter-5-configuring-microservices" class="md-nav__link">
+    Chapter 5 - Configuring Microservices
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#_3" class="md-nav__link">
-    数据规整：连接、联合与重塑
+  <a href="#chapter-6-securing-microservices" class="md-nav__link">
+    Chapter 6 - Securing Microservices
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#_4" class="md-nav__link">
-    绘图与可视化
+  <a href="#chapter-7-apis-and-load-balancers" class="md-nav__link">
+    Chapter 7 - APIs and Load Balancers
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#_5" class="md-nav__link">
-    数据聚合与分组操作
+  <a href="#chapter-8-stateful-services" class="md-nav__link">
+    Chapter 8 - Stateful Services
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#_6" class="md-nav__link">
-    时间序列
+  <a href="#chapter-9-serverless-tasks" class="md-nav__link">
+    Chapter 9 Serverless Tasks
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#pandas_1" class="md-nav__link">
-    高阶pandas
+  <a href="#chapter-10-testing-microservices" class="md-nav__link">
+    Chapter 10 - Testing Microservices
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#python" class="md-nav__link">
-    Python建模库介绍
+  <a href="#chapter-11-deploying-microservices" class="md-nav__link">
+    Chapter 11 - Deploying Microservices
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#_7" class="md-nav__link">
-    数据分析示例
+  <a href="#chapter-12-operationing-microservices" class="md-nav__link">
+    Chapter 12 - Operationing Microservices
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-13-service-mesh" class="md-nav__link">
+    Chapter 13 - Service Mesh
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-14-the-future" class="md-nav__link">
+    Chapter 14 - The Future
   </a>
   
 </li>
@@ -373,20 +389,35 @@
                 
 
 
-  <h1>Python data analysis index</h1>
-
-<h3 id="numpy"><a href="../ch01/">NumPy基础</a></h3>
-<h3 id="numpy_1"><a href="../ch10/">NumPy进阶</a></h3>
-<h3 id="pandas"><a href="../ch02/">Pandas入门</a></h3>
-<h3 id="_1"><a href="../ch03/">数据载入、存储及文件格式</a></h3>
-<h3 id="_2"><a href="../ch04/">数据清洗与准备</a></h3>
-<h3 id="_3"><a href="../ch05/">数据规整：连接、联合与重塑</a></h3>
-<h3 id="_4"><a href="../ch06/">绘图与可视化</a></h3>
-<h3 id="_5"><a href="../ch07/">数据聚合与分组操作</a></h3>
-<h3 id="_6"><a href="../ch08/">时间序列</a></h3>
-<h3 id="pandas_1"><a href="../ch09/">高阶pandas</a></h3>
-<h3 id="python"><a href="../ch11/">Python建模库介绍</a></h3>
-<h3 id="_7"><a href="../ch12/">数据分析示例</a></h3>
+<h1 id="hands-on-microservices-with-kubernetes">Hands-On Microservices with Kubernetes</h1>
+<h2 id="chapter-1-kubernetes">Chapter 1 - Kubernetes</h2>
+<p>Introduction to Kubernetes for Developers, introduces you to Kubernetes. You will receive a whirlwind tour of Kubernetes and get an ideaof how well it aligns with microservices.</p>
+<h2 id="chapter-2-microservices">Chapter 2 - Microservices</h2>
+<p>Getting Started with Microservices, discusses various aspects,patterns, and approaches to common problems in microservice-basedsystems and how they compare to other common architectures, such asmonoliths and large services.</p>
+<h2 id="chapter-3-sample-application">Chapter 3 - Sample Application</h2>
+<p>Delinkcious – the Sample Application, explores why we should choose Go as the programming language of Delinkcious; then we will lookat Go kit.</p>
+<h2 id="chapter-4-cicd-pipeline">Chapter 4 - CI/CD Pipeline</h2>
+<p>Setting Up the CI/CD Pipeline, teaches you about the problem the CI/CD pipeline solves, covers the different options for CI/CD pipelinesfor Kubernetes, and finally looks at building a CI/CD pipeline forDelinkcious.</p>
+<h2 id="chapter-5-configuring-microservices">Chapter 5 - Configuring Microservices</h2>
+<p>Configuring Microservices with Kubernetes, moves you into the practical and real-world area of microservices configuration. Also, we will discuss Kubernetes-specific options and, in particular, ConfigMaps.</p>
+<h2 id="chapter-6-securing-microservices">Chapter 6 - Securing Microservices</h2>
+<p>Securing Microservices on Kubernetes, examines how to secure your microservices on Kubernetes in depth. We will also discuss the pillars that act as the foundation of microservice security on Kubernetes.</p>
+<h2 id="chapter-7-apis-and-load-balancers">Chapter 7 - APIs and Load Balancers</h2>
+<p>Talking to the World – APIs and Load Balancers, sees us open Delinkcious to the world and let users interact with it from outside the cluster. Also, we will add a gRPC-based news service that users can hitup to get news about other users they follow. Finally, we will add a message queue that lets services communicate in a loosely coupled manner.</p>
+<h2 id="chapter-8-stateful-services">Chapter 8 - Stateful Services</h2>
+<p>Working with Stateful Services, delves into the Kubernetesstorage model. We will also extend the Delinkcious news service to store itsdata in Redis, instead of in memory.</p>
+<h2 id="chapter-9-serverless-tasks">Chapter 9 Serverless Tasks</h2>
+<p>Running Serverless Tasks on Kubernetes, dives into one of thehottest trends in cloud-native systems: serverless computing (also knownas Function as a Service, or FaaS). Also, we'll cover other ways to doserverless computing in Kubernetes.</p>
+<h2 id="chapter-10-testing-microservices">Chapter 10 - Testing Microservices</h2>
+<p>Testing Microservices, covers the topic of testing and its variousflavors: unit testing, integration testing, and all kinds of end-to-end testing.We also delve into how Delinkcious tests are structured.</p>
+<h2 id="chapter-11-deploying-microservices">Chapter 11 - Deploying Microservices</h2>
+<p>Deploying Microservices, deals with two related, yet separate,themes: production deployments and development deployments. </p>
+<h2 id="chapter-12-operationing-microservices">Chapter 12 - Operationing Microservices</h2>
+<p>Monitoring, Logging, and Metrics, focuses on the operational side of running a large-scale distributed system on Kubernetes, as well ason how to design the system and what to take into account to ensure atop-notch operational posture. </p>
+<h2 id="chapter-13-service-mesh">Chapter 13 - Service Mesh</h2>
+<p>Service Mesh – Working with Istio, reviews the hot topic ofservice meshes and, in particular, Istio. This is exciting because service meshes are a real game changer.</p>
+<h2 id="chapter-14-the-future">Chapter 14 - The Future</h2>
+<p>The Future of Microservices and Kubernetes, covers the topicsof Kubernetes and microservices, and will help us learn how to decide whenit's the right time to adopt and invest in newer technologies.</p>
 
               
             </article>
@@ -417,10 +448,10 @@
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../../..", "features": [], "search": "../../../assets/javascripts/workers/search.2a1c317c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.2a1c317c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.6e54b5cd.min.js"></script>
+      <script src="../../assets/javascripts/bundle.6e54b5cd.min.js"></script>
       
     
   </body>
