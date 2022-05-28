@@ -1,7 +1,6 @@
 # Get busy living or get busy dying
 
-The purpose of this website is to summarize my learning memo as reference and reminder. 
-My apologies that my English is not good enough, hence some are in Chinese.
+It is to summarize what I have been learning as reference and reminder. 
 
 What's past is prologue. It’s never too late to do.
 

@@ -12,7 +12,9 @@
 3. [Demo](./python/Demo/python_demo_index.md)
 
 
+## Cloud Foundation
 
+1. [Hands-On Microservices with Kubernetes](./cloud/MicroservicesKubernetes.md)
 
 
 
