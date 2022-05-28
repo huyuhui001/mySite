@@ -4,6 +4,7 @@ nav:
         - Home: index.md
         - Linux: linux.md
         - Python: python.md
+        - Cloud: cloud.md
         - About: about.md
 theme:
   name: 'material'
