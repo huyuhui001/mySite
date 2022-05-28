@@ -153,7 +153,7 @@ Diagram that illustrates the overall architecture of Kubernetes.
 The control plane in production will be distributed across multiple machines for high availability and robustness. 
 The control plane will deploy and run your pods (groups of containers) on these nodes, and then watch for changes and respond.
 
-The control plane:
+**The control plane:**
 
 * API server.
   * Exposes the Kubernetes APIto the world. 
@@ -171,7 +171,9 @@ The control plane:
   * **Endpoints controller**: This assigns for each service an endpoints object that lists the service's pods.
   * **Service account and token controllers**: These initialize new namespaces with default service accounts and corresponding API access tokens.
 
-The data plane consists of multiplenodes, or workers. 
+
+**The data plane:** 
+
 The data plane is the collection of the nodes in the cluster that run your containerized workloads as pods. 
 
 * The kubelet: 
@@ -201,6 +203,8 @@ The data plane is the collection of the nodes in the cluster that run your conta
 
 ### Kubernetes and microservices
 
+#### Packaging and deploying microservices
+
 The packaging mechanism is simply containers.
 
 Every microservice you develop will have a Dockerfile. The resulting image represents the deployment unit for that microservice.
@@ -216,12 +220,14 @@ When you create a ReplicaSet, Kubernetes will make sure that the correct number 
 
 We use a deployment YAML file to deploy our microservice.
 
+#### Exposing and discovering microservices
+
 We use a service YAML file to expose our microservice so that it can be used by other services in/out the cluster. 
 Kubernetes services are backed up by pods, identified by labels. 
 Services discover each other inside the cluster, using DNS or environment variables.
 
 
-Securing microservices.
+#### Securing microservices.
 
 * Namespaces.
     * Let you isolate different parts of your cluster from each other.
@@ -231,12 +237,138 @@ Securing microservices.
     * You can associate service accounts with a pod.
     * Each service account is associated with a secret used to authenticate it.
 * Secrets.
+    * Secrets are managed per namespace.
+    * Secrets are mounted in pods as either files (secret volumes) or environment variables.
+    * The secrets can be encrypted at rest on etcd, and are always encrypted on the wire (over HTTPS). 
+* Secrets communication.
+    * All communication to the Kubernetes API from outside should be over HTTP, which by default is not authenticated.
+    * Internal cluster communication between the API server and the kubelet on the node is over HTTPS too (the kubelet endpoint). 
+* Network policies.
+    * In a distributed system, beyond securing each container, pod, and node, it iscritical to also control communication over the network. 
+
+
+
+#### Authenticating and authorizing microservices.
+
+Role-based access control (RBAC) is is based on two concepts: role and binding.
+
+A role is a set of permissions on resources defined as rules. 
+There are two types of roles: Role, which applies to a single namespace, and ClusterRole, which applies to all namespaces in a cluster.
+Each role has three components: API groups, resources, and verbs.
+Cluster roles are very similar, except there is no namespace field because they apply to all namespaces.
+
+A binding is associating a list of *subjects* (users, user groups, or service accounts) with a role. 
+There are two types of binding, RoleBinding and ClusterRoleBinding, which correspond to Role and ClusterRole.
+You can bind a ClusterRole to a subject in a single namespace.
+
+
+
+#### Upgrading microservices
+
+Scaling microservices. Two aspects:
+
+* The first aspect is scaling the number of pods backing up a particular microservice. scaling out (horizontal scaling) by adding more servers to your architecture to spread the workload across more machines.
+* The second aspect is the total capacity of the cluster. Scaling up (vertical scaling) by adding more hard drives and memory to increase the computing capacity of physical servers. 
+
+
+Monitoring microservices.
+
+* Third-party logs
+* Application logs
+* Application errors
+* Kubernetes events
+* Metrics, which are useful for detecting performance and system health problems or trends over time.
+
+
+Logging. Several ways:
+
+* Have a logging agent that runs on every node
+* Inject a logging sidecar container to every application pod
+* Have your application send its logs directly to a central logging service
+
+
+Metrics. Kubernetes provide metrics server:
+
+* heapster
+* Prometheus
+
+
+
 
 
 
 ### Creating a local cluster
 
+#### Playing with your cluster
 
+Get all nodes deployed.
+```
+james@lizard:/opt> kubectl get nodes
+NAME       STATUS   ROLES                  AGE     VERSION
+minikube   Ready    control-plane,master   4h49m   v1.23.3
+```
+
+Get all namespaces.
+```
+james@lizard:/opt> kubectl get ns
+NAME              STATUS   AGE
+default           Active   4h51m
+kube-node-lease   Active   4h51m
+kube-public       Active   4h51m
+kube-system       Active   4h51m
+```
+
+Enbale Minikube addon - Dashboard.
+```
+james@lizard:/opt> minikube addons list
+james@lizard:/opt> minikube addons enable dashboard
+```
+
+Get all the services in all the namespaces.
+```
+james@lizard:/opt> kubectl get service --all-namespaces
+NAMESPACE              NAME                        TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                  AGE
+default                kubernetes                  ClusterIP   10.96.0.1        <none>        443/TCP                  5h2m
+kube-system            kube-dns                    ClusterIP   10.96.0.10       <none>        53/UDP,53/TCP,9153/TCP   5h2m
+kubernetes-dashboard   dashboard-metrics-scraper   ClusterIP   10.110.44.98     <none>        8000/TCP                 49s
+kubernetes-dashboard   kubernetes-dashboard        ClusterIP   10.108.121.183   <none>        80/TCP                   49s
+
+james@lizard:/opt> kubectl get svc --all-namespaces
+NAMESPACE              NAME                        TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                  AGE
+default                kubernetes                  ClusterIP   10.96.0.1        <none>        443/TCP                  5h2m
+kube-system            kube-dns                    ClusterIP   10.96.0.10       <none>        53/UDP,53/TCP,9153/TCP   5h2m
+kubernetes-dashboard   dashboard-metrics-scraper   ClusterIP   10.110.44.98     <none>        8000/TCP                 49s
+kubernetes-dashboard   kubernetes-dashboard        ClusterIP   10.108.121.183   <none>        80/TCP                   49s
+```
+
+Get details of deployment kubernetes-dashboard.
+```
+james@lizard:/opt> kubectl get deployment -n kubernetes-dashboard
+NAME                        READY   UP-TO-DATE   AVAILABLE   AGE
+dashboard-metrics-scraper   1/1     1            1           5m54s
+kubernetes-dashboard        1/1     1            1           5m54s
+```
+
+Explore the dashboard, and verify it via `http://localhost:9090`
+```
+james@lizard:/opt> kubectl -n kubernetes-dashboard port-forward deployment/kubernetes-dashboard 9090
+```
+
+The dashboard looks like below.
+
+![dashboard](./assets/003.png)
+
+
+
+
+#### Installing Helm
+
+Helm is the Kubernetes package manager. It doesn't come with Kubernetes. 
+Helm has two components: a server-side component called *tiller*, and a CLI called *helm*.
+
+
+james@lizard:/opt> curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+james@lizard:/opt> chmod 700 get_helm.sh
 
 
 
