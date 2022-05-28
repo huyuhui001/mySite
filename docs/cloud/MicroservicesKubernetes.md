@@ -409,20 +409,88 @@ Note:
 Getting Started with Microservices, discusses various aspects,patterns, and approaches to common problems in microservice-basedsystems and how they compare to other common architectures, such asmonoliths and large services.
 
 
+### Installing Go
+
+Refer to [installation guide](https://go.dev/doc/install) to download and install Go locally.
+
+Installation
+```
+james@lizard:/opt> sudo zypper in go
+
+james@lizard:/opt> go version
+go version go1.18.2 linux/amd64
+```
 
 
+Choosing source control strategy. There are two main approaches:
+
+* monorepo
+    * Your entire code base is in a single source controlrepository.
+* multiple repos
+    * Each project, and often each library, has a separate source control repository. 
+* Hybrid
+    * Each repository contains multiple services and projects. 
+    * Each repository is isolated from the other repositories, but within each repo, multiple services and projectscan be developed in lockstep. 
+    * This approach balances the pros and cons ofmonorepo and multiple repos.
 
 
+Choosing data strategy
+
+* One data store per microservice, which is a crucial element of the microservicearchitecture.
+* Running distributed queries. It recommends to start with API composition andtransition to CQRS only if the proper conditions exist.
 
 
+Employing Command Query Responsibility Segregation (CQRS).
+
+* The CQRS service (responsible forqueries) receives a change notification from the three microservices (responsible for updates) and aggregates them into its own data store.
+* When a query comes, the CQRS service responds by accessing its own aggregated view without hitting the microservices.
+* It duplicates the data and adds complexity to the system.
+* An illustration of CQRS in action.
+
+![Illustration of CQRS in action](./assets/004.png)
 
 
+Employing API composition.
+
+* It exposes an API that can answer well-known queries across multiple microservices. 
+* A query to an API composer service is translated under the covers to queries to three microservices.
+* The failure of any service will fail the query. 
+* An illustration of API composition in action
+
+![Illustration of API composition in action](./assets/005.png)
 
 
+Maintaining distributed dataintegrity is a complex problem. 
+
+* If you store all your data in a single relationaldatabase and specify proper constraints in your schema, then you can rely on the database engine to take care of data integrity. 
+* If multiple microservices maintain your data in isolated data stores (relational ornon-relational). Data integrity is essential, but it must be maintained by your code. The saga pattern addresses this concern. 
+* A common measure of data integrity is that all transactions that modify data havethe ACID properties.
+    * Atomic: All operations in the transaction succeed or they all fail.
+    * Consistent: The state of the data complies with all constraints before and after the transaction.
+    * Isolated: Concurrent transactions behave as if serialized.
+    * Durable: When a transaction completes successfully, the results are persisted.
 
 
+There are different levels of persistence:
+
+* Persistence to disk: Can survive restart of the node, but no disk failure
+* Redundant memory on multiple nodes: Can survive restart of a node and disk failure, but not temporary failure of all the nodes
+* Redundant disks: Can survive the failure of a disk
+* Geo-distributed replicas: Can survive a whole data center being down
+* Backups: Cheaper to store a lot of information, but slower to restore and often lags behind real time
 
 
+The CAP theorem states that a distributed system can't have all three propertiesat the same time:
+
+* Consistency
+* Availability
+* Partition resiliency
+
+
+The basic idea of the **saga pattern** is that there is centralized management of the operations across all the microservices and that, for each operation, there is a compensating operation that will be executed if, for some reason, the entire transaction can't be completed. 
+This achieves the atomicity property of ACID.
+
+A **saga** is a set of operations and corresponding compensating operations on microservices. When an operation fails, its compensating operation and the compensating operations of all the previous operations are called in reverse order to roll back the entire state of the system.
 
 
 
@@ -432,6 +500,26 @@ Getting Started with Microservices, discusses various aspects,patterns, and appr
 ## Chapter 3 - Sample Application
 
 Delinkcious – the Sample Application, explores why we should choose Go as the programming language of Delinkcious; then we will lookat Go kit.
+
+[Delinkcious source code](https://github.com/the-gigi/delinkcious)
+
+[Delinkcious source code release v0.1](https://github.com/the-gigi/delinkcious/releases/tag/v0.1)
+
+[Go kit](https://gokit.io/), which is a toolkit for microservice.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## Chapter 4 - CI/CD Pipeline
 
@@ -476,4 +564,21 @@ Service Mesh – Working with Istio, reviews the hot topic ofservice meshes and,
 ## Chapter 14 - The Future
 
 The Future of Microservices and Kubernetes, covers the topicsof Kubernetes and microservices, and will help us learn how to decide whenit's the right time to adopt and invest in newer technologies.
+
+
+
+
+
+
+
+## Reference: 
+
+* [The code of the book](https://github.com/huyuhui001/Hands-On-Microservices-with-Kubernetes)
+* [Kubernetes document](https://kubernetes.io/docs/tasks/)
+* [Minikube documents](https://minikube.sigs.k8s.io/docs/start/)
+* [Helm document](https://helm.sh/docs/intro/quickstart/) and [source code](https://github.com/helm/helm) and [artifact hub](https://artifacthub.io/)
+* [Go language document](https://go.dev/doc/install)
+
+
+
 
