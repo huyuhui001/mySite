@@ -812,10 +812,42 @@ kubernetes-dashboard        1/1     1            1           5m54s
 <p>The dashboard looks like below.</p>
 <p><img alt="dashboard" src="../assets/003.png" /></p>
 <h4 id="installing-helm">Installing Helm</h4>
-<p>Helm is the Kubernetes package manager. It doesn't come with Kubernetes. 
-Helm has two components: a server-side component called <em>tiller</em>, and a CLI called <em>helm</em>.</p>
-<p>james@lizard:/opt&gt; curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
-james@lizard:/opt&gt; chmod 700 get_helm.sh</p>
+<p>Helm is the Kubernetes package manager. It doesn't come with Kubernetes. </p>
+<p>Three concepts of helm:</p>
+<ul>
+<li>A <em>Chart</em> is a Helm package. <ul>
+<li>It contains all of the resource definitions necessary to run an application, tool, or service inside of a Kubernetes cluster. </li>
+<li>Think of it like the Kubernetes equivalent of a Homebrew formula, an Apt dpkg, or a Yum RPM file.</li>
+</ul>
+</li>
+<li>A <em>Repository</em> is the place where charts can be collected and shared. <ul>
+<li>It's like Perl's CPAN archive or the Fedora Package Database, but for Kubernetes packages.</li>
+</ul>
+</li>
+<li>A <em>Release</em> is an instance of a chart running in a Kubernetes cluster. <ul>
+<li>One chart can often be installed many times into the same cluster. And each time it is installed, a new release is created. </li>
+<li>Consider a MySQL chart. If you want two databases running in your cluster, you can install that chart twice. Each one will have its own release, which will in turn have its own release name.</li>
+</ul>
+</li>
+</ul>
+<p>Refer to <a href="https://helm.sh/docs/intro/install/">installation guide</a> and <a href="https://github.com/helm/helm/releases">binary release</a> and <a href="https://github.com/helm/helm">source code</a>.</p>
+<p>Helm Client Installation: </p>
+<pre><code>james@lizard:/opt&gt; curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+james@lizard:/opt&gt; chmod 700 get_helm.sh
+
+james@lizard:/opt&gt; ./get_helm.sh
+Downloading https://get.helm.sh/helm-v3.9.0-linux-amd64.tar.gz
+Verifying checksum... Done.
+Preparing to install helm into /usr/local/bin
+helm installed into /usr/local/bin/helm
+</code></pre>
+<p>Note:
+<a href="https://helm.sh/docs/helm/helm_init/"><code>helm init</code></a> does not exist in Helm 3, following the removal of Tiller. You no longer need to install Tiller in your cluster in order to use Helm.</p>
+<p><code>helm search</code> can be used to search two different types of source:</p>
+<ul>
+<li><code>helm search hub</code> searches the <a href="https://artifacthub.io/">Artifact Hub</a>, which lists helm charts from dozens of different repositories.</li>
+<li><code>helm search repo</code> searches the repositories that you have added to your local helm client (with helm repo add). This search is done over local data, and no public network connection is needed.</li>
+</ul>
 <h2 id="chapter-2-microservices">Chapter 2 - Microservices</h2>
 <p>Getting Started with Microservices, discusses various aspects,patterns, and approaches to common problems in microservice-basedsystems and how they compare to other common architectures, such asmonoliths and large services.</p>
 <h2 id="chapter-3-sample-application">Chapter 3 - Sample Application</h2>
