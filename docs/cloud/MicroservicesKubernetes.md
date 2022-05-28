@@ -364,11 +364,42 @@ The dashboard looks like below.
 #### Installing Helm
 
 Helm is the Kubernetes package manager. It doesn't come with Kubernetes. 
-Helm has two components: a server-side component called *tiller*, and a CLI called *helm*.
 
+Three concepts of helm:
 
+* A *Chart* is a Helm package. 
+    * It contains all of the resource definitions necessary to run an application, tool, or service inside of a Kubernetes cluster. 
+    * Think of it like the Kubernetes equivalent of a Homebrew formula, an Apt dpkg, or a Yum RPM file.
+* A *Repository* is the place where charts can be collected and shared. 
+    * It's like Perl's CPAN archive or the Fedora Package Database, but for Kubernetes packages.
+* A *Release* is an instance of a chart running in a Kubernetes cluster. 
+    * One chart can often be installed many times into the same cluster. And each time it is installed, a new release is created. 
+    * Consider a MySQL chart. If you want two databases running in your cluster, you can install that chart twice. Each one will have its own release, which will in turn have its own release name.
+
+Refer to [installation guide](https://helm.sh/docs/intro/install/) and [binary release](https://github.com/helm/helm/releases) and [source code](https://github.com/helm/helm).
+
+Helm Client Installation: 
+```
 james@lizard:/opt> curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
 james@lizard:/opt> chmod 700 get_helm.sh
+
+james@lizard:/opt> ./get_helm.sh
+Downloading https://get.helm.sh/helm-v3.9.0-linux-amd64.tar.gz
+Verifying checksum... Done.
+Preparing to install helm into /usr/local/bin
+helm installed into /usr/local/bin/helm
+```
+
+Note:
+[`helm init`](https://helm.sh/docs/helm/helm_init/) does not exist in Helm 3, following the removal of Tiller. You no longer need to install Tiller in your cluster in order to use Helm.
+
+
+`helm search` can be used to search two different types of source:
+
+* `helm search hub` searches the [Artifact Hub](https://artifacthub.io/), which lists helm charts from dozens of different repositories.
+* `helm search repo` searches the repositories that you have added to your local helm client (with helm repo add). This search is done over local data, and no public network connection is needed.
+
+
 
 
 
@@ -376,6 +407,27 @@ james@lizard:/opt> chmod 700 get_helm.sh
 ## Chapter 2 - Microservices
 
 Getting Started with Microservices, discusses various aspects,patterns, and approaches to common problems in microservice-basedsystems and how they compare to other common architectures, such asmonoliths and large services.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## Chapter 3 - Sample Application
 
