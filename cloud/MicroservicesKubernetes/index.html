@@ -948,12 +948,147 @@ This achieves the atomicity property of ACID.</p>
 <h2 id="chapter-3-sample-application">Chapter 3 - Sample Application</h2>
 <p>Delinkcious – the Sample Application, explores why we should choose Go as the programming language of Delinkcious; then we will lookat Go kit.</p>
 <p><a href="https://github.com/the-gigi/delinkcious">Delinkcious source code</a></p>
-<p><a href="https://github.com/the-gigi/delinkcious/releases/tag/v0.1">Delinkcious source code release v0.1</a></p>
 <p><a href="https://gokit.io/">Go kit</a>, which is a toolkit for microservice.</p>
+<p>Download <a href="https://github.com/the-gigi/delinkcious/releases/tag/v0.1">Delinkcious source code release v0.1</a> and unpack it under folder <code>/opt</code>. The whole structure looks like below.</p>
+<p>The pkg directory contains packages that are used by services and commands.We should run the unit tests of these packages. </p>
+<p>The svc directory contains ourmicroservices. We should build those services, package each one in a properly versioned Docker image, and push those images to DockerHub (the imageregistry). </p>
+<p>The cmd directory currently contains end-to-end tests. Those are designed to run locally and don't need to be built by the CI pipeline.</p>
+<pre><code>james@lizard:/opt&gt; tree delinkcious-0.1
+delinkcious-0.1
+├── cmd
+│   └── social_graph_service_e2e
+│       ├── README.md
+│       └── social_graph_service_e2e.go
+├── go.mod
+├── go.sum
+├── LICENSE
+├── pkg
+│   ├── link_manager
+│   │   ├── abstract_link_store.go
+│   │   ├── db_link_store.go
+│   │   ├── db_link_store_test.go
+│   │   ├── in_memory_link_store.go
+│   │   ├── link_manager.go
+│   │   └── link_manager_suite_test.go
+│   ├── link_manager_client
+│   │   └── client.go
+│   ├── object_model
+│   │   ├── interfaces.go
+│   │   ├── README.md
+│   │   └── types.go
+│   ├── social_graph_client
+│   │   ├── client.go
+│   │   └── endpoints.go
+│   ├── social_graph_manager
+│   │   ├── db_scoial_graph_store.go
+│   │   ├── db_social_graph_manager_test.go
+│   │   ├── in_memory_social_graph_manager_test.go
+│   │   ├── in_memory_social_graph_store.go
+│   │   ├── social_graph_manager.go
+│   │   └── social_graph_manager_suite_test.go
+│   └── user_manager
+│       ├── db_user_manager_test.go
+│       ├── db_user_store.go
+│       ├── in_memory_user_manager.go
+│       ├── in_memory_user_manager_test.go
+│       ├── in_memory_user_store.go
+│       └── user_manager_suite_test.go
+├── README.md
+└── svc
+    ├── delinkcious_service
+    │   └── README.md
+    ├── link_service
+    │   ├── link_service.go
+    │   └── transport.go
+    ├── social_graph_service
+    │   ├── main.go
+    │   └── service
+    │       ├── social_graph_service.go
+    │       └── transport.go
+    └── user_service
+        ├── transport.go
+        └── user_service.go
+
+15 directories, 38 files
+</code></pre>
+<p>Download and launch the Postgres DB.</p>
+<pre><code>james@lizard:/opt&gt; docker pull postgres:alpine
+
+james@lizard:/opt&gt; docker image ls
+REPOSITORY       TAG       IMAGE ID       CREATED        SIZE
+postgres         latest    5b21e2e86aab   14 hours ago   376MB
+kicbase/stable   v0.0.30   1312ccd2422d   3 months ago   1.14GB
+
+james@lizard:/opt&gt; docker run --name postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres:alpine
+
+james@lizard:/opt&gt; docker container ls
+CONTAINER ID   IMAGE                    COMMAND                  CREATED          STATUS          PORTS                                                                                                                                  NAMES
+223e0f44e107   postgres                 &quot;docker-entrypoint.s…&quot;   26 seconds ago   Up 24 seconds   5432/tcp                                                                                                                               postgres-delinkcious
+5ec9c519d1e1   kicbase/stable:v0.0.30   &quot;/usr/local/bin/entr…&quot;   18 hours ago     Up 19 minutes   127.0.0.1:49157-&gt;22/tcp, 127.0.0.1:49156-&gt;2376/tcp, 127.0.0.1:49155-&gt;5000/tcp, 127.0.0.1:49154-&gt;8443/tcp, 127.0.0.1:49153-&gt;32443/tcp   minikube
+</code></pre>
+<pre><code>james@lizard:/opt&gt; cd delinkcious-0.1/svc/social_graph_service
+
+james@lizard:/opt/delinkcious-0.1/svc/social_graph_service&gt; go run main.go 
+2022/05/29 12:50:55 pq: unknown authentication response: 10
+exit status 1
+</code></pre>
 <h2 id="chapter-4-cicd-pipeline">Chapter 4 - CI/CD Pipeline</h2>
 <p>Setting Up the CI/CD Pipeline, teaches you about the problem the CI/CD pipeline solves, covers the different options for CI/CD pipelinesfor Kubernetes, and finally looks at building a CI/CD pipeline forDelinkcious.</p>
+<p>Download <a href="https://github.com/the-gigi/delinkcious/releases/tag/v0.2">Delinkcious source code release v0.2</a> and unpack it under folder <code>/opt</code>. </p>
+<p>Here we use <a href="https://circleci.com/docs/2.0/getting-started/">CircleCI</a> and Argo CD.</p>
+<p>Prefer to separate the CI solution from the CD solution. Conceptually, the role of the CI process is to generate a container image and push it to a registry. It doesn'tneed to be aware of Kubernetes at all. The CD solution, on the other hand, must be Kubernetes-aware, and it ideally runs inside the cluster.</p>
+<p>Tekton is a very interesting project. It is Kubernetes-native and has great abstractions of steps, tasks, runs, and pipelines. It is relatively young, but seemsvery promising. It was also selected as one of the inaugural projects of the CD Foundation: https://cd.foundation/projects/.</p>
+<p>Jenkins X provides automated CI+CD for Kubernetes with Preview Environments on Pull Requests using Cloud Native pipelines from Tekton</p>
+<p>Argo CD is very specific CD solution to Kubernetes.</p>
+<p>CircleCI: https://circleci.com/docs/</p>
+<p>Argo: https://argoproj.github.io/docs/argo-cd/docs/</p>
+<p>Free mini ebook about CI/CD with Kubernetes:https://thenewstack.io/ebooks/kubernetes/ci-cd-with-kubernetes/</p>
+<p>Jenkins X: https://jenkins-x.io/</p>
+<p>Spinnaker: https://www.spinnaker.io/</p>
 <h2 id="chapter-5-configuring-microservices">Chapter 5 - Configuring Microservices</h2>
 <p>Configuring Microservices with Kubernetes, moves you into the practical and real-world area of microservices configuration. Also, we will discuss Kubernetes-specific options and, in particular, ConfigMaps.</p>
+<p>The code samples at https://github.com/PacktPublishing/Hands-On-Microservices-with-Kubernetes/tree/master/Chapter05</p>
+<p>The updated Delinkcious application at https://github.com/the-gigi/delinkcious/releases/tag/v0.3</p>
+<p>Configuration is a very overloaded term. 
+Configuration mostly refers to operational data that's needed forcomputation. 
+The configuration may be different between environments. </p>
+<p>Here are some typical configuration items:</p>
+<ul>
+<li>Service discovery</li>
+<li>Support testing</li>
+<li>Environment-specific metadata</li>
+<li>Secrets</li>
+<li>Third-party configuration</li>
+<li>Feature flags</li>
+<li>Timeouts</li>
+<li>Rate limits</li>
+<li>Various defaults</li>
+</ul>
+<p><a href="https://12factor.net/">Twelve factor</a> app configuration</p>
+<p>Dynamic configuration means that the service keeps running with the same codeand the same in-memory state, but it can detect that the configuration has changed, and will dynamically adjust its behavior according to the new configuration.</p>
+<p>Dynamic configuration is useful in the following cases:</p>
+<ul>
+<li>If you just have a single instance of your service, then restarting means a mini-outage</li>
+<li>If you have feature flags that you want to switch back and forth quickly</li>
+<li>If you have services where initialization or dropping in-flight requests is expansive</li>
+<li>If your service doesn't support advanced deployment strategies, such as rolling updates, or blue-green or canary deployments</li>
+<li>When redeploying a new configuration file may pull in unrelated code changes from source control that are not ready for deployment yet.</li>
+</ul>
+<p>When should you avoid dynamic configuration?</p>
+<ul>
+<li>Regulated services where configuration change must go through a vetting and approval process</li>
+<li>Critical services where the low risk of static configuration trumps any benefit of dynamic configuration</li>
+<li>A dynamic configuration mechanism doesn't exist and the benefits don't justify the development of such a mechanism</li>
+<li>Existing system with a large number of services where the benefits of migration to a dynamic configuration doesn't justify the cost</li>
+<li>Advanced deployment strategies provide the benefits of dynamic configuration with static configuration and restarts/redeployments</li>
+<li>The added complexity of keeping track of and auditing configuration changes is too high</li>
+</ul>
+<p>One of the options for dynamic configuration is a remote configuration store. 
+All service instances can periodically query the configuration store, check whetherthe configuration has changed, and read the new configuration when it does.</p>
+<p>Possible options include the following:
+* Relational databases (Postgres, MySQL)
+* Key–value stores (Etcd, Redis)
+* Shared filesystems (NFS, EFS)</p>
 <h2 id="chapter-6-securing-microservices">Chapter 6 - Securing Microservices</h2>
 <p>Securing Microservices on Kubernetes, examines how to secure your microservices on Kubernetes in depth. We will also discuss the pillars that act as the foundation of microservice security on Kubernetes.</p>
 <h2 id="chapter-7-apis-and-load-balancers">Chapter 7 - APIs and Load Balancers</h2>
