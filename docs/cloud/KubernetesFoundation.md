@@ -1,8 +1,6 @@
 # Kubernetes Foundation
 
-## **1.Preparation and Setup**
-
-### System environment for the demo
+## **1.Demo environment**
 
 Linux: openSUSE 15.3
 ```
@@ -23,7 +21,7 @@ HOME_URL="https://www.opensuse.org/"
 
 ## **2. Docker Fundamentals**
 
-### Linux Primitives used by Containers
+### Linux Primitives
 
 chroot(using pivot_root)
 
@@ -787,7 +785,9 @@ james@lizard:~> docker push <your acccount id>/golang_0001:v1
 
 ## 3.Basic Concepts of Kubernetes
 
-### Installing kubectl
+### Installation
+
+#### kubectl
 
 Install kubectl by referring the [guidd](https://kubernetes.io/docs/tasks/tools/).
 
@@ -813,7 +813,7 @@ Kustomize Version: v4.5.4
 ```
 
 
-### Installing Minikube
+#### Minikube
 
 Install Minikube by referring to the [guide](https://minikube.sigs.k8s.io/docs/start/).
 
@@ -840,7 +840,7 @@ Starting control plane node minikube in cluster minikube
 Pulling base image ...
 Updating the running docker "minikube" container ...
 Preparing Kubernetes v1.23.3 on Docker 20.10.12 ...
-  ▪ kubelet.housekeeping-interval=5m
+  ▪ kubelet.housekeeping-interval=5ms
   ▪ Generating certificates and keys ...
   ▪ Booting up control plane ...
   ▪ Configuring RBAC rules ...
@@ -923,7 +923,7 @@ The dashboard looks like below.
 
 
 
-### Installing Helm
+#### Helm
 
 Helm is the Kubernetes package manager. It doesn't come with Kubernetes. 
 
@@ -968,6 +968,36 @@ Note:
 
 
 
+### Basic Concepts
+
+#### Kubernetes Components
+
+**Kubernetes Components**: 
+A Kubernetes cluster consists of the components that represent the **control plane** and a set of machines called **nodes**.
+
+![The components of a Kubernetes cluster](https://d33wubrfki0l68.cloudfront.net/2475489eaf20163ec0f54ddc1d92aa8d4c87c96b/e7c81/images/docs/components-of-kubernetes.svg)
+
+* **Control Plane Components**
+    * **kube-apiserver**: query and manipulate the state of objects in Kubernetes.
+    * **etcd**: all Kubernetes objects are stored on etcd. Kubernetes objects are persistent **entities** in the Kubernetes system, which are used to represent the state of your cluster.
+    * **kube-scheduler**:
+    * **kube-controller-manager**:
+    * **cloud-controller-manager**:
+* **Node Components**
+    * **kubelet**:
+    * **kube-proxy**:
+    * **Container runtime**:
+* Addons
+    * DNS
+    * Web UI (Dashboard)
+    * Container Resource Monitoring
+    * Cluster-level Logging
+
+
+
+
+* **Scaling out** (horizontal scaling) by adding more servers to your architecture to spread the workload across more machines.
+* **Scaling up** (vertical scaling) by adding more hard drives and memory to increase the computing capacity of physical servers. 
 
 
 
@@ -976,66 +1006,6 @@ Note:
 
 
 
-
-
-
-
-
-### nodes
-### kubelet
-### api server & rest API
-### etcd
-### kube-proxy
-### kubectl
-### yaml & json + basic structure of k8s resources
-### namespaces
-### pods - schedule, describe, logs, exec
-### liveness & readiness probes
-### labels
-### replica sets, deployments
-### cluster networking
-### services (clusterIP, NodePort, Loadbalancer)
-### communication via services
-
-
-
-## Storage
-### persistent volume
-### persistent volume claims
-### storage classes
-
-
-## Configuration
-### secrets
-### config maps
-
-
-## Further entities
-### networking
-### workloads
-### administration
-### Ingress
-### controller & custom resources
-
-
-
-## Stateful workloads
-### StatefulSets and headless services
-
-
-
-## Administration
-### User management - service accounts
-### Role based authorization (RBAC)
-### Image pull secrets
-### Network policies
-### Node management
-### Kubernetes Dashboard
-### Scheduling pods on dedicated nodes
-### get your own cluster | Gardener
-
-
-## Troubleshooting
 
 
 
