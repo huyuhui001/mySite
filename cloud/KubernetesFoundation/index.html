@@ -15,7 +15,7 @@
     
     
       
-        <title>KubernetesFoundation - MEMO</title>
+        <title>Kubernetes Foundation - MEMO</title>
       
     
     
@@ -64,6 +64,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#kubernetes-foundation" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -93,7 +98,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              KubernetesFoundation
+              Kubernetes Foundation
             
           </span>
         </div>
@@ -263,6 +268,448 @@
   
   
   
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1preparation-and-setup" class="md-nav__link">
+    1.Preparation and Setup
+  </a>
+  
+    <nav class="md-nav" aria-label="1.Preparation and Setup">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#system-environment-for-the-demo" class="md-nav__link">
+    System environment for the demo
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-docker-fundamentals" class="md-nav__link">
+    2. Docker Fundamentals
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Docker Fundamentals">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#linux-primitives-used-by-containers" class="md-nav__link">
+    Linux Primitives used by Containers
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#installing-docker" class="md-nav__link">
+    Installing Docker
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#container-lifecycle" class="md-nav__link">
+    Container lifecycle
+  </a>
+  
+    <nav class="md-nav" aria-label="Container lifecycle">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    Overview
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ports-and-volumes" class="md-nav__link">
+    Ports and volumes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dockerfile" class="md-nav__link">
+    Dockerfile
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#multi-stage-dockerfile" class="md-nav__link">
+    Multi-stage Dockerfile
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3basic-concepts-of-kubernetes" class="md-nav__link">
+    3.Basic Concepts of Kubernetes
+  </a>
+  
+    <nav class="md-nav" aria-label="3.Basic Concepts of Kubernetes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#installing-kubectl" class="md-nav__link">
+    Installing kubectl
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#installing-minikube" class="md-nav__link">
+    Installing Minikube
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#installing-helm" class="md-nav__link">
+    Installing Helm
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nodes" class="md-nav__link">
+    nodes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kubelet" class="md-nav__link">
+    kubelet
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#api-server-rest-api" class="md-nav__link">
+    api server &amp; rest API
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#etcd" class="md-nav__link">
+    etcd
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kube-proxy" class="md-nav__link">
+    kube-proxy
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kubectl" class="md-nav__link">
+    kubectl
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#yaml-json-basic-structure-of-k8s-resources" class="md-nav__link">
+    yaml &amp; json + basic structure of k8s resources
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#namespaces" class="md-nav__link">
+    namespaces
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pods-schedule-describe-logs-exec" class="md-nav__link">
+    pods - schedule, describe, logs, exec
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#liveness-readiness-probes" class="md-nav__link">
+    liveness &amp; readiness probes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#labels" class="md-nav__link">
+    labels
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#replica-sets-deployments" class="md-nav__link">
+    replica sets, deployments
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cluster-networking" class="md-nav__link">
+    cluster networking
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#services-clusterip-nodeport-loadbalancer" class="md-nav__link">
+    services (clusterIP, NodePort, Loadbalancer)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#communication-via-services" class="md-nav__link">
+    communication via services
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#storage" class="md-nav__link">
+    Storage
+  </a>
+  
+    <nav class="md-nav" aria-label="Storage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#persistent-volume" class="md-nav__link">
+    persistent volume
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#persistent-volume-claims" class="md-nav__link">
+    persistent volume claims
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#storage-classes" class="md-nav__link">
+    storage classes
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration" class="md-nav__link">
+    Configuration
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#secrets" class="md-nav__link">
+    secrets
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#config-maps" class="md-nav__link">
+    config maps
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#further-entities" class="md-nav__link">
+    Further entities
+  </a>
+  
+    <nav class="md-nav" aria-label="Further entities">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#networking" class="md-nav__link">
+    networking
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#workloads" class="md-nav__link">
+    workloads
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#administration" class="md-nav__link">
+    administration
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ingress" class="md-nav__link">
+    Ingress
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#controller-custom-resources" class="md-nav__link">
+    controller &amp; custom resources
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stateful-workloads" class="md-nav__link">
+    Stateful workloads
+  </a>
+  
+    <nav class="md-nav" aria-label="Stateful workloads">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#statefulsets-and-headless-services" class="md-nav__link">
+    StatefulSets and headless services
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#administration_1" class="md-nav__link">
+    Administration
+  </a>
+  
+    <nav class="md-nav" aria-label="Administration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#user-management-service-accounts" class="md-nav__link">
+    User management - service accounts
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#role-based-authorization-rbac" class="md-nav__link">
+    Role based authorization (RBAC)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#image-pull-secrets" class="md-nav__link">
+    Image pull secrets
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#network-policies" class="md-nav__link">
+    Network policies
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#node-management" class="md-nav__link">
+    Node management
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kubernetes-dashboard" class="md-nav__link">
+    Kubernetes Dashboard
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scheduling-pods-on-dedicated-nodes" class="md-nav__link">
+    Scheduling pods on dedicated nodes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-your-own-cluster-gardener" class="md-nav__link">
+    get your own cluster | Gardener
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    Troubleshooting
+  </a>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -276,9 +723,852 @@
                 
 
 
-  <h1>KubernetesFoundation</h1>
+<h1 id="kubernetes-foundation">Kubernetes Foundation</h1>
+<h2 id="1preparation-and-setup"><strong>1.Preparation and Setup</strong></h2>
+<h3 id="system-environment-for-the-demo">System environment for the demo</h3>
+<p>Linux: openSUSE 15.3</p>
+<pre><code>james@lizard:/opt&gt; cat /etc/os-release 
+NAME=&quot;openSUSE Leap&quot;
+VERSION=&quot;15.3&quot;
+ID=&quot;opensuse-leap&quot;
+ID_LIKE=&quot;suse opensuse&quot;
+VERSION_ID=&quot;15.3&quot;
+PRETTY_NAME=&quot;openSUSE Leap 15.3&quot;
+ANSI_COLOR=&quot;0;32&quot;
+CPE_NAME=&quot;cpe:/o:opensuse:leap:15.3&quot;
+BUG_REPORT_URL=&quot;https://bugs.opensuse.org&quot;
+HOME_URL=&quot;https://www.opensuse.org/&quot;
+</code></pre>
+<h2 id="2-docker-fundamentals"><strong>2. Docker Fundamentals</strong></h2>
+<h3 id="linux-primitives-used-by-containers">Linux Primitives used by Containers</h3>
+<p>chroot(using pivot_root)</p>
+<ul>
+<li>Changes the root directory for a process to any given directory</li>
+</ul>
+<p>namespaces</p>
+<ul>
+<li>Different processes see different environments even though they are on the same host/OS<ul>
+<li>mnt (mount points)</li>
+<li>pid (process tree)</li>
+<li>net (network interfaces and connectivity)</li>
+<li>ipc (interprocess communication framework)</li>
+<li>uts (unix timesharing - domain name, hostname, etc.)</li>
+<li>uid (user IDs and mappings)</li>
+</ul>
+</li>
+</ul>
+<p>cgroups(control groups)</p>
+<ul>
+<li>manage/limit resource allocation to individual processes</li>
+<li>Prioritization of processes</li>
+</ul>
+<p>Apparmor and SELinux profiles
+- Security profiles to govern access to resources</p>
+<p>Kernel capabilities</p>
+<ul>
+<li>without capabilities: root can do everything, everybody else may do nothing</li>
+<li>38 granular facilities to control privileges</li>
+</ul>
+<p>seccomp policies</p>
+<ul>
+<li>Limitation of allowed kernel syscalls</li>
+<li>Unallowed syscalls lead to process termination</li>
+</ul>
+<p>Netlink
+- A Linux kernel interface used for inter-process communication (IPC) between both the kernel and userspace processes, and between different userspace processes. </p>
+<p>Netfilter</p>
+<ul>
+<li>A framework provided by the Linux kernel that allows various networking-related operations</li>
+<li>Packet filtering, network address translation, and port translation(iptables/nftables)</li>
+<li>used to direct network packages to individual containers</li>
+</ul>
+<p>More inforamtion could refer to <a href="https://linuxcontainers.org/">LXC/LXD</a></p>
+<p>Let's download an image <code>alpine</code> to simulate an root file system under <code>/opt/test</code> folder.</p>
+<pre><code>james@lizard:/opt&gt; mkdir test
+james@lizard:/opt&gt; cd test
+james@lizard:/opt/test&gt; wget https://dl-cdn.alpinelinux.org/alpine/v3.13/releases/x86_64/alpine-minirootfs-3.13.4-x86_64.tar.gz
+james@lizard:/opt/test&gt; tar zxvf alpine-minirootfs-3.13.4-x86_64.tar.gz -C alpine-minirootfs/
+
+james@lizard:/opt&gt; tree ./test -L 1
+./test
+├── alpine-minirootfs-3.13.4-x86_64.tar.gz
+├── bin
+├── dev
+├── etc
+├── home
+├── lib
+├── media
+├── mnt
+├── opt
+├── proc
+├── root
+├── run
+├── sbin
+├── srv
+├── sys
+├── tmp
+├── usr
+└── var
+</code></pre>
+<p>Mount folder <code>/opt/test/proc</code> to a file and use command <code>unshare</code> to build a guest system.</p>
+<pre><code>james@lizard:/opt&gt; sudo mount -t tmpfs tmpfs /opt/test/proc
+
+james@lizard:/opt&gt; sudo unshare --pid --mount-proc=$PWD/test/proc --fork chroot ./test/ /bin/sh
+/ # ps -ef
+PID   USER     TIME  COMMAND
+    1 root      0:00 /bin/sh
+    2 root      0:00 ps -ef
+/ # touch 123
+/ # ls 123
+123
+</code></pre>
+<p>The file <code>123</code> created in guest system is accessable and writable from host system.</p>
+<pre><code>james@lizard:/opt&gt; su -
+
+lizard:/opt/test # ls 123
+123
+
+lizard:/opt/test # echo hello &gt; 123
+</code></pre>
+<p>We will see above change in guest system.</p>
+<pre><code>/ # cat 123
+hello
+</code></pre>
+<p>Let's create two folders <code>/opt/test-1</code> and <code>/opt/test-2</code>.</p>
+<pre><code>james@lizard:/opt&gt; mkdir test-1
+james@lizard:/opt&gt; mkdir test-2
+</code></pre>
+<p>Create two guests system. Mount <code>/opt/test/home/</code> to different folders for different guests.</p>
+<pre><code>james@lizard:/opt&gt; sudo mount --bind /opt/test-1 /opt/test/home/
+james@lizard:/opt&gt; sudo unshare --pid --mount-proc=$PWD/test/proc --fork chroot ./test/ /bin/sh
+/ # cd /home
+/home # echo &quot;test-1&quot; &gt; 123.1
+/home # cat 123.1
+test-1
+
+james@lizard:/opt&gt; sudo mount --bind /opt/test-2 /opt/test/home/
+james@lizard:/opt&gt; sudo unshare --pid --mount-proc=$PWD/test/proc --fork chroot ./test/ /bin/sh
+/ # cd /home
+/home # echo &quot;test-2&quot; &gt; 123.2
+/home # cat 123.2
+test-2
+
+james@lizard:/opt&gt; ll test/home
+-rw-r--r-- 1 root root 7 May 31 22:47 123.1
+-rw-r--r-- 1 root root 7 May 31 22:47 123.2
+
+james@lizard:/opt&gt; ll test-1/
+-rw-r--r-- 1 root root 7 May 31 22:47 123.1
+-rw-r--r-- 1 root root 7 May 31 22:47 123.2
+
+james@lizard:/opt&gt; ll test-2/
+-rw-r--r-- 1 root root 7 May 31 22:47 123.1
+-rw-r--r-- 1 root root 7 May 31 22:47 123.2
+</code></pre>
+<p>With above demo, the conclusion is that two guests share same home folder on host system and will impact each other.</p>
+<h3 id="installing-docker">Installing Docker</h3>
+<p>Install Docker engine by referring the <a href="https://docs.docker.com/engine/">guide</a>, and Docker Desktop by referring the <a href="https://docs.docker.com/desktop/">guide</a>.</p>
+<p>Install engine via openSUSE repository automatically.</p>
+<pre><code>james@lizard:/opt&gt; sudo zypper in docker
+</code></pre>
+<p>The docker group is automatically created at package installation time. 
+The user can communicate with the local Docker daemon upon its next login. 
+The Docker daemon listens on a local socket which is accessible only by the root user and by the members of the docker group. </p>
+<p>Add current user to <code>docker</code> group.</p>
+<pre><code>james@lizard:/opt&gt; sudo usermod -aG docker $USER
+</code></pre>
+<p>Enable and start Docker engine.</p>
+<pre><code>james@lizard:/opt&gt; sudo systemctl enable docker.service 
+Created symlink /etc/systemd/system/multi-user.target.wants/docker.service → /usr/lib/systemd/system/docker.service.
+
+james@lizard:/opt&gt; sudo systemctl start docker.service 
+
+james@lizard:/opt&gt; sudo systemctl status docker.service 
+● docker.service - Docker Application Container Engine
+     Loaded: loaded (/usr/lib/systemd/system/docker.service; enabled; vendor preset: disabled)
+     Active: active (running) since Sat 2022-05-28 14:36:45 CST; 6s ago
+       Docs: http://docs.docker.com
+   Main PID: 31565 (dockerd)
+      Tasks: 20
+     CGroup: /system.slice/docker.service
+             ├─31565 /usr/bin/dockerd --add-runtime oci=/usr/sbin/docker-runc
+             └─31574 containerd --config /var/run/docker/containerd/containerd.toml --log-level warn
+
+May 28 14:36:44 lizard systemd[1]: Starting Docker Application Container Engine...
+May 28 14:36:44 lizard dockerd[31565]: time=&quot;2022-05-28T14:36:44+08:00&quot; level=info msg=&quot;SUSE:secrets :: enabled&quot;
+May 28 14:36:44 lizard dockerd[31574]: time=&quot;2022-05-28T14:36:44+08:00&quot; level=warning msg=&quot;deprecated version : `1`, please switch to version `2`&quot;
+May 28 14:36:44 lizard dockerd[31574]: time=&quot;2022-05-28T14:36:44.659346964+08:00&quot; level=warning msg=&quot;failed to load plugin io.containerd.snapshotter.v1.devmapper&quot; error=&quot;devmapper no&gt;
+May 28 14:36:44 lizard dockerd[31574]: time=&quot;2022-05-28T14:36:44.660040930+08:00&quot; level=warning msg=&quot;could not use snapshotter devmapper in metadata plugin&quot; error=&quot;devmapper not conf&gt;
+May 28 14:36:45 lizard dockerd[31565]: time=&quot;2022-05-28T14:36:45.018458102+08:00&quot; level=warning msg=&quot;Your kernel does not support swap memory limit&quot;
+May 28 14:36:45 lizard dockerd[31565]: time=&quot;2022-05-28T14:36:45.018495482+08:00&quot; level=warning msg=&quot;Your kernel does not support CPU realtime scheduler&quot;
+May 28 14:36:45 lizard dockerd[31565]: time=&quot;2022-05-28T14:36:45.018502682+08:00&quot; level=warning msg=&quot;Your kernel does not support cgroup blkio weight&quot;
+May 28 14:36:45 lizard dockerd[31565]: time=&quot;2022-05-28T14:36:45.018506223+08:00&quot; level=warning msg=&quot;Your kernel does not support cgroup blkio weight_device&quot;
+May 28 14:36:45 lizard systemd[1]: Started Docker Application Container Engine.
+</code></pre>
+<h3 id="container-lifecycle">Container lifecycle</h3>
+<h4 id="overview">Overview</h4>
+<p>Pull down below images in advance.</p>
+<pre><code>james@lizard:~&gt; docker image pull busybox
+james@lizard:~&gt; docker image pull nginx
+james@lizard:~&gt; docker image pull alpine
+james@lizard:~&gt; docker image pull jenkins/jenkins:lts
+james@lizard:~&gt; docker image pull golang:1.12-alpine
+james@lizard:~&gt; docker image pull golang
+</code></pre>
+<p>Download some docker images.
+Create and run a new busybox container interactively and connect a pseudo terminal to it.
+Inside the container, use the top command to find out that <code>/bin/sh</code> is running as process with the PID 1 and <code>top</code> process is also running. 
+After that, just exit.</p>
+<pre><code>james@lizard:~&gt; docker image ls  (or docker images)
+REPOSITORY        TAG           IMAGE ID       CREATED         SIZE
+golang            latest        80d9a75ccb38   5 days ago      941MB
+nginx             latest        c316d5a335a5   6 days ago      141MB
+jenkins/jenkins   lts           9aee0d53624f   2 weeks ago     441MB
+busybox           latest        beae173ccac6   4 weeks ago     1.24MB
+alpine            latest        c059bfaa849c   2 months ago    5.58MB
+golang            1.12-alpine   76bddfb5e55e   23 months ago   346MB
+
+james@lizard:~&gt; docker run -d -it --name busybox_v1 -v /opt/test:/docker busybox:latest /bin/sh
+
+james@lizard:~&gt; docker container ps -a
+CONTAINER ID   IMAGE            COMMAND     CREATED          STATUS         PORTS     NAMES
+185efe490507   busybox:latest   &quot;/bin/sh&quot;   11 seconds ago   Up 9 seconds             busybox_v1
+
+james@lizard:~&gt; docker exec -it 185efe490507 /bin/sh
+/ # top
+Mem: 3627396K used, 12731512K free, 10080K shrd, 2920K buff, 2999340K cached
+CPU:  0.0% usr  0.1% sys  0.0% nic 99.8% idle  0.0% io  0.0% irq  0.0% sirq
+Load average: 0.38 1.09 1.29 2/277 14
+  PID  PPID USER     STAT   VSZ %VSZ CPU %CPU COMMAND
+    1     0 root     S     1332  0.0   1  0.0 /bin/sh
+    8     0 root     S     1332  0.0   2  0.0 /bin/sh
+   14     8 root     R     1328  0.0   1  0.0 top
+/ # exitbuild 
+</code></pre>
+<p>Start a new nginx container in detached mode.
+Use the <code>docker exec</code> command to start another shell (<code>/bin/sh</code>) in the nginx container. 
+Use ps to find out that <code>sh</code> and <code>ps</code> commands are running in your container.</p>
+<pre><code>james@lizard:~&gt; docker run -d -it --name nginx_v1 -v /opt/test:/docker nginx:latest /bin/sh
+
+james@lizard:~&gt; docker container ps -a
+CONTAINER ID   IMAGE            COMMAND                  CREATED         STATUS         PORTS     NAMES
+edb640127a0d   nginx:latest     &quot;/docker-entrypoint.…&quot;   3 seconds ago   Up 2 seconds   80/tcp    nginx_v1
+185efe490507   busybox:latest   &quot;/bin/sh&quot;                2 minutes ago   Up 2 minutes             busybox_v1
+
+james@lizard:~&gt; docker exec -it edb640127a0d /bin/sh
+# ps
+/bin/sh: 2: ps: not found
+# apt-get update &amp;&amp; apt-get install -y procps
+# ps
+   PID TTY          TIME CMD
+     8 pts/1    00:00:00 sh
+   351 pts/1    00:00:00 ps
+# exit
+</code></pre>
+<p>Now we have two running containers below.</p>
+<pre><code>james@lizard:~&gt; docker container ps -a
+CONTAINER ID   IMAGE            COMMAND                  CREATED          STATUS          PORTS     NAMES
+edb640127a0d   nginx:latest     &quot;/docker-entrypoint.…&quot;   7 minutes ago    Up 7 minutes    80/tcp    nginx_v1
+185efe490507   busybox:latest   &quot;/bin/sh&quot;                10 minutes 
+Let's make use of this to create a new stage:ago   Up 10 minutes             busybox_v1
+</code></pre>
+<p>Let's use <code>docker logs</code> to display the logs of the container we just exited from. 
+The option <code>--since 35m</code> means display log in last 35 minutes.</p>
+<pre><code>james@lizard:~&gt; docker logs nginx_v1 --details --since 35m
+james@lizard:~&gt; docker logs busybox_v1 --details --since 35m
+</code></pre>
+<p>Let's make use of this to create a new stage:</p>
+<p>Use the <code>docker stop</code> command to end your nginx container.</p>
+<pre><code>james@lizard:~&gt; docker stop busybox_v1
+busybox_v1
+james@lizard:~&gt; docker stop nginx_v1 
+nginx_v1
+
+james@lizard:~&gt; docker container ps -a
+CONTAINER ID   IMAGE            COMMAND                  CREATED          STATUS                        PORTS     NAMES
+edb640127a0d   nginx:latest     &quot;/docker-entrypoint.…&quot;   10 minutes ago   Exited (137) 4 seconds ago              nginx_v1
+185efe490507   busybox:latest   &quot;/bin/sh&quot;                13 minutes ago   Exited (137) 16 seconds ago             busybox_v1
+</code></pre>
+<p>With above command <code>docker container ps -a</code>, we get a list of all running and exited containers. 
+Remove them with docker rm.
+Use <code>docker rm $(docker ps -aq)</code> to clean up all containers on your host. Use it with caution!</p>
+<pre><code>james@lizard:~&gt; docker rm busybox_v1
+busybox_v1
+
+james@lizard:~&gt; docker container ps -a
+CONTAINER ID   IMAGE          COMMAND                  CREATED          STATUS                        PORTS     NAMES
+edb640127a0d   nginx:latest   &quot;/docker-entrypoint.…&quot;   11 minutes ago   Exited (137) 53 seconds ago             nginx_v1
+</code></pre>
+<h4 id="ports-and-volumes">Ports and volumes</h4>
+<p>Now, let's run an nginx webserver in a container and serve a website to the outside world.</p>
+<p>Start a new nginx container and export the port of the nginx webserver to a random port that is chosen by Docker. </p>
+<p>Use command <code>docker ps</code> to find you which port the webserver is forwarded. Access the docker with the forwarded port number on host <code>http://localhost:&lt;port#&gt;</code>.</p>
+<pre><code>james@lizard:~&gt; docker container ps -a
+CONTAINER ID   IMAGE          COMMAND                  CREATED          STATUS                        PORTS     NAMES
+edb640127a0d   nginx:latest   &quot;/docker-entrypoint.…&quot;   11 minutes ago   Exited (137) 53 seconds ago             nginx_v1
+
+james@lizard:~&gt; docker run -d -P --name nginx_v2 nginx:latest
+
+james@lizard:~&gt; docker container ps -a
+CONTAINER ID   IMAGE          COMMAND                  CREATED          STATUS                       PORTS                                     NAMES
+3349a84e5024   nginx:latest   &quot;/docker-entrypoint.…&quot;   15 seconds ago   Up 14 seconds                0.0.0.0:49153-&gt;80/tcp, :::49153-&gt;80/tcp   nginx_v2
+edb640127a0d   nginx:latest   &quot;/docker-entrypoint.…&quot;   13 minutes ago   Exited (137) 3 minutes ago                                             nginx_v1
+</code></pre>
+<p>Start another nginx container and expose port to <code>1080</code> on host as an example via <code>http://localhost:1080</code>.</p>
+<pre><code>james@lizard:~&gt; docker run -d -p 1080:80 --name nginx_v3 nginx:latest
+
+james@lizard:~&gt; docker container ps -a
+CONTAINER ID   IMAGE          COMMAND                  CREATED          STATUS              PORTS                                     NAMES
+214ded9b8645   nginx:latest   &quot;/docker-entrypoint.…&quot;   30 seconds ago   Up 28 seconds       0.0.0.0:1080-&gt;80/tcp, :::1080-&gt;80/tcp     nginx_v3
+3349a84e5024   nginx:latest   &quot;/docker-entrypoint.…&quot;   3 hours ago      Up About a minute   0.0.0.0:49153-&gt;80/tcp, :::49153-&gt;80/tcp   nginx_v2
+edb640127a0d   nginx:latest   &quot;/docker-entrypoint.…&quot;   3 hours ago      Up 3 seconds        80/tcp                                    nginx_v1
+</code></pre>
+<p>Let's make use of this to create a new stage:</p>
+<p>Use command <code>docker inspect</code> to find out which port is exposed by the image. Network information (ip, gateway, ports, etc.) is part of the output JSON format.</p>
+<pre><code>james@lizard:~&gt; docker inspect nginx_v3 
+</code></pre>
+<p>Create a file <code>index.html</code> in folder <code>/opt/test</code> with below sample content. </p>
+<pre><code>&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Sample Website from my container&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;This is a custom website.&lt;/h1&gt;
+    &lt;p&gt;This website is served from my &lt;a href="http://www.docker.com" target="_blank"&gt;Docker&lt;/a&gt; container.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>Start a new container that bind-mounts host directory <code>/opt/test</code> to container directory <code>/usr/share/nginx/html</code> as a volume, so that NGINX will publish the HTML file wee just created instead of its default message via <code>http://localhost:49159/</code> below.</p>
+<pre><code>james@lizard:~&gt; docker run -d -P --mount type=bind,source=/opt/test/,target=/usr/share/nginx/html --name nginx_v3-1 nginx:latest
+
+james@lizard:~&gt; docker container ps -a
+CONTAINER ID   IMAGE          COMMAND                  CREATED          STATUS              PORTS                                     NAMES
+bd94e4df65cf   nginx:latest   &quot;/docker-entrypoint.…&quot;   30 seconds ago   Up About a minute   0.0.0.0:49159-&gt;80/tcp, :::49154-&gt;80/tcp   nginx_v3-1                                                                                                
+214ded9b8645   nginx:latest   &quot;/docker-entrypoint.…&quot;   30 seconds ago   Up 28 seconds       0.0.0.0:1080-&gt;80/tcp, :::1080-&gt;80/tcp     nginx_v3
+3349a84e5024   nginx:latest   &quot;/docker-entrypoint.…&quot;   3 hours ago      Up About a minute   0.0.0.0:49153-&gt;80/tcp, :::49153-&gt;80/tcp   nginx_v2
+edb640127a0d   nginx:latest   &quot;/docker-entrypoint.…&quot;   3 hours ago      Up 3 seconds        80/tcp                                    nginx_v1
+</code></pre>
+<p>Check nginx config file on where is the html home page stored in container.</p>
+<pre><code>james@lizard:~&gt; docker exec -it nginx_v3-1 /bin/sh
+# cd /etc/nginx/conf.d
+# ls
+default.conf
+# cat default.conf
+server {
+    listen       80;
+    listen  [::]:80;
+    server_name  localhost;
+
+    #access_log  /var/log/nginx/host.access.log  main;
+
+    location / {
+        root   /usr/share/nginx/html;  &lt;--
+        index  index.html index.htm;
+    }
+
+    #error_page  404              /404.html;
+
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+
+    # proxy the PHP scripts to Apache listening on 127.0.0.1:80
+    #
+    #location ~ \.php$ {
+    #    proxy_pass   http://127.0.0.1;
+    #}
+
+    # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+    #
+    #location ~ \.php$ {
+    #    root           html;
+    #    fastcgi_pass   127.0.0.1:9000;
+    #    fastcgi_index  index.php;
+    #    fastcgi_param  SCRIPT_FILENAME  /scripts$fastcgi_script_name;
+    #    include        fastcgi_params;
+    #}
+
+    # deny access to .htaccess files, if Apache's document root
+    # concurs with nginx's one
+    #
+    #location ~ /\.ht {
+    #    deny  all;
+    #}
+}
+# cd /usr/share/nginx/html
+# cat index.html              
+  &lt;html&gt;
+  &lt;head&gt;
+      &lt;title&gt;Sample Website from my container&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+      &lt;h1&gt;This is a custom website.&lt;/h1&gt;
+      &lt;p&gt;This website is served from my &lt;a href=&quot;http://www.docker.com&quot; target=&quot;_blank&quot;&gt;Docker&lt;/a&gt; container.&lt;/p&gt;
+  &lt;/body&gt;
+  &lt;/html&gt;
+# 
+</code></pre>
+<p>It's recommendable to add a persistence with volumes API, instead of storing data in a docker container. Docker supports 2 ways of mount:</p>
+<ul>
+<li>Bind mounts: <ul>
+<li>mount a local host directory onto a certain path in the container. </li>
+<li>Everything that was present before in the target directory is hidden (nature of the bind mount). </li>
+<li>For example, if you have some configuration you want to inject, write your config file, store it on your docker host at <code>/home/container/config</code> and mount the content of this directory to <code>/usr/application/config</code> (assuming the application reads config from there). </li>
+<li>Command: <code>docker run --mount type=bind,source=&lt;source path&gt;,target=&lt;container path&gt; …</code></li>
+</ul>
+</li>
+<li>Named volumes: <ul>
+<li>docker can create a separated storage volume. </li>
+<li>Its lifecycle is independent from the container but still managed by docker. </li>
+<li>Upon creation, the content of the mount target is merged into the volume. </li>
+<li>Command: <code>docker run --mount source=&lt;vol name&gt;,target=&lt;container path&gt; …</code></li>
+</ul>
+</li>
+</ul>
+<p>How to differentiate between bind mountbuild s and named volumes? </p>
+<ul>
+<li>When specifying an absolute path, docker assumes a bind mount. </li>
+<li>When you just give a name (like in a relative path “config”), it will assume a named volume and create a volume “config”.</li>
+<li>Note: Persistent storage is 'provided' by the host. It can be a part of the file system on the host directly but also an NFS mount. </li>
+</ul>
+<h4 id="dockerfile">Dockerfile</h4>
+<p>Let's build an image with a Dockerfile,build  tag it and upload it to a registry. </p>
+<p>Get docker image build history.</p>
+<pre><code>james@lizard:~&gt; docker image history nginx:latest 
+IMAGE          CREATED      CREATED BY                                      SIZE      COMMENT
+c316d5a335a5   6 days ago   /bin/sh -c #(nop)  CMD [&quot;nginx&quot; &quot;-g&quot; &quot;daemon…   0B
+&lt;missing&gt;      6 days ago   /bin/sh -c #(nop)  STOPSIGNAL SIGQUIT           0B
+&lt;missing&gt;      6 days ago   /bin/sh -c #(nop)  EXPOSE 80                    0B
+&lt;missing&gt;      6 days ago   /bin/sh -c #(nop)  ENTRYPOINT [&quot;/docker-entr…   0B
+&lt;missing&gt;      6 days ago   /bin/sh -c #(nop) COPY file:09a214a3e07c919a…   4.61kB
+&lt;missing&gt;      6 days ago   /bin/sh -c build #(nop) COPY file:0fd5fca330dcd6a7…   1.04kB
+&lt;missing&gt;      6 days ago   /bin/sh -c #(nop) COPY file:0b866ff3fc1ef5b0…   1.96kB
+&lt;missing&gt;      6 days ago   /bin/sh -c #(nop) COPY file:65504f71f5855ca0…   1.2kB
+&lt;missing&gt;      6 days ago   /bin/sh -c set -x     &amp;&amp; addgroup --system -…   61.1MB
+&lt;missing&gt;      6 days ago   /bin/sh -c #(nop)  ENV PKG_RELEASE=1~bullseye   0B
+&lt;missing&gt;      6 days ago   /bin/sh -c #(nop)  ENV NJS_VERSION=0.7.2        0B
+&lt;missing&gt;      6 days ago   /bin/sh -c #(nop)  ENV NGINX_VERSION=1.21.6     0B
+&lt;missing&gt;      6 days ago   /bin/sh -c #(nop)  LABEL maintainer=NGINX Do…   0B
+&lt;missing&gt;      7 days ago   /bin/sh -c #(nop)  CMD [&quot;bash&quot;]                 0B
+&lt;missing&gt;      7 days ago   /bin/sh -c #(nop) ADD file:90495c24c897ec479…   80.4MB
+</code></pre>
+<p>Create an empty directory <code>/opt/tmp-1</code>, change to the directory and create an sample <code>index.html</code> file in <code>/opt/tmp-1</code>.</p>
+<pre><code>james@lizard:/opt/tmp-1&gt; cat index.html 
+  &lt;html&gt;
+  &lt;head&gt;
+      &lt;title&gt;Sample Website from my container&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+      &lt;h1&gt;This is a custom website.&lt;/h1&gt;
+      &lt;p&gt;This website is served from my &lt;a href=&quot;http://www.docker.com&quot; target=&quot;_blank&quot;&gt;Docker&lt;/a&gt; container.&lt;/p&gt;
+  &lt;/body&gt;
+  &lt;/html&gt;
+</code></pre>
+<p>Use <code>FROM</code> to extend an existing image, specify the release number.</p>
+<p>Use <code>COPY</code> to copy a new default website into the image, e.g., <code>/usr/share/nginx/html</code></p>
+<p>Create SSL configuration <code>/opt/tmp-1/ssl.conf</code> for nginx.</p>
+<pre><code>server {
+    listen       443 ssl;
+    server_name  localhost;
+
+    ssl_certificate /etc/nginx/ssl/nginx.crt;
+    ssl_certificate_key /etc/nginx/ssl/nginx.key;
+
+    location / {
+        root   /usr/share/nginx/html;
+        index  index.html index.htm;
+    }
+}
+</code></pre>
+<p>Use OpenSSL to create a self-signed certificate so SSL/TLS to work would work.</p>
+<p>Use the following command to create an encryption key and a certificate.</p>
+<pre><code>james@lizard:/opt/tmp-1&gt; openssl req -x509 -nodes -newkey rsa:4096 -keyout nginx.key -out nginx.crt -days 365 -subj &quot;/CN=$(hostname)&quot;
+Generating a RSA private key
+........++++
+................................++++
+writing new private key to 'nginx.key'
+-----
+</code></pre>
+<p>To enable encrypted HTTPS, we need to expose port 443 with the EXPOSE directive. The default nginx image only exposes port 80 for unencrypted HTTP.</p>
+<p>In summary, we create below Dockerfile in foder <code>/opt/tmp-1</code>. </p>
+<pre><code>james@lizard:/opt/tmp-1&gt; cat Dockerfile 
+FROM nginx:latest
+
+# copy the custom website into the image
+COPY index.html /usr/share/nginx/html
+
+# copy the SSL configuration file into the image
+COPY ssl.conf /etc/nginx/conf.d/ssl.conf
+
+# download the SSL key and certificate into the image
+COPY nginx.key /etc/nginx/ssl/
+COPY nginx.crt /etc/nginx/ssl/
+
+# expose the HTTPS port
+EXPOSE 443
+</code></pre>
+<p>We have five files in foder <code>/opt/tmp-1</code> till now.</p>
+<pre><code>james@lizard:/opt/tmp-1&gt; ls
+Dockerfile  index.html  nginx.crt  nginx.key  ssl.conf
+</code></pre>
+<p>Now let's use the <code>docker build</code> command to build the image, forward the containers ports 80 and 443.</p>
+<pre><code>james@lizard:~&gt; docker build -t nginx:my1 /opt/tmp-1/
+Sending build context to Docker daemon  62.98kB
+Let's make use of this to create a new stage:
+Step 1/6 : FROM nginx:latest
+ ---&gt; c316d5a335a5
+Step 2/6 : COPY index.html /usr/share/nginx/html
+ ---&gt; 4a71ac8a2624
+Step 3/6 : COPY ssl.conf /etc/nginx/conf.d/ssl.conf
+ ---&gt; ad574bc8080c
+Step 4/6 : COPY nginx.key /etc/nginx/ssl/
+ ---&gt; 90c41ec98809
+Step 5/6 : COPY nginx.crt /etc/nginx/ssl/
+ ---&gt; 5801c1e5e02f
+Step 6/6 : EXPOSE 443
+ ---&gt; Running in 0db1bffe7eb3
+Removing intermediate container 0db1bffe7eb3
+ ---&gt; 748439b24876
+Successfully built 748439b24876
+Successfully tagged nginx:my1
+
+james@lizard:~&gt; docker image ls
+REPOSITORY        TAG           IMAGE ID       CREATED          SIZE
+nginx             my1           748439b24876   44 seconds ago   142MB
+golang            latest        80d9a75ccb38   5 days ago       941MB
+nginx             latest        c316d5a335a5   6 days ago       141MB
+jenkins/jenkins   lts           9aee0d53624f   2 weeks ago      441MB
+busybox           latest        beae173ccac6   4 weeks ago      1.24MB
+alpine            latest        c059bfaa849c   2 months ago     5.58MB
+golang            1.12-alpine   76bddfb5e55e   23 months ago    346MB
 
 
+james@lizard:~&gt; docker run -d -p 1086:80 -p 1088:443 --name nginx_v5 nginx:my1
+
+james@lizard:~&gt; docker container ps -a
+CONTAINER ID   IMAGE          COMMAND  build                 CREATED             STATUS                           PORTS                                                                            NAMES
+70126d22e48b   nginx:my1      &quot;/docker-entrypoint.…&quot;   7 seconds ago       Up 6 seconds                     0.0.0.0:1086-&gt;80/tcp, :::1086-&gt;80/tcp, 0.0.0.0:1088-&gt;443/tcp, :::1088-&gt;443/tcp   nginx_v5
+7714058076c0   nginx:latest   &quot;/docker-entrypoint.…&quot;   About an hour ago   Exited (0) 48 seconds ago                                                                                         nginx_v4
+214ded9b8645   nginx:latest   &quot;/docker-entrypoint.…&quot;   2 hours ago         Exited (0) About an hour ago                                                                                      nginx_v3
+3349a84e5024   nginx:latest   &quot;/docker-entrypoint.…&quot;   5 hours ago         Exited (0) About an hour ago                                                                                      nginx_v2
+edb640127a0d   nginx:latest   &quot;/docker-entrypoint.…&quot;   5 hours ago         Exited (137) About an hour ago                                                                                    nginx_v1
+</code></pre>
+<p>Above changes can be validated via below links:</p>
+<pre><code>http://localhost:1086/
+https://localhost:1088/
+</code></pre>
+<p>Register an account in <a href="https://hub.docker.com/">DockerHub</a> and enable access token in Docker Hub for CLI client authentication.</p>
+<pre><code>james@lizard:~&gt; docker login
+Username: &lt;your account id&gt;
+Password: &lt;token&gt;
+</code></pre>
+<p>Tag the image to give image a nice name and a release number as tag, e.g., name is <code>secure_nginx_0001</code>, tag is <code>v1</code>.</p>
+<pre><code>james@lizard:~&gt; docker tag nginx:my1 &lt;your account id&gt;secure_nginx_0001:v1
+
+james@lizard:~&gt; docker push &lt;your account id&gt;secure_nginx_0001:v1
+
+james@lizard:~&gt; docker image ls
+REPOSITORY                            TAG           IMAGE ID       CREATED         SIZE
+nginx                                 my1           748439b24876   7 minutes ago   142MB
+&lt;your account id&gt;secure_nginx_0001    v1            748439b24876   7 minutes ago   142MB
+golang                                latest        80d9a75ccb38   5 days ago      941MB
+nginx                                 latest        c316d5a335a5   6 days ago      141MB
+jenkins/jenkins                       lts           9aee0d53624f   2 weeks ago     441MB
+busybox                               latest        beae173ccac6   4 weeks ago     1.24MB
+alpine                                latest        c059bfaa849c   2 months ago    5.58MB
+golang                                1.12-alpine   76bddfb5e55e   23 months ago   346MB
+</code></pre>
+<h4 id="multi-stage-dockerfile">Multi-stage Dockerfile</h4>
+<p>Let's show an example of multi-stage build. The multi-stage in the context of Docker means, we can have more than one line with a FROM keyword. </p>
+<p>Create folder <code>/opt/tmp-2</code> and <code>/opt/tmp-2/tmpl</code>. </p>
+<p>Create files <a href="../assets/edit.html">edit.html</a>, <a href="../assets/view.html">view.html</a>, <a href="../assets/wiki.go">wiki.go</a> and structure likes below.</p>
+<pre><code>james@lizard:/opt/tmp-2&gt; tree -l
+.
+├── tmpl
+│   ├── edit.html
+│   └── view.html
+└── wiki.go
+</code></pre>
+<p>Create an new Dockerfile that starts </p>
+<pre><code>james@lizard:/opt/tmp-2&gt; cat Dockerfile
+# app builder stage
+FROM golang:1.12-alpine as builder
+
+## copy the go source code over and build the binary
+WORKDIR /go/src
+COPY wiki.go /go/src/wiki.go
+RUN go build wiki.go
+
+# app exec stage
+# separate &amp; new image starts here!#
+FROM alpine:3.9
+
+# prepare file system etc
+RUN mkdir -p /app/data /app/tmpl &amp;&amp; adduser -S -D -H -h /app appuser
+COPY tmpl/* /app/tmpl/
+
+# get the compiled binary from the previous stage
+COPY --from=builder /go/src/wiki /app/wiki
+
+# prepare runtime env
+RUN chown -R appuser /app
+USER appuser
+WORKDIR /app
+
+# expose app port &amp; set default command
+EXPOSE 8080
+CMD [&quot;/app/wiki&quot;]
+</code></pre>
+<p>Build the images by Dockerfile we created above.</p>
+<pre><code>james@lizard:~&gt; docker build -t lizard/golang:my1 /opt/tmp-2/
+Sending build context to Docker daemon  9.728kB
+Step 1/13 : FROM golang:1.12-alpine as builder
+ ---&gt; 76bddfb5e55e
+Step 2/13 : WORKDIR /go/src
+ ---&gt; Running in 279957765a67
+Removing intermediate container 279957765a67
+ ---&gt; d74f3297387b
+Step 3/13 : COPY wiki.go /go/src/wiki.go
+ ---&gt; f14f358f10c0
+Step 4/13 : RUN go build wiki.go
+ ---&gt; Running in af4a9d2d1dcc
+Removing intermediate container af4a9d2d1dcc
+ ---&gt; 101e734099a3
+Step 5/13 : FROM alpine:3.9
+3.9: Pulling from library/alpine
+31603596830f: Pull complete
+Digest: sha256:414e0518bb9228d35e4cd5165567fb91d26c6a214e9c95899e1e056fcd349011
+Status: Downloaded newer image for alpine:3.9
+ ---&gt; 78a2ce922f86
+Step 6/13 : RUN mkdir -p /app/data /app/tmpl &amp;&amp; adduser -S -D -H -h /app appuser
+ ---&gt; Running in c7a8793fc95d
+Removing intermediate container c7a8793fc95d
+ ---&gt; a6e83922a81f
+Step 7/13 : COPY tmpl/* /app/tmpl/
+ ---&gt; e48d44caf735
+Step 8/13 : COPY --from=builder /go/src/wiki /app/wiki
+ ---&gt; 26cc829fe32b
+Step 9/13 : RUN chown -R appuser /app
+ ---&gt; Running in 22f3af57f969
+Removing intermediate container 22f3af57f969
+ ---&gt; ea7d678adf67
+Step 10/13 : USER appuser
+ ---&gt; Running in 03c5d8e9ad45
+Removing intermediate container 03c5d8e9ad45
+ ---&gt; 40a692198491
+Step 11/13 : WORKDIR /app
+ ---&gt; Running in 7c1b04e38306
+Removing intermediate container 7c1b04e38306
+ ---&gt; 45eaaebb0c12
+Step 12/13 : EXPOSE 8080
+ ---&gt; Running in 84f06d2e5f90
+Removing intermediate container 84f06d2e5f90
+ ---&gt; 3750bfa8c032
+Step 13/13 : CMD [&quot;/app/wiki&quot;]
+ ---&gt; Running in 9ce20ca3a834
+Removing intermediate container 9ce20ca3a834
+ ---&gt; 8621174bab0d
+Successfully built 8621174bab0d
+Successfully tagged lizard/golang:my1
+</code></pre>
+<p>Run the image in detached mode, create a port forwarding from port 8080 in the container to port 1090 on the host.</p>
+<pre><code>james@lizard:~&gt; docker run -d -p 1090:8080 --name golan_v1 lizard/golang:my1
+</code></pre>
+<p>Access the container via link http://localhost:1090</p>
+<p>Tab the golang image we created and push it to DockerHub.</p>
+<pre><code>james@lizard:~&gt; docker tag lizard/golang:my1 &lt;your acccount id&gt;/golang_0001:v1
+
+james@lizard:~&gt; docker push &lt;your acccount id&gt;/golang_0001:v1
+</code></pre>
+<h2 id="3basic-concepts-of-kubernetes">3.Basic Concepts of Kubernetes</h2>
+<h3 id="installing-kubectl">Installing kubectl</h3>
+<p>Install kubectl by referring the <a href="https://kubernetes.io/docs/tasks/tools/">guidd</a>.</p>
+<p>Download kubectl.</p>
+<pre><code>james@lizard:/opt&gt; curl -LO &quot;https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl&quot;
+</code></pre>
+<p>Install kubectl.</p>
+<pre><code>james@lizard:/opt&gt; sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+
+james@lizard:/opt&gt; l /usr/local/bin/kubectl
+-rwxr-xr-x 1 root root 45711360 May 28 14:49 /usr/local/bin/kubectl*
+</code></pre>
+<p>Test to ensure the version you installed is up-to-date:</p>
+<pre><code>james@lizard:/opt&gt; kubectl version --client
+WARNING: This version information is deprecated and will be replaced with the output from kubectl version --short.  Use --output=yaml|json to get the full version.
+Client Version: version.Info{Major:&quot;1&quot;, Minor:&quot;24&quot;, GitVersion:&quot;v1.24.1&quot;, GitCommit:&quot;3ddd0f45aa91e2f30c70734b175631bec5b5825a&quot;, GitTreeState:&quot;clean&quot;, BuildDate:&quot;2022-05-24T12:26:19Z&quot;, GoVersion:&quot;go1.18.2&quot;, Compiler:&quot;gc&quot;, Platform:&quot;linux/amd64&quot;}
+Kustomize Version: v4.5.4
+</code></pre>
+<h3 id="installing-minikube">Installing Minikube</h3>
+<p>Install Minikube by referring to the <a href="https://minikube.sigs.k8s.io/docs/start/">guide</a>.</p>
+<p>Installation.</p>
+<pre><code>james@lizard:/opt&gt; curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 69.2M  100 69.2M    0     0  5720k      0  0:00:12  0:00:12 --:--:-- 6328k
+
+james@lizard:/opt&gt; sudo install minikube-linux-amd64 /usr/local/bin/minikube
+
+james@lizard:/opt&gt; ll /usr/local/bin/minikube
+-rwxr-xr-x 1 root root 72651748 May 28 14:56 /usr/local/bin/minikube
+</code></pre>
+<p>Start start cluster.</p>
+<pre><code>james@lizard:/opt&gt; minikube start
+minikube v1.25.2 on Opensuse-Leap 15.3
+Using the docker driver based on existing profile
+docker is currently using the btrfs storage driver, consider switching to overlay2 for better performance
+Starting control plane node minikube in cluster minikube
+Pulling base image ...
+Updating the running docker &quot;minikube&quot; container ...
+Preparing Kubernetes v1.23.3 on Docker 20.10.12 ...
+  ▪ kubelet.housekeeping-interval=5m
+  ▪ Generating certificates and keys ...
+  ▪ Booting up control plane ...
+  ▪ Configuring RBAC rules ...
+Verifying Kubernetes components...
+  ▪ Using image gcr.io/k8s-minikube/storage-provisioner:v5
+Enabled addons: default-storageclass, storage-provisioner
+Done! kubectl is now configured to use &quot;minikube&quot; cluster and &quot;default&quot; namespace by default
+</code></pre>
+<p>Two folders were created after <code>minikube start</code>. </p>
+<ul>
+<li><code>~/.kube</code> : default config file was created here.</li>
+<li><code>~/.minikube</code> : configure files of Minikube.</li>
+</ul>
+<p>Check what Docker images has been pulled down and what containers are up after Minikube start.</p>
+<pre><code>james@lizard:/opt&gt; docker images --all
+REPOSITORY       TAG       IMAGE ID       CREATED        SIZE
+kicbase/stable   v0.0.30   1312ccd2422d   3 months ago   1.14GB
+
+james@lizard:/opt&gt; docker container ls -all
+CONTAINER ID   IMAGE                    COMMAND                  CREATED          STATUS          PORTS                                                                                                                                  NAMES
+5ec9c519d1e1   kicbase/stable:v0.0.30   &quot;/usr/local/bin/entr…&quot;   39 minutes ago   Up 39 minutes   127.0.0.1:49157-&gt;22/tcp, 127.0.0.1:49156-&gt;2376/tcp, 127.0.0.1:49155-&gt;5000/tcp, 127.0.0.1:49154-&gt;8443/tcp, 127.0.0.1:49153-&gt;32443/tcp   minikube
+</code></pre>
+<p>Get all nodes and namespaces deployed by default after Minikube installed.</p>
+<pre><code>james@lizard:/opt&gt; kubectl get nodes
+NAME       STATUS   ROLES                  AGE     VERSION
+
+james@lizard:/opt&gt; kubectl get ns
+NAME              STATUS   AGE
+default           Active   4h51m
+kube-node-lease   Active   4h51m
+kube-public       Active   4h51m
+kube-system       Active   4h51m
+</code></pre>
+<p>Enbale Minikube addon - Dashboard.</p>
+<pre><code>james@lizard:/opt&gt; minikube addons list
+james@lizard:/opt&gt; minikube addons enable dashboard
+</code></pre>
+<p>Get all the services in all the namespaces.</p>
+<pre><code>james@lizard:/opt&gt; kubectl get service --all-namespaces
+NAMESPACE              NAME                        TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                  AGE
+default                kubernetes                  ClusterIP   10.96.0.1        &lt;none&gt;        443/TCP                  5h2m
+kube-system            kube-dns                    ClusterIP   10.96.0.10       &lt;none&gt;        53/UDP,53/TCP,9153/TCP   5h2m
+kubernetes-dashboard   dashboard-metrics-scraper   ClusterIP   10.110.44.98     &lt;none&gt;        8000/TCP                 49s
+kubernetes-dashboard   kubernetes-dashboard        ClusterIP   10.108.121.183   &lt;none&gt;        80/TCP                   49s
+
+james@lizard:/opt&gt; kubectl get svc --all-namespaces
+NAMESPACE              NAME                        TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                  AGE
+default                kubernetes                  ClusterIP   10.96.0.1        &lt;none&gt;        443/TCP                  5h2m
+kube-system            kube-dns                    ClusterIP   10.96.0.10       &lt;none&gt;        53/UDP,53/TCP,9153/TCP   5h2m
+kubernetes-dashboard   dashboard-metrics-scraper   ClusterIP   10.110.44.98     &lt;none&gt;        8000/TCP                 49s
+kubernetes-dashboard   kubernetes-dashboard        ClusterIP   10.108.121.183   &lt;none&gt;        80/TCP                   49s
+</code></pre>
+<p>Get details of deployment kubernetes-dashboard.</p>
+<pre><code>james@lizard:/opt&gt; kubectl get deployment -n kubernetes-dashboard
+NAME                        READY   UP-TO-DATE   AVAILABLE   AGE
+dashboard-metrics-scraper   1/1     1            1           5m54s
+kubernetes-dashboard        1/1     1            1           5m54s
+</code></pre>
+<p>Explore the dashboard, and verify it via <code>http://localhost:9090</code></p>
+<pre><code>james@lizard:/opt&gt; kubectl -n kubernetes-dashboard port-forward deployment/kubernetes-dashboard 9090
+</code></pre>
+<p>The dashboard looks like below.</p>
+<p><img alt="dashboard" src="../assets/003.png" /></p>
+<h3 id="installing-helm">Installing Helm</h3>
+<p>Helm is the Kubernetes package manager. It doesn't come with Kubernetes. </p>
+<p>Three concepts of helm:</p>
+<ul>
+<li>A <em>Chart</em> is a Helm package. <ul>
+<li>It contains all of the resource definitions necessary to run an application, tool, or service inside of a Kubernetes cluster. </li>
+<li>Think of it like the Kubernetes equivalent of a Homebrew formula, an Apt dpkg, or a Yum RPM file.</li>
+</ul>
+</li>
+<li>A <em>Repository</em> is the place where charts can be collected and shared. <ul>
+<li>It's like Perl's CPAN archive or the Fedora Package Database, but for Kubernetes packages.</li>
+</ul>
+</li>
+<li>A <em>Release</em> is an instance of a chart running in a Kubernetes cluster. <ul>
+<li>One chart can often be installed many times into the same cluster. And each time it is installed, a new release is created. </li>
+<li>Consider a MySQL chart. If you want two databases running in your cluster, you can install that chart twice. Each one will have its own release, which will in turn have its own release name.</li>
+</ul>
+</li>
+</ul>
+<p>Reference:</p>
+<ul>
+<li><a href="https://helm.sh/docs/intro/install/">installation guide</a></li>
+<li><a href="https://github.com/helm/helm/releases">binary release</a></li>
+<li><a href="https://github.com/helm/helm">source code</a>.</li>
+</ul>
+<p>Helm Client Installation: </p>
+<pre><code>james@lizard:/opt&gt; curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+james@lizard:/opt&gt; chmod 700 get_helm.sh
+
+james@lizard:/opt&gt; ./get_helm.sh
+Downloading https://get.helm.sh/helm-v3.9.0-linux-amd64.tar.gz
+Verifying checksum... Done.
+Preparing to install helm into /usr/local/bin
+helm installed into /usr/local/bin/helm
+</code></pre>
+<p>Note:
+<a href="https://helm.sh/docs/helm/helm_init/"><code>helm init</code></a> does not exist in Helm 3, following the removal of Tiller. You no longer need to install Tiller in your cluster in order to use Helm.</p>
+<p><code>helm search</code> can be used to search two different types of source:</p>
+<ul>
+<li><code>helm search hub</code> searches the <a href="https://artifacthub.io/">Artifact Hub</a>, which lists helm charts from dozens of different repositories.</li>
+<li><code>helm search repo</code> searches the repositories that you have added to your local helm client (with helm repo add). This search is done over local data, and no public network connection is needed.</li>
+</ul>
+<h3 id="nodes">nodes</h3>
+<h3 id="kubelet">kubelet</h3>
+<h3 id="api-server-rest-api">api server &amp; rest API</h3>
+<h3 id="etcd">etcd</h3>
+<h3 id="kube-proxy">kube-proxy</h3>
+<h3 id="kubectl">kubectl</h3>
+<h3 id="yaml-json-basic-structure-of-k8s-resources">yaml &amp; json + basic structure of k8s resources</h3>
+<h3 id="namespaces">namespaces</h3>
+<h3 id="pods-schedule-describe-logs-exec">pods - schedule, describe, logs, exec</h3>
+<h3 id="liveness-readiness-probes">liveness &amp; readiness probes</h3>
+<h3 id="labels">labels</h3>
+<h3 id="replica-sets-deployments">replica sets, deployments</h3>
+<h3 id="cluster-networking">cluster networking</h3>
+<h3 id="services-clusterip-nodeport-loadbalancer">services (clusterIP, NodePort, Loadbalancer)</h3>
+<h3 id="communication-via-services">communication via services</h3>
+<h2 id="storage">Storage</h2>
+<h3 id="persistent-volume">persistent volume</h3>
+<h3 id="persistent-volume-claims">persistent volume claims</h3>
+<h3 id="storage-classes">storage classes</h3>
+<h2 id="configuration">Configuration</h2>
+<h3 id="secrets">secrets</h3>
+<h3 id="config-maps">config maps</h3>
+<h2 id="further-entities">Further entities</h2>
+<h3 id="networking">networking</h3>
+<h3 id="workloads">workloads</h3>
+<h3 id="administration">administration</h3>
+<h3 id="ingress">Ingress</h3>
+<h3 id="controller-custom-resources">controller &amp; custom resources</h3>
+<h2 id="stateful-workloads">Stateful workloads</h2>
+<h3 id="statefulsets-and-headless-services">StatefulSets and headless services</h3>
+<h2 id="administration_1">Administration</h2>
+<h3 id="user-management-service-accounts">User management - service accounts</h3>
+<h3 id="role-based-authorization-rbac">Role based authorization (RBAC)</h3>
+<h3 id="image-pull-secrets">Image pull secrets</h3>
+<h3 id="network-policies">Network policies</h3>
+<h3 id="node-management">Node management</h3>
+<h3 id="kubernetes-dashboard">Kubernetes Dashboard</h3>
+<h3 id="scheduling-pods-on-dedicated-nodes">Scheduling pods on dedicated nodes</h3>
+<h3 id="get-your-own-cluster-gardener">get your own cluster | Gardener</h3>
+<h2 id="troubleshooting">Troubleshooting</h2>
 
               
             </article>
