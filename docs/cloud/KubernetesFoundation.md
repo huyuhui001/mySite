@@ -968,33 +968,41 @@ Note:
 
 
 
-### Basic Concepts
 
-#### Kubernetes Components
+### Kubernetes Components
 
-**Kubernetes Components**: 
 A Kubernetes cluster consists of the components that represent the **control plane** and a set of machines called **nodes**.
 
 ![The components of a Kubernetes cluster](https://d33wubrfki0l68.cloudfront.net/2475489eaf20163ec0f54ddc1d92aa8d4c87c96b/e7c81/images/docs/components-of-kubernetes.svg)
 
+
+**Kubernetes Components**: 
+
 * **Control Plane Components**
     * **kube-apiserver**: query and manipulate the state of objects in Kubernetes.
     * **etcd**: all Kubernetes objects are stored on etcd. Kubernetes objects are persistent **entities** in the Kubernetes system, which are used to represent the state of your cluster.
-    * **kube-scheduler**:
-    * **kube-controller-manager**:
-    * **cloud-controller-manager**:
+    * **kube-scheduler**: watches for newly created Pods with no assigned node, and selects a node for them to run on.
+    * **kube-controller-manager**: runs controller processes.
+        * *Node controller*: Responsible for noticing and responding when nodes go down.
+        * *Job controller*: Watches for Job objects that represent one-off tasks, then creates Pods to run those tasks to completion.
+        * *Endpoints controller*: Populates the Endpoints object (that is, joins Services & Pods).
+        * *Service Account & Token controllers*: Create default accounts and API access tokens for new namespaces.
+    * **cloud-controller-manager**: embeds cloud-specific control logic and only runs controllers that are specific to your cloud provider, no need for own premises and learning environment.
+        * *Node controller*: For checking the cloud provider to determine if a node has been deleted in the cloud after it stops responding
+        * *Route controller*: For setting up routes in the underlying cloud infrastructure
+        * *Service controller*: For creating, updating and deleting cloud provider load balancers
 * **Node Components**
-    * **kubelet**:
-    * **kube-proxy**:
-    * **Container runtime**:
+    * **kubelet**: An agent that runs on each node in the cluster. It makes sure that containers are running in a Pod.
+    * **kube-proxy**: maintains network rules on nodes.
+    * **Container runtime**: is the software that is responsible for running containers.
 * Addons
-    * DNS
-    * Web UI (Dashboard)
-    * Container Resource Monitoring
-    * Cluster-level Logging
+    * DNS: is a DNS server and required by all Kubernetes clusters.
+    * Web UI (Dashboard): web-based UI for Kubernetes clusters. 
+    * Container Resource Monitoring: records generic time-series metrics about containers in a central database
+    * Cluster-level Logging: is responsible for saving container logs to a central log store with search/browsing interface.
 
 
-
+Scalability:
 
 * **Scaling out** (horizontal scaling) by adding more servers to your architecture to spread the workload across more machines.
 * **Scaling up** (vertical scaling) by adding more hard drives and memory to increase the computing capacity of physical servers. 
@@ -1003,6 +1011,258 @@ A Kubernetes cluster consists of the components that represent the **control pla
 
 
 
+### Kubernetes Objects
+
+Objects Overview:
+
+* Object Spec:
+    * providing a description of the characteristics the resource created to have: *its desired state*.
+* Object Status:
+    * describes the current state of the object.
+
+Example of Deployment as an object that can represent an application running on cluster.
+
+    apiVersion: apps/v1  # Which version of the Kubernetes API you're using to create this object
+    kind: Deployment     # What kind of object you want to create
+    metadata:            # Data that helps uniquely identify the object, including a name string, UID, and optional namespace
+      name: nginx-deployment
+    spec:                # What state you desire for the object
+      selector:
+        matchLabels:
+          app: nginx
+      replicas: 2 # tells deployment to run 2 pods matching the template
+      template:
+        metadata:
+          labels:
+            app: nginx
+        spec:
+          containers:
+          - name: nginx
+            image: nginx:1.14.2
+            ports:
+            - containerPort: 80
+
+
+
+Object Management:
+
+The `kubectl` command-line tool supports several different ways to create and manage Kubernetes objects. Read the [Kubectl book](https://kubectl.docs.kubernetes.io/) for details.
+
+A Kubernetes object should be managed using ONLY one technique. Mixing and matching techniques for the same object results in undefined behavior. 
+
+Three management techniques:
+
+* Imperative commands
+    * operates directly on live objects in a cluster. 
+    * `kubectl create deployment nginx --image nginx`
+* Imperative object configuration
+    * `kubectl create -f nginx.yaml`
+    * `kubectl delete -f nginx.yaml -f redis.yaml`
+    * `kubectl replace -f nginx.yaml`
+* Declarative object configuration
+    * `kubectl diff -f configs/`
+    * `kubectl apply -f configs/`
+
+
+
+
+
+#### Object Names and IDs
+
+Each object in your cluster has a *Name* that is unique for that type of resource.
+
+* DNS Subdomain Names
+* Label Names
+* Path Segment Names
+
+Every Kubernetes object also has a *UID* that is unique across the whole cluster.
+
+
+
+
+
+#### Namespaces
+
+In Kubernetes, namespaces provides a mechanism for isolating groups of resources within a single cluster. 
+
+Names of resources need to be unique within a namespace, but not across namespaces. 
+
+Namespace-based scoping is applicable only for namespaced objects (e.g. Deployments, Services, etc) and not for cluster-wide objects (e.g. StorageClass, Nodes, PersistentVolumes, etc)
+
+Not All Objects are in a Namespace.
+
+
+Kubernetes starts with four initial namespaces:
+
+* `default` 
+    The default namespace for objects with no other namespace
+* `kube-system` 
+    The namespace for objects created by the Kubernetes system
+* `kube-public` 
+    This namespace is created automatically and is readable by all users (including those not authenticated). 
+    This namespace is mostly reserved for cluster usage, in case that some resources should be visible and readable publicly throughout the whole cluster. 
+    The public aspect of this namespace is only a convention, not a requirement.
+* `kube-node-lease` This namespace holds Lease objects associated with each node. Node leases allow the kubelet to send heartbeats so that the control plane can detect node failure.
+
+
+Viewing namespaces: 
+
+* `kubectl get namespace`
+
+Setting the namespace for a request
+
+* `kubectl run nginx --image=nginx --namespace=<insert-namespace-name-here>`
+* `kubectl get pods --namespace=<insert-namespace-name-here>`
+
+
+
+
+
+
+#### Labels and Selectors
+
+Labels are key/value pairs that are attached to objects, such as pods. 
+Valid label keys have two segments: an optional prefix and name, separated by a slash (`/`).
+
+Labels are intended to be used to specify identifying attributes of objects that are meaningful and relevant to users.
+
+Labels can be used to organize and to select subsets of objects. 
+Labels can be attached to objects at creation time and subsequently added and modified at any time. 
+Each object can have a set of key/value labels defined. 
+Each Key must be unique for a given object.
+
+Example of labels:
+```
+"metadata": {
+    "labels": {
+        "key1" : "value1",
+        "key2" : "value2"
+    }
+}
+```
+
+
+Unlike names and UIDs, labels do not provide uniqueness. In general, we expect many objects to carry the same label(s).
+
+The API currently supports two types of selectors: 
+
+* equality-based, e.g., `environment = production`, `tier != frontend`
+* set-based, e.g., `environment in (production, qa)`, `tier notin (frontend, backend)`
+
+Sample commands:
+```
+kubectl get pods -l environment=production,tier=frontend
+kubectl get pods -l 'environment in (production),tier in (frontend)'
+kubectl get pods -l 'environment in (production, qa)'
+kubectl get pods -l 'environment,environment notin (frontend)'
+```
+
+
+
+
+
+#### Annotations
+
+Use Kubernetes annotations to attach arbitrary non-identifying metadata to objects. 
+Clients such as tools and libraries can retrieve this metadata.
+
+Use either labels or annotations to attach metadata to Kubernetes objects. 
+
+* Labels can be used to select objects and to find collections of objects that satisfy certain conditions. 
+* Annotations are not used to identify and select objects. 
+
+
+Annotations, like labels, are key/value maps. The keys and the values in the map must be strings. 
+```
+"metadata": {
+    "annotations": {
+      "key1" : "value1",
+      "key2" : "value2"
+    }
+}
+```
+
+Valid annotation keys have two segments: an optional prefix and name, separated by a slash (`/`). 
+
+
+
+
+
+
+#### Field Selectors
+
+Field selectors let you select Kubernetes resources based on the value of one or more resource fields. 
+
+Here are some examples of field selector queries:
+```
+metadata.name=my-service
+metadata.namespace!=default
+status.phase=Pending
+```
+
+This kubectl command selects all Pods for which the value of the status.phase field is Running:
+`kubectl get pods --field-selector status.phase=Running`
+
+
+Supported field selectors vary by Kubernetes resource type. All resource types support the `metadata.name` and `metadata.namespace` fields. 
+
+Use the `=`, `==`, and `!=` operators with field selectors (`=` and `==` mean the same thing). 
+
+For example:
+
+`kubectl get ingress --field-selector foo.bar=baz`
+
+With operators, 
+`kubectl get services  --all-namespaces --field-selector metadata.namespace!=default`
+
+Chained selectors, 
+`kubectl get pods --field-selector=status.phase!=Running,spec.restartPolicy=Always`
+
+Multiple resource types, 
+`kubectl get statefulsets,services --all-namespaces --field-selector metadata.namespace!=default`
+
+
+
+
+
+
+#### Finalizers
+
+Finalizers are *namespaced keys* that tell Kubernetes to wait until specific conditions are met before it fully deletes resources marked for *deletion*. 
+*Finalizers alert controllers* to clean up resources the deleted object owned.
+
+Finalizers are usually added to resources for a reason, so forcefully removing them can lead to issues in the cluster.
+
+Like labels, *owner references* describe the relationships between objects in Kubernetes, but are used for a different purpose.
+
+Kubernetes uses the owner references (not labels) to determine which Pods in the cluster need cleanup.
+
+Kubernetes processes finalizers when it identifies owner references on a resource targeted for deletion.
+
+
+
+
+
+#### Owners and Dependents
+
+In Kubernetes, some objects are owners of other objects. For example, a ReplicaSet is the owner of a set of Pods. 
+These owned objects are dependents of their owner.
+
+Dependent objects have a `metadata.ownerReferences` field that references their owner object.
+
+A valid owner reference consists of the object name and a UID within the same namespace as the dependent object.
+
+Dependent objects also have an `ownerReferences.blockOwnerDeletion` field that takes a boolean value and controls whether specific dependents can block garbage collection from deleting their owner object. 
+
+
+
+
+
+
+
+
+
+## 4.Tutorials
 
 
 
