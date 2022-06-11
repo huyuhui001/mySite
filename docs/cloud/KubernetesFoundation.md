@@ -785,190 +785,6 @@ james@lizard:~> docker push <your acccount id>/golang_0001:v1
 
 ## 3.Basic Concepts of Kubernetes
 
-### Installation
-
-#### kubectl
-
-Install kubectl by referring the [guidd](https://kubernetes.io/docs/tasks/tools/).
-
-Download kubectl.
-```
-james@lizard:/opt> curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-```
-
-Install kubectl.
-```
-james@lizard:/opt> sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-
-james@lizard:/opt> l /usr/local/bin/kubectl
--rwxr-xr-x 1 root root 45711360 May 28 14:49 /usr/local/bin/kubectl*
-```
-
-Test to ensure the version you installed is up-to-date:
-```
-james@lizard:/opt> kubectl version --client
-WARNING: This version information is deprecated and will be replaced with the output from kubectl version --short.  Use --output=yaml|json to get the full version.
-Client Version: version.Info{Major:"1", Minor:"24", GitVersion:"v1.24.1", GitCommit:"3ddd0f45aa91e2f30c70734b175631bec5b5825a", GitTreeState:"clean", BuildDate:"2022-05-24T12:26:19Z", GoVersion:"go1.18.2", Compiler:"gc", Platform:"linux/amd64"}
-Kustomize Version: v4.5.4
-```
-
-
-#### Minikube
-
-Install Minikube by referring to the [guide](https://minikube.sigs.k8s.io/docs/start/).
-
-Installation.
-```
-james@lizard:/opt> curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100 69.2M  100 69.2M    0     0  5720k      0  0:00:12  0:00:12 --:--:-- 6328k
-
-james@lizard:/opt> sudo install minikube-linux-amd64 /usr/local/bin/minikube
-
-james@lizard:/opt> ll /usr/local/bin/minikube
--rwxr-xr-x 1 root root 72651748 May 28 14:56 /usr/local/bin/minikube
-```
-
-Start start cluster.
-```
-james@lizard:/opt> minikube start
-minikube v1.25.2 on Opensuse-Leap 15.3
-Using the docker driver based on existing profile
-docker is currently using the btrfs storage driver, consider switching to overlay2 for better performance
-Starting control plane node minikube in cluster minikube
-Pulling base image ...
-Updating the running docker "minikube" container ...
-Preparing Kubernetes v1.23.3 on Docker 20.10.12 ...
-  ▪ kubelet.housekeeping-interval=5ms
-  ▪ Generating certificates and keys ...
-  ▪ Booting up control plane ...
-  ▪ Configuring RBAC rules ...
-Verifying Kubernetes components...
-  ▪ Using image gcr.io/k8s-minikube/storage-provisioner:v5
-Enabled addons: default-storageclass, storage-provisioner
-Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
-```
-
-Two folders were created after `minikube start`. 
-
-* `~/.kube` : default config file was created here.
-* `~/.minikube` : configure files of Minikube.
-
-
-Check what Docker images has been pulled down and what containers are up after Minikube start.
-```
-james@lizard:/opt> docker images --all
-REPOSITORY       TAG       IMAGE ID       CREATED        SIZE
-kicbase/stable   v0.0.30   1312ccd2422d   3 months ago   1.14GB
-
-james@lizard:/opt> docker container ls -all
-CONTAINER ID   IMAGE                    COMMAND                  CREATED          STATUS          PORTS                                                                                                                                  NAMES
-5ec9c519d1e1   kicbase/stable:v0.0.30   "/usr/local/bin/entr…"   39 minutes ago   Up 39 minutes   127.0.0.1:49157->22/tcp, 127.0.0.1:49156->2376/tcp, 127.0.0.1:49155->5000/tcp, 127.0.0.1:49154->8443/tcp, 127.0.0.1:49153->32443/tcp   minikube
-```
-
-Get all nodes and namespaces deployed by default after Minikube installed.
-```
-james@lizard:/opt> kubectl get nodes
-NAME       STATUS   ROLES                  AGE     VERSION
-
-james@lizard:/opt> kubectl get ns
-NAME              STATUS   AGE
-default           Active   4h51m
-kube-node-lease   Active   4h51m
-kube-public       Active   4h51m
-kube-system       Active   4h51m
-```
-
-Enbale Minikube addon - Dashboard.
-```
-james@lizard:/opt> minikube addons list
-james@lizard:/opt> minikube addons enable dashboard
-```
-
-Get all the services in all the namespaces.
-```
-james@lizard:/opt> kubectl get service --all-namespaces
-NAMESPACE              NAME                        TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                  AGE
-default                kubernetes                  ClusterIP   10.96.0.1        <none>        443/TCP                  5h2m
-kube-system            kube-dns                    ClusterIP   10.96.0.10       <none>        53/UDP,53/TCP,9153/TCP   5h2m
-kubernetes-dashboard   dashboard-metrics-scraper   ClusterIP   10.110.44.98     <none>        8000/TCP                 49s
-kubernetes-dashboard   kubernetes-dashboard        ClusterIP   10.108.121.183   <none>        80/TCP                   49s
-
-james@lizard:/opt> kubectl get svc --all-namespaces
-NAMESPACE              NAME                        TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                  AGE
-default                kubernetes                  ClusterIP   10.96.0.1        <none>        443/TCP                  5h2m
-kube-system            kube-dns                    ClusterIP   10.96.0.10       <none>        53/UDP,53/TCP,9153/TCP   5h2m
-kubernetes-dashboard   dashboard-metrics-scraper   ClusterIP   10.110.44.98     <none>        8000/TCP                 49s
-kubernetes-dashboard   kubernetes-dashboard        ClusterIP   10.108.121.183   <none>        80/TCP                   49s
-```
-
-Get details of deployment kubernetes-dashboard.
-```
-james@lizard:/opt> kubectl get deployment -n kubernetes-dashboard
-NAME                        READY   UP-TO-DATE   AVAILABLE   AGE
-dashboard-metrics-scraper   1/1     1            1           5m54s
-kubernetes-dashboard        1/1     1            1           5m54s
-```
-
-Explore the dashboard, and verify it via `http://localhost:9090`
-```
-james@lizard:/opt> kubectl -n kubernetes-dashboard port-forward deployment/kubernetes-dashboard 9090
-```
-
-The dashboard looks like below.
-
-![dashboard](./assets/003.png)
-
-
-
-
-#### Helm
-
-Helm is the Kubernetes package manager. It doesn't come with Kubernetes. 
-
-Three concepts of helm:
-
-* A *Chart* is a Helm package. 
-    * It contains all of the resource definitions necessary to run an application, tool, or service inside of a Kubernetes cluster. 
-    * Think of it like the Kubernetes equivalent of a Homebrew formula, an Apt dpkg, or a Yum RPM file.
-* A *Repository* is the place where charts can be collected and shared. 
-    * It's like Perl's CPAN archive or the Fedora Package Database, but for Kubernetes packages.
-* A *Release* is an instance of a chart running in a Kubernetes cluster. 
-    * One chart can often be installed many times into the same cluster. And each time it is installed, a new release is created. 
-    * Consider a MySQL chart. If you want two databases running in your cluster, you can install that chart twice. Each one will have its own release, which will in turn have its own release name.
-
-
-Reference:
-
-* [installation guide](https://helm.sh/docs/intro/install/)
-* [binary release](https://github.com/helm/helm/releases)
-* [source code](https://github.com/helm/helm).
-
-
-Helm Client Installation: 
-```
-james@lizard:/opt> curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
-james@lizard:/opt> chmod 700 get_helm.sh
-
-james@lizard:/opt> ./get_helm.sh
-Downloading https://get.helm.sh/helm-v3.9.0-linux-amd64.tar.gz
-Verifying checksum... Done.
-Preparing to install helm into /usr/local/bin
-helm installed into /usr/local/bin/helm
-```
-
-Note:
-[`helm init`](https://helm.sh/docs/helm/helm_init/) does not exist in Helm 3, following the removal of Tiller. You no longer need to install Tiller in your cluster in order to use Helm.
-
-`helm search` can be used to search two different types of source:
-
-* `helm search hub` searches the [Artifact Hub](https://artifacthub.io/), which lists helm charts from dozens of different repositories.
-* `helm search repo` searches the repositories that you have added to your local helm client (with helm repo add). This search is done over local data, and no public network connection is needed.
-
-
-
-
 ### Kubernetes Components
 
 A Kubernetes cluster consists of the components that represent the **control plane** and a set of machines called **nodes**.
@@ -1258,11 +1074,14 @@ Dependent objects also have an `ownerReferences.blockOwnerDeletion` field that t
 
 
 
-
-
-
-
 ## 4.Tutorials
+
+* [Tutorials: local deployment](KubernetesTutorials-Local-Deploy.md)
+
+* [Tutorials: SAP BTP trail account](KubernetesTutorials-BTP-trail.md)
+
+
+
 
 
 
