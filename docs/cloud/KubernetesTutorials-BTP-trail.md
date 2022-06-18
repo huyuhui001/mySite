@@ -150,165 +150,115 @@ james@lizard:~> kubectl api-versions
 Namespace is a cluster, which includes services. Service may be on a node, may be not. 
 
 
+### Access as application
 
+If I access kubernetes as an application rather than an administrator, I cannot use the `kubectl`. Instead of `kubectl` I can use the program `curl`.
+I have to send HTTP requests to the cluster. asking for the available nodes.
 
+make sure `kubectl proxy` is running and serving on `http://localhost:8001/`.
 
-
-
-
-
-
-
-
-
-
+Execute command below with a `-v=9` flag, it shows all the information needed.
 ```
-Step 5: talk to kubernetes like an application
-If you access kubernetes as an application rather than an administrator, you cannot use the convenient syntax of kubectl. 
-Instead you have to send HTTP requests to the cluster. 
-Though there are client libraries available, in the end everything boils down to an HTTP request. 
-In this step of the exercise, you will send an HTTP request directly to the cluster asking for the available nodes. 
-Instead of kubectl you can use the program curl.
-
-To figure out, how kubectl converts your query into HTTP requests, run the command from step 1 again and add a -v=9 flag to it. 
-This increases the verbosity of kubectl drastically, showing you all the information you need. 
-Go through the command's output and find the correct curl request.
-
-Before you continue, make sure kubectl proxy is running and serving on localhost:8001. 
-Now modify the request to be send via the proxy. 
-Since the proxy has already taken care of authentication, you can omit the bearer token in your request.
-
-Hint: if the output is not as readable as you expect it, consider changing the accepted return format to application/yaml.
-
-
-
-Step 6 (optional) - learn some tricks
-There is a forum-like page hosted by K8s with lots of information around kubectl and how to use it best. 
-If you are curious, take a look at https://discuss.kubernetes.io/t/kubectl-tips-and-tricks/.
-
-
-Further information & references
-	• Manage multiple clusters and multiple config files: https://kubernetes.io/docs/tasks/access-application-cluster/configure-access-multiple-clusters/
-	• kubectl command documentation: https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands
-	• a small gist with bash function to manage multiple config files https://github.wdf.sap.corp/gist/D051945/3f3daf9f71f7e012c1e25a48c1c6e8da
-	• shell autocompletion (should work for the VM already): https://kubernetes.io/docs/tasks/tools/install-kubectl/#enabling-shell-autocompletion
-	• kubectl cheat sheet:(https://kubernetes.io/docs/reference/kubectl/cheatsheet/
-jsonpath in kubectl: https://kubernetes.io/docs/reference/kubectl/jsonpath/
+james@lizard:~> kubectl get nodes
 ```
+
+Go through the command's output and find the correct curl request below.
+```
+curl -v -XGET  -H "Accept: application/json;as=Table;v=v1;g=meta.k8s.io,application/json;as=Table;v=v1beta1;g=meta.k8s.io,application/json" -H "User-Agent: kubectl/v1.24.1 (linux/amd64) kubernetes/3ddd0f4" 'https://api.eb68ebe.kyma.ondemand.com/api/v1/nodes?limit=500'
+```
+
+
+
+Further information & references:
+
+* There is a [forum-like page](https://discuss.kubernetes.io/t/kubectl-tips-and-tricks/) hosted by K8s with lots of information around kubectl and how to use it best.
+* [Manage multiple clusters and multiple config files](https://kubernetes.io/docs/tasks/access-application-cluster/configure-access-multiple-clusters/)
+* [kubectl command documentation](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands)
+* [Shell autocompletion](https://kubernetes.io/docs/tasks/tools/install-kubectl/#enabling-shell-autocompletion)
+* [kubectl cheat sheet](https://kubernetes.io/docs/reference/kubectl/cheatsheet/)
+* [jsonpath in kubectl](https://kubernetes.io/docs/reference/kubectl/jsonpath/)
+
+
+
 
 ## Work on pod
 
-
+### Create pod
+Create new namespace `jh-namespace` for my demo.
 ```
-Exercise 2 - create your first pod
+james@lizard:~> kubectl create namespace jh-namespace
+namespace/jh-namespace created
 
-In this exercise you will be dealing with Pods.
-Now that you know, how kubectl works and what the smallest entity on kubernetes looks like, it is time to create your own pod.
+james@lizard:~> kubectl get ns
+NAME               STATUS   AGE
+compass-system     Active   2d1h
+default            Active   2d1h
+istio-system       Active   2d
+jh-namespace       Active   7s
+kube-node-lease    Active   2d1h
+kube-public        Active   2d1h
+kube-system        Active   2d1h
+kyma-integration   Active   2d
+kyma-system        Active   2d
+```
 
+Get current config information, which will be referred by following commands.
+```
+james@lizard:~> kubectl config view
+```
 
-Step 0: prepare a yaml file
-In kubernetes all resources have a well-described schema that is documented in the API definition. 
-For example, the Pod resource is defined by kind: Pod and contains a PodSpec, which has a Container, which has an Image, which specifies the docker image to use, when running the pod.
+Get current contexts.
+```
+james@lizard:~> kubectl config get-contexts
+CURRENT   NAME                   CLUSTER                AUTHINFO               NAMESPACE
+*         shoot--kyma--eb68ebe   shoot--kyma--eb68ebe   shoot--kyma--eb68ebe   
+```
 
-In this step you are going to describe a pod in a yaml file (pod.yaml). Take the skeleton listed below and insert the field/values mentioned below at the right place.
-    kind: Pod
-    name: nginx-liveness-pod (metadata)
-    image: nginx:mainline
+Update context with new namespace. Key information is from `kubectl config view` and `kubectl config get-contexts`.
+```
+james@lizard:~> kubectl config set-context shoot--kyma--eb68ebe --cluster=shoot--kyma--eb68ebe --namespace=jh-namespace --user=shoot--kyma--eb68ebe
+Context "shoot--kyma--eb68ebe" modified.
+```
 
-Either check the official API reference of the pod resource for help or use kubectl explain pod to get a command-line based description of the resource. 
-By appending .<field> to the resource type, the explain command will provide more details on the specified field (example: kubectl explain pod.spec).
+Verify if above change is effective.
+```
+james@lizard:~> kubectl config get-contexts
+CURRENT   NAME                   CLUSTER                AUTHINFO               NAMESPACE
+*         shoot--kyma--eb68ebe   shoot--kyma--eb68ebe   shoot--kyma--eb68ebe   jh-namespace
+```
+
+Create file `02-sample-pod.yaml`.
+```
 apiVersion: v1
+kind: Pod
 metadata:
+  name: my-first-pod
 spec:
   containers:
   - name: nginx
+    image: nginx:mainline
     ports:
     - containerPort: 80
-      name: http-port
-    livenessProbe:
-      httpGet:
-        path: /
-        port: http-port
-      initialDelaySeconds: 3
-      periodSeconds: 30
+```
 
-
-Step 1: create the pod
-Now tell the cluster that you would like it to schedule the pod for you. Send the file "pod.yaml" to the API server for further processing. 
-You can try this directly or use the --dry-run=client flag, if you are not sure yet:
-	kubectl apply -f pod.yaml --dry-run=server
-	kubectl apply -f pod.yaml
-
-If it does not work as expected, check the indentation and consult the API reference linked above. 
-You can also use kubectl explain pod instead. 
-To get more details about fields like spec simply append the field name with a "." like this: kubectl explain pod.spec
-
-
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG config view
-apiVersion: v1
-clusters:
-- cluster:
-    certificate-authority-data: DATA+OMITTED
-    server: https://api.blr04.k8s-train.shoot.canary.k8s-hana.ondemand.com
-  name: k8s-training
-contexts:
-- context:
-    cluster: k8s-training
-    namespace: part-0013
-    user: participant
-  name: training
-current-context: training
-kind: Config
-preferences: {}
-users:
-- name: participant
-  user:
-    client-certificate-data: REDACTED
-    client-key-data: REDACTED
-
-
-Switch to part-0013 namespace 
-
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG config set-context training --cluster=k8s-training --namespace=part-0013 --user=participant
-Context "training" modified.
-
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG config use-context training
-Switched to context "training".
-
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG config get-contexts
-CURRENT   NAME       CLUSTER        AUTHINFO      NAMESPACE
-*         training   k8s-training   participant   part-0013
-
-james@lizard:~> mkdir /opt/docker-k8s-training/kubernetes/ex02/
-
-james@lizard:~> cp /opt/docker-k8s-training/kubernetes/demo/02a_simple_pod.yaml /opt/docker-k8s-training/kubernetes/ex02/
-
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG create -n part-0013 -f /opt/docker-k8s-training/kubernetes/ex02/02a_simple_pod.yaml
+Create pod with file `02-sample-pod.yaml`.
+```
+james@lizard:~> kubectl create -n jh-namespace -f ./02-sample-pod.yaml 
 pod/my-first-pod created
+```
 
+Verify status of the pod just created.
+```
+james@lizard:~> kubectl get pods -o wide
+NAME           READY   STATUS    RESTARTS   AGE     IP             NODE                          NOMINATED NODE   READINESS GATES
+my-first-pod   2/2     Running   0          6m43s   100.64.0.165   ip-10-250-0-53.ec2.internal   <none>           <none>
+```
 
+### Track pod
 
-Step 2: verify that the pod is running
-Use kubectl with the get verb, to check, if your pod has been scheduled. It should be up and running after a few seconds. Check the cheat-sheet for help. 
-Experiment with -o=yaml to modify the output. Compare the result with your local pod.yaml file. Can you spot the odd/differences?
-
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG get pods
-NAME           READY   STATUS    RESTARTS   AGE
-my-first-pod   1/1     Running   0          20s
-
-
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG get pods my-first-pod -owide
-NAME           READY   STATUS    RESTARTS   AGE   IP             NODE                                                  NOMINATED NODE   READINESS GATES
-my-first-pod   1/1     Running   0          58s   100.96.3.214   shoot--k8s-train--blr04-worker-gflpa-z1-7544c-cwm54   <none>           <none>
-
-
-
-
-
-Step 3: get the logs
-Use kubectl with the logs command and get the logs of your pod. Check the cheat-sheet for help. You should see the liveness probe requests coming in.
-
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG logs my-first-pod
+Check logs of the pod just created.
+```
+james@lizard:~> kubectl logs my-first-pod
 /docker-entrypoint.sh: /docker-entrypoint.d/ is not empty, will attempt to perform configuration
 /docker-entrypoint.sh: Looking for shell scripts in /docker-entrypoint.d/
 /docker-entrypoint.sh: Launching /docker-entrypoint.d/10-listen-on-ipv6-by-default.sh
@@ -317,485 +267,452 @@ james@lizard:~> kubectl --kubeconfig=$KUBECONFIG logs my-first-pod
 /docker-entrypoint.sh: Launching /docker-entrypoint.d/20-envsubst-on-templates.sh
 /docker-entrypoint.sh: Launching /docker-entrypoint.d/30-tune-worker-processes.sh
 /docker-entrypoint.sh: Configuration complete; ready for start up
-2022/02/02 23:15:50 [notice] 1#1: using the "epoll" event method
-2022/02/02 23:15:50 [notice] 1#1: nginx/1.21.5
-2022/02/02 23:15:50 [notice] 1#1: built by gcc 10.2.1 20210110 (Debian 10.2.1-6)
-2022/02/02 23:15:50 [notice] 1#1: OS: Linux 5.10.0-9-cloud-amd64
-2022/02/02 23:15:50 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
-2022/02/02 23:15:50 [notice] 1#1: start worker processes
-2022/02/02 23:15:50 [notice] 1#1: start worker process 32
-2022/02/02 23:15:50 [notice] 1#1: start worker process 33
-2022/02/02 23:15:50 [notice] 1#1: start worker process 34
-2022/02/02 23:15:50 [notice] 1#1: start worker process 35
+2022/06/15 00:50:05 [notice] 1#1: using the "epoll" event method
+2022/06/15 00:50:05 [notice] 1#1: nginx/1.21.6
+2022/06/15 00:50:05 [notice] 1#1: built by gcc 10.2.1 20210110 (Debian 10.2.1-6) 
+2022/06/15 00:50:05 [notice] 1#1: OS: Linux 5.10.109-garden-cloud-amd64
+2022/06/15 00:50:05 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2022/06/15 00:50:05 [notice] 1#1: start worker processes
+2022/06/15 00:50:05 [notice] 1#1: start worker process 31
+2022/06/15 00:50:05 [notice] 1#1: start worker process 32
+2022/06/15 00:50:05 [notice] 1#1: start worker process 33
+2022/06/15 00:50:05 [notice] 1#1: start worker process 34
+```
+
+
+In case logs or describe or any other of the output generating commands don't help us to get to the root cause of an issue, we can use use `kubectl exec -it <my-pod> -- bash` command to look into it ourselves.
+```
+james@lizard:~> kubectl exec -it my-first-pod -- bash
+root@my-first-pod:/# ls
+bin  boot  dev  docker-entrypoint.d  docker-entrypoint.sh  etc  home  lib  lib64  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var
+root@my-first-pod:/# cd bin
+root@my-first-pod:/bin# ls
+bash   cp    dir            egrep    gunzip    login  mktemp      nisdomainname  rm         sleep  tempfile  uncompress    zcmp    zgrep
+cat    dash  dmesg          false    gzexe     ls     more        pidof          rmdir      stty   touch     vdir          zdiff   zless
+chgrp  date  dnsdomainname  fgrep    gzip      lsblk  mount       pwd            run-parts  su     true      wdctl         zegrep  zmore
+chmod  dd    domainname     findmnt  hostname  mkdir  mountpoint  rbash          sed        sync   umount    ypdomainname  zfgrep  znew
+chown  df    echo           grep     ln        mknod  mv          readlink       sh         tar    uname     zcat          zforce
+root@my-first-pod:/bin# exit
+```
+
+
+Execute command `kubectl explain pod.spec` will get details of Spec segment of Pod kind in yaml file.
+
+We can check the official API reference of the pod resource for help or use `kubectl explain pod` to get a command-line based description of the resource. 
+By appending .<field> to the resource type, the explain command will provide more details on the specified field.
+```
+james@lizard:~> kubectl explain pod.kind
+james@lizard:~> kubectl explain pod.spec
+james@lizard:~> kubectl explain pod.spec.containers
+james@lizard:~> kubectl explain pod.spec.containers.name
+```
 
 
 
-Step 4: exec into your pod
-In case logs or describe or any other of the output generating commands don't help you to get to the root cause of an issue, you may want to take a look yourself. 
-The exec command helps you in this situation. Adapt and run the following command, to open a shell session into the container running as part of the pod:
-	kubectl exec -it <my-pod> -- bash
 
+### Label pod
 
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG exec -it my-first-pod -- bash
-.  ..  bin  boot  dev  docker-entrypoint.d  docker-entrypoint.sh  etc  home  lib  lib64  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var
-root@my-first-pod:/# exit
-
-
-Step 4.1: labels your pods
-
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG get pods
+Get pod's label with option `--show-labels`.
+```
+james@lizard:~> kubectl get pods
 NAME           READY   STATUS    RESTARTS   AGE
-my-first-pod   1/1     Running   0          5m25s
+my-first-pod   2/2     Running   0          5h47m
 
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG get pods --show-labels
+james@lizard:~> kubectl get pods --show-labels
+NAME           READY   STATUS    RESTARTS   AGE     LABELS
+my-first-pod   2/2     Running   0          5h48m   security.istio.io/tlsMode=istio,service.istio.io/canonical-name=my-first-pod,service.istio.io/canonical-revision=latest
+```
+
+Add two labels to the pod `pod my-first-pod`.
+```
+james@lizard:~> kubectl label pod my-first-pod nginx=mainline
+pod/my-first-pod labeled
+
+james@lizard:~> kubectl label pod my-first-pod env=demo
+pod/my-first-pod labeled
+
+james@lizard:~> kubectl get pods --show-labels
 NAME           READY   STATUS    RESTARTS   AGE    LABELS
-my-first-pod   1/1     Running   0          6m1s   <none>
+my-first-pod   2/2     Running   0          6h5m   env=demo,nginx=mainline,security.istio.io/tlsMode=istio,service.istio.io/canonical-name=my-first-pod,service.istio.io/canonical-revision=latest
+```
 
-Add two lables
-
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG label pod my-first-pod nginx=mainline
-pod/my-first-pod labeled
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG label pod my-first-pod env=training
-pod/my-first-pod labeled
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG get pods --show-labels
-NAME           READY   STATUS    RESTARTS   AGE     LABELS
-my-first-pod   1/1     Running   0          6m47s   env=training,nginx=mainline
-
-Search pods by labels
-
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG get pods -l env=training
+Search pod by labels.
+```
+james@lizard:~> kubectl get pod -l env=demo
 NAME           READY   STATUS    RESTARTS   AGE
-my-first-pod   1/1     Running   0          7m30s
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG get pods -l env=class
-No resources found in part-0013 namespace.
+my-first-pod   2/2     Running   0          6h8m
 
-Remove a label
+james@lizard:~> kubectl get pod -l env=demo,nginx=mainline
+NAME           READY   STATUS    RESTARTS   AGE
+my-first-pod   2/2     Running   0          12h
 
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG label pods my-first-pod env-
+james@lizard:~> kubectl get pod -l env=training
+No resources found in jh-namespace namespace.
+```
+
+Remove label
+```
+james@lizard:~> kubectl label pods my-first-pod env-
 pod/my-first-pod unlabeled
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG get pods --show-labels
-NAME           READY   STATUS    RESTARTS   AGE     LABELS
-my-first-pod   1/1     Running   0          8m36s   nginx=mainline
 
+james@lizard:~> kubectl get pods --show-labels
+NAME           READY   STATUS    RESTARTS   AGE   LABELS
+my-first-pod   2/2     Running   0          24h   nginx=mainline,security.istio.io/tlsMode=istio,service.istio.io/canonical-name=my-first-pod,service.istio.io/canonical-revision=latest
+```
 
-We can do the same for nodes
+Describe pod.
+```
+james@lizard:~> kubectl describe pod my-first-pod
+```
 
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG get nodes --show-labels
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG label nodes shoot--k8s-train--blr04-worker-gflpa-z1-7544c-6jqvk env=training
-
-
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG describe pods my-first-pod
-Name:         my-first-pod
-Namespace:    part-0013
-Priority:     0
-Node:         shoot--k8s-train--blr04-worker-gflpa-z1-7544c-cwm54/10.250.0.5
-Start Time:   Thu, 03 Feb 2022 07:15:49 +0800
-Labels:       nginx=mainline
-Annotations:  cni.projectcalico.org/podIP: 100.96.3.214/32
-              cni.projectcalico.org/podIPs: 100.96.3.214/32
-              kubernetes.io/limit-ranger: LimitRanger plugin set: cpu, memory request for container nginx; cpu, memory limit for container nginx
-              kubernetes.io/psp: gardener.privileged
-Status:       Running
-IP:           100.96.3.214
-IPs:
-  IP:  100.96.3.214
-Containers:
-  nginx:
-    Container ID:   containerd://50ea8046ff01d7a347b333a4403513279349f13b3bebf7d45ce1497584a61c90
-    Image:          nginx:mainline
-    Image ID:       docker.io/library/nginx@sha256:0d17b565c37bcbd895e9d92315a05c1c3c9a29f762b011a10c54a66cd53c9b31
-    Port:           80/TCP
-    Host Port:      0/TCP
-    State:          Running
-      Started:      Thu, 03 Feb 2022 07:15:50 +0800
-    Ready:          True
-    Restart Count:  0
-    Limits:
-      cpu:     500m
-      memory:  300Mi
-    Requests:
-      cpu:     100m
-      memory:  100Mi
-    Environment:
-      KUBERNETES_SERVICE_HOST:  api.blr04.k8s-train.internal.canary.k8s.ondemand.com
-    Mounts:
-      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-wmpgw (ro)
-Conditions:
-  Type              Status
-  Initialized       True
-  Ready             True
-  ContainersReady   True
-  PodScheduled      True
-Volumes:
-  kube-api-access-wmpgw:
-    Type:                    Projected (a volume that contains injected data from multiple sources)
-    TokenExpirationSeconds:  3607
-    ConfigMapName:           kube-root-ca.crt
-    ConfigMapOptional:       <nil>
-    DownwardAPI:             true
-QoS Class:                   Burstable
-Node-Selectors:              <none>
-Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
-                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
-Events:
-  Type    Reason     Age   From               Message
-  ----    ------     ----  ----               -------
-  Normal  Scheduled  14m   default-scheduler  Successfully assigned part-0013/my-first-pod to shoot--k8s-train--blr04-worker-gflpa-z1-7544c-cwm54
-  Normal  Pulled     14m   kubelet            Container image "nginx:mainline" already present on machine
-  Normal  Created    14m   kubelet            Created container nginx
-  Normal  Started    14m   kubelet            Started container nginx
-
-
-
-
-Step 5: clean up
-It's time to clean up - go and delete the pod you created. But before open a second shell and run watch kubectl get pods. 
-Now you can remove the pod from the cluster by running a delete command. Check the cheat-sheet for help. Which phases of the pod do you observe in your second shell?
-
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG delete pod my-first-pod
+Delete pod.
+Run `watch kubectl get pods` to monitor the pod status. 
+```
+james@lizard:~> kubectl delete pod my-first-pod
 pod "my-first-pod" deleted
 
+james@lizard:~> watch kubectl get pods
+Every 2.0s: kubectl get pods                                         lizard: Fri Jun 17 14:53:50 2022
+
+NAME           READY   STATUS        RESTARTS   AGE
+my-first-pod   2/2     Terminating   0          2d6h
+```
 
 
-Step 7: Create two containers under one node  FAILED
+### Label node
 
-james@lizard:~> cat /opt/docker-k8s-training/kubernetes/ex02/02a_simple_pod_new.yaml
+Add label to node.
+```
+james@lizard:~> kubectl get nodes
+NAME                          STATUS   ROLES    AGE     VERSION
+ip-10-250-0-53.ec2.internal   Ready    <none>   3d11h   v1.21.10
+
+james@lizard:~> kubectl get nodes --show-labels
+NAME                          STATUS   ROLES    AGE     VERSION    LABELS
+ip-10-250-0-53.ec2.internal   Ready    <none>   3d11h   v1.21.10   beta.kubernetes.io/arch=amd64,beta.kubernetes.io/instance-type=m5.xlarge,beta.kubernetes.io/os=linux,failure-domain.beta.kubernetes.io/region=us-east-1,failure-domain.beta.kubernetes.io/zone=us-east-1f,kubernetes.io/arch=amd64,kubernetes.io/hostname=ip-10-250-0-53.ec2.internal,kubernetes.io/os=linux,node.kubernetes.io/instance-type=m5.xlarge,node.kubernetes.io/role=node,topology.ebs.csi.aws.com/zone=us-east-1f,topology.kubernetes.io/region=us-east-1,topology.kubernetes.io/zone=us-east-1f,worker.garden.sapcloud.io/group=cpu-worker-0,worker.gardener.cloud/kubernetes-version=1.21.10,worker.gardener.cloud/pool=cpu-worker-0,worker.gardener.cloud/system-components=true
+
+james@lizard:~> kubectl label nodes ip-10-250-0-53.ec2.internal env=demo
+node/ip-10-250-0-53.ec2.internal labeled
+
+james@lizard:~> kubectl get nodes --show-labels
+NAME                          STATUS   ROLES    AGE     VERSION    LABELS
+ip-10-250-0-53.ec2.internal   Ready    <none>   3d11h   v1.21.10   beta.kubernetes.io/arch=amd64,beta.kubernetes.io/instance-type=m5.xlarge,beta.kubernetes.io/os=linux,env=demo,failure-domain.beta.kubernetes.io/region=us-east-1,failure-domain.beta.kubernetes.io/zone=us-east-1f,kubernetes.io/arch=amd64,kubernetes.io/hostname=ip-10-250-0-53.ec2.internal,kubernetes.io/os=linux,node.kubernetes.io/instance-type=m5.xlarge,node.kubernetes.io/role=node,topology.ebs.csi.aws.com/zone=us-east-1f,topology.kubernetes.io/region=us-east-1,topology.kubernetes.io/zone=us-east-1f,worker.garden.sapcloud.io/group=cpu-worker-0,worker.gardener.cloud/kubernetes-version=1.21.10,worker.gardener.cloud/pool=cpu-worker-0,worker.gardener.cloud/system-components=true
+```
+
+Search node by label.
+```
+james@lizard:~> kubectl get nodes -l env=demo
+NAME                          STATUS   ROLES    AGE     VERSION
+ip-10-250-0-53.ec2.internal   Ready    <none>   3d11h   v1.21.10
+```
+
+Describe node.
+```
+james@lizard:~> kubectl describe node ip-10-250-0-53.ec2.internal
+```
+
+
+### Multi-Container Pods
+
+Create below yaml file to create multiple containers in one pod. In below yaml file, it describes some actions below:
+
+* Define a volume named `html` and type is `emptyDir`. It means that the volume is created when a Pod is assigned to a node, and exists as long as that Pod is running on that node. 
+* Create container `nginx` and has the shared volume mounted to the directory `/usr/share/nginx/html`.
+* Create container `debian` and has the shared volume mounted to the directory `/html`.
+* Every second, the `debian` container adds the current datetime into the `index.html` file, which is located in the shared volume `html`, that is, `/html/index.html` and `/usr/share/nginx/html/index.html` are same, hence `index.html` can be read by `nginx` in directory `/usr/share/nginx/html/`.
+
+```
 apiVersion: v1
 kind: Pod
 metadata:
-  name: my-first-pod-nginx
+  name: my-first-multi-pod
+spec:
+  volumes:
+  - name: html
+    emptyDir: {}
+  containers:
+  - name: nginx
+    image: nginx
+    volumeMounts:
+    - name: html
+      mountPath: /usr/share/nginx/html
+  - name: debian
+    image: debian
+    volumeMounts:
+    - name: html
+      mountPath: /html
+    command: ["/bin/sh", "-c"]
+    args:
+      - while true; do
+          date >> /html/index.html;
+          sleep 1;
+        done
+```
+
+Create two containers `nginx` and `debian` in one pod `my-first-multi-pod`. 
+```
+james@lizard:~> kubectl apply -f 02-sample-pod-new.yaml 
+pod/my-first-multi-pod created
+
+james@lizard:~> kubectl get pods
+NAME                 READY   STATUS    RESTARTS   AGE
+my-first-multi-pod   3/3     Running   0          36s
+```
+
+We now can verify content of file `index.html` either in container `nginx` or `debian`, which are same.
+```
+james@lizard:~> kubectl exec my-first-multi-pod -c nginx -- /bin/cat /usr/share/nginx/html/index.html
+Fri Jun 17 13:04:16 UTC 2022
+Fri Jun 17 13:04:17 UTC 2022
+Fri Jun 17 13:04:18 UTC 2022
+
+james@lizard:~> kubectl exec my-first-multi-pod -c debian -- /bin/cat /html/index.html      
+Fri Jun 17 13:04:16 UTC 2022
+Fri Jun 17 13:04:17 UTC 2022
+Fri Jun 17 13:04:18 UTC 2022
+```
+
+Clean up the pod.
+```
+james@lizard:~> kubectl delete pod my-first-multi-pod
+pod "my-first-multi-pod" deleted
+```
+
+By default, all containers in a Pod are being started in parallel and there is no way to define that one container must be started after other container. 
+We can use `initContainers` to run some containers (e.g., `myservice-1` and `mydb-1`) before application containers (e.g., `container-1`).
+```
 spec:
   containers:
-  - name: nginx1
-    image: nginx:mainline
-    ports:
-    - containerPort: 80
-  - name: nginx2
-    image: nginx:latest
-    ports:
-    - containerPort: 80
-
-
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG apply -f /opt/docker-k8s-training/kubernetes/ex02/02a_simple_pod_new.yaml
-pod/my-first-pod-nginx created
-
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG get pods my-first-pod-nginx -owide
-NAME                 READY   STATUS   RESTARTS      AGE   IP            NODE                                                  NOMINATED NODE   READINESS GATES
-my-first-pod-nginx   1/2     Error    1 (10s ago)   14s   100.96.1.16   shoot--k8s-train--blr04-worker-gflpa-z1-7544c-mdc6n   <none>           <none>
-
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG get pods
-NAME                 READY   STATUS   RESTARTS      AGE
-my-first-pod-nginx   1/2     Error    2 (21s ago)   28s
-
-
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG describe pod my-first-pod-nginx
-Name:         my-first-pod-nginx
-Namespace:    part-0013
-Priority:     0
-Node:         shoot--k8s-train--blr04-worker-gflpa-z1-7544c-mdc6n/10.250.0.7
-Start Time:   Thu, 27 Jan 2022 00:47:45 +0800
-Labels:       <none>
-Annotations:  cni.projectcalico.org/podIP: 100.96.1.17/32
-              cni.projectcalico.org/podIPs: 100.96.1.17/32
-              kubernetes.io/limit-ranger:
-                LimitRanger plugin set: cpu, memory request for container nginx1; cpu, memory limit for container nginx1; cpu, memory request for containe...
-              kubernetes.io/psp: gardener.privileged
-Status:       Running
-IP:           100.96.1.17
-IPs:
-  IP:  100.96.1.17
-Containers:
-  nginx1:
-    Container ID:   containerd://95f965d9b711ba7e30e721d27833982ee5ca221eb2896eecf283638573e5acb2
-    Image:          nginx:mainline
-    Image ID:       docker.io/library/nginx@sha256:0d17b565c37bcbd895e9d92315a05c1c3c9a29f762b011a10c54a66cd53c9b31
-    Port:           80/TCP
-    Host Port:      0/TCP
-    State:          Running
-      Started:      Thu, 27 Jan 2022 00:47:45 +0800
-    Ready:          True
-    Restart Count:  0
-    Limits:
-      cpu:     500m
-      memory:  300Mi
-    Requests:
-      cpu:     100m
-      memory:  100Mi
-    Environment:
-      KUBERNETES_SERVICE_HOST:  api.blr04.k8s-train.internal.canary.k8s.ondemand.com
-    Mounts:
-      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-vs7vx (ro)
-  nginx2:
-    Container ID:   containerd://26c00f54da91852c9b49acd081082319e8b849f446dd0274dc7209276d7f0a47
-    Image:          nginx:latest
-    Image ID:       docker.io/library/nginx@sha256:20d5b519920fbc0009e2560418b291c69b69155a524db88525368bce6b712465
-    Port:           80/TCP
-    Host Port:      0/TCP
-    State:          Terminated
-      Reason:       Error
-      Exit Code:    1
-      Started:      Thu, 27 Jan 2022 00:48:16 +0800
-      Finished:     Thu, 27 Jan 2022 00:48:18 +0800
-    Last State:     Terminated
-      Reason:       Error
-      Exit Code:    1
-      Started:      Thu, 27 Jan 2022 00:47:57 +0800
-      Finished:     Thu, 27 Jan 2022 00:48:00 +0800
-    Ready:          False
-    Restart Count:  2
-    Limits:
-      cpu:     500m
-      memory:  300Mi
-    Requests:
-      cpu:     100m
-      memory:  100Mi
-    Environment:
-      KUBERNETES_SERVICE_HOST:  api.blr04.k8s-train.internal.canary.k8s.ondemand.com
-    Mounts:
-      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-vs7vx (ro)
-Conditions:
-  Type              Status
-  Initialized       True 
-  Ready             False 
-  ContainersReady   False 
-  PodScheduled      True 
-Volumes:
-  kube-api-access-vs7vx:
-    Type:                    Projected (a volume that contains injected data from multiple sources)
-    TokenExpirationSeconds:  3607
-    ConfigMapName:           kube-root-ca.crt
-    ConfigMapOptional:       <nil>
-    DownwardAPI:             true
-QoS Class:                   Burstable
-Node-Selectors:              <none>
-Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
-                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
-Events:
-  Type     Reason     Age                From               Message
-  ----     ------     ----               ----               -------
-  Normal   Scheduled  45s                default-scheduler  Successfully assigned part-0013/my-first-pod-nginx to shoot--k8s-train--blr04-worker-gflpa-z1-7544c-mdc6n
-  Normal   Pulled     45s                kubelet            Container image "nginx:mainline" already present on machine
-  Normal   Created    45s                kubelet            Created container nginx1
-  Normal   Started    45s                kubelet            Started container nginx1
-  Normal   Pulled     39s                kubelet            Successfully pulled image "nginx:latest" in 6.161631881s
-  Normal   Pulled     33s                kubelet            Successfully pulled image "nginx:latest" in 834.678548ms
-  Normal   Pulling    15s (x3 over 45s)  kubelet            Pulling image "nginx:latest"
-  Normal   Created    14s (x3 over 37s)  kubelet            Created container nginx2
-  Normal   Started    14s (x3 over 37s)  kubelet            Started container nginx2
-  Normal   Pulled     14s                kubelet            Successfully pulled image "nginx:latest" in 837.911122ms
-  Warning  BackOff    11s (x2 over 30s)  kubelet            Back-off restarting failed container
-
-
-
-
-
-Troubleshooting
-The structure of a pod can be found in the API documentation. 
-Go to API reference and choose "Workload Resources". Within this section of the docs select the "Pod".
-Alternatively use kubectl explain pod. 
-To get detailed information about a field within the pod use its "path" like this: kubectl explain pod.spec.containers.
-
-
-Further information & references
-	• Pod basics https://kubernetes.io/docs/concepts/workloads/pods/pod/
-	• Lifecycle & phases https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/
-
-
-
-Kubernetes pod design pattern 
-https://www.cnblogs.com/zhenyuyaodidiao/p/6514907.html
-
+  - name: container-1
+    image: busybox
+  initContainers:
+  - name: myservice-1
+    image: debain
+  - name: mydb-1
+    image: mysql
 ```
+
+Further references:
+
+* [Pod basics](https://kubernetes.io/docs/concepts/workloads/pods/pod/)
+* [Lifecycle & phases](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/)
+* [Kubernetes pod design pattern](https://www.cnblogs.com/zhenyuyaodidiao/p/6514907.html)
+
+
+
+
+
+
 ## Deployment
 
+A Deployment provides declarative updates for Pods and ReplicaSets.
+The pod encapsulated the container and takes care of the desired state, that is, the deployment. 
+The "desired state" means that a specified quorum of running instances is fulfilled.
+
+### Create deployment from command
+
+Create a new resource of type deployment named "nginx". 
 ```
-Exercise 3: Deployment
-
-In this exercise, you will be dealing with Pods, Labels & Selectors and Deployments.
-
-With the deletion of the pod all information associated with it have been removed as well. 
-Though an unplanned, forcefully deletion is an unlikely scenario, it illustrates the lack of resilience of the pod construct quite well.
-
-To overcome this shortage Kubernetes offers a hierarchical constructed api. 
-The pod, which encapsulated the container, is now wrapped in a more complex construct that takes care of the desired state - the deployment. 
-In this case "desired state" means that a specified quorum of running instances is fulfilled.
-
-
-Step 0: deployments - the easy way
-Run the following command and check what happens: 
-	kubectl create deployment nginx --image=nginx:1.21 
-It should create a new resource of type deployment named "nginx". 
-Use kubectl get deployment nginx -o yaml and kubectl describe deployment nginx to get more detailed information on the deployment you just created. 
-Based on those information, determine the labels and selectors used by your deployment.
-
-Can you figure out the name of the pod belonging to your deployment by using the label information? 
-Hint: use the -l switch in combination with kubectl get pods
-
-
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG create deployment nginx --image=nginx:1.21
+james@lizard:~> kubectl create deployment nginx --image=nginx:1.21
 deployment.apps/nginx created
 
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG get pods --show-labels
+james@lizard:~> kubectl get deployment
+NAME    READY   UP-TO-DATE   AVAILABLE   AGE
+nginx   1/1     1            1           21s
+
+james@lizard:~> kubectl get pods
+NAME                     READY   STATUS    RESTARTS   AGE
+nginx-5c95dfd78d-bnvgz   2/2     Running   0          5m54s
+```
+
+Get nginx by labels.
+```
+james@lizard:~> kubectl get deployment --show-labels
+NAME    READY   UP-TO-DATE   AVAILABLE   AGE     LABELS
+nginx   1/1     1            1           7m13s   app=nginx
+
+james@lizard:~> kubectl get deployment -l app=nginx
+NAME    READY   UP-TO-DATE   AVAILABLE   AGE
+nginx   1/1     1            1           8m57s
+
+james@lizard:~> kubectl get pods --show-labels
 NAME                     READY   STATUS    RESTARTS   AGE   LABELS
-my-first-pod             1/1     Running   0          10m   nginx=mainline
-nginx-5c95dfd78d-rjlcl   1/1     Running   0          19s   app=nginx,pod-template-hash=5c95dfd78d
+nginx-5c95dfd78d-bnvgz   2/2     Running   0          45s   app=nginx,pod-template-hash=5c95dfd78d,security.istio.io/tlsMode=istio,service.istio.io/canonical-name=nginx,service.istio.io/canonical-revision=latest
 
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG get deployment nginx --show-labels
-NAME    READY   UP-TO-DATE   AVAILABLE   AGE   LABELS
-nginx   1/1     1            1           19m   app=nginx
+james@lizard:~> kubectl get pods -l app=nginx
+NAME                     READY   STATUS    RESTARTS   AGE
+nginx-5c95dfd78d-bnvgz   2/2     Running   0          9m15s
+```
 
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG get deployment nginx -o yaml
-
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG describe deployment nginx
-Name:                   nginx
-Namespace:              part-0013
-CreationTimestamp:      Thu, 03 Feb 2022 07:26:04 +0800
-Labels:                 app=nginx
-Annotations:            deployment.kubernetes.io/revision: 1
-Selector:               app=nginx
-Replicas:               1 desired | 1 updated | 1 total | 1 available | 0 unavailable
-StrategyType:           RollingUpdate
-MinReadySeconds:        0
-RollingUpdateStrategy:  25% max unavailable, 25% max surge
-Pod Template:
-  Labels:  app=nginx
-  Containers:
-   nginx:
-    Image:        nginx:1.21
-    Port:         <none>
-    Host Port:    <none>
-    Environment:  <none>
-    Mounts:       <none>
-  Volumes:        <none>
-Conditions:
-  Type           Status  Reason
-  ----           ------  ------
-  Available      True    MinimumReplicasAvailable
-  Progressing    True    NewReplicaSetAvailable
-OldReplicaSets:  <none>
-NewReplicaSet:   nginx-5c95dfd78d (1/1 replicas created)
-Events:
-  Type    Reason             Age    From                   Message
-  ----    ------             ----   ----                   -------
-  Normal  ScalingReplicaSet  3m10s  deployment-controller  Scaled up replica set nginx-5c95dfd78d to 1
+Use `kubectl get deployment nginx -o yaml` and `kubectl describe deployment nginx` to get more detailed information on the deployment just created.
+It's also good way to get reference yaml file for deployment creation.
 
 
 
+### Scaling deployment
 
-Step 1: scaling
-
-Congratulations, you created your first deployment of a webserver. Now it's time to scale: 
-kubectl scale deployment nginx --replicas=3 
-Check the number of pods and the status of your deployment. Also don't miss the labels being attached to the pods. 
-Run kubectl get pods -l app=nginx to filter for the pods belonging to your deployment.
-
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG scale deployment nginx --replicas=3 
+Execute command `kubectl scale deployment nginx --replicas=3` to scale the deployment `nginx` with `3` pods.
+```
+james@lizard:~> kubectl scale deployment nginx --replicas=3
 deployment.apps/nginx scaled
 
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG get pods -l app=nginx
+james@lizard:~> kubectl get deployment --show-labels
+NAME    READY   UP-TO-DATE   AVAILABLE   AGE   LABELS
+nginx   3/3     3            3           14m   app=nginx
+
+james@lizard:~> kubectl get pods
 NAME                     READY   STATUS    RESTARTS   AGE
-nginx-5c95dfd78d-7rjf7   1/1     Running   0          20s
-nginx-5c95dfd78d-rjlcl   1/1     Running   0          20m
-nginx-5c95dfd78d-whjj4   1/1     Running   0          20s
+nginx-5c95dfd78d-5xfm7   2/2     Running   0          30s
+nginx-5c95dfd78d-bnvgz   2/2     Running   0          14m
+nginx-5c95dfd78d-m67ph   2/2     Running   0          30s
+
+james@lizard:~> kubectl get replicaset
+NAME               DESIRED   CURRENT   READY   AGE
+nginx-5c95dfd78d   3         3         3       33m
+```
+
+Let's see the relationship and naming convention.
+```
+Deployment: nginx
+  |
+  |--ReplicaSet: nginx-5c95dfd78d
+  |
+  |--Pods: 
+     |--nginx-5c95dfd78d-5xfm7
+     |  |--Container: istio-proxy
+     |  |--Container: nginx
+     |
+     |--nginx-5c95dfd78d-bnvgz
+     |  |--Container: istio-proxy
+     |  |--Container: nginx
+     |
+     |--nginx-5c95dfd78d-m67ph
+        |--Container: istio-proxy
+        |--Container: nginx
+
+```
 
 
 
 
-Step 2: delete a pod
-In this step you will test the resilience of your deployment. 
-To be able to monitor the events open a second shell and run the following command: 
-watch kubectl get pods 
+### Verify scalling by deleting pod
 
-Now delete a pod from your deployment and observe, how the deployment's desired state (replicas=3) is kept. 
-kubectl delete pod <pod-name>
+Delete a pod from the deployment and observe how the deployment's desired state (replicas=3) is kept. 
 
-james@lizard:~> watch kubectl --kubeconfig=$KUBECONFIG get pods
-Every 2.0s: kubectl --kubeconfig=/home/james/.kube/config-training get pods                     lizard: Thu Feb  3 07:47:54 2022
+Use command `kubectl delete pod <pod-name>` to delete a pod and use command `watch kubectl get pods` to monitor the desired state.
 
+Delete one pod `nginx-5c95dfd78d-m67ph` and a replacement `nginx-5c95dfd78d-5mwvr` is created automtically.
+```
+james@lizard:~> kubectl delete pod nginx-5c95dfd78d-m67ph
+pod "nginx-5c95dfd78d-m67ph" deleted
+
+james@lizard:~> kubectl get pods
 NAME                     READY   STATUS    RESTARTS   AGE
-my-first-pod             1/1     Running   0          32m
-nginx-5c95dfd78d-7rjf7   1/1     Running   0          81s
-nginx-5c95dfd78d-rjlcl   1/1     Running   0          21m
-nginx-5c95dfd78d-whjj4   1/1     Running   0          81s
-
-
-Delete one deployment and a replacement will be created automtically
-
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG delete pods nginx-5c95dfd78d-7rjf7
-pod "nginx-5c95dfd78d-7rjf7" deleted
-
-
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG get pods
-NAME                     READY   STATUS    RESTARTS   AGE
-my-first-pod             1/1     Running   0          34m
-nginx-5c95dfd78d-rjlcl   1/1     Running   0          24m
-nginx-5c95dfd78d-whjj4   1/1     Running   0          3m33s
-nginx-5c95dfd78d-x9nf7   1/1     Running   0          43s
+nginx-5c95dfd78d-5mwvr   2/2     Running   0          95s
+nginx-5c95dfd78d-5xfm7   2/2     Running   0          34m
+nginx-5c95dfd78d-bnvgz   2/2     Running   0          48m
+```
 
 
 
+### Rolling update
 
+A deployment itself does not manage the number of replicas. It just creates a ReplicaSet and tells how many replicas it should have. 
 
+Checkout the ReplicaSet created by your deployment: `kubectl get replicaset`, also `-o yaml` to see full configuration.
+```
+james@lizard:~> kubectl get replicaset -o wide
+NAME               DESIRED   CURRENT   READY   AGE   CONTAINERS   IMAGES       SELECTOR
+nginx-5c95dfd78d   3         3         3       20h   nginx        nginx:1.21   app=nginx,pod-template-hash=5c95dfd78d
 
-Step 3: rolling update
-Basically you could also achieve all the previous steps with a so called ReplicaSet. And in fact, you did. A deployment itself does not manage the number of replicas. 
-It just creates a ReplicaSet and tells it, how many replicas it should have. 
-Checkout the ReplicaSet created by your deployment: kubectl get replicaset, try also -o yaml to see its full configuration.
+james@lizard:~> kubectl get replicaset -o yaml
+```
 
-But a deployment can do more than managing replicasets in order to scale. It also allows you to perform a rolling update. 
-Run watch kubectl rollout status deployment/nginx to monitor the process of updating. 
+A deployment can also perform a rolling update. 
 
-Now trigger the update with the following command:
-kubectl set image deployment/nginx nginx=nginx:mainline --record
-Note that the --record option "logs" the kubectl command and stores it in the deployment's annotations. 
-When checking the rollout history later, the command will be shown as change cause.
+Run `watch kubectl` command to monitor the process of updating. 
+```
+james@lizard:~> watch kubectl rollout status deployment/nginx
+```
 
-Once finished, check the deployment, pods and ReplicaSets available in your namespace. 
-By now there should be two ReplicaSets - one scaled to 0 and one scaled to 3 (or whatever number of replicas you had before the update).
+Get current deployment image version `nginx:1.21`.
+```
+james@lizard:~> kubectl get deployment nginx -o wide
+NAME    READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS   IMAGES       SELECTOR
+nginx   3/3     3            3           20h   nginx        nginx:1.21   app=nginx
+```
 
-This way you would be able to roll back in case of an issue during update or with the new version. 
-Check kubectl rollout history deployment/nginx for the existing versions of your deployment. 
-By specifying --revision=1 you will be able to get detailed on revision number one.
-
-
-james@lizard:~> watch kubectl --kubeconfig=$KUBECONFIG rollout status deployment/nginx
-Every 2.0s: kubectl --kubeconfig=/home/james/.kube/config-training rollout status deployment/nginx                           lizard: Thu Feb  3 07:52:33 2022
-
-deployment "nginx" successfully rolled out
-
-
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG set image deployment/nginx nginx=nginx:mainline --record
-Flag --record has been deprecated, --record will be removed in the future
+Update deployment image to `nginx:mainline` with the below command. The `--record` option logs the `kubectl` command and stores it in the deployment's annotations.
+```
+james@lizard:~> kubectl set image deployment/nginx nginx=nginx:mainline --record
 deployment.apps/nginx image updated
+```
 
+We will receive message `deployment "nginx" successfully rolled out` from command `watch kubectl rollout status deployment/nginx`.
 
-Nginx based on image nginx:1.21 was created in step 0, Nginx based on image nginx:mainline was create in step above.
+Let's check the deployment, pods and ReplicaSets available in current namespace.
+By the command `kubectl set image`, all pods are running under new replicaset `nginx-d64cb58b5` with new image version `nginx:mainline`.
+```
+james@lizard:~> kubectl get deployment -o wide
+NAME    READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS   IMAGES           SELECTOR
+nginx   3/3     3            3           20h   nginx        nginx:mainline   app=nginx
 
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG get replicaset -owide
-NAME               DESIRED   CURRENT   READY   AGE   CONTAINERS   IMAGES           SELECTOR
-nginx-5c95dfd78d   0         0         0       27m   nginx        nginx:1.21       app=nginx,pod-template-hash=5c95dfd78d
-nginx-d64cb58b5    3         3         3       28s   nginx        nginx:mainline   app=nginx,pod-template-hash=d64cb58b5
+james@lizard:~> kubectl get replicaset -o wide
+NAME               DESIRED   CURRENT   READY   AGE     CONTAINERS   IMAGES           SELECTOR
+nginx-5c95dfd78d   0         0         0       20h     nginx        nginx:1.21       app=nginx,pod-template-hash=5c95dfd78d
+nginx-d64cb58b5    3         3         3       4m24s   nginx        nginx:mainline   app=nginx,pod-template-hash=d64cb58b5
 
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG get pods -owide
-NAME                    READY   STATUS    RESTARTS   AGE     IP             NODE                                                  NOMINATED NODE   READINESS GATES
-my-first-pod            1/1     Running   0          43m     100.96.3.214   shoot--k8s-train--blr04-worker-gflpa-z1-7544c-cwm54   <none>           <none>
-nginx-d64cb58b5-jt7bf   1/1     Running   0          5m47s   100.96.0.243   shoot--k8s-train--blr04-worker-gflpa-z1-7544c-lckrb   <none>           <none>
-nginx-d64cb58b5-mdgr9   1/1     Running   0          5m48s   100.96.1.198   shoot--k8s-train--blr04-worker-gflpa-z1-7544c-mdc6n   <none>           <none>
-nginx-d64cb58b5-rwkxf   1/1     Running   0          5m45s   100.96.3.216   shoot--k8s-train--blr04-worker-gflpa-z1-7544c-cwm54   <none>           <none>
+james@lizard:~> kubectl get pod -o wide
+NAME                    READY   STATUS    RESTARTS   AGE     IP             NODE                          NOMINATED NODE   READINESS GATES
+nginx-d64cb58b5-55twx   2/2     Running   0          4m15s   100.64.0.238   ip-10-250-0-53.ec2.internal   <none>           <none>
+nginx-d64cb58b5-679bk   2/2     Running   0          4m37s   100.64.0.236   ip-10-250-0-53.ec2.internal   <none>           <none>
+nginx-d64cb58b5-k946n   2/2     Running   0          4m25s   100.64.0.237   ip-10-250-0-53.ec2.internal   <none>           <none>
+```
 
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG rollout history deployment/nginx
-deployment.apps/nginx
+We can see the revision history at `annotations` in deploymant yaml file.
+```
+james@lizard:~> kubectl get deployment -o yaml
+apiVersion: v1
+items:
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "2"
+      kubernetes.io/change-cause: kubectl set image deployment/nginx nginx=nginx:mainline
+        --record=true
+    creationTimestamp: "2022-06-17T14:37:56Z"
+... ...
+```
+
+We can also get the revision hisotry by `kubectl rollout history` command. Get details by `--revision=1` option.
+```
+james@lizard:~> kubectl rollout history deployment/nginx
+deployment.apps/nginx 
 REVISION  CHANGE-CAUSE
 1         <none>
-2         kubectl set image deployment/nginx nginx=nginx:mainline --kubeconfig=/home/james/.kube/config-training --record=true
+2         kubectl set image deployment/nginx nginx=nginx:mainline --record=true
 
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG rollout history deployment/nginx --revision=2
-deployment.apps/nginx with revision #2
+james@lizard:~> kubectl rollout history deployment/nginx --revision=1
+deployment.apps/nginx with revision #1
+Pod Template:
+  Labels:       app=nginx
+        pod-template-hash=5c95dfd78d
+  Containers:
+   nginx:
+    Image:      nginx:1.21
+    Port:       <none>
+    Host Port:  <none>
+    Environment:        <none>
+    Mounts:     <none>
+  Volumes:      <none>
+
+james@lizard:~> kubectl rollout history deployment/nginx --revision=2
+deployment.apps/nginx with revision #2Step 5:
 Pod Template:
   Labels:       app=nginx
         pod-template-hash=d64cb58b5
-  Annotations:  kubernetes.io/change-cause:
-          kubectl set image deployment/nginx nginx=nginx:mainline --kubeconfig=/home/james/.kube/config-training --record=true
+  Annotations:  kubernetes.io/change-cause: kubectl set image deployment/nginx nginx=nginx:mainline --record=true
   Containers:
    nginx:
     Image:      nginx:mainline
@@ -804,61 +721,64 @@ Pod Template:
     Environment:        <none>
     Mounts:     <none>
   Volumes:      <none>
+```
 
 
 
 
-Step 4: update & rollback
-Now that already you know the rollout status/history commands, let's take a look at undo.
 
-Similar to the previous step, initiate another update while monitoring the rollout status (kubectl rollout status deployment/nginx) in parallel. 
-However this time set the image version to an not existing tag. It could be a typo like mianlin or something completely different.
+### Update & Rollback
 
-When listing the pods you should get one pod with an ImagePullBackOff error and the rollout should be stuck with the update of 1 new replica.
+Let's do a wrong update of deployment, e.g., set the image version to an not existing tag `nginx=nginx:001` as typo.
+We will see new replicaset `nginx-678b495695` is created and only one pod `nginx-678b495695-rlgls` under the new replicaset with an `ImagePullBackOff` error.
+The rollout is stuck with the update of 1 new replica. 
+All pods are still running under replicaset `nginx-d64cb58b5` of image `nginx:mainline`.
 
-Why is the responsible controller not attempting to patch all the other replicas in parallel? 
-The deployment specifies a maxUnavailable parameter as part of its update strategy (kubectl explain deployment.spec.strategy.rollingUpdate). 
-It defaults to 25%, which means in our case, that with 3 replicas no more than one pod at a time is allowed to be unavailable.
-
-Since the attempt to patch the deployment to a new image obviously failed, you have to undo action:
-kubectl rollout undo deployment nginx
-Check the rollout status again to make sure, your image is nginx:mainline and all pods are up and running.
-
-
-james@lizard:~> watch kubectl --kubeconfig=$KUBECONFIG rollout status deployment/nginx
-
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG set image deployment/nginx nginx=nginx:001 --record   <--changed
-Flag --record has been deprecated, --record will be removed in the future
+```
+james@lizard:~> kubectl set image deployment/nginx nginx=nginx:001 --record
 deployment.apps/nginx image updated
 
+james@lizard:~> kubectl get deployment -o wide
+NAME    READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS   IMAGES      SELECTOR
+nginx   3/3     1            3           21h   nginx        nginx:001   app=nginx
 
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG get replicaset -owide
-NAME               DESIRED   CURRENT   READY   AGE     CONTAINERS   IMAGES           SELECTOR
-nginx-5c95dfd78d   0         0         0       37m     nginx        nginx:1.21       app=nginx,pod-template-hash=5c95dfd78d
-nginx-678b495695   1         1         0       2m24s   nginx        nginx:001        app=nginx,pod-template-hash=678b495695
-nginx-d64cb58b5    3         3         3       10m     nginx        nginx:mainline   app=nginx,pod-template-hash=d64cb58b5
+james@lizard:~> kubectl get replicaset -o wide
+NAME               DESIRED   CURRENT   READY   AGE   CONTAINERS   IMAGES           SELECTOR
+nginx-5c95dfd78d   0         0         0       21h   nginx        nginx:1.21       app=nginx,pod-template-hash=5c95dfd78d
+nginx-678b495695   1         1         0       66s   nginx        nginx:001        app=nginx,pod-template-hash=678b495695
+nginx-d64cb58b5    3         3         3       77m   nginx        nginx:mainline   app=nginx,pod-template-hash=d64cb58b5
 
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG get pods -owide  <--with 3 replicas no more than one pod at a time is allowed to be unavailable.
-NAME                     READY   STATUS             RESTARTS   AGE     IP             NODE                                                  NOMINATED NODE   READINESS GATES
-my-first-pod             1/1     Running            0          49m     100.96.3.214   shoot--k8s-train--blr04-worker-gflpa-z1-7544c-cwm54   <none>           <none>
-nginx-678b495695-dhc2v   0/1     ImagePullBackOff   0          3m53s   100.96.2.189   shoot--k8s-train--blr04-worker-gflpa-z1-7544c-6jqvk   <none>           <none>
-nginx-d64cb58b5-jt7bf    1/1     Running            0          11m     100.96.0.243   shoot--k8s-train--blr04-worker-gflpa-z1-7544c-lckrb   <none>           <none>
-nginx-d64cb58b5-mdgr9    1/1     Running            0          11m     100.96.1.198   shoot--k8s-train--blr04-worker-gflpa-z1-7544c-mdc6n   <none>           <none>
-nginx-d64cb58b5-rwkxf    1/1     Running            0          11m     100.96.3.216   shoot--k8s-train--blr04-worker-gflpa-z1-7544c-cwm54   <none>           <none>
+james@lizard:~> kubectl get pod
+NAME                     READY   STATUS             RESTARTS   AGE
+nginx-678b495695-rlgls   1/2     ImagePullBackOff   0          2m6s
+nginx-d64cb58b5-55twx    2/2     Running            0          77m
+nginx-d64cb58b5-679bk    2/2     Running            0          78m
+nginx-d64cb58b5-k946n    2/2     Running            0          77m
 
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG rollout history deployment/nginx
-deployment.apps/nginx
+```
+
+The deployment specifies a `maxUnavailable` parameter as part of its update strategy (`kubectl explain deployment.spec.strategy.rollingUpdate`). 
+It defaults to 25%, which means in the demo with 3 replicas, no more than one pod at a time is allowed to be unavailable.
+That's why the responsible controller does not attempt to patch all the other replicas in parallel.
+
+As the attempt to patch the deployment to a new image ailed, we need to roll back the image to `nginx:mainline` and bring up all pods.
+
+Now we can see the status of rollout with three revisions.
+```
+james@lizard:~> kubectl rollout history deployment/nginx
+deployment.apps/nginx 
 REVISION  CHANGE-CAUSE
 1         <none>
-2         kubectl set image deployment/nginx nginx=nginx:mainline --kubeconfig=/home/james/.kube/config-training --record=true
-3         kubectl set image deployment/nginx nginx=nginx:001 --kubeconfig=/home/james/.kube/config-training --record=true
+2         kubectl set image deployment/nginx nginx=nginx:mainline --record=true
+3         kubectl set image deployment/nginx nginx=nginx:001 --record=true
 
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG rollout history deployment/nginx --revision=3
+
+james@lizard:~> kubectl rollout history deployment/nginx --revision=3
 deployment.apps/nginx with revision #3
 Pod Template:
   Labels:       app=nginx
         pod-template-hash=678b495695
-  Annotations:  kubernetes.io/change-cause: kubectl set image deployment/nginx nginx=nginx:001 --kubeconfig=/home/james/.kube/config-training --record=true
+  Annotations:  kubernetes.io/change-cause: kubectl set image deployment/nginx nginx=nginx:001 --record=true
   Containers:
    nginx:
     Image:      nginx:001
@@ -868,116 +788,131 @@ Pod Template:
     Mounts:     <none>
   Volumes:      <none>
 
+```
 
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG explain deployment.spec.strategy.rollingUpdate
-KIND:     Deployment
-VERSION:  apps/v1
-
-RESOURCE: rollingUpdate <Object>
-
-DESCRIPTION:
-     Rolling update config params. Present only if DeploymentStrategyType =
-     RollingUpdate.
-
-     Spec to control the desired behavior of rolling update.
-
-FIELDS:
-   maxSurge     <string>
-     The maximum number of pods that can be scheduled above the desired number
-     of pods. Value can be an absolute number (ex: 5) or a percentage of desired
-     pods (ex: 10%). This can not be 0 if MaxUnavailable is 0. Absolute number
-     is calculated from percentage by rounding up. Defaults to 25%. Example:
-     when this is set to 30%, the new ReplicaSet can be scaled up immediately
-     when the rolling update starts, such that the total number of old and new
-     pods do not exceed 130% of desired pods. Once old pods have been killed,
-     new ReplicaSet can be scaled up further, ensuring that total number of pods
-     running at any time during the update is at most 130% of desired pods.
-
-   maxUnavailable       <string>
-     The maximum number of pods that can be unavailable during the update. Value
-     can be an absolute number (ex: 5) or a percentage of desired pods (ex:
-     10%). Absolute number is calculated from percentage by rounding down. This
-     can not be 0 if MaxSurge is 0. Defaults to 25%. Example: when this is set
-     to 30%, the old ReplicaSet can be scaled down to 70% of desired pods
-     immediately when the rolling update starts. Once new pods are ready, old
-     ReplicaSet can be scaled down further, followed by scaling up the new
-     ReplicaSet, ensuring that the total number of pods available at all times
-     during the update is at least 70% of desired pods.
-
-
-
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG rollout undo deployment nginx
+To roll back from current version (3) to previous version (2), it promotes revision 2 to revision 4 as the latest available revision. There is no revision 2 after that.
+```
+james@lizard:~> kubectl rollout undo deployment nginx
 deployment.apps/nginx rolled back
 
-
-Rolled back from revision 3 to revision 2, that is, promote revision 2 to revision 4 as the latest available revision. There is no revision 2 after that.
-
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG rollout history deployment/nginx
-deployment.apps/nginx
+james@lizard:~> kubectl rollout history deployment/nginx
+deployment.apps/nginx 
 REVISION  CHANGE-CAUSE
 1         <none>
-3         kubectl set image deployment/nginx nginx=nginx:001 --kubeconfig=/home/james/.kube/config-training --record=true
-4         kubectl set image deployment/nginx nginx=nginx:mainline --kubeconfig=/home/james/.kube/config-training --record=true
+3         kubectl set image deployment/nginx nginx=nginx:001 --record=true
+4         kubectl set image deployment/nginx nginx=nginx:mainline --record=true
+```
+
+Let's verify current deployment, replicaset, and pods after rollback.
+```
+james@lizard:~> kubectl get deployment -o wide
+NAME    READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS   IMAGES           SELECTOR
+nginx   3/3     3            3           22h   nginx        nginx:mainline   app=nginx
+
+james@lizard:~> kubectl get replicaset -o wide
+NAME               DESIRED   CURRENT   READY   AGE   CONTAINERS   IMAGES           SELECTOR
+nginx-5c95dfd78d   0         0         0       22h   nginx        nginx:1.21       app=nginx,pod-template-hash=5c95dfd78d
+nginx-678b495695   0         0         0       17m   nginx        nginx:001        app=nginx,pod-template-hash=678b495695
+nginx-d64cb58b5    3         3         3       93m   nginx        nginx:mainline   app=nginx,pod-template-hash=d64cb58b5
+
+james@lizard:~> kubectl get pod -o wide
+NAME                    READY   STATUS    RESTARTS   AGE   IP             NODE                          NOMINATED NODE   READINESS GATES
+nginx-d64cb58b5-55twx   2/2     Running   0          93m   100.64.0.238   ip-10-250-0-53.ec2.internal   <none>           <none>
+nginx-d64cb58b5-679bk   2/2     Running   0          93m   100.64.0.236   ip-10-250-0-53.ec2.internal   <none>           <none>
+nginx-d64cb58b5-k946n   2/2     Running   0          93m   100.64.0.237   ip-10-250-0-53.ec2.internal   <none>           <none>
+```
+
+
+### Delete deployment
+
+After deletion of deployment, all replica, pods of nginx were automatically deleted as well.
+```
+james@lizard:~> kubectl delete deployment nginx
+deployment.apps "nginx" deleted
+
+james@lizard:~> kubectl get deployment
+No resources found in jh-namespace namespace.
+
+james@lizard:~> kubectl get replicaset
+No resources found in jh-namespace namespace.
+
+james@lizard:~> kubectl get pod
+No resources found in jh-namespace namespace.
+```
 
 
 
-Step 5: from file
-Of course it is possible to create deployments from a yaml file. The following step gives an example, how it could look like.
 
-Firstly, delete the deployment you just created: kubectl delete deployment nginx
 
-Secondly, try to write your own yaml file for a new deployment that creates 3 replicas of an nginx image, with version tag latest.
 
-Below is a skeleton of a deployment, however it is still missing some essential fields. Use kubectl explain deployment or check the api reference for details.
-    kind: Deployment
-    containers (check the pod spec from exercise 2 or the deployment created with run)
-    values for matchLabels
+### Create deployment from file
 
+The following demo shows an example how to create deployment from yaml file.
+
+Create the yaml file `03-deployment.yaml` for a new deployment that creates 3 replicas of an nginx image, with version tag latest.
+```
+james@lizard:~> cat 03-deployment.yaml 
 apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: nginx-deployment
+  name: nginx
   labels:
     tier: application
 spec:
   replicas: 3
   selector:
     matchLabels:
+      run: nginx
   template:
     metadata:
       labels:
         run: nginx
     spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
 
+```
 
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG get deployment
-NAME    READY   UP-TO-DATE   AVAILABLE   AGE
-nginx   3/3     3            3           43m
+Create the deoployment via file `03-deployment.yaml`.
+```
+james@lizard:~> kubectl apply -f 03-deployment.yaml 
+deployment.apps/nginx-deployment created
+```
 
-After deletion of deployment, all replica, pods of nginx were deleted as well.
+Verify current deployment, replicaset, and pods.
+```
+james@lizard:~> kubectl get deployment -o wide
+NAME    READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS   IMAGES   SELECTOR
+nginx   3/3     3            3           38s   nginx        nginx    run=nginx
 
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG delete deployment nginx
-deployment.apps "nginx" deleted
+james@lizard:~> kubectl get replicaset -o wide
+NAME               DESIRED   CURRENT   READY   AGE   CONTAINERS   IMAGES   SELECTOR
+nginx-658f4cf99f   3         3         3       48s   nginx        nginx    pod-template-hash=658f4cf99f,run=nginx
 
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG get deployment
-No resources found in part-0013 namespace.
+james@lizard:~> kubectl get pod -o wide
+NAME                     READY   STATUS    RESTARTS   AGE   IP            NODE                          NOMINATED NODE   READINESS GATES
+nginx-658f4cf99f-74w6d   2/2     Running   0          64s   100.64.0.15   ip-10-250-0-53.ec2.internal   <none>           <none>
+nginx-658f4cf99f-7rbtn   2/2     Running   0          64s   100.64.0.12   ip-10-250-0-53.ec2.internal   <none>           <none>
+nginx-658f4cf99f-bvkp5   2/2     Running   0          64s   100.64.0.16   ip-10-250-0-53.ec2.internal   <none>           <none>
 
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG get pods -owide
-NAME           READY   STATUS    RESTARTS   AGE   IP             NODE                                                  NOMINATED NODE   READINESS GATES
-my-first-pod   1/1     Running   0          54m   100.96.3.214   shoot--k8s-train--blr04-worker-gflpa-z1-7544c-cwm54   <none>           <none>
+james@lizard:~> kubectl rollout history deployment/nginx
+deployment.apps/nginx 
+REVISION  CHANGE-CAUSE
+1         <none>
+```
 
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG get replicaset -owide
-No resources found in part-0013 namespace.
+In above demo, we use image `nginx` with `latest` tag. In following demo, I will only change image to `nginx:mainline` and update the live deployment.
 
-james@lizard:~> cd /opt/docker-k8s-training/kubernetes/demo/
-james@lizard:/opt/docker-k8s-training/kubernetes/demo> cp 03_deployment.yaml ../ex03/
-
-james@lizard:~> vi /opt/docker-k8s-training/kubernetes/ex03/03_deployment.yaml
-
-james@lizard:~> cat /opt/docker-k8s-training/kubernetes/ex03/03_deployment.yaml
+Create new yaml file `03-deployment-new.yaml`.
+```
+james@lizard:~> cat 03-deployment-new.yaml 
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nginx-deployment
+  name: nginx
   labels:
     tier: application
 spec:
@@ -995,127 +930,99 @@ spec:
         image: nginx:mainline
         ports:
         - containerPort: 80
-
-
-
-
-Step 6: deploy(ment)!
-Now create the deployment again. Remember that you can always use the --dry-run flag to test. 
-Use the yaml file you just wrote instead of the create generator.
-kubectl apply -f <your-file>.yaml
-
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG apply -f /opt/docker-k8s-training/kubernetes/ex03/03_deployment.yaml
-deployment.apps/nginx-deployment created
-
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG get deployment
-NAME               READY   UP-TO-DATE   AVAILABLE   AGE
-nginx-deployment   3/3     3            3           10s
-
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG get pods -owide
-NAME                                READY   STATUS    RESTARTS   AGE   IP             NODE                                                  NOMINATED NODE   READINESS GATES
-my-first-pod                        1/1     Running   0          70m   100.96.3.214   shoot--k8s-train--blr04-worker-gflpa-z1-7544c-cwm54   <none>           <none>
-nginx-deployment-69745449db-776f5   1/1     Running   0          10m   100.96.2.190   shoot--k8s-train--blr04-worker-gflpa-z1-7544c-6jqvk   <none>           <none>
-nginx-deployment-69745449db-7fqnx   1/1     Running   0          10m   100.96.0.244   shoot--k8s-train--blr04-worker-gflpa-z1-7544c-lckrb   <none>           <none>
-nginx-deployment-69745449db-hznjk   1/1     Running   0          10m   100.96.1.199   shoot--k8s-train--blr04-worker-gflpa-z1-7544c-mdc6n   <none>           <none>
-
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG get replicaset -owide
-NAME                          DESIRED   CURRENT   READY   AGE   CONTAINERS   IMAGES           SELECTOR
-nginx-deployment-69745449db   3         3         3       19m   nginx        nginx:mainline   pod-template-hash=69745449db,run=nginx
-
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG rollout history deployment/nginx-deployment
-deployment.apps/nginx-deployment
-REVISION  CHANGE-CAUSE
-1         <none>
-
-
-
-
-Step 7: kubectl diff
-Congratulations - you have described a more complex resource in yaml format and deployed it to the cluster! 
-But the above step had a bug and instead of mainline images with the latest tag are used. 
-To switch to mainline you could use the edit mechanism again. 
-However this will only affect the live version, not the file on disk. 
-Instead of implementing the same change twice, let's use a more efficient way:
-	• edit the local yaml file and change the image's tag to mainline
-	• run kubectl diff -f <your-file>.yaml to make sure only, the image has been changed. diff compares the live version with the given file. It allows you to evaluate the result before acctually making the change.
-	• update the live version with kubectl apply --record -f <your-file>.yaml
-
-Finally, do not delete the latest version of your deployment. It will be used throughout the following exercises.
-
-Change the yaml file like below.
-
-james@lizard:~> cat /opt/docker-k8s-training/kubernetes/ex03/03_deployment_new.yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: nginx-deployment  <--keep same deployment
-  labels:
-    tier: application
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      run: nginx
-  template:
-    metadata:
-      labels:
-        run: nginx
-    spec:
-      containers:
-      - name: nginx-new
-        image: nginx:mainline
-        ports:
-        - containerPort: 80
-
-
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG diff -f /opt/docker-k8s-training/kubernetes/ex03/03_deployment_new.yaml
-           f:spec:
-             f:containers:
--              k:{"name":"nginx"}:
-+              k:{"name":"nginx-new"}:
-
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG apply --record -f /opt/docker-k8s-training/kubernetes/ex03/03_deployment_new.yaml
-Flag --record has been deprecated, --record will be removed in the future
-deployment.apps/nginx-deployment configured
-
-
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG rollout history deployment/nginx-deployment
-deployment.apps/nginx-deployment
-REVISION  CHANGE-CAUSE
-1         <none>
-2         kubectl apply --kubeconfig=/home/james/.kube/config-training --record=true --filename=/opt/docker-k8s-training/kubernetes/ex03/03_deployment_new.yaml
-
-
-
-
-
-
-
-Troubleshooting
-In case of issues with the labels, make sure that the deployment.spec.selector.matchLabels query matches the labels specified within the deployment.spec.template.metadata.labels.
-
-The structure of a deployment can be found in the API documentation. 
-Go to API reference and choose "Workload Resources". Within the API docs select the "Deployment".
-
-Alternatively use kubectl explain deployment. 
-To get detailed information about a field within the pod use its "path" like this: kubectl explain deployment.spec.replicas.
-
-
-
-
-
-
-Further information & references
-	• Deployments in K8s concepts documentation https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
-	• doing it the old way - replication controller https://kubernetes.io/docs/concepts/workloads/controllers/replicationcontroller/
-	• labels in K8s https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
-
-
 ```
+
+Show the difference.
+```
+james@lizard:~> kubectl diff -f 03-deployment-new.yaml 
+... ...
+-  generation: 1
++  generation: 2
+... ...
+       containers:
+-      - image: nginx
++      - image: nginx:mainline
+... ...
+```
+
+Update the live version.
+```
+james@lizard:~> kubectl apply -f 03-deployment-new.yaml 
+deployment.apps/nginx configured
+```
+
+Verify current deployment, replicaset, and pods. All pods are running under new replicaset `nginx-74db5c7848` with image `nginx:mainline`.
+```
+james@lizard:~> kubectl get deployment -o wide
+NAME    READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS   IMAGES           SELECTOR
+nginx   3/3     3            3           24m   nginx        nginx:mainline   run=nginx
+
+james@lizard:~> kubectl get replicaset -o wide
+NAME               DESIRED   CURRENT   READY   AGE   CONTAINERS   IMAGES           SELECTOR
+nginx-658f4cf99f   0         0         0       25m   nginx        nginx            pod-template-hash=658f4cf99f,run=nginx
+nginx-74db5c7848   3         3         3       77s   nginx        nginx:mainline   pod-template-hash=74db5c7848,run=nginx
+
+james@lizard:~> kubectl get pod -o wide
+NAME                     READY   STATUS    RESTARTS   AGE   IP            NODE                          NOMINATED NODE   READINESS GATES
+nginx-74db5c7848-4dxf2   2/2     Running   0          82s   100.64.0.22   ip-10-250-0-53.ec2.internal   <none>           <none>
+nginx-74db5c7848-9lmgx   2/2     Running   0          92s   100.64.0.21   ip-10-250-0-53.ec2.internal   <none>           <none>
+nginx-74db5c7848-wqfs9   2/2     Running   0          71s   100.64.0.24   ip-10-250-0-53.ec2.internal   <none>           <none>
+```
+
+Check the rollout hisotry. The image is `nginx` in revision 1 and `nginx:mainline` in revision 2.
+```
+james@lizard:~> kubectl rollout history deployment/nginx
+deployment.apps/nginx 
+REVISION  CHANGE-CAUSE
+1         <none>
+2         <none>
+
+
+james@lizard:~> kubectl rollout history deployment/nginx --revision=1
+deployment.apps/nginx with revision #1
+Pod Template:
+  Labels:       pod-template-hash=658f4cf99f
+        run=nginx
+  Containers:
+   nginx:
+    Image:      nginx
+    Port:       80/TCP
+    Host Port:  0/TCP
+    Environment:        <none>
+    Mounts:     <none>
+  Volumes:      <none>
+
+
+james@lizard:~> kubectl rollout history deployment/nginx --revision=2
+deployment.apps/nginx with revision #2
+Pod Template:
+  Labels:       pod-template-hash=74db5c7848
+        run=nginx
+  Containers:
+   nginx:
+    Image:      nginx:mainline
+    Port:       80/TCP
+    Host Port:  0/TCP
+    Environment:        <none>
+    Mounts:     <none>
+  Volumes:      <none>
+```
+
+
+Further references:
+
+* [Deployments in K8s concepts documentation](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)
+* [Replication controller](https://kubernetes.io/docs/concepts/workloads/controllers/replicationcontroller/)
+* [Labels in K8s](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/)
+
+
+
+
+
 ## Expose application
 
 
-```
+
 Exercise 4: Expose your application
 
 In this exercise, you will be dealing with Pods, Deployments, Labels & Selectors, Services and Service Types.
@@ -1423,12 +1330,18 @@ To get detailed information about a field within the service use its "path" like
 
 
 
-Further information & references
-services in K8s  https://kubernetes.io/docs/concepts/services-networking/service/
-connecting a front end to a backend  https://kubernetes.io/docs/tasks/access-application-cluster/connecting-frontend-backend/
-cluster internal DNS https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/
+Further references:
 
-```
+* [Services in K8s](https://kubernetes.io/docs/concepts/services-networking/service/)
+* [Connecting a front end to a backend](https://kubernetes.io/docs/tasks/access-application-cluster/connecting-frontend-backend/)
+* [Cluster internal DNS](https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/)
+
+
+
+
+
+
+
 ## Persistence
 
 ```
