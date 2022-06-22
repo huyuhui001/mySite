@@ -31,14 +31,12 @@ james@lizard:~> echo $KUBECONFIG
 james@lizard:~> kubectl config view
 
 james@lizard:~> kubectl config get-contexts
-CURRENT   NAME                   CLUSTER                AUTHINFO               NAMESPACE
-*         shoot--kyma--eb68ebe   shoot--kyma--eb68ebe   shoot--kyma--eb68ebe  
 ```
 
 Using SAP BTP, `brew` and `oidc-login` need to be installed.
 
 Install `krew` (https://krew.sigs.k8s.io/docs/user-guide/setup/install/)
-
+```
 james@lizard:~> (
   set -x; cd "$(mktemp -d)" &&
   OS="$(uname | tr '[:upper:]' '[:lower:]')" &&
@@ -48,6 +46,7 @@ james@lizard:~> (
   tar zxvf "${KREW}.tar.gz" &&
   ./"${KREW}" install krew
 )
+```
 
 Append below two lines to file `/etc/profile.local` make it effected by command `source /etc/profile.local`
 ```
@@ -1969,315 +1968,212 @@ These pods are created from the same spec, but are not interchangeable: each has
 
 Create yaml file `08-statefulset.yaml` to create a service `nginx-stateful` and a statefulset `web` mapped to service `nginx-stateful`.
 ```
+james@lizard:~> cat 08-statefulset.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-stateful
+  labels:
+    app: nginx-stateful
+spec:
+  ports:
+  - port: 80
+    name: web
+  clusterIP: None
+  selector:
+    app: nginx-stateful
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: web
+spec:
+  serviceName: "nginx-stateful"
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx-stateful
+  template:
+    metadata:
+      labels:
+        app: nginx-stateful
+    spec:
+      initContainers:
+      - name: setup
+        image: alpine:latest
+        command:
+        - /bin/sh
+        - -c
+        - echo $(hostname) >> /work-dir/index.html
+        volumeMounts:
+        - name: www
+          mountPath: /work-dir      
+      containers:
+      - name: nginx
+        image: nginx:mainline
+        ports:
+        - containerPort: 80
+          name: web
+        volumeMounts:
+        - name: www
+          mountPath: /usr/share/nginx/html
+  volumeClaimTemplates:
+  - metadata:
+      name: www
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi
+```
+
+Create statefulset resource. We can watch the upcoming new pods via `watch kubectl get pods`.
+```
 james@lizard:~> kubectl apply -f 08-statefulset.yaml
 service/nginx-stateful created
 statefulset.apps/web created
+
+james@lizard:~> kubectl get service nginx-stateful
+NAME             TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
+nginx-stateful   ClusterIP   None         <none>        80/TCP    11h
+
+james@lizard:~> kubectl get statefulset web
+NAME   READY   AGE
+web    2/2     11h
 ```
 
-
-
-
-
-
-Step 2: Ordered creation
-Before you create the StatefulSet, open a 2nd terminal and start to watch the pods in your namespace: watch kubectl get pods
-
-Now post your yaml file to the API server and monitor the upcoming new pods. 
-You should observe the ordered creation of pods (by their ordinal index). 
-Note that the pod name does not have any randomly generated string (as with deployments), but consists of the statefulset's name + the index.
-
-Additionally you should find new PVC resources in your namespace.
-
-Quickly spin up a temporary pod and directly connect to it: kubectl run dns-test -i --tty --restart=Never --rm --image=alpine:3.12 -- ash
-
-Within pod's shell context, run nslookup [pod-name].[service-name] to check, if your individual pods are accessible via the service.
-
-Also download the index.html page of each instance using wget -q -O - [pod-name].[service-name]. You should get the corresponding host name that was written by the initContainer.
-
-
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG get persistentvolumeclaim
-NAME            STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
-nginx-pvc       Bound    pv--08c23a7c-0c3a-4675-bdde-a762c9813e7a   1Gi        RWO            default        6h57m
-nginx-pvc-07    Bound    pv--9ad170fb-0da4-4df3-812d-b3469715bcda   1Gi        RWO            default        5h18m
-nginx-pvc-new   Bound    pv--b20ba5c7-c6a4-4704-8c45-a2ccaa9e96b9   1Gi        RWO            default        5h35m
-www-web-0       Bound    pv--6c1880c4-169b-486b-b952-8869770082ec   1Gi        RWO            default        4m43s
-www-web-1       Bound    pv--efe1f0ed-b212-4335-b40d-791d54d5b943   1Gi        RWO            default        4m15s
-
-
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG get persistentvolume | grep 0013
-NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                     STORAGECLASS   REASON   AGE
-pv--08c23a7c-0c3a-4675-bdde-a762c9813e7a   1Gi        RWO            Delete           Bound    part-0013/nginx-pvc       default                 6h36m
-pv--6c1880c4-169b-486b-b952-8869770082ec   1Gi        RWO            Delete           Bound    part-0013/www-web-0       default                 2m30s
-pv--9ad170fb-0da4-4df3-812d-b3469715bcda   1Gi        RWO            Delete           Bound    part-0013/nginx-pvc-07    default                 173m
-pv--b20ba5c7-c6a4-4704-8c45-a2ccaa9e96b9   1Gi        RWO            Delete           Bound    part-0013/nginx-pvc-new   default                 5h30m
-pv--efe1f0ed-b212-4335-b40d-791d54d5b943   1Gi        RWO            Delete           Bound    part-0013/www-web-1       default                 2m3s
-
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG get pods
+As we set `replicas: 2` in the yaml file, be noted that the pod name consists of the statefulset's name + the index, not any randomly generated string (as with deployments).
+```
+james@lizard:~> kubectl get pod
 NAME                                      READY   STATUS    RESTARTS   AGE
-my-first-pod                              1/1     Running   0          9h
-my-first-pod-nginx                        1/1     Running   0          7h15m
-nginx-deployment-585797d45f-4k6wf         1/1     Running   0          8h
-nginx-deployment-585797d45f-hbprl         1/1     Running   0          8h
-nginx-deployment-585797d45f-xnl6p         1/1     Running   0          8h
-nginx-deployment-pvc-9458c5564-x5k4w      1/1     Running   0          5h33m
-nginx-https-deployment-5f665f49fb-sqcvc   1/1     Running   0          130m
-nginx-storage-pod                         1/1     Running   0          5h44m
-simple-nginx-544dd54c77-cggm4             1/1     Running   0          28m
-web-0                                     1/1     Running   0          5m30s
-web-1                                     1/1     Running   0          5m2s
+nginx-deployment-https-7cf8f66cb4-mv2sb   2/2     Running   0          41h
+nginx-simple-7d77885fc5-dzqj9             2/2     Running   0          35h
+web-0                                     2/2     Running   0          11h
+web-1                                     2/2     Running   0          11h
+```
 
+As we defined PVC Template `volumeClaimTemplates` with name `www`, we can find two new PVCs created as well. 
+```
+james@lizard:~> kubectl get pvc
+NAME        STATUS   VOLUME                                                         CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+nginx-pvc   Bound    pv-shoot--kyma--eb68ebe-b0f174a8-7800-43bb-86bd-751a5505363b   1Gi        RWO            default        2d
+www-web-0   Bound    pv-shoot--kyma--eb68ebe-ce950e1d-0c5f-4ab2-9aa1-7bb3c834cb2b   1Gi        RWO            default        11h
+www-web-1   Bound    pv-shoot--kyma--eb68ebe-dc954620-f4ec-48bd-89bd-737b59687794   1Gi        RWO            default        11h
+```
 
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG get deployment
-NAME                     READY   UP-TO-DATE   AVAILABLE   AGE
-nginx-deployment         3/3     3            3           8h
-nginx-deployment-pvc     1/1     1            1           5h33m
-nginx-https-deployment   1/1     1            1           130m
-simple-nginx             1/1     1            1           28m
+Quickly spin up a temporary pod and directly connect to it.
+```
+james@lizard:~> kubectl run dns-test -i --tty --restart=Never --rm --image=alpine:3.12 -- ash
+```
 
+Within pod's shell context:
 
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG get services
-NAME                   TYPE           CLUSTER-IP       EXTERNAL-IP     PORT(S)                      AGE
-nginx-https-service    LoadBalancer   100.64.238.60    34.140.75.240   80:32388/TCP,443:31228/TCP   84m
-nginx-service          LoadBalancer   100.69.230.189   34.78.249.22    80:31045/TCP                 7h22m
-simple-nginx-service   ClusterIP      100.71.24.235    <none>          80/TCP                       28m
-stateful-nginx         ClusterIP      None             <none>          80/TCP                       5m49s
-
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG get statefulsets -o wide
-NAME   READY   AGE   CONTAINERS   IMAGES
-web    2/2     10m   nginx        nginx:mainline
-
-
-
-
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG run dns-test -i --tty --restart=Never --rm --image=alpine:3.12 -- ash
+* run `nslookup [pod-name].[service-name]` to check if individual pods are accessible via the service.
+* download the `index.html` page of each instance using `wget -q -O - [pod-name].[service-name]`. 
+```
+james@lizard:~> kubectl run dns-test -i --tty --restart=Never --rm --image=alpine:3.12 -- ash
 If you don't see a command prompt, try pressing enter.
-/ # nslookup web-0.stateful-nginx
-Server:         100.64.0.10
-Address:        100.64.0.10:53
+/ # ls
+bin    dev    etc    home   lib    media  mnt    opt    proc   root   run    sbin   srv    sys    tmp    usr    var
+/ # nslookup web-0.nginx-stateful
+Server:         100.104.0.10
+Address:        100.104.0.10:53
 
-** server can't find web-0.stateful-nginx: NXDOMAIN
+** server can't find web-0.nginx-stateful: NXDOMAIN
 
-** server can't find web-0.stateful-nginx: NXDOMAIN
+** server can't find web-0.nginx-stateful: NXDOMAIN
 
-/ # wget web-0.stateful-nginx
-Connecting to web-0.stateful-nginx (100.96.1.205:80)
+/ # wget web-0.nginx-stateful
+Connecting to web-0.nginx-stateful (100.64.0.35:80)
 saving to 'index.html'
-index.html           100% |**********************************************************************************************|     6  0:00:00 ETA
+index.html           100% |************************************************************************************************|     6  0:00:00 ETA
 'index.html' saved
+/ # ls
+bin         etc         index.html  media       opt         root        sbin        sys         usr
+dev         home        lib         mnt         proc        run         srv         tmp         var
 / # cat index.html
 web-0
 / # exit
 pod "dns-test" deleted
 
+```
 
 
 
+StatefulSets guarantee stable/reliable names, and it won't change over time - even when the pod gets killed and re-created.
 
-Step 3: Stable hostnames
-
-StatefulSets guarantee stable/reliable names. Since the pod name is also the hostname, it won't change over time - even when the pod gets killed and re-created.
-
-Delete the pods of your StatefulSet while watching the pods in you namespace. Observe, how the pods will be re-created with the exact same names.
-
-Again, spin up a temporary deployment of a busybox and directly connect to it. 
-If you re-run nslookup, notice the IP addresses probably have changed. 
-Since the initContainer wrote the "new" hostname to the index.html page, download it with wget and check for the expected content.
-
-
-
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG run dns-test -i --tty --restart=Never --rm --image=busybox
-If you don't see a command prompt, try pressing enter.
-/ # nslookup web-0.stateful-nginx
-Server:         100.64.0.10
-Address:        100.64.0.10:53
-
-** server can't find web-0.stateful-nginx: NXDOMAIN
-
-*** Can't find web-0.stateful-nginx: No answer
-
-/ # wget web-0.stateful-nginx
-Connecting to web-0.stateful-nginx (100.96.1.205:80)
-saving to 'index.html'
-index.html           100% |**********************************************************************************************|     6  0:00:00 ETA
-'index.html' saved
-/ # cat index.html
-web-0
-/ # exit
-
-
-Delete one pod and the same will be created automatically per replicaset.
-
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG delete pods web-0
+Delete the pods `web-0` of the StatefulSet `web` and the same will be created automatically per replicaset.
+```
+james@lizard:~> kubectl delete pods web-0
 pod "web-0" deleted
 
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG get pods
+james@lizard:~> kubectl get pod
 NAME                                      READY   STATUS    RESTARTS   AGE
-dns-test                                  1/1     Running   0          3m21s
-my-first-pod                              1/1     Running   0          10h
-my-first-pod-nginx                        1/1     Running   0          7h51m
-nginx-deployment-585797d45f-4k6wf         1/1     Running   0          8h
-nginx-deployment-585797d45f-hbprl         1/1     Running   0          8h
-nginx-deployment-585797d45f-xnl6p         1/1     Running   0          8h
-nginx-deployment-pvc-9458c5564-x5k4w      1/1     Running   0          6h9m
-nginx-https-deployment-5f665f49fb-sqcvc   1/1     Running   0          166m
-nginx-storage-pod                         1/1     Running   0          6h19m
-simple-nginx-544dd54c77-cggm4             1/1     Running   0          64m
-web-0                                     1/1     Running   0          7s
-web-1                                     1/1     Running   0          40m
+nginx-deployment-https-7cf8f66cb4-mv2sb   2/2     Running   0          2d4h
+nginx-simple-7d77885fc5-dzqj9             2/2     Running   0          47h
+web-0                                     2/2     Running   0          50s
+web-1                                     2/2     Running   0          22h
+```
 
 
-Rerun it again.  Two web-0 now.
-
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG run dns-test -i --tty --restart=Never --rm --image=busybox
+Rerun `kubectl run dns-test` again, and we can see there are two pod `web-0` now because the initContainer wrote the "new" hostname to the `index.html` page,
+```
+james@lizard:~> kubectl run dns-test -i --tty --restart=Never --rm --image=alpine:3.12 -- ash
 If you don't see a command prompt, try pressing enter.
-/ # nslookup web-0.stateful-nginx
-Server:         100.64.0.10
-Address:        100.64.0.10:53
+/ # nslookup web-0.nginx-stateful
+Server:         100.104.0.10
+Address:        100.104.0.10:53
 
-** server can't find web-0.stateful-nginx: NXDOMAIN
+** server can't find web-0.nginx-stateful: NXDOMAIN
 
-*** Can't find web-0.stateful-nginx: No answer
+** server can't find web-0.nginx-stateful: NXDOMAIN
 
-/ # wget web-0.stateful-nginx
-Connecting to web-0.stateful-nginx (100.96.1.205:80)
+/ # wget web-0.nginx-stateful
+Connecting to web-0.nginx-stateful (100.64.0.198:80)
 saving to 'index.html'
-index.html           100% |**********************************************************************************************|     6  0:00:00 ETA
+index.html           100% |************************************************************************************************|    12  0:00:00 ETA
 'index.html' saved
+/ # ls
+bin         etc         index.html  media       opt         root        sbin        sys         usr
+dev         home        lib         mnt         proc        run         srv         tmp         var
 / # cat index.html
 web-0
 web-0
 / # exit
+pod "dns-test" deleted
+```
 
 
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG get pods --watch
-NAME                                      READY   STATUS    RESTARTS   AGE
-my-first-pod                              1/1     Running   0          10h
-my-first-pod-nginx                        1/1     Running   0          8h
-nginx-deployment-585797d45f-4k6wf         1/1     Running   0          8h
-nginx-deployment-585797d45f-hbprl         1/1     Running   0          8h
-nginx-deployment-585797d45f-xnl6p         1/1     Running   0          8h
-nginx-deployment-pvc-9458c5564-x5k4w      1/1     Running   0          6h17m
-nginx-https-deployment-5f665f49fb-sqcvc   1/1     Running   0          174m
-nginx-storage-pod                         1/1     Running   0          6h28m
-simple-nginx-544dd54c77-cggm4             1/1     Running   0          72m
-web-0                                     1/1     Running   0          8m36s
-web-1                                     1/1     Running   0          49m
-web-2                                     1/1     Running   0          3m12s
-web-3                                     1/1     Running   0          2m44s
-web-4                                     1/1     Running   0          2m17s
+Increase the number of replicas to 3. 
+```
+james@lizard:~> kubectl edit sts web
+statefulset.apps/web edited
+```
 
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG get pods
-NAME                                      READY   STATUS    RESTARTS   AGE
-my-first-pod                              1/1     Running   0          10h
-my-first-pod-nginx                        1/1     Running   0          8h
-nginx-deployment-585797d45f-4k6wf         1/1     Running   0          8h
-nginx-deployment-585797d45f-hbprl         1/1     Running   0          8h
-nginx-deployment-585797d45f-xnl6p         1/1     Running   0          8h
-nginx-deployment-pvc-9458c5564-x5k4w      1/1     Running   0          6h18m
-nginx-https-deployment-5f665f49fb-sqcvc   1/1     Running   0          175m
-nginx-storage-pod                         1/1     Running   0          6h28m
-simple-nginx-544dd54c77-cggm4             1/1     Running   0          73m
-web-0                                     1/1     Running   0          9m7s
-web-1                                     1/1     Running   0          49m
-web-2                                     1/1     Running   0          3m43s
-web-3                                     1/1     Running   0          3m15s
-web-4                                     1/1     Running   0          2m48s
-
-
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG get svc
-NAME                   TYPE           CLUSTER-IP       EXTERNAL-IP     PORT(S)                      AGE
-nginx-https-service    LoadBalancer   100.64.238.60    34.140.75.240   80:32388/TCP,443:31228/TCP   130m
-nginx-service          LoadBalancer   100.69.230.189   34.78.249.22    80:31045/TCP                 8h
-simple-nginx-service   ClusterIP      100.71.24.235    <none>          80/TCP                       74m
-stateful-nginx         ClusterIP      None             <none>          80/TCP                       51m
-
-
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG describe svc stateful-nginx
-Name:              stateful-nginx
-Namespace:         part-0013
-Labels:            app=stateful-nginx
-Annotations:       <none>
-Selector:          app=stateful-nginx
-Type:              ClusterIP
-IP Family Policy:  SingleStack
-IP Families:       IPv4
-IP:                None
-IPs:               None
-Port:              web  80/TCP
-TargetPort:        80/TCP
-Endpoints:         100.96.1.209:80,100.96.1.211:80,100.96.2.193:80 + 2 more...
-Session Affinity:  None
-Events:            <none>
-
-
-
-
-
-
-
-
-
-
-
-Step 4 (optional): rolling update with canary
-Statefulsets support advanced mechanisms to update to a new version (i.e. of the used container image). 
-For this exercise, you will add an update strategy to your StatefulSet and perform an update with one pod serving as canary before moving all of your replicas to the new version.
-
-Firstly increase the number of replicas to 3. Then continue by patching your Statefulset. 
+If we set partition parameter with value "2", we will have 3 replicas with index [0,1,2], and will limit the effect of an update to replica #2 only.
 The partition parameter controls the replicas that are patched based on an "equals or greater" evaluation of the ordinal index of the replica. 
-If you have 3 replicas [0,1,2], a partition parameter with value "2" will limit the effect of an update to replica #2 only.
-
-kubectl patch statefulset web -p '{"spec":{"updateStrategy":{"type":"RollingUpdate","rollingUpdate":{"partition":2}}}}'
-
-Examine the result (get -o yaml) or continue with the next step. Start a watch for the pods in you namespace. 
-Then again, use the json path with the patch command to change the image version in your podSpec template:
-
-kubectl patch statefulset web --type='json' -p='[{"op": "replace", "path": "/spec/template/spec/containers/0/image", "value":"nginx:1.13.12"}]'
-
-Observe, how the pod web-2 will be terminated and re-created. Check the image version of the updated pod:
-
-kubectl get po web-2 --template '{{range $i, $c := .spec.containers}}{{$c.image}}{{end}}'
-
-Once you tested the canary and want to move all replicas to the new version, move "partition" to "0".
-
-
-
+```
 james@lizard:~> kubectl patch statefulset web -p '{"spec":{"updateStrategy":{"type":"RollingUpdate","rollingUpdate":{"partition":2}}}}'
 statefulset.apps/web patched
+```
 
+Use the json path with the patch command to change the image version in your podSpec template:
+```
 james@lizard:~> kubectl patch statefulset web --type='json' -p='[{"op": "replace", "path": "/spec/template/spec/containers/0/image", "value":"nginx:1.13.12"}]'
 statefulset.apps/web patched
+```
 
+The pod `web-2` will be terminated and re-created. The image version of the updated pod:
+```
 james@lizard:~> kubectl get po web-2 --template '{{range $i, $c := .spec.containers}}{{$c.image}}{{end}}'
+eu.gcr.io/kyma-project/external/istio/proxyv2:1.13.2-distrolessnginx:mainline
+```
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Troubleshooting
-
-In this exercise all the network traffic happens cluster internally. That's also why you have to create a helper pod and connect to it. Only then you have access to the cluster network and can contact cluster DNS to resolve names.
-
-Note that the service needs to be of type: ClusterIP AND has to specify the field clusterIP: None. Anything else than ClusterIP is not valid or allowed in this specific combination. To expose pods of a StatefulSet create a regular service with an actual cluster IP.
-
-To be able to use the headless service in combination with the pod names for DNS, the service has to be specified as part of the statefulset resource: kubectl explain statefulset.spec.serviceName
+Set "partition" to "0" to move all replicas to the new version.
+```
+james@lizard:~> kubectl patch statefulset web -p '{"spec":{"updateStrategy":{"type":"RollingUpdate","rollingUpdate":{"partition":0}}}}'
+statefulset.apps/web patched
+```
 
 
 Further references
@@ -2298,298 +2194,199 @@ Further references
 
 
 
-
-
-
-
-
-
 ## Network Policy
 
-```
-Exercise 9 - Network Policy
-
-In this exercise, you will be dealing with Pods, Deployments, Labels & Selectors, Services and Network Policies.
-
-Network policies in your namespace help you restrict access to your nginx deployment. 
-From within any pod that is not labeled correctly you will not be able to access your nginx instances.
-
-Note: This exercise loosely builds on the previous exercises as you will need a deployment and a service. 
-In case you do not have a deployment with a service ready because you did not manage to finish exercise 5, use the script prereq-exercise-06.sh in the solutions folder. 
-Please use this script only if you do not have a working deployment that has been exposed through a service.
-
-
-Step 0: verify the setup
-Before you deploy a network policy, check the connection from a random pod to the nginx pods via the service.
-
-Start an alpine image and connect to it. Try to re-use the storage-pod.yaml from exercise 05 but without the volumes and mounts. 
-Use the exec command to open a shell session into it. 
-Alternatively spin up a a temporary deployment with kubectl run tester -i --tty --restart=Never --rm --image=alpine:3.12 -- ash.
-
-Do you remember, that your service name is also a valid DNS name? 
-Instead of using an IP address to connect to your service, you can use its actual name (like nginx-https).
-
-Run wget --timeout=1 -q -O - <your-service-name> from within the pod to send an HTTP request to the nginx service.
-
-If everything works fine, the result should look like this (maybe with a different service name):
-# wget --timeout=1 -q -O - nginx-https
-Connecting to nginx (10.7.249.39:80)
-
-It proves the network connection to the pods masked by the service is working properly.
-
-
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG get service
-NAME                   TYPE           CLUSTER-IP       EXTERNAL-IP     PORT(S)                      AGE
-nginx-https-service    LoadBalancer   100.64.238.60    34.140.75.240   80:32388/TCP,443:31228/TCP   23h
-nginx-service          LoadBalancer   100.69.230.189   34.78.249.22    80:31045/TCP                 29h
-simple-nginx-service   ClusterIP      100.71.24.235    <none>          80/TCP                       23h
-stateful-nginx         ClusterIP      None             <none>          80/TCP                       22h
-
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG run tester -i --tty --restart=Never --rm --image=alpine:3.12 -- ash
-If you don't see a command prompt, try pressing enter.
-/ # wget --timeout=1 -q -O - simple-nginx-service
-This is a simple nginx!
-/ #
-
-
-
-
-
-
-Step 1: create a network policy
-To restrict the access, you are going to create a NetworkPolicy resource.
+Network policies namespace based to help us restrict access to the nginx deployment. 
+From within any pod that is not labeled correctly we will not be able to access our nginx instances.
 
 The network policy features two selector sections:
-	• networkpolicy.spec.podSelector.matchLabels determines the target pods -> traffic to all matching pods will be filtered (allow or drop)
-	• networkpolicy.spec.ingress.from lists the sources, from which traffic is accepted. There are different ways to identify trusted sources
-		○ by podSelector.matchLabels - to filter for labels of pods in the same namespace
-		○ by namespaceSelector.matchLabels- to filter for traffic from a specific namespace (can be combined with podSelector)
-		○ by ipBlock.cidr - an IP address range defined as trustworthy
 
-Use the snippet below and fill in the correct values for the matchLabels selector.
-
-Hint: you can take a look at the nginx service with -o yaml to get correct labels.
-kind: NetworkPolicy
-apiVersion: networking.k8s.io/v1
-metadata:
-  name: access-nginx
-spec:
-  podSelector:
-    matchLabels:
-      ???: ???
-  ingress:
-  - from:
-    - podSelector:
-        matchLabels:
-          access: "true"
-# allow access originating from SAP networks
-    - ipBlock:
-        # Germany WDF
-        cidr: 155.56.0.0/16
-    - ipBlock:
-        # Germany WDF
-        cidr: 193.16.224.0/24
-    - ipBlock:
-        # Ireland
-        cidr: 84.203.229.48/29
-    - ipBlock:
-        # Palo Alto
-        cidr: 169.145.89.192/26
-    - ipBlock:
-        # Montreal
-        cidr: 68.67.33.0/25
-    - ipBlock:
-        # Montreal
-        cidr: 208.49.239.224/28
-
-If you're location is not on the list, check with your trainer to get the address blocks. 
-You can also check the network information portal and search for your location.
-
-If you are unsure about the labels, run the queries you are about to implement manually - e.g. kubectl get pods -l <my-ke>=<my-value>. 
-This way you can check, if the results match your intention.
-
-Create the resource as usual with kubectl apply -f <your file>.yaml and check its presence with kubectl get networkpolicy.
+* `networkpolicy.spec.podSelector.matchLabels` determines the target pods -> traffic to all matching pods will be filtered (allow or drop)
+* `networkpolicy.spec.ingress.from` lists the sources, from which traffic is accepted. There are different ways to identify trusted sources
+    * by `podSelector.matchLabels` - to filter for labels of pods in the same namespace
+    * by `namespaceSelector.matchLabels` - to filter for traffic from a specific namespace (can be combined with podSelector)
+    * by `ipBlock.cidr` - an IP address range defined as trustworthy
 
 
-
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG get networkpolicy
-No resources found in part-0013 namespace
-
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG create -f /opt/docker-k8s-training/kubernetes/ex09/09_network_policy_ingress.yaml
-networkpolicy.networking.k8s.io/access-nginx created
-
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG get networkpolicy
-NAME           POD-SELECTOR   AGE
-access-nginx   run=nginx      4s
+Let's check the connection from a random pod `tester` and run `wget --timeout=1 -q -O - <your-service-name>` within the pod to send an HTTP request to the nginx service `nginx-simple-service`.
+```
+james@lizard:~> kubectl get pod -l app=nginx-simple
+NAME                            READY   STATUS    RESTARTS   AGE
+nginx-simple-7d77885fc5-dzqj9   2/2     Running   0          2d
 
 
-
-Step 2: Trying to connect, please wait ...
-
-Again, connect to the busybox pod you used in step 0 or spin up a new one. Run the same wget command and check the output.
-
-As the network policy is in place now, it should report a timeout: wget: download timed out
-
-
-james@lizard:~> kubectl --kubeconfig=$KUBECONFIG run tester -i --tty --restart=Never --rm --image=alpine:3.12 -- ash
+james@lizard:~> kubectl run tester -i --tty --restart=Never --rm --image=alpine:3.12 -- ash
 If you don't see a command prompt, try pressing enter.
-/ # wget --timeout=1 -q -O - simple-nginx-service
+/ # wget --timeout=1 -q -O - nginx-simple-service
 This is a simple nginx!
-/ #
+/ # exit
+pod "tester" deleted
+```
 
+Now deploy the networkpolicy `nginx-access` which applys to pod label `app=nginx-simple`.
+```
+james@lizard:~> kubectl get networkpolicy
+No resources found in jh-namespace namespace.
 
+james@lizard:~> kubectl apply -f 09-network-policy.yaml
+networkpolicy.networking.k8s.io/nginx-access created
 
-
-
-
-
-
-
-
-Step 3: Regain access
-
-To regain access you need to add the corresponding label to the pod from which you want to access the nginx service. The label has to match the spec.ingress.from.podSelector.matchLabels key-value pair specified in the network policy.
-
-Use kubectl label ... or add a -l <key>=<value> to the run command. Then connect again to the pod and run wget. It should give you the same result as in step 0.
-
-
-Troubleshooting
-
-If you're having trouble regaining or limiting access, check the label selectors in use. A network policy often uses the same selectors as the service to identify, the target pods to which traffic management should apply.
-
-When it comes to networkpolicy.spec.ingress.from, note that it is explicit whitelisting of trusted sources. So if your traffic originates from a different source (like a different external IP address), it will be dropped. Make sure that your temporary helper pod has the labels which are specified in networkpolicy.spec.ingress.from.podSelector.matchLabels.
-
-
-Further information & references
-
-    network policy basics  https://kubernetes.io/docs/concepts/services-networking/network-policies/
-    example / tutorial on network policies  https://kubernetes.io/docs/tasks/administer-cluster/declare-network-policy/
+james@lizard:~> kubectl get networkpolicy
+NAME           POD-SELECTOR       AGE
+nginx-access   app=nginx-simple   71s
 
 ```
+
+Let's send HTTP request from a random pod `tester` to the nginx service `nginx-simple-service` again.
+As I did not maintain correct IPs in ingress, hence the connection to pod with label `app=nginx-simple` fails now after the networkpolicy `nginx-access` deployed. 
+```
+james@lizard:~> kubectl run tester -i --tty --restart=Never --rm --image=alpine:3.12 -- ash
+If you don't see a command prompt, try pressing enter.
+/ # wget --timeout=1 -q -O - nginx-simple-service
+wget: download timed out
+/ # exit
+pod "tester" deleted
+```
+
+
+Further references
+
+* [network policy basics](https://kubernetes.io/docs/concepts/services-networking/network-policies/)
+* [example / tutorial on network policies](https://kubernetes.io/docs/tasks/administer-cluster/declare-network-policy/)
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## Helming
 
+Helm is the Kubernetes package manager. It doesn't come with Kubernetes. 
+
+Three concepts of helm:
+
+* A *Chart* is a Helm package. 
+    * It contains all of the resource definitions necessary to run an application, tool, or service inside of a Kubernetes cluster. 
+    * Think of it like the Kubernetes equivalent of a Homebrew formula, an Apt dpkg, or a Yum RPM file.
+* A *Repository* is the place where charts can be collected and shared. 
+    * It's like Perl's CPAN archive or the Fedora Package Database, but for Kubernetes packages.
+* A *Release* is an instance of a chart running in a Kubernetes cluster. 
+    * One chart can often be installed many times into the same cluster. And each time it is installed, a new release is created. 
+    * Consider a MySQL chart. If you want two databases running in your cluster, you can install that chart twice. Each one will have its own release, which will in turn have its own release name.
+
+Refer to [installation guide](https://helm.sh/docs/intro/install/) and [binary release](https://github.com/helm/helm/releases) and [source code](https://github.com/helm/helm).
+
+Helm Client Installation: 
 ```
-Exercise 10: Happy Helming
+james@lizard:/opt> curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+james@lizard:/opt> chmod 700 get_helm.sh
 
-In this exercise, you will be dealing with Helm.
+james@lizard:/opt> ./get_helm.sh
+Downloading https://get.helm.sh/helm-v3.9.0-linux-amd64.tar.gz
+Verifying checksum... Done.
+Preparing to install helm into /usr/local/bin
+helm installed into /usr/local/bin/helm
+```
 
-Helm is a tool to manage complex deployments of multiple components belonging to the same application stack. In this exercise, you will install the helm client locally. Once this is working you will deploy your first chart into your namespace. For further information, visit the official docs pages (https://docs.helm.sh/)
-
-Note: This exercise does not build on any of the previous exercises.
-
+Note:
+[`helm init`](https://helm.sh/docs/helm/helm_init/) does not exist in Helm 3, following the removal of Tiller. You no longer need to install Tiller in your cluster in order to use Helm.
 
 
-Step 0: get the helm tool
+`helm search` can be used to search two different types of source:
 
-Download and unpack the helm client:
-
-curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
-
-Check, if everything worked well. The 1st command should return the location of the helm binary. The 2nd command should return the version of the client.
-
-which helm
-helm version
-
-Step 1: no need to initialize helm (anymore)
-
-The helm client uses the information stored in .kube/config to talk to the kubernetes cluster. This includes the user, its credentials but also the target namespace. Restrictions such as RBAC or pod security policies, which apply to your user, also apply to everything you try to install using helm.
-
-And that's it - helm is ready to use!
-
-Compared to the previous v2 setup procedure, this is a significant improvement. The server-side component tiller has been removed completely.
+* `helm search hub` searches the [Artifact Hub](https://artifacthub.io/), which lists helm charts from dozens of different repositories.
+* `helm search repo` searches the repositories that you have added to your local helm client (with helm repo add). This search is done over local data, and no public network connection is needed.
 
 
 
 Step 2: looking for charts?
 
-Helm organizes applications in so called charts, which contain parameters you can set during installation. By default, helm (v3) is not configured to search any remote repository for charts. So as a first step, add the stable repository, which hosts charts maintained on github.com.
+Helm organizes applications in so called charts, which contain parameters you can set during installation. 
+By default, helm (v3) is not configured to search any remote repository for charts. So as a first step, add the stable repository, 
+which hosts charts maintained on github.com.
 
-helm repo add stable https://charts.helm.sh/stable
+Add repo `charts`. Note: The `charts` repo is officially deprecated. The helm organization is now using Artifact Hub. 
+```
+james@lizard:~> helm repo add stable https://charts.helm.sh/stable
+"stable" has been added to your repositories
 
-helm repo list
+james@lizard:~> helm repo list
+NAME    URL                          
+stable  https://charts.helm.sh/stable
+```
 
-Check out the available charts and search for the chaoskube:
-
-helm search repo chaoskube
-
-Found it? Check the github page for a detailed description of the chart.
-
-Of course, there are other ways to find charts. You can go to charts org on github and take a look into the stable, test or incubator repositories. This is also where you find the yaml / template files of charts.
-
-Note: The charts repo is officially deprecated. The helm organization recently created Artifact Hub. It is a very convenient way to search for a chart and lets you access multiple / different repositories at once (like stable or incubator). However, not all charts from the former stable repo have been migrated (e.g. chaoskube is not yet availalbe).
-
-
-
-Step 3: install a chart
-
-Run the following command to install the chaoskube chart. It installs everything that is associated with the chart into your namespace. Note the --set flags, which specify parameters of the chart.
-
-helm install <any-name> stable/chaoskube --set namespaces=<your-namespace> --set rbac.serviceAccountName=chaoskube --debug
-
-The parameter namespaces defines in which namespaces the chaoskube will delete pods. rbac.serviceAccountName specifies which serviceAccount the scheduled chaoskube pod will use. Here we give it the chaoskube account, which has been created as part of the cluster setup already. This is mainly because chaoskube wants to query pods across all namespaces - which requires a ClusterRoleBinding to the ClusterRole training:cluster-view. As participants are not allowed to modify resources on cluster level, it is part of the setup to prepare for this exercise. If you want to know more defails, take a look at the kubecfggen script.
-
-To learn more about the configuration options the chaoskube chart provides, check again the github page mentioned above.
-
-
-
-Step 4: inspect your chaoskube
-
-Next, check your installation by running helm list. It returns all installed releases including your chaoskube. You can reference it by its name. Get more information by running helm status <your-releases-name>
-
-Also check the pods running inside your kubernetes namespace. Don't forget to look into the logs of the chaoskube to see what would have happened with the dry-run flag set. kubectl logs -f pod/<your chaoskube-pod-name>
-
-
-
-Step 5: clean up
-
-Clean up by deleting the chaoskube release: helm delete <your-releases-name>
-
-Now run helm list again to verify there are no leftovers.
+Check out the available charts and search for the `chaoskube`:
 
 ```
-## Bulletinboard
+james@lizard:~> helm search repo chaoskube
+NAME                    CHART VERSION   APP VERSION     DESCRIPTION                                       
+stable/chaoskube        3.3.2           0.21.0          DEPRECATED Chaoskube periodically kills random ...
+```
+
+
+Run the following command to install the `chaoskube` chart with new name `chaoskube-jh`. 
+The `--set` flags specifies parameters of the chart.
+The parameter `namespaces` defines in which namespaces the chaoskube will delete pods. 
+`rbac.serviceAccountName` specifies which serviceAccount the scheduled chaoskube pod will use.
+```
+james@lizard:~> helm install chaoskube-jh stable/chaoskube --set namespaces=jh-namespace --set rbac.serviceAccountName=chaoskube --debug
+```
+
+We can get the deployment `chaoskube-jh` now.
+```
+james@lizard:~> kubectl get deployment chaoskube-jh
+NAME           READY   UP-TO-DATE   AVAILABLE   AGE
+chaoskube-jh   0/1     0            0           3m36s
+```
+
+Inspect the chaoskube we deployed.
+```
+james@lizard:~> helm status chaoskube-jh
+NAME: chaoskube-jh
+LAST DEPLOYED: Wed Jun 22 23:25:05 2022
+NAMESPACE: jh-namespace
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+NOTES:
+chaoskube is running and will kill arbitrary pods every 10m.
+
+You can follow the logs to see what chaoskube does:
+
+    POD=$(kubectl -n jh-namespace get pods -l='app.kubernetes.io/instance=chaoskube-jh' --output=jsonpath='{.items[0].metadata.name}')
+    kubectl -n jh-namespace logs -f $POD 
+
+You are running in dry-run mode. No pod is actually terminated.
 
 ```
-Exercises
-01 Exercise: "Build and Push the Docker Images"
 
-    Build and push the docker images for bulletinboard-ads and bulletinboard-reviews.
-    Create an ImagePullSecret for the training-registry.
 
-02 Exercise: "Setup Bulletinboard-Ads Database"
 
-    Database will run as a Statefulset secured with a password: Create a Secret for the password.
-    Create a Statefulset for the Ads DB together with a headless Service.
+clean up `chaoskube-jh`.
+```
+james@lizard:~> helm delete chaoskube-jh
+release "chaoskube-jh" uninstalled
 
-03 Exercise: "Setup Bulletinboard-Ads Application"
-
-    Create required Configmap
-    Create Deployment for Ads App, using the Configmap and the Secret of the DB.
-    Publish Ads App via Service and Ingress
-
-04 Exercise: "Using Helm-chart to setup Bulletinboard-Reviews
-
-    Deploy Bulletinboard-Reviews via existing Helm chart
-
-05 Exercise: "Networkpolicies & TLS for Bulletinboard-Ads"
-
-    Increase security and establish a Network policy for
-        Bulletinboard-Ads Database
-        Bulletinboard-Ads App
-    Enable HTTPS connection by adding TLS certificates to Ingress
-
-Troubleshooting section
-
-Since we are using the master branch, there is a slight chance that a new commit has broken the basic functionality. In case you run into any issues you can use a commit, which is tested, to build the docker images from:
-Bulletinboard-Ads
-
-git checkout ac5ddd541d6d7d8aa0ac645ab8e865e1eb483453
-
-Bulletinboard-Reviews
-
-git checkout 561848ef786cfe6ebad3dcb0144b040fe7239cb2
+james@lizard:~> helm list
+NAME    NAMESPACE       REVISION        UPDATED STATUS  CHART   APP VERSION
 
 ```
+
+
+
+
+
+
+
+
+
 
 
 
