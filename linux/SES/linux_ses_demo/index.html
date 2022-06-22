@@ -1177,11 +1177,11 @@ Nameserver:
     10.33.50.20
 
 Domain Search
-    pvgl.me.corp
-    dhcp.pvgl.me.corp
+    sha.me.corp
+    dhcp.sha.me.corp
     me.corp
-    wdf.me.corp
-    ber.me.corp
+    ind.me.corp
+    bgr.me.corp
 </code></pre>
 <p>SUSE Server 15 SP1 Extensions and Modules were installed as below.</p>
 <pre><code>[x] SUSE Enterprise Storage 6 
@@ -1195,7 +1195,7 @@ Firewall
 <p>Enable Services is as below.
     SSH</p>
 <p>Register SLES15.1 to local SMT.</p>
-<pre><code># SUSEConnect --url https://smtproxy.wdf.me.corp
+<pre><code># SUSEConnect --url https://smtproxy.ind.me.corp
 </code></pre>
 <p>Demo Environment summary is below.</p>
 <table>
@@ -1377,15 +1377,15 @@ Firewall
 <li>If you do not specify a cluster network during Ceph deployment, it assumes a single public network environment.</li>
 <li>Make sure that the fully qualified domain name (FQDN) of each node can be resolved to the public network IP address by all other nodes. </li>
 </ul>
-<pre><code>    # vi /etc/hosts
-    10.58.121.181   admin.pvgl.me.corp admin salt
-    10.58.121.182   data1.pvgl.me.corp data1
-    10.58.121.183   data2.pvgl.me.corp data2
-    10.58.121.184   data3.pvgl.me.corp data3
-    10.58.121.185   data4.pvgl.me.corp data4
-    10.58.121.186   mon1.pvgl.me.corp mon1
-    10.58.121.187   mon2.pvgl.me.corp mon2
-    10.58.121.188   mon3.pvgl.me.corp mon3
+<pre><code># vi /etc/hosts
+10.58.121.181   admin.sha.me.corp admin salt
+10.58.121.182   data1.sha.me.corp data1
+10.58.121.183   data2.sha.me.corp data2
+10.58.121.184   data3.sha.me.corp data3
+10.58.121.185   data4.sha.me.corp data4
+10.58.121.186   mon1.sha.me.corp mon1
+10.58.121.187   mon2.sha.me.corp mon2
+10.58.121.188   mon3.sha.me.corp mon3
 </code></pre>
 <p>Add all nodes as trust ssh access (root account)</p>
 <pre><code># cd ~
@@ -1399,14 +1399,14 @@ Firewall
 # ssh-copy-id -i ~/.ssh/id_rsa.pub root@mon2
 # ssh-copy-id -i ~/.ssh/id_rsa.pub root@mon3
 
-# ssh admin.pvgl.me.corp
-# ssh data1.pvgl.me.corp
-# ssh data2.pvgl.me.corp
-# ssh data3.pvgl.me.corp
-# ssh data4.pvgl.me.corp
-# ssh mon1.pvgl.me.corp
-# ssh mon2.pvgl.me.corp
-# ssh mon3.pvgl.me.corp
+# ssh admin.sha.me.corp
+# ssh data1.sha.me.corp
+# ssh data2.sha.me.corp
+# ssh data3.sha.me.corp
+# ssh data4.sha.me.corp
+# ssh mon1.sha.me.corp
+# ssh mon2.sha.me.corp
+# ssh mon3.sha.me.corp
 # ssh salt
 # ssh admin
 # ssh data1
@@ -1448,47 +1448,47 @@ kernel.pid_max = 4194303
 <p>Configure NTP service (all nodes), Setting via YaST2 and add server <code>cn.pool.ntp.,org</code>. </p>
 <p>And <code>/etc/chrony.conf</code> file looks like below.</p>
 <pre><code>admin:~ # cat /etc/chrony.conf
-    # Use public servers from the pool.ntp.org project.
-    pool cn.pool.ntp.org iburst
-    ! pool pool.ntp.org iburst
+# Use public servers from the pool.ntp.org project.
+pool cn.pool.ntp.org iburst
+! pool pool.ntp.org iburst
 
-    # Record the rate at which the system clock gains/losses time.
-    driftfile /var/lib/chrony/drift
+# Record the rate at which the system clock gains/losses time.
+driftfile /var/lib/chrony/drift
 
-    # Allow the system clock to be stepped in the first three updates
-    # if its offset is larger than 1 second.
-    makestep 1.0 3
+# Allow the system clock to be stepped in the first three updates
+# if its offset is larger than 1 second.
+makestep 1.0 3
 
-    # Enable kernel synchronization of the real-time clock (RTC).
-    rtcsync
+# Enable kernel synchronization of the real-time clock (RTC).
+rtcsync
 
-    # Enable hardware timestamping on all interfaces that support it.
-    #hwtimestamp *
+# Enable hardware timestamping on all interfaces that support it.
+#hwtimestamp *
 
-    # Increase the minimum number of selectable sources required to adjust
-    # the system clock.
-    #minsources 2
+# Increase the minimum numbgr of selectable sources required to adjust
+# the system clock.
+#minsources 2
 
-    # Allow NTP client access from local network.
-    #allow 192.168.0.0/16
+# Allow NTP client access from local network.
+#allow 192.168.0.0/16
 
-    # Serve time even if not synchronized to a time source.
-    #local stratum 10
+# Serve time even if not synchronized to a time source.
+#local stratum 10
 
-    # Specify file containing keys for NTP authentication.
-    #keyfile /etc/chrony.keys
+# Specify file containing keys for NTP authentication.
+#keyfile /etc/chrony.keys
 
-    # Get TAI-UTC offset and leap seconds from the system tz database.
-    #leapsectz right/UTC
+# Get TAI-UTC offset and leap seconds from the system tz database.
+#leapsectz right/UTC
 
-    # Specify directory for log files.
-    logdir /var/log/chrony
+# Specify directory for log files.
+logdir /var/log/chrony
 
-    # Select which information is logged.
-    #log measurements statistics tracking
+# Select which information is logged.
+#log measurements statistics tracking
 
-    # Also include any directives found in configuration files in /etc/chrony.d
-    include /etc/chrony.d/*.conf
+# Also include any directives found in configuration files in /etc/chrony.d
+include /etc/chrony.d/*.conf
 </code></pre>
 <p>Make <code>/etc/chrony.conf</code> effective.</p>
 <pre><code># systemctl enable chronyd.service
@@ -1526,56 +1526,56 @@ admin:~ # systemctl status nfs-ganesha
 <p>admin:~ # cd /var/log/salt</p>
 <p>List fingerprints of all unaccepted minion keys on the Salt master.</p>
 <pre><code>admin:~ # salt-key -F
-    Local Keys:
-    master.pem:  c0:e5:c4:4d:37:2b:dd:cd:11:1c:f2:b3:d6:4c:29:e5:f4:cc:15:a1:27:80:e2:d2:af:4e:c6:df:93:9b:04:c7
-    master.pub:  43:73:dd:58:8b:f3:f7:62:55:55:1a:9b:db:fa:27:68:e6:c4:e4:b7:96:c7:ac:6c:47:8d:4c:a9:74:68:6a:34
-    Unaccepted Keys:
-    admin.pvgl.me.corp:  fe:51:b3:b8:fd:a6:3d:d9:da:64:cd:0c:86:90:0d:66:4b:26:f7:b3:d4:da:b7:c6:a6:f0:56:b2:b4:62:b9:48
-    mon1.pvgl.me.corp:  94:13:3b:93:4d:e9:a5:a0:1e:57:95:68:b0:8d:46:d6:ac:95:e1:59:22:d9:36:35:37:52:41:c9:f0:17:91:63
-    mon2.pvgl.me.corp:  c0:fd:b3:1b:5e:ed:a3:e5:b8:71:cf:75:ce:6f:62:fe:45:7c:db:a4:13:62:4c:43:d6:4c:2f:6d:45:16:39:3f
-    mon3.pvgl.me.corp:  38:fc:4f:ac:c3:6c:b2:27:88:6c:1d:62:1f:5f:52:f7:75:a4:3a:f1:9a:5f:a8:63:67:e3:e0:24:78:c4:2e:05
-    data1.pvgl.me.corp:  b6:6c:a6:91:c0:89:a1:e1:f9:69:29:8b:cc:bb:26:d2:f6:81:f0:3f:ac:31:60:e9:7d:7a:b6:e5:4c:75:63:4f
-    data2.pvgl.me.corp:  ab:14:3c:8a:34:6b:71:eb:50:ee:28:e6:06:24:ff:30:cd:00:7c:a7:70:fb:05:1b:b4:0d:a2:50:1c:98:c8:ac
-    data3.pvgl.me.corp:  90:3f:8e:94:15:5b:2d:03:65:c1:ae:04:ca:3d:9e:24:11:8b:5a:53:9c:5f:44:c2:48:fa:d4:ae:aa:0a:76:3b
-    data4.pvgl.me.corp:  d8:12:a8:9a:c7:90:0a:76:a9:83:76:b2:63:ac:8e:66:61:15:dd:9c:72:7a:57:bd:2f:f4:31:3b:46:b1:f1:20
+Local Keys:
+master.pem:  c0:e5:***:04:c7
+master.pub:  43:73:***:6a:34
+Unaccepted Keys:
+admin.sha.me.corp:  fe:51:***:b9:48
+mon1.sha.me.corp:  94:13:***:91:63
+mon2.sha.me.corp:  c0:fd:***:39:3f
+mon3.sha.me.corp:  38:fc:***:2e:05
+data1.sha.me.corp:  b6:6c:***:63:4f
+data2.sha.me.corp:  ab:14:***:c8:ac
+data3.sha.me.corp:  90:3f:***:76:3b
+data4.sha.me.corp:  d8:12:***:f1:20
 </code></pre>
 <p>If the minions' fingerprints match, accept them</p>
 <pre><code>admin:~ # salt-key --accept-all
-    The following keys are going to be accepted:
-    Unaccepted Keys:
-    admin.pvgl.me.corp
-    mon1.pvgl.me.corp
-    mon2.pvgl.me.corp
-    mon3.pvgl.me.corp
-    data1.pvgl.me.corp
-    data2.pvgl.me.corp
-    data3.pvgl.me.corp
-    data4.pvgl.me.corp
-    Proceed? [n/Y] Y
-    Key for minion admin.pvgl.me.corp accepted.
-    Key for minion mon1.pvgl.me.corp accepted.
-    Key for minion mon2.pvgl.me.corp accepted.
-    Key for minion mon3.pvgl.me.corp accepted.
-    Key for minion data1.pvgl.me.corp accepted.
-    Key for minion data2.pvgl.me.corp accepted.
-    Key for minion data3.pvgl.me.corp accepted.
-    Key for minion data4.pvgl.me.corp accepted.
+The following keys are going to be accepted:
+Unaccepted Keys:
+admin.sha.me.corp
+mon1.sha.me.corp
+mon2.sha.me.corp
+mon3.sha.me.corp
+data1.sha.me.corp
+data2.sha.me.corp
+data3.sha.me.corp
+data4.sha.me.corp
+Proceed? [n/Y] Y
+Key for minion admin.sha.me.corp accepted.
+Key for minion mon1.sha.me.corp accepted.
+Key for minion mon2.sha.me.corp accepted.
+Key for minion mon3.sha.me.corp accepted.
+Key for minion data1.sha.me.corp accepted.
+Key for minion data2.sha.me.corp accepted.
+Key for minion data3.sha.me.corp accepted.
+Key for minion data4.sha.me.corp accepted.
 </code></pre>
 <p>Verify that the keys have been accepted</p>
 <pre><code>admin:~ # salt-key -F
 admin:~ # salt-key --list-all
-    Accepted Keys:
-    admin.pvgl.me.corp
-    data1.pvgl.me.corp
-    data2.pvgl.me.corp
-    data3.pvgl.me.corp
-    data4.pvgl.me.corp
-    mon1.pvgl.me.corp
-    mon2.pvgl.me.corp
-    mon3.pvgl.me.corp
-    Denied Keys:
-    Unaccepted Keys:
-    Rejected Keys:
+Accepted Keys:
+admin.sha.me.corp
+data1.sha.me.corp
+data2.sha.me.corp
+data3.sha.me.corp
+data4.sha.me.corp
+mon1.sha.me.corp
+mon2.sha.me.corp
+mon3.sha.me.corp
+Denied Keys:
+Unaccepted Keys:
+Rejected Keys:
 </code></pre>
 <p>Zero out all drivers which will be used as OSDs (optional)</p>
 <pre><code>data1:~ lsblk
@@ -1591,73 +1591,73 @@ data3:~ # for I in {b,c,d}; do dd if=/dev/zero of=dev/sd$i bs=512 count=40 oflag
 </code></pre>
 <p>Edit the <code>/srv/pillar/ceph/deepsea_minions.sls</code> file on the Salt master (admin node) and add or replace the following line: </p>
 <pre><code>admin:~ # vi /srv/pillar/ceph/deepsea_minions.sls
-    # Choose minions with a deepsea grain
-    deepsea_minions: 'G@deepsea:*'  #Match all Salt minions in the cluster
-    # Choose all minions
-    # deepsea_minions: '*'  #Match all minions with the 'deepsea' grain
-    # Choose custom Salt targeting
-    # deepsea_minions: 'ses*'
-    # deepsea_minions: 'ceph* or salt'
+# Choose minions with a deepsea grain
+deepsea_minions: 'G@deepsea:*'  #Match all Salt minions in the cluster
+# Choose all minions
+# deepsea_minions: '*'  #Match all minions with the 'deepsea' grain
+# Choose custom Salt targeting
+# deepsea_minions: 'ses*'
+# deepsea_minions: 'ceph* or salt'
 </code></pre>
 <p>Target the Minions</p>
 <ul>
 <li>Affirm salt-master (admin node) can communicate with the minions. And deploy the grains from admin node to all minions.</li>
 </ul>
 <pre><code>admin:~ # salt '*' test.ping
-    mon1.pvgl.me.corp:
-        True
-    data4.pvgl.me.corp:
-        True
-    data3.pvgl.me.corp:
-        True
-    data2.pvgl.me.corp:
-        True
-    data1.pvgl.me.corp:
-        True
-    mon3.pvgl.me.corp:
-        True
-    admin.pvgl.me.corp:
-        True
-    mon2.pvgl.me.corp:
-        True
+mon1.sha.me.corp:
+    True
+data4.sha.me.corp:
+    True
+data3.sha.me.corp:
+    True
+data2.sha.me.corp:
+    True
+data1.sha.me.corp:
+    True
+mon3.sha.me.corp:
+    True
+admin.sha.me.corp:
+    True
+mon2.sha.me.corp:
+    True
 </code></pre>
 <p>Apply the 'deepsea' grain to a group of minions, and target with a DeepSea Grain</p>
 <pre><code>admin:~ # salt '*' grains.append deepsea default
-    data3.pvgl.me.corp:
-        The val default was already in the list deepsea
-    mon2.pvgl.me.corp:
-        The val default was already in the list deepsea
-    data1.pvgl.me.corp:
-        The val default was already in the list deepsea
-    data4.pvgl.me.corp:
-        The val default was already in the list deepsea
-    data2.pvgl.me.corp:
-        The val default was already in the list deepsea
-    mon3.pvgl.me.corp:
-        The val default was already in the list deepsea
-    admin.pvgl.me.corp:
-        The val default was already in the list deepsea
-    mon1.pvgl.me.corp:
-        The val default was already in the list deepsea
+data3.sha.me.corp:
+    The val default was already in the list deepsea
+mon2.sha.me.corp:
+    The val default was already in the list deepsea
+data1.sha.me.corp:
+    The val default was already in the list deepsea
+data4.sha.me.corp:
+    The val default was already in the list deepsea
+data2.sha.me.corp:
+    The val default was already in the list deepsea
+mon3.sha.me.corp:
+    The val default was already in the list deepsea
+admin.sha.me.corp:
+    The val default was already in the list deepsea
+mon1.sha.me.corp:
+    The val default was already in the list deepsea
 
 admin:~ # salt -G 'deepsea:*' test.ping  (The following command is an equivalent)
 admin:~ # salt -C 'G@deepsea:*' test.ping
-    admin.pvgl.me.corp:
-        True
-    data3.pvgl.me.corp:
-        True
-    mon1.pvgl.me.corp:
-        True
-    mon2.pvgl.me.corp:
-        True
-    data2.pvgl.me.corp:
-        True
-    data4.pvgl.me.corp:
-        True
-    mon3.pvgl.me.corp:
-        True
-    data1.pvgl.me.corp:
-        True
+admin.sha.me.corp:
+    True
+data3.sha.me.corp:
+    True
+mon1.sha.me.corp:
+    True
+mon2.sha.me.corp:
+    True
+data2.sha.me.corp:
+    True
+data4.sha.me.corp:
+    True
+mon3.sha.me.corp:
+    True
+data1.sha.me.corp:
+    True
 </code></pre>
 <h3 id="13-stage-0-the-preparation">1.3. Stage 0 — the preparation</h3>
 <p>Run Stage 0—the preparation</p>
@@ -1691,59 +1691,59 @@ admin:~ # salt-run state.orch ceph.stage.discovery
 </ul>
 <pre><code>admin:~ # cp /usr/share/doc/packages/deepsea/examples/policy.cfg-rolebased /srv/pillar/ceph/proposals/policy.cfg
 admin:~ # vi /srv/pillar/ceph/proposals/policy.cfg
-    ## Cluster Assignment
-    # Add all nodes into Ceph cluster
-    cluster-ceph/cluster/*.sls
+## Cluster Assignment
+# Add all nodes into Ceph cluster
+cluster-ceph/cluster/*.sls
 
-    ## Roles
-    # The Admin node fills the “master” and “admin” roles for DeepSea
-    # The master role is mandatory, always add a similar line to the following
-    role-master/cluster/admin*.sls
-    role-admin/cluster/admin*.sls
+## Roles
+# The Admin node fills the “master” and “admin” roles for DeepSea
+# The master role is mandatory, always add a similar line to the following
+role-master/cluster/admin*.sls
+role-admin/cluster/admin*.sls
 
-    # Monitoring
-    # Cluster monitoring and data graphs, most commonly they run on Admin node
-    # NFS Ganesha is configured via the file /etc/ganesha/ganesha.conf
-    # As additional configuration is required to install NFS Ganesha, you can install NFS Ganesha later. 
-    # The following requirements need to be met before DeepSea stages 2 and 4 can be executed to install NFS Ganesha:
-    #  a)At least one node needs to be assigned the role-ganesha.
-    #  b)You can define only one role-ganesha per minion.
-    #  c)NFS Ganesha needs either an Object Gateway or CephFS to work, otherwise the validation will fail in Stage 3.
-    #  d)The kernel based NFS needs to be disabled on minions with the role-ganesha role. 
-    role-prometheus/cluster/admin*.sls
-    role-grafana/cluster/mon1*.sls
+# Monitoring
+# Cluster monitoring and data graphs, most commonly they run on Admin node
+# NFS Ganesha is configured via the file /etc/ganesha/ganesha.conf
+# As additional configuration is required to install NFS Ganesha, you can install NFS Ganesha later. 
+# The following requirements need to be met before DeepSea stages 2 and 4 can be executed to install NFS Ganesha:
+#  a)At least one node needs to be assigned the role-ganesha.
+#  b)You can define only one role-ganesha per minion.
+#  c)NFS Ganesha needs either an Object Gateway or CephFS to work, otherwise the validation will fail in Stage 3.
+#  d)The kernel based NFS needs to be disabled on minions with the role-ganesha role. 
+role-prometheus/cluster/admin*.sls
+role-grafana/cluster/mon1*.sls
 
-    # MON
-    # The minion will provide the monitor service to the Ceph cluster
-    role-mon/cluster/mon*.sls
+# MON
+# The minion will provide the monitor service to the Ceph cluster
+role-mon/cluster/mon*.sls
 
-    # MGR
-    # The Ceph manager daemon which collects all the state information from the whole cluster
-    # Deploy it on all minions where you plan to deploy the Ceph monitor role
-    role-mgr/cluster/mon1*.sls
+# MGR
+# The Ceph manager daemon which collects all the state information from the whole cluster
+# Deploy it on all minions where you plan to deploy the Ceph monitor role
+role-mgr/cluster/mon1*.sls
 
-    # MDS
-    # The minion will provide the metadata service to support CephFS
-    role-mds/cluster/mon*.sls
+# MDS
+# The minion will provide the metadata service to support CephFS
+role-mds/cluster/mon*.sls
 
-    # IGW
-    # The minion will act as an iSCSI Gateway
-    role-igw/cluster/mon2*.sls
+# IGW
+# The minion will act as an iSCSI Gateway
+role-igw/cluster/mon2*.sls
 
-    # RGW
-    # The minion will act as an Object Gateway
-    role-rgw/cluster/mon3*.sls
+# RGW
+# The minion will act as an Object Gateway
+role-rgw/cluster/mon3*.sls
 
-    # Storage
-    # Use this role to specify storage nodes
-    # It points to data1~4 nodes with a wildcard.
-    role-storage/cluster/data*.sls
+# Storage
+# Use this role to specify storage nodes
+# It points to data1~4 nodes with a wildcard.
+role-storage/cluster/data*.sls
 
-    # COMMON
-    # It includes configuration files generated during the discovery (Stage 1)
-    # Accept the default values for common configuration parameters such as fsid and public_network
-    config/stack/default/global.yml
-    config/stack/default/ceph/cluster.yml
+# COMMON
+# It includes configuration files generated during the discovery (Stage 1)
+# Accept the default values for common configuration parameters such as fsid and public_network
+config/stack/default/global.yml
+config/stack/default/ceph/cluster.yml
 
 admin:~ # deepsea stage run ceph.stage.2  (The following commands are equivalents)
 admin:~ # salt-run state.orch ceph.stage.2
@@ -1756,57 +1756,57 @@ admin:~ # salt '*' saltutil.pillar_refresh
 <p>Check time server (admin node)  (the directory /srv/pillar/ceph/stack was initialized after deepsea installed, but global.yml file was not created yet until stage 2)</p>
 <p>By default, DeepSea uses the Admin Node as the time server for other cluster nodes.</p>
 <pre><code>admin:~ # cat /srv/pillar/ceph/stack/default/global.yml  (this file will be generated after stage 2)
-    monitoring:
-      prometheus:
-        metric_relabel_config:
-          ceph: []
-          grafana: []
-          node_exporter: []
-          prometheus: []
-        relabel_config:
-          ceph: []
-          grafana: []
-          node_exporter: []
-          prometheus: []
-        rule_files: []
-        scrape_interval:
-          ceph: 10s
-          grafana: 10s
-          node_exporter: 10s
-          prometheus: 10s
-        target_partition:
-          ceph: 1/1
-          grafana: 1/1
-          node_exporter: 1/1
-          prometheus: 1/1
-    time_server: admin.pvgl.me.corp
+monitoring:
+  prometheus:
+    metric_relabel_config:
+      ceph: []
+      grafana: []
+      node_exporter: []
+      prometheus: []
+    relabel_config:
+      ceph: []
+      grafana: []
+      node_exporter: []
+      prometheus: []
+    rule_files: []
+    scrape_interval:
+      ceph: 10s
+      grafana: 10s
+      node_exporter: 10s
+      prometheus: 10s
+    target_partition:
+      ceph: 1/1
+      grafana: 1/1
+      node_exporter: 1/1
+      prometheus: 1/1
+time_server: admin.sha.me.corp
 </code></pre>
 <p>Verify network  (the directory <code>/srv/pillar/ceph/stack</code> was initialized after deepsea installed, but cluster.yml file was not created until stage 2 )</p>
 <pre><code>admin:~ # cat /srv/pillar/ceph/stack/ceph/cluster.yml --nothing
 admin:~ # cat /srv/pillar/ceph/stack/default/ceph/cluster.yml
-    available_roles:
-    - storage
-    - admin
-    - mon
-    - mds
-    - mgr
-    - igw
-    - grafana
-    - prometheus
-    - storage
-    - rgw
-    - ganesha
-    - client-cephfs
-    - client-radosgw
-    - client-iscsi
-    - client-nfs
-    - benchmark-rbd
-    - benchmark-blockdev
-    - benchmark-fs
-    - master
-    cluster_network: 10.58.120.0/23
-    fsid: 343ee7d3-232f-4c71-8216-1edbc55ac6e0
-    public_network: 10.58.120.0/23
+available_roles:
+- storage
+- admin
+- mon
+- mds
+- mgr
+- igw
+- grafana
+- prometheus
+- storage
+- rgw
+- ganesha
+- client-cephfs
+- client-radosgw
+- client-iscsi
+- client-nfs
+- benchmark-rbd
+- benchmark-blockdev
+- benchmark-fs
+- master
+cluster_network: 10.58.120.0/23
+fsid: 343ee7d3-232f-4c71-8216-1edbc55ac6e0
+public_network: 10.58.120.0/23
 </code></pre>
 <p>Note: customized file will overwrite default one.</p>
 <p>Default file:<code>/srv/pillar/ceph/stack/default/ceph/cluster.yml</code></p>
@@ -1832,32 +1832,32 @@ admin:~ # salt 'data*' pillar.items | grep -B5 stroage
 <p>Set dev environment and disable subvolume:</p>
 <pre><code>admin:~ # vi /srv/pillar/ceph/stack/global.yml
 admin:~ # vi /srv/pillar/ceph/stack/default/global.yml
-    monitoring:
-      prometheus:
-        metric_relabel_config:
-          ceph: []
-          grafana: []
-          node_exporter: []
-          prometheus: []
-        relabel_config:
-          ceph: []
-          grafana: []
-          node_exporter: []
-          prometheus: []
-        rule_files: []
-        scrape_interval:
-          ceph: 10s
-          grafana: 10s
-          node_exporter: 10s
-          prometheus: 10s
-        target_partition:
-          ceph: 1/1
-          grafana: 1/1
-          node_exporter: 1/1
-          prometheus: 1/1
-    time_server: admin.pvgl.me.corp
-    DEV_ENV: True
-    subvolume_init: disabled
+monitoring:
+  prometheus:
+    metric_relabel_config:
+      ceph: []
+      grafana: []
+      node_exporter: []
+      prometheus: []
+    relabel_config:
+      ceph: []
+      grafana: []
+      node_exporter: []
+      prometheus: []
+    rule_files: []
+    scrape_interval:
+      ceph: 10s
+      grafana: 10s
+      node_exporter: 10s
+      prometheus: 10s
+    target_partition:
+      ceph: 1/1
+      grafana: 1/1
+      node_exporter: 1/1
+      prometheus: 1/1
+time_server: admin.sha.me.corp
+DEV_ENV: True
+subvolume_init: disabled
 
 admin:~ # salt '*' saltutil.pillar_refresh
 </code></pre>
@@ -1883,57 +1883,57 @@ admin:~ # salt-run state.orch ceph.stage.4
 admin:~ # salt-run state.orch ceph.stage.services
 
 admin:~ # ceph osd lspools
-    1 iscsi-images
-    2 cephfs_data
-    3 cephfs_metadata
-    4 .rgw.root
-    5 default.rgw.control
-    6 default.rgw.meta
-    7 default.rgw.log
+1 iscsi-images
+2 cephfs_data
+3 cephfs_metadata
+4 .rgw.root
+5 default.rgw.control
+6 default.rgw.meta
+7 default.rgw.log
 </code></pre>
 <p>Before logon to dashboard via url, need get credentials first</p>
 <pre><code>admin:~ # salt-call grains.get dashboard_creds
-    local:
-        ----------
-        admin:
-            m1QYlSs5rZ   --&gt; the password was changed to mypassword to log on to dashboard
+local:
+    ----------
+    admin:
+        &lt;your password&gt;   --&gt; the password was changed to mypassword to log on to dashboard
 
 admin:~ # ceph mgr services
-    {
-        &quot;dashboard&quot;: &quot;https://mon1.pvgl.me.corp:8443/&quot;,
-        &quot;prometheus&quot;: &quot;http://mon1.pvgl.me.corp:9283/&quot;
-    }
+{
+    &quot;dashboard&quot;: &quot;https://mon1.sha.me.corp:8443/&quot;,
+    &quot;prometheus&quot;: &quot;http://mon1.sha.me.corp:9283/&quot;
+}
 
-    https://10.58.121.186:8443
-    http://10.58.121.186:9283
+https://10.58.121.186:8443
+http://10.58.121.186:9283
 
 
 
 admin:~ # watch ceph -s
-    Every 2.0s: ceph -s                                      admin: Mon Oct  5 14:41:51 2020
-      cluster:
-        id:     343ee7d3-232f-4c71-8216-1edbc55ac6e0
-        health: HEALTH_OK
+Every 2.0s: ceph -s                  admin: Mon Oct  5 14:41:51 2020
+  cluster:
+    id:     &lt;id&gt;
+    health: HEALTH_OK
 
-      services:s: ceph -s
-        mon: 3 daemons, quorum mon1,mon2,mon3 (age 87m)
-        mgr: mon1(active, since 82m)
-        mds: cephfs:1 {0=mon3=up:active} 2 up:standby
-        osd: 12 osds: 12 up (since 85m), 12 in (since 85m)
-        rgw: 1 daemon active (mon3)
+  services:s: ceph -s
+    mon: 3 daemons, quorum mon1,mon2,mon3 (age 87m)
+    mgr: mon1(active, since 82m)
+    mds: cephfs:1 {0=mon3=up:active} 2 up:standby
+    osd: 12 osds: 12 up (since 85m), 12 in (since 85m)
+    rgw: 1 daemon active (mon3)
 
-      task status:
-        scrub status:
-            mds.mon3: idle
+  task status:
+    scrub status:
+        mds.mon3: idle
 
-      data:
-        pools:   7 pools, 576 pgs
-        objects: 213 objects, 4.2 KiB
-        usage:   12 GiB used, 84 GiB / 96 GiB avail
-        pgs:     576 active+clean
+  data:
+    pools:   7 pools, 576 pgs
+    objects: 213 objects, 4.2 KiB
+    usage:   12 GiB used, 84 GiB / 96 GiB avail
+    pgs:     576 active+clean
 
-      io:
-        client:   852 B/s rd, 0 op/s rd, 0 op/s wr
+  io:
+    client:   852 B/s rd, 0 op/s rd, 0 op/s wr
 </code></pre>
 <h3 id="17-stage-5-the-removal-stage">1.7. Stage 5 — the removal stage</h3>
 <p>Run Stage 5 — the removal stage. This stage is not mandatory and during the initial setup it is usually not needed. In this stage the roles of minions and also the cluster configuration are removed. You need to run this stage when you need to remove a storage node from your cluster. </p>
@@ -1955,14 +1955,14 @@ Delete salt-minion pulic key
 # rm /etc/salt/pki/minion/minion.pem
 
 Change new minion_id
-admin:~ # echo admin.pvgl.me.corp &gt; /etc/salt/minion_id
-data1:~ # echo data1.pvgl.me.corp &gt; /etc/salt/minion_id
-data2:~ # echo data2.pvgl.me.corp &gt; /etc/salt/minion_id
-data3:~ # echo data3.pvgl.me.corp &gt; /etc/salt/minion_id
-data4:~ # echo data4.pvgl.me.corp &gt; /etc/salt/minion_id
-mon1:~ # echo mon1.pvgl.me.corp &gt; /etc/salt/minion_id
-mon2:~ # echo mon2.pvgl.me.corp &gt; /etc/salt/minion_id
-mon3:~ # echo mon3.pvgl.me.corp &gt; /etc/salt/minion_id
+admin:~ # echo admin.sha.me.corp &gt; /etc/salt/minion_id
+data1:~ # echo data1.sha.me.corp &gt; /etc/salt/minion_id
+data2:~ # echo data2.sha.me.corp &gt; /etc/salt/minion_id
+data3:~ # echo data3.sha.me.corp &gt; /etc/salt/minion_id
+data4:~ # echo data4.sha.me.corp &gt; /etc/salt/minion_id
+mon1:~ # echo mon1.sha.me.corp &gt; /etc/salt/minion_id
+mon2:~ # echo mon2.sha.me.corp &gt; /etc/salt/minion_id
+mon3:~ # echo mon3.sha.me.corp &gt; /etc/salt/minion_id
 
 Delete old ID on admin node
 # salt-key -D
@@ -1974,16 +1974,16 @@ Accept all new key on admin node
 admin:~ # salt-key -L
 admin:~ # salt-key -A 
 or
-admin:~ # salt-key -a admin.pvgl.me.corp
-data1:~ # salt-key -a data1.pvgl.me.corp
-data2:~ # salt-key -a data2.pvgl.me.corp
-data3:~ # salt-key -a data3.pvgl.me.corp
-data4:~ # salt-key -a data4.pvgl.me.corp
-mon1:~ # salt-key -a mon1.pvgl.me.corp
-mon2:~ # salt-key -a mon2.pvgl.me.corp
-mon3:~ # salt-key -a mon3.pvgl.me.corp
+admin:~ # salt-key -a admin.sha.me.corp
+data1:~ # salt-key -a data1.sha.me.corp
+data2:~ # salt-key -a data2.sha.me.corp
+data3:~ # salt-key -a data3.sha.me.corp
+data4:~ # salt-key -a data4.sha.me.corp
+mon1:~ # salt-key -a mon1.sha.me.corp
+mon2:~ # salt-key -a mon2.sha.me.corp
+mon3:~ # salt-key -a mon3.sha.me.corp
 </code></pre>
-<p>[ERROR] ['/var/lib/ceph subvolume missing on mon3.pvgl.me.corp', '/var/lib/ceph subvolume missing on mon1.pvgl.me.corp', '/var/lib/ceph subvolume missing on mon2.pvgl.me.corp', 'See /srv/salt/ceph/subvolume/README.md']</p>
+<p>[ERROR] ['/var/lib/ceph subvolume missing on mon3.sha.me.corp', '/var/lib/ceph subvolume missing on mon1.sha.me.corp', '/var/lib/ceph subvolume missing on mon2.sha.me.corp', 'See /srv/salt/ceph/subvolume/README.md']</p>
 <p><a href="[link](https://github.com/SUSE/DeepSea/issues/1593)">SOLUTION</a>
 Edit /srv/pillar/ceph/stack/global.yml and add the following line:
 subvolume_init: disabled</p>
@@ -2023,7 +2023,7 @@ Set time server to public server (China)
         safety is now disabled for cluster ceph
 
     admin:~ # salt-run state.orch ceph.shutdown
-        admin.pvgl.me.corp_master:
+        admin.sha.me.corp_master:
           Name: set noout - Function: salt.state - Result: Changed Started: - 14:32:14.398022 Duration: 2266.75 ms
           Name: Shutting down radosgw for rgw - Function: salt.state - Result: Changed Started: - 14:32:16.665452 Duration: 1461.23 ms
           Name: Shutting down cephfs - Function: salt.state - Result: Changed Started: - 14:32:18.127353 Duration: 30326.193 ms
@@ -2032,7 +2032,7 @@ Set time server to public server (China)
           Name: Shutting down mgr - Function: salt.state - Result: Changed Started: - 14:33:29.439442 Duration: 29209.141 ms
           Name: Shutting down mon - Function: salt.state - Result: Changed Started: - 14:33:58.649221 Duration: 30519.97 ms
 
-        Summary for admin.pvgl.me.corp_master
+        Summary for admin.sha.me.corp_master
         ------------
         Succeeded: 7 (changed=6)
         Failed:    0
@@ -2044,21 +2044,21 @@ Set time server to public server (China)
 <pre><code>    admin:~ # salt -C 'G@deepsea:*' cmd.run &quot;shutdown -h&quot;
         Broadcast message from root@admin (Sat 2021-03-06 14:40:37 CST):
         The system is going down for poweroff at Sat 2021-03-06 14:41:37 CST!
-        admin.pvgl.me.corp:
+        admin.sha.me.corp:
             Shutdown scheduled for Sat 2021-03-06 14:41:37 CST, use 'shutdown -c' to cancel.
-        mon2.pvgl.me.corp:
+        mon2.sha.me.corp:
             Shutdown scheduled for Sat 2021-03-06 14:41:37 CST, use 'shutdown -c' to cancel.
-        data2.pvgl.me.corp:
+        data2.sha.me.corp:
             Shutdown scheduled for Sat 2021-03-06 14:41:37 CST, use 'shutdown -c' to cancel.
-        mon3.pvgl.me.corp:
+        mon3.sha.me.corp:
             Shutdown scheduled for Sat 2021-03-06 14:41:37 CST, use 'shutdown -c' to cancel.
-        data3.pvgl.me.corp:
+        data3.sha.me.corp:
             Shutdown scheduled for Sat 2021-03-06 14:41:37 CST, use 'shutdown -c' to cancel.
-        data4.pvgl.me.corp:
+        data4.sha.me.corp:
             Shutdown scheduled for Sat 2021-03-06 14:41:37 CST, use 'shutdown -c' to cancel.
-        mon1.pvgl.me.corp:
+        mon1.sha.me.corp:
             Shutdown scheduled for Sat 2021-03-06 14:41:37 CST, use 'shutdown -c' to cancel.
-        data1.pvgl.me.corp:
+        data1.sha.me.corp:
             Shutdown scheduled for Sat 2021-03-06 14:41:37 CST, use 'shutdown -c' to cancel.
 </code></pre>
 <h3 id="111-starting-stopping-and-restarting-services-using-targets">1.11. Starting, Stopping, and Restarting Services Using Targets</h3>
@@ -2196,7 +2196,7 @@ set pool 2 pg_autoscale_mode to on
 admin:~ # ceph osd pool set cephfs_metadata pg_autoscale_mode on
 set pool 3 pg_autoscale_mode to on
 </code></pre>
-<p>PG numbers must always be a power of 2</p>
+<p>PG numbgrs must always be a power of 2</p>
 <pre><code>admin:~ # ceph osd pool autoscale-status
 POOL                  SIZE TARGET SIZE RATE RAW CAPACITY  RATIO TARGET RATIO EFFECTIVE RATIO BIAS PG_NUM NEW PG_NUM AUTOSCALE
 iscsi-images          389               3.0       98256M 0.0000                               1.0     32            on
@@ -2210,7 +2210,7 @@ default.rgw.log     35900               3.0       98256M 0.0000                 
 <p>Show the cluster health</p>
 <pre><code>admin:~ # ceph -s
   cluster:
-    id:     343ee7d3-232f-4c71-8216-1edbc55ac6e0
+    id:     &lt;id&gt;
     health: HEALTH_OK
 
   services:
@@ -2423,8 +2423,8 @@ Error ENOENT: failed to get rules by class 'nvme'
 <ol>
 <li>Show the details of the default CRUSH Map rule with the dump sub-command:</li>
 </ol>
-<p>The “rule_id” and “ruleset” values just numbers to keep track of rules similar to a DB key id. 
-“min_size” and “max_size” are related to how CRUSH behaves when a certain number of replicas are created.</p>
+<p>The “rule_id” and “ruleset” values just numbgrs to keep track of rules similar to a DB key id. 
+“min_size” and “max_size” are related to how CRUSH behaves when a certain numbgr of replicas are created.</p>
 <p>The “steps” section is the most functional portion of the rule, providing an ordered set of rules for how CRUSH should behave. </p>
 <p>Note that there are three “op” parts, one each for “take”, “chooseleaf_firstn”, and “emit”. </p>
 <p>“take” in a replicated rule is always the first step, and “emit” is always the last step. </p>
@@ -2556,7 +2556,7 @@ set pool 2 crush_rule to better_ruleset
 crush_rule: better_ruleset
 </code></pre>
 <p>4). In this demo cluster, making the cephfs_data pool use the “better_ruleset” will result in problems. 
-(There’s no rack for the CRUSH Map, and not enough nodes to accommodate the requirement for a large number of PGs.) </p>
+(There’s no rack for the CRUSH Map, and not enough nodes to accommodate the requirement for a large numbgr of PGs.) </p>
 <p>So change the setting back to the replicated_rule.</p>
 <pre><code>admin:~ # ceph osd pool set cephfs_data crush_rule replicated_rule
 set pool 2 crush_rule to replicated_rule
@@ -2881,7 +2881,7 @@ data1:/var/lib/ceph/osd/ceph-2 # cat fsid  # The unique ID of this OSD
 
 data1:/var/lib/ceph/osd/ceph-2 # cat keyring  # The Ceph key for this OSD
 [osd.2]
-key = AQAErHpfqq0REBAAKAaeoQnWsU4ef/7vLORHXg==
+key = &lt;your key&gt;
 
 data1:/var/lib/ceph/osd/ceph-2 # cat ready  # Indication of the readiness of this OSD
 ready
@@ -2907,7 +2907,7 @@ inferring bluefs devices from bluestore path
         &quot;kv_backend&quot;: &quot;rocksdb&quot;,
         &quot;magic&quot;: &quot;ceph osd volume v026&quot;,
         &quot;mkfs_done&quot;: &quot;yes&quot;,
-        &quot;osd_key&quot;: &quot;AQAErHpfqq0REBAAKAaeoQnWsU4ef/7vLORHXg==&quot;,
+        &quot;osd_key&quot;: &lt;your key&gt;,
         &quot;ready&quot;: &quot;ready&quot;,
         &quot;require_osd_release&quot;: &quot;14&quot;,
         &quot;whoami&quot;: &quot;2&quot;
@@ -2941,7 +2941,7 @@ inferring bluefs devices from bluestore path
         &quot;kv_backend&quot;: &quot;rocksdb&quot;,
         &quot;magic&quot;: &quot;ceph osd volume v026&quot;,
         &quot;mkfs_done&quot;: &quot;yes&quot;,
-        &quot;osd_key&quot;: &quot;AQAErHpfqq0REBAAKAaeoQnWsU4ef/7vLORHXg==&quot;,
+        &quot;osd_key&quot;: &lt;your key&gt;,
         &quot;ready&quot;: &quot;ready&quot;,
         &quot;require_osd_release&quot;: &quot;14&quot;,
         &quot;whoami&quot;: &quot;2&quot;
@@ -2976,7 +2976,7 @@ The admin keyring is “allow”ed all capabilities (permissions) to all service
 there are more than just client keys.</p>
 <pre><code>admin:/etc/ceph # cat ceph.client.admin.keyring
 [client.admin]
-        key = AQD6pHpfAAAAABAAHJvkvLhOKZyQxm9lgnR5Qg==
+        key = &lt;your key&gt;
         caps mds = &quot;allow *&quot;
         caps mon = &quot;allow *&quot;
         caps osd = &quot;allow *&quot;
@@ -2990,123 +2990,123 @@ admin:/etc/ceph # ceph auth ls
 installed auth entries:
 
 mds.mon1
-        key: AQAJpXpfAAAAABAAHIl0XoaSdWxgWHAii79/hw==
+        key: &lt;your key&gt;
         caps: [mds] allow *
         caps: [mgr] allow profile mds
         caps: [mon] allow profile mds
         caps: [osd] allow rwx
 mds.mon2
-        key: AQAJpXpfAAAAABAADNmKodgsyP/fZlCsf66kPg==
+        key: &lt;your key&gt;
         caps: [mds] allow *
         caps: [mgr] allow profile mds
         caps: [mon] allow profile mds
         caps: [osd] allow rwx
 mds.mon3
-        key: AQAJpXpfAAAAABAAo9GH05V7nSoj3+ZcSNgpmA==
+        key: &lt;your key&gt;
         caps: [mds] allow *
         caps: [mgr] allow profile mds
         caps: [mon] allow profile mds
         caps: [osd] allow rwx
 osd.0
-        key: AQAErHpfnDcsDhAAT4awwMzQWe1TIOVoZrzSIQ==
+        key: &lt;your key&gt;
         caps: [mgr] allow profile osd
         caps: [mon] allow profile osd
         caps: [osd] allow *
 osd.1
-        key: AQAErHpf57cLDhAA/OZMJHOGP9h1ASdm9ltH0A==
+        key: &lt;your key&gt;
         caps: [mgr] allow profile osd
         caps: [mon] allow profile osd
         caps: [osd] allow *
 osd.10
-        key: AQATrHpfSuP/ChAA6EDjGyS+x1/bNax9eD7BKA==
+        key: &lt;your key&gt;
         caps: [mgr] allow profile osd
         caps: [mon] allow profile osd
         caps: [osd] allow *
 osd.11
-        key: AQATrHpfjvlCCxAAWhPt7Ti+1pLgGnAC0qcvZA==
+        key: &lt;your key&gt;
         caps: [mgr] allow profile osd
         caps: [mon] allow profile osd
         caps: [osd] allow *
 osd.2
-        key: AQAErHpfqq0REBAAKAaeoQnWsU4ef/7vLORHXg==
+        key: &lt;your key&gt;
         caps: [mgr] allow profile osd
         caps: [mon] allow profile osd
         caps: [osd] allow *
 osd.3
-        key: AQAErHpfvslsFRAAzG1jyoHeCvHTMhbL4hz2NA==
+        key: &lt;your key&gt;
         caps: [mgr] allow profile osd
         caps: [mon] allow profile osd
         caps: [osd] allow *
 osd.4
-        key: AQALrHpfMfInJhAA3r3+mxc5tpBODWzIjIY5OA==
+        key: &lt;your key&gt;
         caps: [mgr] allow profile osd
         caps: [mon] allow profile osd
         caps: [osd] allow *
 osd.5
-        key: AQALrHpfL5vPKBAAM2569SHHbvdC7IDH3XLGVQ==
+        key: &lt;your key&gt;
         caps: [mgr] allow profile osd
         caps: [mon] allow profile osd
         caps: [osd] allow *
 osd.6
-        key: AQALrHpfpMn8KBAAlsIZpLHa1OZnXs9Z8/wiRQ==
+        key: &lt;your key&gt;
         caps: [mgr] allow profile osd
         caps: [mon] allow profile osd
         caps: [osd] allow *
 osd.7
-        key: AQALrHpfV4FsLhAAMCD8E7GZpo6dVrAErT6kiQ==
+        key: &lt;your key&gt;
         caps: [mgr] allow profile osd
         caps: [mon] allow profile osd
         caps: [osd] allow *
 osd.8
-        key: AQASrHpfI04iOxAA8fxRmIdPAIsSYGiYReAzqw==
+        key: &lt;your key&gt;
         caps: [mgr] allow profile osd
         caps: [mon] allow profile osd
         caps: [osd] allow *
 osd.9
-        key: AQATrHpf77FxAxAAPgixNvF1KLgJ41BY1YavlA==
+        key: &lt;your key&gt;
         caps: [mgr] allow profile osd
         caps: [mon] allow profile osd
         caps: [osd] allow *
 client.admin
-        key: AQD6pHpfAAAAABAAHJvkvLhOKZyQxm9lgnR5Qg==
+        key: &lt;your key&gt;
         caps: [mds] allow *
         caps: [mgr] allow *
         caps: [mon] allow *
         caps: [osd] allow *
 client.bootstrap-mds
-        key: AQCTq3pfwDL1JRAAbtplrZr+/DsjkgLeFXA1HA==
+        key: &lt;your key&gt;
         caps: [mon] allow profile bootstrap-mds
 client.bootstrap-mgr
-        key: AQCTq3pfznT1JRAAgUtvoRjHSSV8inY+NoBp9Q==
+        key: &lt;your key&gt;
         caps: [mon] allow profile bootstrap-mgr
 client.bootstrap-osd
-        key: AQD8pHpfAAAAABAAvAHNiX9SBmpVdIoVtGHaqw==
+        key: &lt;your key&gt;
         caps: [mgr] allow r
         caps: [mon] allow profile bootstrap-osd
 client.bootstrap-rbd
-        key: AQCTq3pf4vz1JRAAlfd72UXN0O16EgWXkvTdGQ==
+        key: &lt;your key&gt;
         caps: [mon] allow profile bootstrap-rbd
 client.bootstrap-rbd-mirror
-        key: AQCTq3pfTkH2JRAAD+CjP4rPZSdZcJR+Cz+mzw==
+        key: &lt;your key&gt;
         caps: [mon] allow profile bootstrap-rbd-mirror
 client.bootstrap-rgw
-        key: AQCTq3pfCpL2JRAAwQ1O8ee0Hq7iz/QZv8uJeg==
+        key: &lt;your key&gt;
         caps: [mon] allow profile bootstrap-rgw
 client.igw.mon2
-        key: AQAEpXpfAAAAABAAXyKpYOjPx1/VHFYSD6KMHQ==
+        key: &lt;your key&gt;
         caps: [mgr] allow r
         caps: [mon] allow *
         caps: [osd] allow *
 client.rgw.mon3
-        key: AQAMpXpfAAAAABAAYgK6ue45BbA5H8h5RRrSxQ==
+        key: &lt;your key&gt;
         caps: [mgr] allow r
         caps: [mon] allow rwx
         caps: [osd] allow rwx
 client.storage
-        key: AQD8pHpfAAAAABAAHecCBgBsLIyPrJf+27eXUQ==
+        key: &lt;your key&gt;
         caps: [mon] allow rw
 mgr.mon1
-        key: AQABpXpfAAAAABAANdbHgS3/fXji+6PixShdcQ==
+        key: &lt;your key&gt;
         caps: [mds] allow *
         caps: [mon] allow profile mgr
         caps: [osd] allow *
@@ -3114,7 +3114,7 @@ mgr.mon1
 <h5 id="task-2-create-a-new-keyring-and-associated-user">Task 2: Create a new keyring and associated user</h5>
 <p>1). There are several different ways to create a new keyring and user. This is just one way.
 Create a new keyring and associated user named <code>James</code>.
-Remember that typically all new users will need read rights for the mon capability, and will need read/write rights for the osd capability, including a specification of rights to a
+Remembgr that typically all new users will need read rights for the mon capability, and will need read/write rights for the osd capability, including a specification of rights to a
 pool.</p>
 <pre><code>admin:/etc/ceph # ceph-authtool -g -n client.james --cap mon 'allow r' --cap osd 'allow rw pool=iscsi-images' -C /etc/ceph/ceph.client.james.keyring
 creating /etc/ceph/ceph.client.james.keyring
@@ -3131,7 +3131,7 @@ drwxr-xr-x 1 root root 4392 Oct  5 13:03 ../
 <p>2). Show the content of the newly created keyring:</p>
 <pre><code>admin:/etc/ceph # cat ceph.client.james.keyring
 [client.james]
-        key = AQD1TfRfw1zmCBAAyB1FrctgdY6znv+3No8w9A==
+        key = &lt;your key&gt;
         caps mon = &quot;allow r&quot;
         caps osd = &quot;allow rw pool=iscsi-images&quot;
 </code></pre>
@@ -3143,7 +3143,7 @@ added key for client.james
 <pre><code>admin:/etc/ceph # ceph auth get client.james
 exported keyring for client.james
 [client.james]
-        key = AQD1TfRfw1zmCBAAyB1FrctgdY6znv+3No8w9A==
+        key = &lt;your key&gt;
         caps mon = &quot;allow r&quot;
         caps osd = &quot;allow rw pool=iscsi-images&quot;
 </code></pre>
@@ -3164,7 +3164,7 @@ Also note that the permissions on the keyring file are quite restrictive: 0600</
 You will use the value associated with the “key” key to create a new file. Copy the “key” value using your favorite method.</p>
 <pre><code>admin:/etc/ceph # cat ceph.client.admin.keyring
 [client.admin]
-        key = AQD6pHpfAAAAABAAHJvkvLhOKZyQxm9lgnR5Qg==
+        key = &lt;your key&gt;
         caps mds = &quot;allow *&quot;
         caps mon = &quot;allow *&quot;
         caps osd = &quot;allow *&quot;
@@ -3177,7 +3177,7 @@ Note that there are many ways to do this. An alternative way is mentioned in the
 </code></pre>
 <p>5). Paste the “key” value into the new file. It will be the only content of the file. It will look like this (in fact it’s probably exactly the same as this, if you’re using the demo environment provided to you):</p>
 <pre><code>admin:/etc/ceph # cat admin.secret
-AQD6pHpfAAAAABAAHJvkvLhOKZyQxm9lgnR5Qg==
+&lt;your key&gt;
 </code></pre>
 <p>6). Save the file and exist out of the editor.</p>
 <p>7). Change the permissions of the file so that no other user on the host can see the content of the file:</p>
@@ -3195,12 +3195,12 @@ drwxr-xr-x 1 root root 4392 Oct  5 13:03 ../
 <p>Tip:</p>
 <p>An alternative way to create this key file is to simply use grep/awk together in one bash command, like this:</p>
 <pre><code>admin:/etc/ceph # grep &quot;key =&quot; ceph.client.admin.keyring | awk -F&quot; = &quot; '{ print $2 }'
-AQD6pHpfAAAAABAAHJvkvLhOKZyQxm9lgnR5Qg==
+&lt;your key&gt;
 
 admin:/etc/ceph # grep &quot;key =&quot; ceph.client.admin.keyring | awk -F&quot; = &quot; '{ print $2 }' &gt; admin.secret
 
 admin:/etc/ceph # cat admin.secret
-AQD6pHpfAAAAABAAHJvkvLhOKZyQxm9lgnR5Qg==
+&lt;your key&gt;
 </code></pre>
 <h5 id="task-4-view-the-ceph-master-configuration-file">Task 4: View the Ceph master configuration file</h5>
 <p>View the content of the file. The file is managed and controlled by DeepSea. 
@@ -3213,7 +3213,7 @@ Although this exercise doesn’t call out any more specific information about th
 # /srv/salt/ceph/configuration/files/ceph.conf.d/[global,osd,mon,mgr,mds,client].conf
 [global]
 fsid = 343ee7d3-232f-4c71-8216-1edbc55ac6e0
-mon_initial_members = mon1, mon2, mon3
+mon_initial_membgrs = mon1, mon2, mon3
 mon_host = 10.58.121.186, 10.58.121.187, 10.58.121.188
 auth_cluster_required = cephx
 auth_service_required = cephx
@@ -3229,7 +3229,7 @@ mon health preluminous compat warning = false
 rbd default features = 3
 [client.rgw.mon3]
 rgw frontends = &quot;beast port=80&quot;
-rgw dns name = mon3.pvgl.me.corp
+rgw dns name = mon3.sha.me.corp
 rgw enable usage log = true
 [osd]
 [mon]
@@ -3344,7 +3344,7 @@ pool 5 'default.rgw.control' replicated size 3 min_size 2 crush_rule 0 object_ha
 pool 6 'default.rgw.meta' replicated size 3 min_size 2 crush_rule 0 object_hash rjenkins pg_num 32 pgp_num 32 autoscale_mode warn last_change 35 flags hashpspool stripe_width 0 application rgw
 pool 7 'default.rgw.log' replicated size 3 min_size 2 crush_rule 0 object_hash rjenkins pg_num 32 pgp_num 32 autoscale_mode warn last_change 37 flags hashpspool stripe_width 0 application rgw
 </code></pre>
-<p>List pools with their index number. Note how the index number matches the index number of the detail listing above.</p>
+<p>List pools with their index numbgr. Note how the index numbgr matches the index numbgr of the detail listing above.</p>
 <pre><code>admin:~ # ceph osd lspools
 1 iscsi-images
 2 cephfs_data
@@ -3488,7 +3488,7 @@ crush_rule: replicated_rule
 <h5 id="task-3-create-two-new-pools-one-replicated-one-ec">Task 3: Create two new pools, one replicated, one EC</h5>
 <p>1). Create a new replicated pool that will be used for storing block data for RBD. Use the standard replicated_ruleset CRUSH Map:</p>
 <p>It would be tempting to the use the better_ruleset, but this demo environment doesn’t have enough resources for that.</p>
-<p>This is a demo environment, so the PG numbers will be low. In your production environments, be sure to assign an appropriately high number, or use the pg_autoscaler manager module.</p>
+<p>This is a demo environment, so the PG numbgrs will be low. In your production environments, be sure to assign an appropriately high numbgr, or use the pg_autoscaler manager module.</p>
 <pre><code>admin:~ # ceph osd pool create rbd_pool 4 4 replicated replicated_rule
 pool 'rbd_pool' created
 </code></pre>
@@ -3540,8 +3540,8 @@ pool 9 'bucket_pool' erasure size 3 min_size 2 crush_rule 3 object_hash rjenkins
 </code></pre>
 <p>7). Check the pg_autoscale status, particularly to see a comparison of how much raw space is being consumed by the two pools:</p>
 <p>See that the RATE column for all of the replicated pools shows the value of 3.0, while the value for the bucket_pool – which is an EC pool – is 1.5. The EC pool, with a K+M of 2+1 consumes considerably less raw storage space. </p>
-<p>See the TARGET RATIO for the rbd_pool. Notice that the autoscaler has automatically adjusted the number PGs assigned to rbd_pool from “4” to “128” because you told the cluster to have the pool use 50% of the capacity.</p>
-<p>See the TARGET SIZE for the bucket_pool, roughly 100GB. But the cluster may not have changed the PG_NUM value yet. The autoscaler will adjust the number of PGs gradually, so as not to disrupt the performance too dramatically.</p>
+<p>See the TARGET RATIO for the rbd_pool. Notice that the autoscaler has automatically adjusted the numbgr PGs assigned to rbd_pool from “4” to “128” because you told the cluster to have the pool use 50% of the capacity.</p>
+<p>See the TARGET SIZE for the bucket_pool, roughly 100GB. But the cluster may not have changed the PG_NUM value yet. The autoscaler will adjust the numbgr of PGs gradually, so as not to disrupt the performance too dramatically.</p>
 <p>While you’re here, you might also notice the RAW CAPACITY column. </p>
 <p>All pools are expecting to divide the cluster space equally, even though you’ve explicitly told the cluster that rbd_pool and bucket_pool will deviate from that even division.</p>
 <pre><code>admin:~ # ceph osd pool autoscale-status
@@ -3712,7 +3712,7 @@ admin:~ # ceph config get osd.* osd_scrub_end_hour
 24
 </code></pre>
 <p>3). Get the value of the scrub and repair settings:
-The “auto repair” feature is turned off, and the maximum number of errors that “auto repair” would automatically repair is 5.</p>
+The “auto repair” feature is turned off, and the maximum numbgr of errors that “auto repair” would automatically repair is 5.</p>
 <pre><code>admin:~ # ceph config get osd.* osd_scrub_auto_repair
 false
 admin:~ # ceph config get osd.* osd_scrub_auto_repair_num_errors
@@ -3726,7 +3726,7 @@ The settings would be located in the <code>[global]</code> section of the file:<
 # /srv/salt/ceph/configuration/files/ceph.conf.d/[global,osd,mon,mgr,mds,client].conf
 [global]
 fsid = 343ee7d3-232f-4c71-8216-1edbc55ac6e0
-mon_initial_members = mon1, mon2, mon3
+mon_initial_membgrs = mon1, mon2, mon3
 mon_host = 10.58.121.186, 10.58.121.187, 10.58.121.188
 auth_cluster_required = cephx
 auth_service_required = cephx
@@ -3742,7 +3742,7 @@ mon health preluminous compat warning = false
 rbd default features = 3
 [client.rgw.mon3]
 rgw frontends = &quot;beast port=80&quot;
-rgw dns name = mon3.pvgl.me.corp
+rgw dns name = mon3.sha.me.corp
 rgw enable usage log = true
 [osd]
 [mon]
@@ -3771,12 +3771,12 @@ osd scrub auto repair num errors = 10
 </code></pre>
 <p>5). Use DeepSea (Salt) to stage the file properly in Salt’s File Server on the Salt Master (admin):</p>
 <pre><code>admin:/srv/salt/ceph/configuration/files/ceph.conf.d # salt admin* state.apply ceph.configuration.create
-admin.pvgl.me.corp:
+admin.sha.me.corp:
   Name: /var/cache/salt/minion/files/base/ceph/configuration - Function: file.absent - Result: Changed Started: - 22:42:34.900173 Duration: 20.891 ms
   Name: /srv/salt/ceph/configuration/cache/ceph.conf - Function: file.managed - Result: Changed Started: - 22:42:34.921454 Duration: 8576.516 ms
   Name: find /var/cache/salt/master/jobs -user root -exec chown salt:salt {} ';' - Function: cmd.run - Result: Changed Started: - 22:42:43.535022 Duration: 71.957 ms
 
-Summary for admin.pvgl.me.corp
+Summary for admin.sha.me.corp
 ------------
 Succeeded: 3 (changed=3)
 Failed:    0
@@ -3786,80 +3786,80 @@ Total run time:   8.669 s
 </code></pre>
 <p>6). Using DeepSea (Salt), distribute the new ceph.conf configuration settings to all the nodes in the cluster:</p>
 <pre><code>admin:/srv/salt/ceph/configuration/files/ceph.conf.d # salt \* state.apply ceph.configuration
-mon3.pvgl.me.corp:
+mon3.sha.me.corp:
   Name: /etc/ceph/ceph.conf - Function: file.managed - Result: Changed Started: - 22:44:07.986661 Duration: 101.977 ms
 
-Summary for mon3.pvgl.me.corp
+Summary for mon3.sha.me.corp
 ------------
 Succeeded: 1 (changed=1)
 Failed:    0
 ------------
 Total states run:     1
 Total run time: 101.977 ms
-mon1.pvgl.me.corp:
+mon1.sha.me.corp:
   Name: /etc/ceph/ceph.conf - Function: file.managed - Result: Changed Started: - 22:44:08.012479 Duration: 108.888 ms
 
-Summary for mon1.pvgl.me.corp
+Summary for mon1.sha.me.corp
 ------------
 Succeeded: 1 (changed=1)
 Failed:    0
 ------------
 Total states run:     1
 Total run time: 108.888 ms
-data3.pvgl.me.corp:
+data3.sha.me.corp:
   Name: /etc/ceph/ceph.conf - Function: file.managed - Result: Changed Started: - 22:44:08.052247 Duration: 98.681 ms
 
-Summary for data3.pvgl.me.corp
+Summary for data3.sha.me.corp
 ------------
 Succeeded: 1 (changed=1)
 Failed:    0
 ------------
 Total states run:     1
 Total run time:  98.681 ms
-admin.pvgl.me.corp:
+admin.sha.me.corp:
   Name: /etc/ceph/ceph.conf - Function: file.managed - Result: Changed Started: - 22:44:08.072402 Duration: 97.231 ms
 
-Summary for admin.pvgl.me.corp
+Summary for admin.sha.me.corp
 ------------
 Succeeded: 1 (changed=1)
 Failed:    0
 ------------
 Total states run:     1
 Total run time:  97.231 ms
-data1.pvgl.me.corp:
+data1.sha.me.corp:
   Name: /etc/ceph/ceph.conf - Function: file.managed - Result: Changed Started: - 22:44:08.076279 Duration: 104.169 ms
 
-Summary for data1.pvgl.me.corp
+Summary for data1.sha.me.corp
 ------------
 Succeeded: 1 (changed=1)
 Failed:    0
 ------------
 Total states run:     1
 Total run time: 104.169 ms
-data4.pvgl.me.corp:
+data4.sha.me.corp:
   Name: /etc/ceph/ceph.conf - Function: file.managed - Result: Changed Started: - 22:44:08.081635 Duration: 105.13 ms
 
-Summary for data4.pvgl.me.corp
+Summary for data4.sha.me.corp
 ------------
 Succeeded: 1 (changed=1)
 Failed:    0
 ------------
 Total states run:     1
 Total run time: 105.130 ms
-mon2.pvgl.me.corp:
+mon2.sha.me.corp:
   Name: /etc/ceph/ceph.conf - Function: file.managed - Result: Changed Started: - 22:44:08.155758 Duration: 105.004 ms
 
-Summary for mon2.pvgl.me.corp
+Summary for mon2.sha.me.corp
 ------------
 Succeeded: 1 (changed=1)
 Failed:    0
 ------------
 Total states run:     1
 Total run time: 105.004 ms
-data2.pvgl.me.corp:
+data2.sha.me.corp:
   Name: /etc/ceph/ceph.conf - Function: file.managed - Result: Changed Started: - 22:44:08.252200 Duration: 109.552 ms
 
-Summary for data2.pvgl.me.corp
+Summary for data2.sha.me.corp
 ------------
 Succeeded: 1 (changed=1)
 Failed:    0
@@ -3874,7 +3874,7 @@ Total run time: 109.552 ms
 # /srv/salt/ceph/configuration/files/ceph.conf.d/[global,osd,mon,mgr,mds,client].conf
 [global]
 fsid = 343ee7d3-232f-4c71-8216-1edbc55ac6e0
-mon_initial_members = mon1, mon2, mon3
+mon_initial_membgrs = mon1, mon2, mon3
 mon_host = 10.58.121.188, 10.58.121.187, 10.58.121.186
 auth_cluster_required = cephx
 auth_service_required = cephx
@@ -3894,7 +3894,7 @@ osd scrub auto repair = True
 osd scrub auto repair num errors = 10
 [client.rgw.mon3]
 rgw frontends = &quot;beast port=80&quot;
-rgw dns name = mon3.pvgl.me.corp
+rgw dns name = mon3.sha.me.corp
 rgw enable usage log = true
 [osd]
 [mon]
@@ -3909,7 +3909,7 @@ rgw enable usage log = true
 # /srv/salt/ceph/configuration/files/ceph.conf.d/[global,osd,mon,mgr,mds,client].conf
 [global]
 fsid = 343ee7d3-232f-4c71-8216-1edbc55ac6e0
-mon_initial_members = mon1, mon2, mon3
+mon_initial_membgrs = mon1, mon2, mon3
 mon_host = 10.58.121.188, 10.58.121.187, 10.58.121.186
 auth_cluster_required = cephx
 auth_service_required = cephx
@@ -3929,7 +3929,7 @@ osd scrub auto repair = True
 osd scrub auto repair num errors = 10
 [client.rgw.mon3]
 rgw frontends = &quot;beast port=80&quot;
-rgw dns name = mon3.pvgl.me.corp
+rgw dns name = mon3.sha.me.corp
 rgw enable usage log = true
 [osd]
 [mon]
@@ -3944,7 +3944,7 @@ admin:/srv/salt/ceph/configuration/files/ceph.conf.d # ssh data1 cat /etc/ceph/c
 # /srv/salt/ceph/configuration/files/ceph.conf.d/[global,osd,mon,mgr,mds,client].conf
 [global]
 fsid = 343ee7d3-232f-4c71-8216-1edbc55ac6e0
-mon_initial_members = mon1, mon2, mon3
+mon_initial_membgrs = mon1, mon2, mon3
 mon_host = 10.58.121.188, 10.58.121.187, 10.58.121.186
 auth_cluster_required = cephx
 auth_service_required = cephx
@@ -3964,7 +3964,7 @@ osd scrub auto repair = True
 osd scrub auto repair num errors = 10
 [client.rgw.mon3]
 rgw frontends = &quot;beast port=80&quot;
-rgw dns name = mon3.pvgl.me.corp
+rgw dns name = mon3.sha.me.corp
 rgw enable usage log = true
 [osd]
 [mon]
@@ -3979,7 +3979,7 @@ rgw enable usage log = true
         mon_health_preluminous_compat = true
         mon_health_preluminous_compat_warning = false
         mon_host = 10.58.121.188, 10.58.121.187, 10.58.121.186
-        mon_initial_members = mon1, mon2, mon3
+        mon_initial_membgrs = mon1, mon2, mon3
 </code></pre>
 <h5 id="task-3-change-the-scrub-settings-directly-in-the-configuration-db">Task 3: Change the Scrub settings directly in the Configuration DB</h5>
 <p>1). Query the configuration database to see the value of “osd_scrub_auto_repair_num_errors”:
@@ -4165,8 +4165,8 @@ Error ENOTSUP: Module 'telemetry' is not enabled (required by command 'telemetry
                 crash archive &lt;id&gt;
                 crash archive-all
 </code></pre>
-<p>2). Show the current status of the crash database, including the number of crash reports that have been collected so far:
-It’s likely that the number of crashes recorded in the demo environment is 0.</p>
+<p>2). Show the current status of the crash database, including the numbgr of crash reports that have been collected so far:
+It’s likely that the numbgr of crashes recorded in the demo environment is 0.</p>
 <pre><code>admin:~ # ceph crash stat
 0 crashes recorded
 </code></pre>
@@ -4234,12 +4234,12 @@ It’s possible that other users will be listed, but at least the “admin” us
 You can see that the admin user has a password set, but it is stored as a hash. So you
 don’t really know what the password is, and have no way of discovering it.</p>
 <pre><code>admin:~ # ceph dashboard ac-user-show admin
-{&quot;username&quot;: &quot;admin&quot;, &quot;password&quot;: &quot;$2b$12$4lC/AU7jc6midTZufj4P4.rBtVzRGf7Zy7fUbD6G9YfdfVEwkwuUy&quot;, &quot;roles&quot;: [&quot;administrator&quot;], &quot;name&quot;: null, &quot;email&quot;: null, &quot;lastUpdate&quot;: 1601874928}
+{&quot;username&quot;: &quot;admin&quot;, &quot;password&quot;: &lt;your password&gt;, &quot;roles&quot;: [&quot;administrator&quot;], &quot;name&quot;: null, &quot;email&quot;: null, &quot;lastUpdate&quot;: 1601874928}
 </code></pre>
 <p>4). Change the “admin” user’s password for the dashboard:
 This sets the “admin” user’s password to the string: mypassword</p>
 <pre><code>admin:~ # ceph dashboard ac-user-set-password admin mypassword
-{&quot;username&quot;: &quot;admin&quot;, &quot;password&quot;: &quot;$2b$12$wJzF468Vmlth9x3EOwtulu5azlMTEXFbKZrKjg79XMG7ldB0bell.&quot;, &quot;roles&quot;: [&quot;administrator&quot;], &quot;name&quot;: null, &quot;email&quot;: null, &quot;lastUpdate&quot;: 1609860842}
+{&quot;username&quot;: &quot;admin&quot;, &quot;password&quot;: &lt;your password&gt;, &quot;roles&quot;: [&quot;administrator&quot;], &quot;name&quot;: null, &quot;email&quot;: null, &quot;lastUpdate&quot;: 1609860842}
 admin:~ #
 </code></pre>
 <h5 id="task-3-visit-the-ceph-dashboard-url">Task 3: Visit the Ceph Dashboard URL</h5>
@@ -4247,12 +4247,12 @@ admin:~ #
     local:
         ----------
         admin:
-            m1QYlSs5rZ
+            &lt;your password&gt;
 
 admin:~ # ceph mgr services
     {
-        &quot;dashboard&quot;: &quot;https://mon1.pvgl.me.corp:8443/&quot;,
-        &quot;prometheus&quot;: &quot;http://mon1.pvgl.me.corp:9283/&quot;
+        &quot;dashboard&quot;: &quot;https://mon1.sha.me.corp:8443/&quot;,
+        &quot;prometheus&quot;: &quot;http://mon1.sha.me.corp:9283/&quot;
     }
 
 
@@ -4284,7 +4284,7 @@ admin:~ # ceph -s
 </code></pre>
 <p>URL: </p>
 <ul>
-<li>https://mon1.pvgl.me.corp:8443/</li>
+<li>https://mon1.sha.me.corp:8443/</li>
 <li>https://10.58.121.186:8443</li>
 </ul>
 <h4 id="232-explore-the-dashboard-health-performance-status">2.3.2. Explore the Dashboard Health, Performance, Status</h4>
@@ -4600,8 +4600,8 @@ The output will include an access_key value and a secret_key value. You will nee
     &quot;keys&quot;: [
         {
             &quot;user&quot;: &quot;s3user&quot;,
-            &quot;access_key&quot;: &quot;05CIOC43AFE9DNOXI8G7&quot;,
-            &quot;secret_key&quot;: &quot;pNAoWVvhzpsNacXGitmcgxYEYBIXQtEhkQadQ1Hl&quot;
+            &quot;access_key&quot;: &lt;your key&gt;,
+            &quot;secret_key&quot;: &lt;your key&gt;
         }
     ],
     &quot;swift_keys&quot;: [],
@@ -4641,15 +4641,15 @@ admin:~ # s3cmd --configure
 <p>Enter new values or accept defaults in brackets with Enter.
 Refer to user manual for detailed description of all options.</p>
 <p>Access key and Secret key are your identifiers for Amazon S3. Leave them empty for using the env variables.</p>
-<pre><code>Access Key: 05CIOC43AFE9DNOXI8G7
-Secret Key: pNAoWVvhzpsNacXGitmcgxYEYBIXQtEhkQadQ1Hl
+<pre><code>Access Key: &lt;your key&gt;
+Secret Key: &lt;your key&gt;
 Default Region [US]: &lt;leave blank&gt;
 </code></pre>
 <p>Use "s3.amazonaws.com" for S3 Endpoint and not modify it to the target Amazon S3.</p>
-<pre><code>S3 Endpoint [s3.amazonaws.com]: mon3.pvgl.me.corp
+<pre><code>S3 Endpoint [s3.amazonaws.com]: mon3.sha.me.corp
 </code></pre>
 <p>Use "%(bucket)s.s3.amazonaws.com" to the target Amazon S3. "%(bucket)s" and "%(location)s" vars can be used if the target S3 system supports dns based buckets.</p>
-<pre><code>DNS-style bucket+hostname:port template for accessing a bucket [%(bucket)s.s3.amazonaws.com]: %(bucket)s.mon3.pvgl.me.corp
+<pre><code>DNS-style bucket+hostname:port template for accessing a bucket [%(bucket)s.s3.amazonaws.com]: %(bucket)s.mon3.sha.me.corp
 </code></pre>
 <p>Encryption password is used to protect your files from reading by unauthorized persons while in transfer to S3</p>
 <pre><code>Encryption password: &lt;leave blank&gt;
@@ -4663,11 +4663,11 @@ This method is slower than plain HTTP, and can only be proxied with Python 2.7 o
 <pre><code>HTTP Proxy server name: &lt;leave blank&gt;
 </code></pre>
 <p>New settings:</p>
-<pre><code>  Access Key: 05CIOC43AFE9DNOXI8G7
-  Secret Key: pNAoWVvhzpsNacXGitmcgxYEYBIXQtEhkQadQ1Hl
+<pre><code>  Access Key: &lt;your key&gt;
+  Secret Key: &lt;your key&gt;
   Default Region: US
-  S3 Endpoint: mon3.pvgl.me.corp
-  DNS-style bucket+hostname:port template for accessing a bucket: %(bucket)s.mon3.pvgl.me.corp
+  S3 Endpoint: mon3.sha.me.corp
+  DNS-style bucket+hostname:port template for accessing a bucket: %(bucket)s.mon3.sha.me.corp
   Encryption password:
   Path to GPG program: /usr/bin/gpg
   Use HTTPS protocol: False
@@ -4745,14 +4745,14 @@ The output will contain the access and secret keys for the s3user and a secret k
     &quot;keys&quot;: [
         {
             &quot;user&quot;: &quot;s3user&quot;,
-            &quot;access_key&quot;: &quot;05CIOC43AFE9DNOXI8G7&quot;,
-            &quot;secret_key&quot;: &quot;pNAoWVvhzpsNacXGitmcgxYEYBIXQtEhkQadQ1Hl&quot;
+            &quot;access_key&quot;: &lt;your key&gt;,
+            &quot;secret_key&quot;: &lt;your key&gt;
         }
     ],
     &quot;swift_keys&quot;: [
         {
             &quot;user&quot;: &quot;s3user:swift&quot;,
-            &quot;secret_key&quot;: &quot;IozMCLdXJXSvPToXq7md89wP349Yo6aGbKtS1oQD&quot;
+            &quot;secret_key&quot;: &lt;your key&gt;
         }
     ],
     &quot;caps&quot;: [],
@@ -4780,9 +4780,9 @@ The output will contain the access and secret keys for the s3user and a secret k
 }
 </code></pre>
 <p>2). Verify that the subuser has access to at least one bucket and list the buckets with a swift command:</p>
-<pre><code>swift -A http://mon3.pvgl.me.corp/auth/1.0 -U s3user:swift -K '{SECRET_KEY_FROM_STEP_1}' list
+<pre><code>swift -A http://mon3.sha.me.corp/auth/1.0 -U s3user:swift -K '{SECRET_KEY_FROM_STEP_1}' list
 
-admin:~ # swift -A http://mon3.pvgl.me.corp/auth/1.0 -U s3user:swift -K 'uF7jOlpW0X9TeAyRCDrUfQMCLutcPtSYDJxBYNYk' list
+admin:~ # swift -A http://mon3.sha.me.corp/auth/1.0 -U s3user:swift -K '&lt;your key&gt;' list
 S3CMDTEST
 </code></pre>
 <h5 id="task-2-use-the-swift-command-to-access-a-file-created-with-the-s3cmd-tool">Task 2: Use the swift command to access a file created with the S3cmd tool</h5>
@@ -4791,7 +4791,7 @@ and since the RADOS gateway is built to be inter-operable with both, you can use
 <pre><code>swift -A http://mon3.example.net/auth/1.0 -U s3user:swift -K '{SECRET_KEY_FROM_STEP_1}' download -a 
 </code></pre>
 <p>An example of the command is listed here:</p>
-<pre><code>admin:~ # swift -A http://mon3.pvgl.me.corp/auth/1.0 -U s3user:swift -K 'uF7jOlpW0X9TeAyRCDrUfQMCLutcPtSYDJxBYNYk' download -a
+<pre><code>admin:~ # swift -A http://mon3.sha.me.corp/auth/1.0 -U s3user:swift -K '&lt;your key&gt;' download -a
 </code></pre>
 <p>Although we have taken a shortcut by using the -a option (meaning grab every object this user has access to), it illustrates the tool’s capability. 
 We’ve uploaded the newfile with S3, we’ve retrieved it with swift.</p>
@@ -5038,7 +5038,7 @@ id pool       namespace image    snap device
 0  rbd-images           barfoo   -    /dev/rbd0
 1  cow-pool             cow-base -    /dev/rbd1
 </code></pre>
-<p>3). Note the rbd index number (e.g. rbd0, rbd1) associated with the cow-base image:</p>
+<p>3). Note the rbd index numbgr (e.g. rbd0, rbd1) associated with the cow-base image:</p>
 <pre><code>RBD ___1____
 </code></pre>
 <p>4). View the devices in /dev. Note the device name(s)</p>
@@ -5051,7 +5051,7 @@ total 0
 drwxr-xr-x 2 root root 60 Jan  7 10:14 cow-pool
 drwxr-xr-x 2 root root 60 Jan  6 23:48 rbd-images
 </code></pre>
-<p>5). View the block device:(use the device number from step above)</p>
+<p>5). View the block device:(use the device numbgr from step above)</p>
 <pre><code>admin:~ # fdisk -l /dev/rbd1
 Disk /dev/rbd1: 1 GiB, 1073741824 bytes, 2097152 sectors
 Units: sectors of 1 * 512 = 512 bytes
@@ -5353,7 +5353,7 @@ mount error 22 = Invalid argument
 <p>2). Take secret key value found in the <code>/etc/ceph/ceph.client.admin.keyring</code> file and put it in a new file:</p>
 <pre><code>admin:~ # cat /etc/ceph/ceph.client.admin.keyring
 [client.admin]
-        key = AQD6pHpfAAAAABAAHJvkvLhOKZyQxm9lgnR5Qg==
+        key = &lt;your key&gt;
         caps mds = &quot;allow *&quot;
         caps mon = &quot;allow *&quot;
         caps osd = &quot;allow *&quot;
@@ -5361,7 +5361,7 @@ mount error 22 = Invalid argument
 </code></pre>
 <p>3). Create a new file and paste the secret key value into it:</p>
 <pre><code>admin:~ # vi /etc/ceph/admin.secret
-Put the key value AQD6pHpfAAAAABAAHJvkvLhOKZyQxm9lgnR5Qg== into the file and save it.
+Put the key value &lt;your key&gt; into the file and save it.
 </code></pre>
 <p>4). Change the permissions of the file to be read only by the user:</p>
 <pre><code>admin:~ # ls -l /etc/ceph/admin.secret
