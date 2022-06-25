@@ -1,12 +1,12 @@
-# Kubernetes Tutourials: SLES@Aliyun
+# Kubernetes Tutourials: openSUSE@Aliyun
+
+Since SLE 15, you can install SUSE CaaS Platform 4 which uses Kubeadm.
 
 ## Deployment
 
 ### Preparation
 
 Register Aliyun account via [Alibaba Cloud home console](https://home.console.aliyun.com/home/dashboard/ProductAndService).
-
-Since SLE 15, you can install SUSE CaaS Platform 4 which uses Kubeadm.
 
 Request three Elastic Computer Service(ECS) instances with below sizing:
 
@@ -249,10 +249,10 @@ Perform on all VMs playing work nodes.
 Verify status on master node.
 ```
 root@cka001:~# kubectl get node
-NAME     STATUS   ROLES                  AGE     VERSION
-cka001   Ready    control-plane,master   24m     v1.23.8
-cka002   Ready    <none>                 9m39s   v1.23.8
-cka003   Ready    <none>                 9m27s   v1.23.8
+NAME    STATUS   ROLES                  AGE     VERSION
+leap1   Ready    control-plane,master   16m     v1.23.8
+leap2   Ready    <none>                 9m39s   v1.23.8
+leap3   Ready    <none>                 9m51s   v1.23.8
 ```
 
 ### Install Flannel
@@ -320,9 +320,7 @@ Clean up rule of `IPVS` if using `IPVS`.
 Two references I used.
 
 * [How to install kubernetes in Suse Linux enterprize server 15 virtual machines](https://stackoverflow.com/questions/62795930/how-to-install-kubernetes-in-suse-linux-enterprize-server-15-virtual-machines)
-
 * [How to Install Kubernetes Cluster in openSUSE Leap 15.1](https://nugi.abdiansyah.com/how-to-kubernetes-in-opensuse-leap-15-1-hardest-way/)
-
 
 
 
