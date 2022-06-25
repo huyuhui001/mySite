@@ -1,0 +1,700 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="canonical" href="https://huyuhui001.github.io/mySite/index.html/cloud/KubernetesTutorials-Aliyun-Ubuntu/">
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-7.3.6">
+    
+    
+      
+        <title>Kubernetes Tutourials: Ubuntu@Aliyun - MEMO</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.a57b2b03.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.3f5d1f46.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#2094f3">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+    
+      
+
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="blue" data-md-color-accent="deep-blue">
+  
+    
+    <script>function __prefix(e){return new URL("../..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#kubernetes-tutourials-ubuntualiyun" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="MEMO" class="md-header__button md-logo" aria-label="MEMO" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            MEMO
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Kubernetes Tutourials: Ubuntu@Aliyun
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="MEMO" class="md-nav__button md-logo" aria-label="MEMO" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    MEMO
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../linux/" class="md-nav__link">
+        Linux
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../python/" class="md-nav__link">
+        Python
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        Cloud
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../about/" class="md-nav__link">
+        About
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#deployment" class="md-nav__link">
+    Deployment
+  </a>
+  
+    <nav class="md-nav" aria-label="Deployment">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#preparation" class="md-nav__link">
+    Preparation
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#initialize-vms" class="md-nav__link">
+    Initialize VMs
+  </a>
+  
+    <nav class="md-nav" aria-label="Initialize VMs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configure-etchosts-file" class="md-nav__link">
+    Configure /etc/hosts file
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#disable-firewall" class="md-nav__link">
+    Disable firewall
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#turn-off-swap" class="md-nav__link">
+    Turn off swap
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#set-timezone-and-locale" class="md-nav__link">
+    Set timezone and locale
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kernel-setting" class="md-nav__link">
+    Kernel setting
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#install-containerd" class="md-nav__link">
+    Install Containerd
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#install-nerdctl" class="md-nav__link">
+    Install nerdctl
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#install-kubeadm" class="md-nav__link">
+    Install kubeadm
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#setup-master-node" class="md-nav__link">
+    Setup Master Node
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#setup-work-nodes" class="md-nav__link">
+    Setup Work Nodes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#install-flannel" class="md-nav__link">
+    Install Flannel
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#check-cluster-status" class="md-nav__link">
+    Check Cluster Status
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reset-cluster" class="md-nav__link">
+    Reset cluster
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="kubernetes-tutourials-ubuntualiyun">Kubernetes Tutourials: Ubuntu@Aliyun</h1>
+<h2 id="deployment">Deployment</h2>
+<h3 id="preparation">Preparation</h3>
+<p>Register Aliyun account via <a href="https://home.console.aliyun.com/home/dashboard/ProductAndService">Alibaba Cloud home console</a>.</p>
+<p>Request three Elastic Computer Service(ECS) instances with below sizing:</p>
+<ul>
+<li>System: 2vCPU+4GiB</li>
+<li>OS: Ubuntu  20.04 x86_64</li>
+<li>Instance Type: ecs.sn1.medium </li>
+<li>Instance Name: cka001, cka002, cka003</li>
+<li>Network: both public IPs and private IPs</li>
+<li>Maximum Bandwidth: 100Mbps (Peak Value)</li>
+<li>Cloud disk: 40GiB</li>
+<li>Billing Method: Preemptible instance (spot price)</li>
+</ul>
+<p>Generate SSH key pairs with name <code>cka-key-pair</code> in local directcory <code>/opt</code>.</p>
+<p>Change access control to <code>400</code> per security required by command <code>sudo chmod 400 cka-key-pair.pem</code>.
+cka003
+Access remote cka servers via command <code>ssh -i cka-key-pair.pem root@&lt;your public ip address&gt;</code></p>
+<h3 id="initialize-vms">Initialize VMs</h3>
+<h4 id="configure-etchosts-file">Configure /etc/hosts file</h4>
+<p>Add private IPs in the <code>/etc/hosts</code> file in all VMs.</p>
+<h4 id="disable-firewall">Disable firewall</h4>
+<p>Disable firewall by command <code>ufw disable</code> in all VMs.</p>
+<h3 id="turn-off-swap">Turn off swap</h3>
+<p>Turn off swap by command <code>swapoff -a</code> in all VMs.</p>
+<h3 id="set-timezone-and-locale">Set timezone and locale</h3>
+<p>Set timezone and local for all VMs. For ECS with Ubuntu 20.04 version created by Aliyun, this step is not needed.</p>
+<pre><code># ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+# sudo echo 'LANG=&quot;en_US.UTF-8&quot;' &gt;&gt; /etc/profile
+# source /etc/profile
+</code></pre>
+<p>Something like this:</p>
+<pre><code>root@cka001:~# ll /etc/localtime
+lrwxrwxrwx 1 root root 33 May 24 18:14 /etc/localtime -&gt; /usr/share/zoneinfo/Asia/Shanghai
+</code></pre>
+<h3 id="kernel-setting">Kernel setting</h3>
+<p>Perform below kernel setting in all VMs.</p>
+<p>Create file <code>/etc/modules-load.d/containerd.conf</code> to set up containerd configure file.
+It's to load two modules <code>overlay</code> and <code>br_netfilter</code>.</p>
+<p>Service <code>containerd</code> depends on <code>overlay</code> filesystem. Sometimes referred to as union-filesystems. An <a href="https://developer.aliyun.com/article/660712">overlay-filesystem</a> tries to present a filesystem which is the result over overlaying one filesystem on top of the other. </p>
+<p>The <code>br_netfilter</code> module is required to enable transparent masquerading and to facilitate Virtual Extensible LAN (VxLAN) traffic for communication between Kubernetes pods across the cluster. </p>
+<pre><code># cat &lt;&lt;EOF | sudo tee /etc/modules-load.d/containerd.conf
+overlay
+br_netfilter
+EOF
+</code></pre>
+<p>Load <code>overlay</code> and <code>br_netfilter</code> modules.</p>
+<pre><code># sudo modprobe overlay
+# sudo modprobe br_netfilter
+</code></pre>
+<p>Create file <code>99-kubernetes-cri.conf</code> to set up configure file for Kubernetes CRI.</p>
+<p>Set <code>net/bridge/bridge-nf-call-iptables=1</code> to ensure simple configurations (like Docker with a bridge) work correctly with the iptables proxy. <a href="https://cloud.tencent.com/developer/article/1828060">Why <code>net/bridge/bridge-nf-call-iptables=1</code> need to be enable by Kubernetes</a>.</p>
+<p>IP forwarding is also known as routing. When it comes to Linux, it may also be called Kernel IP forwarding because it uses the kernel variable <code>net.ipv4.ip_forward</code> to enable or disable the IP forwarding feature. The default preset value is <code>ip_forward=0</code>. Hence, the Linux IP forwarding feature is disabled by default.</p>
+<pre><code># cat &lt;&lt;EOF | sudo tee /etc/sysctl.d/99-kubernetes-cri.conf
+net.bridge.bridge-nf-call-iptables  = 1
+net.ipv4.ip_forward                 = 1
+net.bridge.bridge-nf-call-ip6tables = 1
+EOF
+</code></pre>
+<p>The <code>sysctl</code> command reads the information from the <code>/proc/sys</code> directory. <code>/proc/sys</code> is a virtual directory that contains file objects that can be used to view and set the current kernel parameters.</p>
+<p>By commadn <code>sysctl -w net.ipv4.ip_forward=1</code>, the change takes effect immediately, but it is not persistent. After a system reboot, the default value is loaded. Write the settings to <code>/etc/sysctl.conf</code> is to set a parameter permanently, you’ll need to  or another configuration file in the /etc/sysctl.d directory:</p>
+<pre><code>sudo sysctl --system
+</code></pre>
+<h3 id="install-containerd">Install Containerd</h3>
+<p>Install Containerd sevice fro all VMs.</p>
+<p>Backup source file.</p>
+<pre><code># sudo cp /etc/apt/sources.list /etc/apt/sources.list.bak
+</code></pre>
+<p>Add proper repo sources. For ECS with Ubuntu 20.04 version created by Aliyun, this step is not needed.</p>
+<pre><code>cat &gt; /etc/apt/sources.list &lt;&lt; EOF
+deb http://mirrors.cloud.aliyuncs.com/ubuntu/ focal main restricted
+deb-src http://mirrors.cloud.aliyuncs.com/ubuntu/ focal main restricted
+deb http://mirrors.cloud.aliyuncs.com/ubuntu/ focal-updates main restricted
+deb-src http://mirrors.cloud.aliyuncs.com/ubuntu/ focal-updates main restricted
+deb http://mirrors.cloud.aliyuncs.com/ubuntu/ focal universe
+deb-src http://mirrors.cloud.aliyuncs.com/ubuntu/ focal universe
+deb http://mirrors.cloud.aliyuncs.com/ubuntu/ focal-updates universe
+deb-src http://mirrors.cloud.aliyuncs.com/ubuntu/ focal-updates universe
+deb http://mirrors.cloud.aliyuncs.com/ubuntu/ focal multiverse
+deb-src http://mirrors.cloud.aliyuncs.com/ubuntu/ focal multiverse
+deb http://mirrors.cloud.aliyuncs.com/ubuntu/ focal-updates multiverse
+deb-src http://mirrors.cloud.aliyuncs.com/ubuntu/ focal-updates multiverse
+deb http://mirrors.cloud.aliyuncs.com/ubuntu/ focal-backports main restricted universe multiverse
+deb-src http://mirrors.cloud.aliyuncs.com/ubuntu/ focal-backports main restricted universe multivers
+deb http://mirrors.cloud.aliyuncs.com/ubuntu focal-security main restricted
+deb-src http://mirrors.cloud.aliyuncs.com/ubuntu focal-security main restricted
+deb http://mirrors.cloud.aliyuncs.com/ubuntu focal-security universe
+deb-src http://mirrors.cloud.aliyuncs.com/ubuntu focal-security universe
+# deb http://mirrors.cloud.aliyuncs.com/ubuntu focal-security multiverse
+# deb-src http://mirrors.cloud.aliyuncs.com/ubuntu focal-security multiverse
+EOF
+</code></pre>
+<p>Install Containered.</p>
+<pre><code># sudo apt-get update &amp;&amp; sudo apt-get install -y containerd
+</code></pre>
+<p>Configure Containerd. Modify file <code>/etc/containerd/config.toml</code>.</p>
+<pre><code># sudo mkdir -p /etc/containerd
+# containerd config default | sudo tee /etc/containerd/config.toml
+# vi /etc/containerd/config.toml
+</code></pre>
+<p>Update <code>sandbox_image</code> with new value <code>"registry.aliyuncs.com/google_containers/pause:3.6"</code>.
+Update <code>SystemdCgroup</code> with new value <code>true</code>.</p>
+<pre><code>[plugins]
+  [plugins.&quot;io.containerd.gc.v1.scheduler&quot;]
+
+  [plugins.&quot;io.containerd.grpc.v1.cri&quot;]
+    sandbox_image = &quot;registry.aliyuncs.com/google_containers/pause:3.6&quot;
+
+    [plugins.&quot;io.containerd.grpc.v1.cri&quot;.cni]
+    [plugins.&quot;io.containerd.grpc.v1.cri&quot;.containerd]
+      [plugins.&quot;io.containerd.grpc.v1.cri&quot;.containerd.default_runtime]
+        [plugins.&quot;io.containerd.grpc.v1.cri&quot;.containerd.default_runtime.options]
+      [plugins.&quot;io.containerd.grpc.v1.cri&quot;.containerd.runtimes]
+        [plugins.&quot;io.containerd.grpc.v1.cri&quot;.containerd.runtimes.runc]
+
+          [plugins.&quot;io.containerd.grpc.v1.cri&quot;.containerd.runtimes.runc.options]
+            SystemdCgroup = true
+</code></pre>
+<p>Restart Containerd service.</p>
+<pre><code># sudo systemctl restart containerd
+# sudo systemctl status containerd
+</code></pre>
+<h3 id="install-nerdctl">Install nerdctl</h3>
+<p>Install nerdctl sevice fro all VMs.</p>
+<p>The goal of <a href="https://github.com/containerd/nerdctl"><code>nerdctl</code></a> is to facilitate experimenting the cutting-edge features of containerd that are not present in Docker.</p>
+<pre><code># wget https://github.com/containerd/nerdctl/releases/download/v0.21.0/nerdctl-0.21.0-linux-amd64.tar.gz
+# tar -zxvf nerdctl-0.21.0-linux-amd64.tar.gz
+# cp nerdctl /usr/bin/
+</code></pre>
+<p>Verify nerdctl.</p>
+<pre><code># nerdctl --help
+</code></pre>
+<p>To list local Kubernetes containers.</p>
+<pre><code># nerdctl -n k8s.io ps
+</code></pre>
+<h3 id="install-kubeadm">Install kubeadm</h3>
+<p>Update <code>apt-transport-https</code>,  <code>ca-certificates</code>, and <code>curl</code>.</p>
+<pre><code># apt-get update &amp;&amp; sudo apt-get install -y apt-transport-https ca-certificates curl
+</code></pre>
+<p>Install gpg certificate.</p>
+<pre><code># curl https://mirrors.aliyun.com/kubernetes/apt/doc/apt-key.gpg | apt-key add -
+</code></pre>
+<p>Add Kubernetes repo.</p>
+<pre><code># cat &lt;&lt;EOF &gt;/etc/apt/sources.list.d/kubernetes.list
+deb https://mirrors.aliyun.com/kubernetes/apt/ kubernetes-xenial main
+EOF
+</code></pre>
+<p>Update  and install dependencied packages.</p>
+<pre><code># apt-get update
+# apt-get install ebtables
+# apt-get install libxtables12=1.8.4-3ubuntu2
+# apt-get upgrade iptables
+</code></pre>
+<p>Check available versions of kubeadm.</p>
+<pre><code># apt policy kubeadm
+</code></pre>
+<p>Install <code>1.23.8-00</code> version of kubeadm and will upgrade to <code>1.24.2</code> later.</p>
+<pre><code># sudo apt-get -y install kubelet=1.23.8-00 kubeadm=1.23.8-00 kubectl=1.23.8-00 --allow-downgrades
+</code></pre>
+<h3 id="setup-master-node">Setup Master Node</h3>
+<p>Set up Control Plane on VM playing master node.</p>
+<p>Check kubeadm default parameters for initialization.</p>
+<pre><code># kubeadm config print init-defaults
+</code></pre>
+<p>Dry rune and run. Save the output, which will be used later on work nodes.
+Be noted that <code>10.244.0.0/16</code> is default range of flannel. If it's changed here, please do change the same when deploy flannel. </p>
+<pre><code># kubeadm init --dry-run --pod-network-cidr=10.244.0.0/16 --image-repository=registry.aliyuncs.com/google_containers --kubernetes-version=v1.23.8
+
+# kubeadm init --pod-network-cidr=10.244.0.0/16 --image-repository=registry.aliyuncs.com/google_containers --kubernetes-version=v1.23.8
+
+</code></pre>
+<p>Set <code>kubeconfig</code> file for current user (here it's <code>root</code>).</p>
+<pre><code># mkdir -p $HOME/.kube
+# sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+# sudo chown $(id -u):$(id -g) $HOME/.kube/config
+</code></pre>
+<p>Set <code>kubectl</code> auto-completion.</p>
+<pre><code># apt install -y bash-completion
+# source /usr/share/bash-completion/bash_completion
+# source &lt;(kubectl completion bash)
+# echo &quot;source &lt;(kubectl completion bash)&quot; &gt;&gt; ~/.bashrc
+</code></pre>
+<h3 id="setup-work-nodes">Setup Work Nodes</h3>
+<p>Perform on all VMs playing work nodes.</p>
+<pre><code># kubeadm join &lt;your master node ip&gt;:6443 --token &lt;token generated by kubeadm init&gt; --discovery-token-ca-cert-hash &lt;hash key generated by kubeadm init&gt;
+</code></pre>
+<p>Verify status on master node.</p>
+<pre><code>root@cka001:~# kubectl get node
+NAME     STATUS   ROLES                  AGE     VERSION
+cka001   Ready    control-plane,master   24m     v1.23.8
+cka002   Ready    &lt;none&gt;                 9m39s   v1.23.8
+cka003   Ready    &lt;none&gt;                 9m27s   v1.23.8
+</code></pre>
+<h3 id="install-flannel">Install Flannel</h3>
+<p><a href="https://github.com/flannel-io/flannel">Flannel</a> is a simple and easy way to configure a layer 3 network fabric designed for Kubernetes.</p>
+<p>Deploy Flannel on master node.
+In the kube-flannel.yml we can get the default network setting of Flannel, which is same with <code>--pod-network-cidr=10.244.0.0/16</code> we defined before when we initiated <code>kubeadm</code>.</p>
+<pre><code>  net-conf.json: |
+    {
+      &quot;Network&quot;: &quot;10.244.0.0/16&quot;,
+      &quot;Backend&quot;: {
+        &quot;Type&quot;: &quot;vxlan&quot;
+      }
+    }
+</code></pre>
+<pre><code>root@cka001:~# kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+Warning: policy/v1beta1 PodSecurityPolicy is deprecated in v1.21+, unavailable in v1.25+
+podsecuritypolicy.policy/psp.flannel.unprivileged created
+clusterrole.rbac.authorization.k8s.io/flannel created
+clusterrolebinding.rbac.authorization.k8s.io/flannel created
+serviceaccount/flannel created
+configmap/kube-flannel-cfg created
+daemonset.apps/kube-flannel-ds created
+</code></pre>
+<h3 id="check-cluster-status">Check Cluster Status</h3>
+<p>Perform <code>kubectl cluster-info</code> command on master node we will get below information.</p>
+<ul>
+<li>Kubernetes control plane is running at https://<mster node ip>:6443</li>
+<li>CoreDNS is running at https://<mster node ip>:6443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy</li>
+</ul>
+<pre><code># kubectl cluster-info
+# kubectl get nodes -owide
+# kubectl get pod -A
+</code></pre>
+<h3 id="reset-cluster">Reset cluster</h3>
+<p>CAUTION: below steps will destroy current cluster. </p>
+<p>Delete all nodes in the cluster.</p>
+<pre><code># kubeadm reset
+</code></pre>
+<p>Clean up rule of <code>iptables</code>.</p>
+<pre><code># iptables -F &amp;&amp; iptables -t nat -F &amp;&amp; iptables -t mangle -F &amp;&amp; iptables -X
+</code></pre>
+<p>Clean up rule of <code>IPVS</code> if using <code>IPVS</code>.</p>
+<pre><code># ipvsadm --clear
+</code></pre>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        
+<footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        
+          Made with
+          <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+            Material for MkDocs
+          </a>
+        
+        
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.fcfe8b6d.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.b1047164.min.js"></script>
+      
+    
+  </body>
+</html>
