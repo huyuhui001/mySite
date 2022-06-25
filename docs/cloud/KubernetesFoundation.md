@@ -1078,11 +1078,11 @@ Dependent objects also have an `ownerReferences.blockOwnerDeletion` field that t
 
 * [Tutorials: local deployment](KubernetesTutorials-Local-Deploy.md)
 
-* [Tutorials: SAP BTP trail account](KubernetesTutorials-BTP-trail.md)
+* [Tutorials: Kyma@SAP BTP](KubernetesTutorials-BTP-trail.md)
 
-* [Tutorials: Aliyun Account](KubernetesTutorials-Aliyun.md)
+* [Tutorials: Ubuntu@Aliyun](KubernetesTutorials-Aliyun-Ubuntu.md)
 
-
+* [Tutorials: openSUSE@Aliyun](KubernetesTutorials-Aliyun-openSUSE.md)
 
 
 

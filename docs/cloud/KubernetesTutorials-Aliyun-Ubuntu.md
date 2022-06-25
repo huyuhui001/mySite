@@ -1,8 +1,8 @@
-# Kubernetes Tutourials in Aliyun
+# Kubernetes Tutourials: Ubuntu@Aliyun
 
 ## Deployment
 
-### Sizing
+### Preparation
 
 Register Aliyun account via [Alibaba Cloud home console](https://home.console.aliyun.com/home/dashboard/ProductAndService).
 
@@ -10,17 +10,17 @@ Request three Elastic Computer Service(ECS) instances with below sizing:
 
 * System: 2vCPU+4GiB
 * OS: Ubuntu  20.04 x86_64
-* Instance type: ecs.sn1.medium 
-* Instance name: cka001, cka002, cka003
+* Instance Type: ecs.sn1.medium 
+* Instance Name: cka001, cka002, cka003
 * Network: both public IPs and private IPs
 * Maximum Bandwidth: 100Mbps (Peak Value)
 * Cloud disk: 40GiB
-* Pay type: Pay-As-You-Go-Preemptible (spot)
+* Billing Method: Preemptible instance (spot price)
 
-Generate SSH key pairs with name `cka-key-pair` in directory `/opt`.
+Generate SSH key pairs with name `cka-key-pair` in local directcory `/opt`.
 
 Change access control to `400` per security required by command `sudo chmod 400 cka-key-pair.pem`.
-
+cka003
 Access remote cka servers via command `ssh -i cka-key-pair.pem root@<your public ip address>`
 
 
