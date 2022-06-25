@@ -16,7 +16,7 @@
     
     
       
-        <title>Kubernetes Tutourials: SLES@Aliyun - MEMO</title>
+        <title>Kubernetes Tutourials: openSUSE@Aliyun - MEMO</title>
       
     
     
@@ -67,7 +67,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#kubernetes-tutourials-slesaliyun" class="md-skip">
+        <a href="#kubernetes-tutourials-opensusealiyun" class="md-skip">
           Skip to content
         </a>
       
@@ -99,7 +99,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Kubernetes Tutourials: SLES@Aliyun
+              Kubernetes Tutourials: openSUSE@Aliyun
             
           </span>
         </div>
@@ -417,11 +417,11 @@
               
                 
                 
-                <h1 id="kubernetes-tutourials-slesaliyun">Kubernetes Tutourials: SLES@Aliyun</h1>
+                <h1 id="kubernetes-tutourials-opensusealiyun">Kubernetes Tutourials: openSUSE@Aliyun</h1>
+<p>Since SLE 15, you can install SUSE CaaS Platform 4 which uses Kubeadm.</p>
 <h2 id="deployment">Deployment</h2>
 <h3 id="preparation">Preparation</h3>
 <p>Register Aliyun account via <a href="https://home.console.aliyun.com/home/dashboard/ProductAndService">Alibaba Cloud home console</a>.</p>
-<p>Since SLE 15, you can install SUSE CaaS Platform 4 which uses Kubeadm.</p>
 <p>Request three Elastic Computer Service(ECS) instances with below sizing:</p>
 <ul>
 <li>System: 2vCPU+4GiB</li>
@@ -581,10 +581,10 @@ Be noted that <code>10.244.0.0/16</code> is default range of flannel. If it's ch
 </code></pre>
 <p>Verify status on master node.</p>
 <pre><code>root@cka001:~# kubectl get node
-NAME     STATUS   ROLES                  AGE     VERSION
-cka001   Ready    control-plane,master   24m     v1.23.8
-cka002   Ready    &lt;none&gt;                 9m39s   v1.23.8
-cka003   Ready    &lt;none&gt;                 9m27s   v1.23.8
+NAME    STATUS   ROLES                  AGE     VERSION
+leap1   Ready    control-plane,master   16m     v1.23.8
+leap2   Ready    &lt;none&gt;                 9m39s   v1.23.8
+leap3   Ready    &lt;none&gt;                 9m51s   v1.23.8
 </code></pre>
 <h3 id="install-flannel">Install Flannel</h3>
 <p><a href="https://github.com/flannel-io/flannel">Flannel</a> is a simple and easy way to configure a layer 3 network fabric designed for Kubernetes.</p>
@@ -630,12 +630,8 @@ daemonset.apps/kube-flannel-ds created
 </code></pre>
 <p>Two references I used.</p>
 <ul>
-<li>
-<p><a href="https://stackoverflow.com/questions/62795930/how-to-install-kubernetes-in-suse-linux-enterprize-server-15-virtual-machines">How to install kubernetes in Suse Linux enterprize server 15 virtual machines</a></p>
-</li>
-<li>
-<p><a href="https://nugi.abdiansyah.com/how-to-kubernetes-in-opensuse-leap-15-1-hardest-way/">How to Install Kubernetes Cluster in openSUSE Leap 15.1</a></p>
-</li>
+<li><a href="https://stackoverflow.com/questions/62795930/how-to-install-kubernetes-in-suse-linux-enterprize-server-15-virtual-machines">How to install kubernetes in Suse Linux enterprize server 15 virtual machines</a></li>
+<li><a href="https://nugi.abdiansyah.com/how-to-kubernetes-in-opensuse-leap-15-1-hardest-way/">How to Install Kubernetes Cluster in openSUSE Leap 15.1</a></li>
 </ul>
                 
               
