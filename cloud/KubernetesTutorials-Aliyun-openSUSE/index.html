@@ -418,7 +418,10 @@
                 
                 
                 <h1 id="kubernetes-tutourials-opensusealiyun">Kubernetes Tutourials: openSUSE@Aliyun</h1>
-<p>Since SLE 15, you can install SUSE CaaS Platform 4 which uses Kubeadm.</p>
+<p>Before, Kubic from openSUSE is focusing on kubeadm as open source project. CaaSP is comercial product for Kubenetes, compared with Kubic. </p>
+<p>After SUSE aand Rancher mergered, their fucus on Kubernetes turn to <a href="https://rancher.com/docs/k3s/latest/en/">K3s</a>/<a href="https://rancher.com/docs/rke/latest/en/">RKE</a>/<a href="https://docs.rke2.io/">RKE2</a> and <a href="https://lists.opensuse.org/archives/list/kubic@lists.opensuse.org/thread/23ODJTP4PLGC3HWFQNA2MD4ETFSNW4KV/">MicroOS</a>, not Kubic nor CaaSP. </p>
+<p>Hence, for learning purpose, it's recommended to use K3s, for comercial perspective, may consider RKE or RKE2. </p>
+<p>Below demo only shows deployment of native Kubernetes on openSUSE 15sp3, which may just a refernce with native deployment on Ubuntu or RedHat. </p>
 <h2 id="deployment">Deployment</h2>
 <h3 id="preparation">Preparation</h3>
 <p>Register Aliyun account via <a href="https://home.console.aliyun.com/home/dashboard/ProductAndService">Alibaba Cloud home console</a>.</p>
@@ -455,8 +458,11 @@
 lrwxrwxrwx 1 root root 33 May 24 18:14 /etc/localtime -&gt; /usr/share/zoneinfo/Asia/Shanghai
 </code></pre>
 <h3 id="kernel-setting">Kernel setting</h3>
-<p>Load <code>overlay</code> and <code>br_netfilter</code> modules.</p>
-<pre><code># sudo modprobe overlay
+<p>Load <code>overlay</code> and <code>br_netfilter</code> modules. Check the active module loaded list. The removed module is not on the module loaded list.</p>
+<pre><code># lsmod | grep overlay
+# lsmod | grep br_netfilter
+
+# sudo modprobe overlay
 # sudo modprobe br_netfilter
 </code></pre>
 <p>Set <code>net/bridge/bridge-nf-call-iptables=1</code> to ensure simple configurations (like Docker with a bridge) work correctly with the iptables proxy. <a href="https://cloud.tencent.com/developer/article/1828060">Why <code>net/bridge/bridge-nf-call-iptables=1</code> need to be enable by Kubernetes</a>.</p>

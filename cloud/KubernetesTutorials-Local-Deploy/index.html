@@ -289,16 +289,50 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#kubectl" class="md-nav__link">
-    kubectl
+  <a href="#installing-kubeadm-kubelet-and-kubectl" class="md-nav__link">
+    Installing kubeadm, kubelet and kubectl
+  </a>
+  
+    <nav class="md-nav" aria-label="Installing kubeadm, kubelet and kubectl">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#turn-off-swap" class="md-nav__link">
+    Turn off swap
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#minikube" class="md-nav__link">
-    Minikube
+  <a href="#kernel-setting" class="md-nav__link">
+    Kernel setting
   </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#install-containerd" class="md-nav__link">
+    Install Containerd
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#install-nerdctl" class="md-nav__link">
+    Install nerdctl
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#install-kubernetes-tools" class="md-nav__link">
+    Install Kubernetes Tools
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -310,15 +344,15 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#kind" class="md-nav__link">
-    kind
+  <a href="#kind-optional" class="md-nav__link">
+    kind (optional)
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#kubeadm" class="md-nav__link">
-    kubeadm
+  <a href="#minikube-optional" class="md-nav__link">
+    Minikube (optional)
   </a>
   
 </li>
@@ -343,24 +377,209 @@
                 
                 <h1 id="tutorials-local-deployment">Tutorials: Local Deployment</h1>
 <h2 id="1installation">1.Installation</h2>
-<h3 id="kubectl">kubectl</h3>
-<p>Install <code>kubectl</code> by referring the <a href="https://kubernetes.io/docs/tasks/tools/">guidd</a>.</p>
-<p>Download <code>kubectl</code>.</p>
-<pre><code>james@lizard:/opt&gt; curl -LO &quot;https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl&quot;
+<h3 id="installing-kubeadm-kubelet-and-kubectl">Installing kubeadm, kubelet and kubectl</h3>
+<p>Prerequisite:</p>
+<ul>
+<li>2 GB or more of RAM per machine (any less will leave little room for your apps).</li>
+<li>2 CPUs or more.</li>
+<li>Full network connectivity between all machines in the cluster (public or private network is fine).</li>
+<li>Unique hostname, MAC address, and product_uuid for every node. See <a href="https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#verify-mac-address">here</a> for more details.</li>
+<li>Certain ports are open on your machines. See <a href="https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#check-required-ports">here</a> for more details. These <a href="https://kubernetes.io/docs/reference/ports-and-protocols/">required ports</a> need to be open in order for Kubernetes components to communicate with each other. Use command <code>nc 127.0.0.1 6443</code> to check if a port is open.</li>
+<li>Swap disabled. You MUST disable swap in order for the kubelet to work properly.</li>
+</ul>
+<h4 id="turn-off-swap">Turn off swap</h4>
+<p>Turn off swap by command <code>swapoff -a</code> in all VMs.</p>
+<pre><code># sudo swapoff -a
 </code></pre>
-<p>Install <code>kubectl</code>.</p>
-<pre><code>james@lizard:/opt&gt; sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+<h4 id="kernel-setting">Kernel setting</h4>
+<p>Load <code>overlay</code> and <code>br_netfilter</code> modules. Check the active module loaded list. The removed module is not on the module loaded list.</p>
+<pre><code># lsmod | grep overlay
+# lsmod | grep br_netfilter
 
-james@lizard:/opt&gt; l /usr/local/bin/kubectl
--rwxr-xr-x 1 root root 45711360 May 28 14:49 /usr/local/bin/kubectl*
+# sudo modprobe overlay
+# sudo modprobe br_netfilter
 </code></pre>
-<p>Test to ensure the version you installed is up-to-date:</p>
-<pre><code>james@lizard:/opt&gt; kubectl version --client
-WARNING: This version information is deprecated and will be replaced with the output from kubectl version --short.  Use --output=yaml|json to get the full version.
-Client Version: version.Info{Major:&quot;1&quot;, Minor:&quot;24&quot;, GitVersion:&quot;v1.24.1&quot;, GitCommit:&quot;3ddd0f45aa91e2f30c70734b175631bec5b5825a&quot;, GitTreeState:&quot;clean&quot;, BuildDate:&quot;2022-05-24T12:26:19Z&quot;, GoVersion:&quot;go1.18.2&quot;, Compiler:&quot;gc&quot;, Platform:&quot;linux/amd64&quot;}
-Kustomize Version: v4.5.4
+<p>Enable IP forwarding, known as routing or Kernel IP forwarding. The Linux IP forwarding feature is disabled by default.</p>
+<pre><code># sudo cat &lt;&lt;EOF &gt;&gt; /etc/sysctl.conf
+net.bridge.bridge-nf-call-iptables  = 1
+net.ipv4.ip_forward                 = 1
+net.ipv4.conf.all.forwarding        = 1
+EOF
 </code></pre>
-<h3 id="minikube">Minikube</h3>
+<p>Enable the change.</p>
+<pre><code># sudo sysctl --system
+</code></pre>
+<h4 id="install-containerd">Install Containerd</h4>
+<p>Install and enable Containerd service.</p>
+<pre><code># sudo zypper in containerd containerd-ctr
+
+# sudo systemctl enable containerd.service 
+# sudo systemctl start containerd.service 
+# sudo systemctl status containerd.service 
+</code></pre>
+<p>Configure Containerd. Modify file <code>/etc/containerd/config.toml</code>. 
+If file does not exist, execute the command <code>sudo mkdir -p /etc/containerd</code> to create it first.</p>
+<pre><code># sudo containerd config default | sudo tee /etc/containerd/config.toml
+# sudo vi /etc/containerd/config.toml
+</code></pre>
+<p>Update <code>sandbox_image</code> with new value <code>"registry.aliyuncs.com/google_containers/pause:3.6"</code>.
+Update <code>SystemdCgroup</code> with new value <code>true</code>.</p>
+<pre><code>[plugins]
+  [plugins.&quot;io.containerd.gc.v1.scheduler&quot;]
+
+  [plugins.&quot;io.containerd.grpc.v1.cri&quot;]
+    sandbox_image = &quot;registry.aliyuncs.com/google_containers/pause:3.6&quot;
+
+    [plugins.&quot;io.containerd.grpc.v1.cri&quot;.cni]
+    [plugins.&quot;io.containerd.grpc.v1.cri&quot;.containerd]
+      [plugins.&quot;io.containerd.grpc.v1.cri&quot;.containerd.default_runtime]
+        [plugins.&quot;io.containerd.grpc.v1.cri&quot;.containerd.default_runtime.options]
+      [plugins.&quot;io.containerd.grpc.v1.cri&quot;.containerd.runtimes]
+        [plugins.&quot;io.containerd.grpc.v1.cri&quot;.containerd.runtimes.runc]
+
+          [plugins.&quot;io.containerd.grpc.v1.cri&quot;.containerd.runtimes.runc.options]
+            SystemdCgroup = true
+</code></pre>
+<p>Restart Containerd service.</p>
+<pre><code># sudo systemctl restart containerd
+# sudo systemctl status containerd
+</code></pre>
+<h4 id="install-nerdctl">Install nerdctl</h4>
+<p>The goal of <a href="https://github.com/containerd/nerdctl"><code>nerdctl</code></a> is to facilitate experimenting the cutting-edge features of containerd that are not present in Docker.
+Refer to <a href="https://rootlesscontaine.rs/getting-started/containerd/">installation guide</a>.</p>
+<pre><code># wget https://github.com/containerd/nerdctl/releases/download/v0.21.0/nerdctl-0.21.0-linux-amd64.tar.gz
+# tar -zxvf nerdctl-0.21.0-linux-amd64.tar.gz
+# sudo cp nerdctl /usr/bin/
+</code></pre>
+<p>Verify nerdctl, e.g, list local Kubernetes containers.</p>
+<pre><code># nerdctl --help
+# nerdctl -n k8s.io ps
+</code></pre>
+<h4 id="install-kubernetes-tools">Install Kubernetes Tools</h4>
+<p>Install <code>kubeadm</code>, <code>kubelet</code>, <code>kubectl</code>.</p>
+<ul>
+<li><code>kubeadm</code>: the command to bootstrap the cluster.</li>
+<li><code>kubelet</code>: the component that runs on all of the machines in your cluster and does things like starting pods and containers.</li>
+<li><code>kubectl</code>: the command line util to talk to your cluster.</li>
+</ul>
+<p>Install CNI plugins (required for most pod network):</p>
+<pre><code># CNI_VERSION=&quot;v0.8.2&quot;
+# ARCH=&quot;amd64&quot;
+# sudo mkdir -p /opt/cni/bin
+# curl -L &quot;https://github.com/containernetworking/plugins/releases/download/${CNI_VERSION}/cni-plugins-linux-${ARCH}-${CNI_VERSION}.tgz&quot; | sudo tar -C /opt/cni/bin -xz
+</code></pre>
+<p>Install <code>crictl</code> (required for kubeadm / Kubelet Container Runtime Interface (CRI))</p>
+<pre><code># DOWNLOAD_DIR=/usr/local/bin
+# CRICTL_VERSION=&quot;v1.22.0&quot;
+# ARCH=&quot;amd64&quot;
+# curl -L &quot;https://github.com/kubernetes-sigs/cri-tools/releases/download/${CRICTL_VERSION}/crictl-${CRICTL_VERSION}-linux-${ARCH}.tar.gz&quot; | sudo tar -C $DOWNLOAD_DIR -xz
+</code></pre>
+<p>Install <code>kubeadm</code>, <code>kubelet</code>, <code>kubectl</code>.</p>
+<pre><code># DOWNLOAD_DIR=/usr/local/bin
+# RELEASE=&quot;$(curl -sSL https://dl.k8s.io/release/stable.txt)&quot;
+# ARCH=&quot;amd64&quot;
+# cd $DOWNLOAD_DIR
+# sudo curl -L --remote-name-all https://storage.googleapis.com/kubernetes-release/release/${RELEASE}/bin/linux/${ARCH}/{kubeadm,kubelet,kubectl}
+# sudo chmod +x {kubeadm,kubelet,kubectl}
+</code></pre>
+<p>Add a <code>kubelet</code> systemd service, enable and start kubelet</p>
+<pre><code># RELEASE_VERSION=&quot;v0.4.0&quot;
+# curl -sSL &quot;https://raw.githubusercontent.com/kubernetes/release/${RELEASE_VERSION}/cmd/kubepkg/templates/latest/deb/kubelet/lib/systemd/system/kubelet.service&quot; | sed &quot;s:/usr/bin:${DOWNLOAD_DIR}:g&quot; | sudo tee /etc/systemd/system/kubelet.service
+# sudo mkdir -p /etc/systemd/system/kubelet.service.d
+# curl -sSL &quot;https://raw.githubusercontent.com/kubernetes/release/${RELEASE_VERSION}/cmd/kubepkg/templates/latest/deb/kubeadm/10-kubeadm.conf&quot; | sed &quot;s:/usr/bin:${DOWNLOAD_DIR}:g&quot; | sudo tee /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+# systemctl enable --now kubelet
+# sudo systemctl status kubelet.service
+</code></pre>
+<p>The content of file <code>/etc/systemd/system/kubelet.service</code> is below.</p>
+<pre><code>[Unit]
+Description=kubelet: The Kubernetes Node Agent
+Documentation=https://kubernetes.io/docs/home/
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+ExecStart=/usr/local/bin/kubelet
+Restart=always
+StartLimitInterval=0
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+</code></pre>
+<p>The content of file <code>/etc/systemd/system/kubelet.service.d/10-kubeadm.conf</code> is below.</p>
+<pre><code># Note: This dropin only works with kubeadm and kubelet v1.11+
+[Service]
+Environment=&quot;KUBELET_KUBECONFIG_ARGS=--bootstrap-kubeconfig=/etc/kubernetes/bootstrap-kubelet.conf --kubeconfig=/etc/kubernetes/kubelet.conf&quot;
+Environment=&quot;KUBELET_CONFIG_ARGS=--config=/var/lib/kubelet/config.yaml&quot;
+# This is a file that &quot;kubeadm init&quot; and &quot;kubeadm join&quot; generates at runtime, populating the KUBELET_KUBEADM_ARGS variable dynamically
+EnvironmentFile=-/var/lib/kubelet/kubeadm-flags.env
+# This is a file that the user can use for overrides of the kubelet args as a last resort. Preferably, the user should use
+# the .NodeRegistration.KubeletExtraArgs object in the configuration files instead. KUBELET_EXTRA_ARGS should be sourced from this file.
+EnvironmentFile=-/etc/default/kubelet
+ExecStart=
+ExecStart=/usr/local/bin/kubelet $KUBELET_KUBECONFIG_ARGS $KUBELET_CONFIG_ARGS $KUBELET_KUBEADM_ARGS $KUBELET_EXTRA_ARGS
+</code></pre>
+<p>Enable kubelet service on boot:</p>
+<pre><code># sudo systemctl enable kubelet
+</code></pre>
+<p>At the moment, <code>kubelet.service</code> failed to start. 
+<code>kubelet</code> was just installed without proper configuration. <a href="https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/kubelet-integration/">Configuring each kubelet in your cluster using kubeadm</a></p>
+<h3 id="helm">Helm</h3>
+<p>Helm is the Kubernetes package manager. It doesn't come with Kubernetes. </p>
+<p>Three concepts of helm:</p>
+<ul>
+<li>A <em>Chart</em> is a Helm package. <ul>
+<li>It contains all of the resource definitions necessary to run an application, tool, or service inside of a Kubernetes cluster. </li>
+<li>Think of it like the Kubernetes equivalent of a Homebrew formula, an Apt dpkg, or a Yum RPM file.</li>
+</ul>
+</li>
+<li>A <em>Repository</em> is the place where charts can be collected and shared. <ul>
+<li>It's like Perl's CPAN archive or the Fedora Package Database, but for Kubernetes packages.</li>
+</ul>
+</li>
+<li>A <em>Release</em> is an instance of a chart running in a Kubernetes cluster. <ul>
+<li>One chart can often be installed many times into the same cluster. And each time it is installed, a new release is created. </li>
+<li>Consider a MySQL chart. If you want two databases running in your cluster, you can install that chart twice. Each one will have its own release, which will in turn have its own release name.</li>
+</ul>
+</li>
+</ul>
+<p>Reference:</p>
+<ul>
+<li><a href="https://helm.sh/docs/intro/install/">installation guide</a></li>
+<li><a href="https://github.com/helm/helm/releases">binary release</a></li>
+<li><a href="https://github.com/helm/helm">source code</a>.</li>
+</ul>
+<p>Helm Client Installation: </p>
+<pre><code>james@lizard:/opt&gt; curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+james@lizard:/opt&gt; chmod 700 get_helm.sh
+
+james@lizard:/opt&gt; ./get_helm.sh
+Downloading https://get.helm.sh/helm-v3.9.0-linux-amd64.tar.gz
+Verifying checksum... Done.
+Preparing to install helm into /usr/local/bin
+helm installed into /usr/local/bin/helm
+</code></pre>
+<p>Note:
+<a href="https://helm.sh/docs/helm/helm_init/"><code>helm init</code></a> does not exist in Helm 3, following the removal of Tiller. You no longer need to install Tiller in your cluster in order to use Helm.</p>
+<p><code>helm search</code> can be used to search two different types of source:</p>
+<ul>
+<li><code>helm search hub</code> searches the <a href="https://artifacthub.io/">Artifact Hub</a>, which lists helm charts from dozens of different repositories.</li>
+<li><code>helm search repo</code> searches the repositories that you have added to your local helm client (with helm repo add). This search is done over local data, and no public network connection is needed.</li>
+</ul>
+<h3 id="kind-optional">kind (optional)</h3>
+<p>Installing From Release Binaries, which are available on <a href="https://github.com/kubernetes-sigs/kind/releases">releases page</a>.
+Refer to <a href="https://kind.sigs.k8s.io/docs/user/quick-start/">Quich Start</a>.</p>
+<p>NOTE: <code>kind</code> does not require kubectl, but we will not be able to perform some of tasks without it. <code>kind</code> requires that you have Docker installed and configured.</p>
+<p>Download the binary and copy to <code>/usr/local/bin</code> directory.</p>
+<pre><code>james@lizard:/opt&gt; curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.14.0/kind-linux-amd64
+james@lizard:/opt&gt; chmod +x ./kind
+james@lizard:/opt&gt; sudo cp ./kind /usr/local/bin
+</code></pre>
+<p>To see all the clusters we have created.</p>
+<pre><code>james@lizard:/opt&gt; kind get clusters
+No kind clusters found.
+</code></pre>
+<h3 id="minikube-optional">Minikube (optional)</h3>
 <p>Install Minikube by referring to the <a href="https://minikube.sigs.k8s.io/docs/start/">guide</a>.</p>
 <p>Installation.</p>
 <pre><code>james@lizard:/opt&gt; curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
@@ -446,188 +665,6 @@ kubernetes-dashboard        1/1     1            1           5m54s
 </code></pre>
 <p>The dashboard looks like below.</p>
 <p><img alt="dashboard" src="../assets/003.png" /></p>
-<h3 id="helm">Helm</h3>
-<p>Helm is the Kubernetes package manager. It doesn't come with Kubernetes. </p>
-<p>Three concepts of helm:</p>
-<ul>
-<li>A <em>Chart</em> is a Helm package. <ul>
-<li>It contains all of the resource definitions necessary to run an application, tool, or service inside of a Kubernetes cluster. </li>
-<li>Think of it like the Kubernetes equivalent of a Homebrew formula, an Apt dpkg, or a Yum RPM file.</li>
-</ul>
-</li>
-<li>A <em>Repository</em> is the place where charts can be collected and shared. <ul>
-<li>It's like Perl's CPAN archive or the Fedora Package Database, but for Kubernetes packages.</li>
-</ul>
-</li>
-<li>A <em>Release</em> is an instance of a chart running in a Kubernetes cluster. <ul>
-<li>One chart can often be installed many times into the same cluster. And each time it is installed, a new release is created. </li>
-<li>Consider a MySQL chart. If you want two databases running in your cluster, you can install that chart twice. Each one will have its own release, which will in turn have its own release name.</li>
-</ul>
-</li>
-</ul>
-<p>Reference:</p>
-<ul>
-<li><a href="https://helm.sh/docs/intro/install/">installation guide</a></li>
-<li><a href="https://github.com/helm/helm/releases">binary release</a></li>
-<li><a href="https://github.com/helm/helm">source code</a>.</li>
-</ul>
-<p>Helm Client Installation: </p>
-<pre><code>james@lizard:/opt&gt; curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
-james@lizard:/opt&gt; chmod 700 get_helm.sh
-
-james@lizard:/opt&gt; ./get_helm.sh
-Downloading https://get.helm.sh/helm-v3.9.0-linux-amd64.tar.gz
-Verifying checksum... Done.
-Preparing to install helm into /usr/local/bin
-helm installed into /usr/local/bin/helm
-</code></pre>
-<p>Note:
-<a href="https://helm.sh/docs/helm/helm_init/"><code>helm init</code></a> does not exist in Helm 3, following the removal of Tiller. You no longer need to install Tiller in your cluster in order to use Helm.</p>
-<p><code>helm search</code> can be used to search two different types of source:</p>
-<ul>
-<li><code>helm search hub</code> searches the <a href="https://artifacthub.io/">Artifact Hub</a>, which lists helm charts from dozens of different repositories.</li>
-<li><code>helm search repo</code> searches the repositories that you have added to your local helm client (with helm repo add). This search is done over local data, and no public network connection is needed.</li>
-</ul>
-<h3 id="kind">kind</h3>
-<p>Installing From Release Binaries, which are available on <a href="https://github.com/kubernetes-sigs/kind/releases">releases page</a>.
-Refer to <a href="https://kind.sigs.k8s.io/docs/user/quick-start/">Quich Start</a>.</p>
-<p>NOTE: <code>kind</code> does not require kubectl, but we will not be able to perform some of tasks without it. <code>kind</code> requires that you have Docker installed and configured.</p>
-<p>Download the binary and copy to <code>/usr/local/bin</code> directory.</p>
-<pre><code>james@lizard:/opt&gt; curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.14.0/kind-linux-amd64
-james@lizard:/opt&gt; chmod +x ./kind
-james@lizard:/opt&gt; sudo cp ./kind /usr/local/bin
-</code></pre>
-<p>To see all the clusters we have created.</p>
-<pre><code>james@lizard:/opt&gt; kind get clusters
-No kind clusters found.
-</code></pre>
-<h3 id="kubeadm">kubeadm</h3>
-<p>Use the <code>kubeadm</code> tool to create and manage Kubernetes clusters. It performs the actions necessary to get a minimum viable, secure cluster up and running in a user friendly way.</p>
-<p>prerequisite:</p>
-<ul>
-<li>2 GB or more of RAM per machine (any less will leave little room for your apps).</li>
-<li>2 CPUs or more.</li>
-<li>Full network connectivity between all machines in the cluster (public or private network is fine).</li>
-<li>Unique hostname, MAC address, and product_uuid for every node. See <a href="https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#verify-mac-address">here</a> for more details.</li>
-<li>Certain ports are open on your machines. See <a href="https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#check-required-ports">here</a> for more details. These <a href="https://kubernetes.io/docs/reference/ports-and-protocols/">required ports</a> need to be open in order for Kubernetes components to communicate with each other. Use command <code>nc 127.0.0.1 6443</code> to check if a port is open.</li>
-<li>Swap disabled. You MUST disable swap in order for the kubelet to work properly.</li>
-</ul>
-<p>Below packages are needed:</p>
-<ul>
-<li><code>kubeadm</code>: the command to bootstrap the cluster.</li>
-<li><code>kubelet</code>: the component that runs on all of the machines in your cluster and does things like starting pods and containers.</li>
-<li><code>kubectl</code>: the command line util to talk to your cluster.</li>
-</ul>
-<p>Install CNI plugins (required for most pod network):</p>
-<pre><code>james@lizard:/opt&gt; CNI_VERSION=&quot;v0.8.2&quot;
-james@lizard:/opt&gt; ARCH=&quot;amd64&quot;
-james@lizard:/opt&gt; sudo mkdir -p /opt/cni/bin
-james@lizard:/opt&gt; curl -L &quot;https://github.com/containernetworking/plugins/releases/download/${CNI_VERSION}/cni-plugins-linux-${ARCH}-${CNI_VERSION}.tgz&quot; | sudo tar -C /opt/cni/bin -xz
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:--  0:00:01 --:--:--     0
-100 34.9M  100 34.9M    0     0  3090k      0  0:00:11  0:00:11 --:--:-- 4374k
-</code></pre>
-<p>Install <code>crictl</code> (required for kubeadm / Kubelet Container Runtime Interface (CRI))</p>
-<pre><code>james@lizard:/opt&gt; DOWNLOAD_DIR=/usr/local/bin
-james@lizard:/opt&gt; CRICTL_VERSION=&quot;v1.22.0&quot;
-james@lizard:/opt&gt; ARCH=&quot;amd64&quot;
-james@lizard:/opt&gt; curl -L &quot;https://github.com/kubernetes-sigs/cri-tools/releases/download/${CRICTL_VERSION}/crictl-${CRICTL_VERSION}-linux-${ARCH}.tar.gz&quot; | sudo tar -C $DOWNLOAD_DIR -xz
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:--  0:00:01 --:--:--     0
-100 17.8M  100 17.8M    0     0   157k      0  0:01:56  0:01:56 --:--:--  154k
-</code></pre>
-<p>Install <code>kubeadm</code>, <code>kubelet</code>, <code>kubectl</code> and add a <code>kubelet</code> systemd service:</p>
-<pre><code>james@lizard:/opt&gt; RELEASE=&quot;$(curl -sSL https://dl.k8s.io/release/stable.txt)&quot;
-james@lizard:/opt&gt; ARCH=&quot;amd64&quot;
-james@lizard:/opt&gt; cd $DOWNLOAD_DIR
-james@lizard:/usr/local/bin&gt; sudo curl -L --remote-name-all https://storage.googleapis.com/kubernetes-release/release/${RELEASE}/bin/linux/${ARCH}/{kubeadm,kubelet,kubectl}
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100 42.3M  100 42.3M    0     0  9741k      0  0:00:04  0:00:04 --:--:-- 9741k
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100  110M  100  110M    0     0  6555k      0  0:00:17  0:00:17 --:--:-- 4948k
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100 43.5M  100 43.5M    0     0   683k      0  0:01:05  0:01:05 --:--:--  139k
-james@lizard:/usr/local/bin&gt; sudo chmod +x {kubeadm,kubelet,kubectl}
-
-
-james@lizard:/usr/local/bin&gt; RELEASE_VERSION=&quot;v0.4.0&quot;
-james@lizard:/usr/local/bin&gt; curl -sSL &quot;https://raw.githubusercontent.com/kubernetes/release/${RELEASE_VERSION}/cmd/kubepkg/templates/latest/deb/kubelet/lib/systemd/system/kubelet.service&quot; | sed &quot;s:/usr/bin:${DOWNLOAD_DIR}:g&quot; | sudo tee /etc/systemd/system/kubelet.service
-[Unit]
-Description=kubelet: The Kubernetes Node Agent
-Documentation=https://kubernetes.io/docs/home/
-Wants=network-online.target
-After=network-online.target
-
-[Service]
-ExecStart=/usr/local/bin/kubelet
-Restart=always
-StartLimitInterval=0
-RestartSec=10
-
-[Install]
-WantedBy=multi-user.target
-james@lizard:/usr/local/bin&gt; sudo mkdir -p /etc/systemd/system/kubelet.service.d
-james@lizard:/usr/local/bin&gt; curl -sSL &quot;https://raw.githubusercontent.com/kubernetes/release/${RELEASE_VERSION}/cmd/kubepkg/templates/latest/deb/kubeadm/10-kubeadm.conf&quot; | sed &quot;s:/usr/bin:${DOWNLOAD_DIR}:g&quot; | sudo tee /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
-# Note: This dropin only works with kubeadm and kubelet v1.11+
-[Service]
-Environment=&quot;KUBELET_KUBECONFIG_ARGS=--bootstrap-kubeconfig=/etc/kubernetes/bootstrap-kubelet.conf --kubeconfig=/etc/kubernetes/kubelet.conf&quot;
-Environment=&quot;KUBELET_CONFIG_ARGS=--config=/var/lib/kubelet/config.yaml&quot;
-# This is a file that &quot;kubeadm init&quot; and &quot;kubeadm join&quot; generates at runtime, populating the KUBELET_KUBEADM_ARGS variable dynamically
-EnvironmentFile=-/var/lib/kubelet/kubeadm-flags.env
-# This is a file that the user can use for overrides of the kubelet args as a last resort. Preferably, the user should use
-# the .NodeRegistration.KubeletExtraArgs object in the configuration files instead. KUBELET_EXTRA_ARGS should be sourced from this file.
-EnvironmentFile=-/etc/default/kubelet
-ExecStart=
-ExecStart=/usr/local/bin/kubelet $KUBELET_KUBECONFIG_ARGS $KUBELET_CONFIG_ARGS $KUBELET_KUBEADM_ARGS $KUBELET_EXTRA_ARGS
-</code></pre>
-<p>Enable and start kubelet:</p>
-<pre><code>james@lizard:/usr/local/bin&gt; systemctl enable --now kubelet
-==== AUTHENTICATING FOR org.freedesktop.systemd1.manage-unit-files ====
-Authentication is required to manage system service or unit files.
-Authenticating as: root
-Password: 
-==== AUTHENTICATION COMPLETE ====
-Created symlink /etc/systemd/system/multi-user.target.wants/kubelet.service → /etc/systemd/system/kubelet.service.
-==== AUTHENTICATING FOR org.freedesktop.systemd1.reload-daemon ====
-Authentication is required to reload the systemd state.
-Authenticating as: root
-Password: 
-==== AUTHENTICATION COMPLETE ====
-==== AUTHENTICATING FOR org.freedesktop.systemd1.manage-units ====
-Authentication is required to start 'kubelet.service'.
-Authenticating as: root
-Password: 
-==== AUTHENTICATION COMPLETE ====
-
-james@lizard:/usr/local/bin&gt; sudo systemctl status kubelet.service 
-● kubelet.service - kubelet: The Kubernetes Node Agent
-     Loaded: loaded (/etc/systemd/system/kubelet.service; enabled; vendor preset: disabled)
-    Drop-In: /etc/systemd/system/kubelet.service.d
-             └─10-kubeadm.conf
-     Active: activating (auto-restart) (Result: exit-code) since Sat 2022-06-11 12:28:00 CST; 3s ago
-       Docs: https://kubernetes.io/docs/home/
-    Process: 48965 ExecStart=/usr/local/bin/kubelet $KUBELET_KUBECONFIG_ARGS $KUBELET_CONFIG_ARGS $KUBELET_KUBEADM_ARGS $KUBELET_EXTRA_ARGS (code=exited, status=1/FAILURE)
-   Main PID: 48965 (code=exited, status=1/FAILURE)
-
-Jun 11 12:28:00 lizard kubelet[48965]:                 Insecure values: TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256, TLS_ECDHE_ECDSA_WITH_RC4_128_SHA, TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA, TLS_E&gt;
-Jun 11 12:28:00 lizard kubelet[48965]:       --tls-min-version string                                   Minimum TLS version supported. Possible values: VersionTLS10, VersionTLS11, VersionTL&gt;
-Jun 11 12:28:00 lizard kubelet[48965]:       --tls-private-key-file string                              File containing x509 private key matching --tls-cert-file. (DEPRECATED: This paramete&gt;
-Jun 11 12:28:00 lizard kubelet[48965]:       --topology-manager-policy string                           Topology Manager policy to use. Possible values: 'none', 'best-effort', 'restricted',&gt;
-Jun 11 12:28:00 lizard kubelet[48965]:       --topology-manager-scope string                            Scope to which topology hints applied. Topology Manager collects hints from Hint Prov&gt;
-Jun 11 12:28:00 lizard kubelet[48965]:   -v, --v Level                                                  number for the log level verbosity
-Jun 11 12:28:00 lizard kubelet[48965]:       --version version[=true]                                   Print version information and quit
-Jun 11 12:28:00 lizard kubelet[48965]:       --vmodule pattern=N,...                                    comma-separated list of pattern=N settings for file-filtered logging (only works for &gt;
-Jun 11 12:28:00 lizard kubelet[48965]:       --volume-plugin-dir string                                 The full path of the directory in which to search for additional third party volume p&gt;
-Jun 11 12:28:00 lizard kubelet[48965]:       --volume-stats-agg-period duration                         Specifies interval for kubelet to calculate and cache the volume disk usage for all p&gt;
-lines 1-19/19 (END)
-</code></pre>
-<p>At the moment, <code>kubelet.service</code> failed to start. 
-<code>kubelet</code> was just installed without proper configuration. <a href="https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/kubelet-integration/">Configuring each kubelet in your cluster using kubeadm</a></p>
                 
               
               
