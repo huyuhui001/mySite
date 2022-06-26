@@ -1,7 +1,10 @@
-# Linux Foundation
+# Linux
 
-1. [SUSE Linux Administration](./linux/Administration/linux_admin.md)
-2. [SUSE Enterprise Storage Foundation and Basic Operation](./linux/SES/linux_ses.md)
+* SUSE Linux Administration
+    - [Learning Memo](./linux/Administration/linux_admin.md)
+
+* SUSE Enterprise Storage Foundation and Basic Operation
+    - [Learning Memo](./linux/SES/linux_ses.md)
 
 
 

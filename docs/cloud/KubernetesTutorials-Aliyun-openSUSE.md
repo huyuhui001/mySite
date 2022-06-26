@@ -1,6 +1,12 @@
 # Kubernetes Tutourials: openSUSE@Aliyun
 
-Since SLE 15, you can install SUSE CaaS Platform 4 which uses Kubeadm.
+Before, Kubic from openSUSE is focusing on kubeadm as open source project. CaaSP is comercial product for Kubenetes, compared with Kubic. 
+
+After SUSE aand Rancher mergered, their fucus on Kubernetes turn to [K3s](https://rancher.com/docs/k3s/latest/en/)/[RKE](https://rancher.com/docs/rke/latest/en/)/[RKE2](https://docs.rke2.io/) and [MicroOS](https://lists.opensuse.org/archives/list/kubic@lists.opensuse.org/thread/23ODJTP4PLGC3HWFQNA2MD4ETFSNW4KV/), not Kubic nor CaaSP. 
+
+Hence, for learning purpose, it's recommended to use K3s, for comercial perspective, may consider RKE or RKE2. 
+
+Below demo only shows deployment of native Kubernetes on openSUSE 15sp3, which may just a refernce with native deployment on Ubuntu or RedHat. 
 
 ## Deployment
 
@@ -60,8 +66,11 @@ lrwxrwxrwx 1 root root 33 May 24 18:14 /etc/localtime -> /usr/share/zoneinfo/Asi
 
 ### Kernel setting
 
-Load `overlay` and `br_netfilter` modules.
+Load `overlay` and `br_netfilter` modules. Check the active module loaded list. The removed module is not on the module loaded list.
 ```
+# lsmod | grep overlay
+# lsmod | grep br_netfilter
+
 # sudo modprobe overlay
 # sudo modprobe br_netfilter
 ```
