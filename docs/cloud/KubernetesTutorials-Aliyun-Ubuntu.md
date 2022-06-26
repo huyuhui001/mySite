@@ -323,7 +323,6 @@ Perform `kubectl cluster-info` command on master node we will get below informat
 ```
 
 
-
 ### Reset cluster
 
 CAUTION: below steps will destroy current cluster. 
@@ -344,12 +343,249 @@ Clean up rule of `IPVS` if using `IPVS`.
 ```
 
 
+## Snapshot of deployment
+
+Till now, the initial deployment is completed sucessfully.
+
+### Container Layer
+We are using Containerd service to manage our images and containers via command `nerdctl`.
+
+Get current namespaces.
+```
+root@cka001:~# nerdctl namespace ls
+NAME      CONTAINERS    IMAGES    VOLUMES    LABELS
+k8s.io    18            27        0  
+```
+
+Get containers under the namespace `k8s.io` by command `nerdctl -n k8s.io ps`.
+```
+root@cka001:~# nerdctl -n k8s.io container ls
+CONTAINER ID    IMAGE                                                                      COMMAND                   CREATED         STATUS    PORTS    NAMES
+1eb9a51e0406    registry.aliyuncs.com/google_containers/kube-apiserver:v1.23.8             "kube-apiserver --ad…"    28 hours ago    Up                 k8s://kube-system/kube-apiserver-cka001/kube-apiserver                      
+1ebee10176c4    registry.aliyuncs.com/google_containers/kube-proxy:v1.23.8                 "/usr/local/bin/kube…"    28 hours ago    Up                 k8s://kube-system/kube-proxy-v7rsr/kube-proxy                               
+2c5e1d183fc7    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  28 hours ago    Up                 k8s://kube-system/kube-apiserver-cka001                                     
+2dd9743cecad    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  27 hours ago    Up                 k8s://kube-system/kube-flannel-ds-rf54c                                     
+39306eef76cd    docker.io/rancher/mirrored-flannelcni-flannel:v0.18.1                      "/opt/bin/flanneld -…"    27 hours ago    Up                 k8s://kube-system/kube-flannel-ds-rf54c/kube-flannel                        
+3ca6fdda63a5    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  28 hours ago    Up                 k8s://kube-system/kube-scheduler-cka001                                     
+49e07d9b2b98    registry.aliyuncs.com/google_containers/coredns:v1.8.6                     "/coredns -conf /etc…"    27 hours ago    Up                 k8s://kube-system/coredns-6d8c4cb4d-9khd8/coredns                           
+555a3bf58832    registry.aliyuncs.com/google_containers/kube-scheduler:v1.23.8             "kube-scheduler --au…"    28 hours ago    Up                 k8s://kube-system/kube-scheduler-cka001/kube-scheduler                      
+5812c42bf572    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  28 hours ago    Up                 k8s://kube-system/etcd-cka001                                               
+8619e3c979a3    registry.aliyuncs.com/google_containers/coredns:v1.8.6                     "/coredns -conf /etc…"    27 hours ago    Up                 k8s://kube-system/coredns-6d8c4cb4d-qcp2l/coredns                           
+a9459900f462    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  27 hours ago    Up                 k8s://kube-system/coredns-6d8c4cb4d-9khd8                                   
+bb2b4624bfd5    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  27 hours ago    Up                 k8s://kube-system/coredns-6d8c4cb4d-qcp2l                                   
+c9462709baff    registry.aliyuncs.com/google_containers/kube-controller-manager:v1.23.8    "kube-controller-man…"    28 hours ago    Up                 k8s://kube-system/kube-controller-manager-cka001/kube-controller-manager    
+e68c3fbc90f9    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  28 hours ago    Up                 k8s://kube-system/kube-proxy-v7rsr                                          
+eae550221813    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  28 hours ago    Up                 k8s://kube-system/kube-controller-manager-cka001                            
+ff6626664c43    registry.aliyuncs.com/google_containers/etcd:3.5.1-0                       "etcd --advertise-cl…"    28 hours ago    Up                 k8s://kube-system/etcd-cka001/etcd     
+```
+
+Some management and commands options of `nertctl`.
+```
+root@cka001:~# nertctl --help
+root@cka001:~# nerdctl image ls -a
+root@cka001:~# nerdctl volume ls
+root@cka001:~# nerdctl stats
+```
+
+Get below network list with command `nerdctl network ls` in Containerd layer.
+```
+root@cka001:~# nerdctl network ls
+NETWORK ID    NAME      FILE
+              cbr0      /etc/cni/net.d/10-flannel.conflist
+0             bridge    /etc/cni/net.d/nerdctl-bridge.conflist
+              host      
+              none  
+```
+
+Get network interface in host `cka001` with command `ip addr list`.
+```
+lo               : inet 127.0.0.1/8 qlen 1000
+eth0             : inet 172.16.18.161/24 brd 172.16.18.255 qlen 1000
+flannel.1        : inet 10.244.0.0/32
+cni0             : inet 10.244.0.1/24 brd 10.244.0.255 qlen 1000
+vethb0a35696@if3 : noqueue master cni0
+veth72791f64@if3 : noqueue master cni0
+```
 
 
+### Kubernetes Layer
+
+Kubernetes is beyond container layer above. 
+
+In Kubernetes layer, we have three nodes, `cka001`, `cka002`, and `cka003`.
+```
+root@cka001:~# kubectl get node
+NAME     STATUS   ROLES                  AGE   VERSION
+cka001   Ready    control-plane,master   27h   v1.23.8
+cka002   Ready    <none>                 27h   v1.23.8
+cka003   Ready    <none>                 27h   v1.23.8
+```
+
+We have four initial namespaces across three nodes.
+```
+root@cka001:~# kubectl get namespace -A
+NAME              STATUS   AGE
+default           Active   27h
+kube-node-lease   Active   27h
+kube-public       Active   27h
+kube-system       Active   27h
+```
+
+We have some initial pods. 
+```
+root@cka001:~# kubectl get pod -A -o wide
+NAMESPACE     NAME                             READY   STATUS    RESTARTS   AGE   IP              NODE     NOMINATED NODE   READINESS GATES
+kube-system   coredns-6d8c4cb4d-9khd8          1/1     Running   0          27h   <cni0 IP>       cka001   <none>           <none>
+kube-system   coredns-6d8c4cb4d-qcp2l          1/1     Running   0          27h   <cni0 IP>       cka001   <none>           <none>
+kube-system   etcd-cka001                      1/1     Running   0          27h   <eth0 IP>       cka001   <none>           <none>
+kube-system   kube-apiserver-cka001            1/1     Running   0          27h   <eth0 IP>       cka001   <none>           <none>
+kube-system   kube-controller-manager-cka001   1/1     Running   0          27h   <eth0 IP>       cka001   <none>           <none>
+kube-system   kube-flannel-ds-hfvf7            1/1     Running   0          27h   <eth0 IP>       cka003   <none>           <none>
+kube-system   kube-flannel-ds-m5mdl            1/1     Running   0          27h   <eth0 IP>       cka002   <none>           <none>
+kube-system   kube-flannel-ds-rf54c            1/1     Running   0          27h   <eth0 IP>       cka001   <none>           <none>
+kube-system   kube-proxy-bj75j                 1/1     Running   0          27h   <eth0 IP>       cka002   <none>           <none>
+kube-system   kube-proxy-gxjj4                 1/1     Running   0          27h   <eth0 IP>       cka003   <none>           <none>
+kube-system   kube-proxy-v7rsr                 1/1     Running   0          27h   <eth0 IP>       cka001   <none>           <none>
+kube-system   kube-scheduler-cka001            1/1     Running   0          27h   <eth0 IP>       cka001   <none>           <none>
+```
+
+Summary below shows the relationship between containers and pods. Good article about container [pause](https://zhuanlan.zhihu.com/p/464712164).
+
+* Master node:
+    * CoreDNS: 2 pods, 2 containers of each pod
+        * From image `coredns:v1.8.6`:
+            * k8s://kube-system/coredns-6d8c4cb4d-9khd8/coredns
+            * k8s://kube-system/coredns-6d8c4cb4d-qcp2l/coredns
+        * By image `pause:3.6`
+            * k8s://kube-system/coredns-6d8c4cb4d-9khd8
+            * k8s://kube-system/coredns-6d8c4cb4d-qcp2l
+    * etcd: 1 pod, 2 containers
+        * By image `etcd:3.5.1-0`
+            * k8s://kube-system/etcd-cka001/etcd
+        * By image `pause:3.6`
+            * k8s://kube-system/etcd-cka001
+    * apiserver: 1 pod, 2 containers
+        * By image `kube-apiserver:v1.23.8`
+            * k8s://kube-system/kube-apiserver-cka001/kube-apiserver
+        * By image `pause:3.6`
+            * k8s://kube-system/kube-apiserver-cka001
+    * controller-manager: 1 pod, 2 containers
+        * By image `kube-controller-manager:v1.23.8`
+            * k8s://kube-system/kube-controller-manager-cka001/kube-controller-manager
+        * By image `pause:3.6`
+            * k8s://kube-system/kube-controller-manager-cka001
+    * scheduler: 1 pod, 2 containers
+        * By image `kube-scheduler:v1.23.8`
+            * k8s://kube-system/kube-scheduler-cka001/kube-scheduler
+        * By image `pause:3.6`
+            * k8s://kube-system/kube-scheduler-cka001
+* All nodes:
+    * Flannel DS: 1 pod of each, 2 containers of each pod
+        * By image `mirrored-flannelcni-flannel:v0.18.1`
+            * k8s://kube-system/kube-flannel-ds-rf54c/kube-flannel
+        * By image `pause:3.6`
+            * k8s://kube-system/kube-flannel-ds-rf54c
+    * Proxy: 1 pod of each, 2 containers of each pod
+        * By image `kube-proxy:v1.23.8`
+            * k8s://kube-system/kube-proxy-v7rsr/kube-proxy
+        * By image `pause:3.6`
+            * k8s://kube-system/kube-proxy-v7rsr
 
 
+Let's check current configuration context of Kubernetes we just initialized. 
+
+* Contenxt name is `kubernetes-admin@kubernetes`.
+* Cluster name is `kubernetes`.
+* User is `kubernetes-admin`.
+* No namespace explicitly defined.
+
+```
+root@cka001:~# kubectl config get-contexts
+CURRENT   NAME                          CLUSTER      AUTHINFO           NAMESPACE
+*         kubernetes-admin@kubernetes   kubernetes   kubernetes-admin 
+```
+
+Create a new namespace `jh-namespace`.
+```
+root@cka001:~# kubectl create namespace jh-namespace
+```
+
+Update current context `kubernetes-admin@kubernetes` with new namespace `jh-namespace` as default namespace. 
+```
+root@cka001:~# kubectl config set-context kubernetes-admin@kubernetes --cluster=kubernetes --namespace=jh-namespace --user=kubernetes-admin 
+```
+
+Now default namespace is shown in current configuration context. 
+```
+root@cka001:~# kubectl config get-contexts
+CURRENT   NAME                          CLUSTER      AUTHINFO           NAMESPACE
+*         kubernetes-admin@kubernetes   kubernetes   kubernetes-admin   jh-namespace
+```
+
+Let's execute command `kubectl apply -f 02-sample-pod.yaml` to create a pod `my-first-pod` on namespace `jh-namespace` with below content of file `02-sample-pod.yaml`.
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-first-pod
+spec:
+  containers:
+  - name: nginx
+    image: nginx:mainline
+    ports:
+    - containerPort: 80
+```
+
+By command `kubectl get pod -o wide` we get the pod status.
+
+The pod's ip is allocated by `cni0`. Node is assigned by `Scheduler`. 
+
+We can also find related containers of pod `my-first-pod` via command `nerdctl -n k8s.io container ls` on `cka003`.
+
+```
+root@cka001:~# kubectl get pod -o wide
+NAME           READY   STATUS    RESTARTS   AGE   IP           NODE     NOMINATED NODE   READINESS GATES
+my-first-pod   1/1     Running   0          19s   10.244.2.2   cka003   <none>           <none>
+```
 
 
+### Case Study
+
+Scenario: stop kubelet service on worker node `cka003`.
+
+Question:
+
+* What's the status of each node?
+* What's containers changed via command `nerdctl`?
+* What's pods status via command `kubectl get pod -owide -A`? 
+
+Demo:
+
+Execute command `systemctl stop kubelet.service` on `cka003`.
+
+Execute command `kubectl get node` on either `cka001` or `cka003`, the status of `cka003` is `NotReady`.
+
+Execute command `nerdctl -n k8s.io container ls` on `cka003` and we can observe all containers are still up and running, including the pod `my-first-pod`.
+
+Execute command `systemctl start kubelet.service` on `cka003`.
+
+Conclusion:
+
+* The node status is changed to `NotReady` from `Ready`.
+* For those DaemonSet pods, like `flannel`、`kube-proxy`, are exclusively running on each node. They won't be terminated after `kubelet` is down.
+* The status of pod `my-first-pod` keeps showing `Terminating` on each node because status can not be synced to other nodes via `apiserver` from `cka003` because `kubelet` is down.
+* The status of pod is marked by `controller` and recycled by `kubelet`.
+* When we start kubelet service on `cka003`, the pod `my-first-pod` will be termiated completely on `cka003`.
+
+In addition, let's create a deployment with 3 replicas. Two are running on `cka003` and one is running on `cka002`.
+```
+root@cka001:~# kubectl get pod -o wide -w
+NAME                               READY   STATUS    RESTARTS   AGE    IP           NODE     NOMINATED NODE   READINESS GATES
+nginx-deployment-9d745469b-2xdk4   1/1     Running   0          2m8s   10.244.2.3   cka003   <none>           <none>
+nginx-deployment-9d745469b-4gvmr   1/1     Running   0          2m8s   10.244.2.4   cka003   <none>           <none>
+nginx-deployment-9d745469b-5j927   1/1     Running   0          2m8s   10.244.1.3   cka002   <none>           <none>
+```
+After we stop kubelet service on `cka003`, the two running on `cka003` are terminated and another two are created and running on `cka002` automatically. 
 
 
 
