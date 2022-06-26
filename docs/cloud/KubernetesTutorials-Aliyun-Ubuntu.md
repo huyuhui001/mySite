@@ -449,7 +449,8 @@ kube-system   kube-proxy-v7rsr                 1/1     Running   0          27h 
 kube-system   kube-scheduler-cka001            1/1     Running   0          27h   <eth0 IP>       cka001   <none>           <none>
 ```
 
-Summary below shows the relationship between containers and pods. Good article about container [pause](https://zhuanlan.zhihu.com/p/464712164).
+Summary below shows the relationship between containers and pods. 
+Good references about container pause: [article](https://zhuanlan.zhihu.com/p/464712164) and [artical](https://cloud.tencent.com/developer/article/1583919).
 
 * Master node:
     * CoreDNS: 2 pods, 2 containers of each pod
