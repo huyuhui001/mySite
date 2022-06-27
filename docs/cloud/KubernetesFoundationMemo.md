@@ -1,6 +1,8 @@
 # Kubernetes Foundation
 
-## **1.Demo environment**
+## **1. Docker Fundamentals**
+
+### Demo environment
 
 Linux: openSUSE 15.3
 ```
@@ -16,10 +18,6 @@ CPE_NAME="cpe:/o:opensuse:leap:15.3"
 BUG_REPORT_URL="https://bugs.opensuse.org"
 HOME_URL="https://www.opensuse.org/"
 ```
-
-
-
-## **2. Docker Fundamentals**
 
 ### Linux Primitives
 
@@ -783,7 +781,7 @@ james@lizard:~> docker push <your acccount id>/golang_0001:v1
 
 
 
-## 3.Basic Concepts of Kubernetes
+## 2.Basic Concepts of Kubernetes
 
 ### Kubernetes Components
 
@@ -794,23 +792,39 @@ A Kubernetes cluster consists of the components that represent the **control pla
 
 **Kubernetes Components**: 
 
-* **Control Plane Components**
-    * **kube-apiserver**: query and manipulate the state of objects in Kubernetes.
-    * **etcd**: all Kubernetes objects are stored on etcd. Kubernetes objects are persistent **entities** in the Kubernetes system, which are used to represent the state of your cluster.
-    * **kube-scheduler**: watches for newly created Pods with no assigned node, and selects a node for them to run on.
-    * **kube-controller-manager**: runs controller processes.
+* Control Plane Components
+    * kube-apiserver: 
+        * query and manipulate the state of objects in Kubernetes.
+        * play as "communication hub" among all resources in cluster.
+        * provide cluster security authentication, authorization, and role assignment.
+        * the only one can connect to `etcd`.
+    * etcd: 
+        * all Kubernetes objects are stored on etcd. 
+        * Kubernetes objects are persistent **entities** in the Kubernetes system, which are used to represent the state of your cluster.
+    * kube-scheduler: 
+        * watches for newly created Pods with no assigned node, and selects a node for them to run on.
+    * kube-controller-manager: runs controller processes.
         * *Node controller*: Responsible for noticing and responding when nodes go down.
         * *Job controller*: Watches for Job objects that represent one-off tasks, then creates Pods to run those tasks to completion.
         * *Endpoints controller*: Populates the Endpoints object (that is, joins Services & Pods).
         * *Service Account & Token controllers*: Create default accounts and API access tokens for new namespaces.
-    * **cloud-controller-manager**: embeds cloud-specific control logic and only runs controllers that are specific to your cloud provider, no need for own premises and learning environment.
+    * cloud-controller-manager: embeds cloud-specific control logic and only runs controllers that are specific to your cloud provider, no need for own premises and learning environment.
         * *Node controller*: For checking the cloud provider to determine if a node has been deleted in the cloud after it stops responding
         * *Route controller*: For setting up routes in the underlying cloud infrastructure
         * *Service controller*: For creating, updating and deleting cloud provider load balancers
-* **Node Components**
-    * **kubelet**: An agent that runs on each node in the cluster. It makes sure that containers are running in a Pod.
-    * **kube-proxy**: maintains network rules on nodes.
-    * **Container runtime**: is the software that is responsible for running containers.
+* Node Components
+    * kubelet: 
+        * An agent that runs on each node in the cluster. 
+        * Manage node. It makes sure that containers are running in a Pod. `kubelet` registers and updates nodes information to APIServer, and APIServer stores them into `etcd`.
+        * Manage pod. Watch pod via APIServer, and action on pods or containers in pods.
+        * Health check at container level.
+    * kube-proxy: 
+        * is a network proxy that runs on each node in cluster.
+            * iptables
+            * ipvs
+        * maintains network rules on nodes.
+    * Container runtime: 
+        * is the software that is responsible for running containers.
 * Addons
     * DNS: is a DNS server and required by all Kubernetes clusters.
     * Web UI (Dashboard): web-based UI for Kubernetes clusters. 
@@ -827,9 +841,40 @@ Scalability:
 
 
 
+### Kubernetes API 
+
+The core of Kubernetes' control plane is the API server. 
+
+* CRI: Container Runtime Interface
+* CNI: Container Network Interface
+* CSI: Container Storage Interface
+
+
+The API server exposes an HTTP API that lets end users, different parts of cluster, and external components communicate with one another.
+
+The Kubernetes API lets we query and manipulate the state of API objects in Kubernetes (for example: Pods, Namespaces, ConfigMaps, and Events).
+
+**Kubernetes API:** 
+
+* OpenAPI specification
+    * OpenAPI V2
+    * OpenAPI V3
+* Persistence. Kubernetes stores the serialized state of objects by writing them into etcd.
+* API groups and versioning. Versioning is done at the API level. API resources are distinguished by their API group, resource type, namespace (for namespaced resources), and name.
+    * API changes
+* API Extension
+
+
+
+
+
+
+
+
+
 ### Kubernetes Objects
 
-Objects Overview:
+#### Objects Overview:
 
 * Object Spec:
     * providing a description of the characteristics the resource created to have: *its desired state*.
@@ -837,30 +882,30 @@ Objects Overview:
     * describes the current state of the object.
 
 Example of Deployment as an object that can represent an application running on cluster.
+```
+apiVersion: apps/v1  # Which version of the Kubernetes API you're using to create this object
+kind: Deployment     # What kind of object you want to create
+metadata:            # Data that helps uniquely identify the object, including a name string, UID, and optional namespace
+  name: nginx-deployment
+spec:                # What state you desire for the object
+  selector:
+    matchLabels:
+      app: nginx
+  replicas: 2 # tells deployment to run 2 pods matching the template
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.14.2
+        ports:
+        - containerPort: 80
+```
 
-    apiVersion: apps/v1  # Which version of the Kubernetes API you're using to create this object
-    kind: Deployment     # What kind of object you want to create
-    metadata:            # Data that helps uniquely identify the object, including a name string, UID, and optional namespace
-      name: nginx-deployment
-    spec:                # What state you desire for the object
-      selector:
-        matchLabels:
-          app: nginx
-      replicas: 2 # tells deployment to run 2 pods matching the template
-      template:
-        metadata:
-          labels:
-            app: nginx
-        spec:
-          containers:
-          - name: nginx
-            image: nginx:1.14.2
-            ports:
-            - containerPort: 80
 
-
-
-Object Management:
+#### Object Management:
 
 The `kubectl` command-line tool supports several different ways to create and manage Kubernetes objects. Read the [Kubectl book](https://kubectl.docs.kubernetes.io/) for details.
 

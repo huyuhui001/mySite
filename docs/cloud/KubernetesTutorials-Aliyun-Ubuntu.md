@@ -591,3 +591,127 @@ After we stop kubelet service on `cka003`, the two running on `cka003` are termi
 
 
 
+
+
+## kubectl
+
+Three approach to operate Kubernetes cluster:
+
+* via [API](https://kubernetes.io/docs/reference/kubernetes-api/)
+* via kubectl
+* via Dashboard
+
+
+Example with `kubectl`:
+
+With Kubernetes 1.23 and lower version, when we create a new namespace, Kubernetes will automatically create a ServiceAccount `default` and a token `default-token-xxxxx`.
+
+We can say that the ServiceAccount `default` is an account under the namespace.
+
+Here is an example of new namespace `jh-namespace` I created.
+
+* ServiceAcccount: `default`
+* Token: `default-token-8vrsc`
+```
+root@cka001:~# kubectl get sa -n jh-namespace
+NAME      SECRETS   AGE
+default   1         26h
+
+root@cka001:~# kubectl get secrets -n jh-namespace
+NAME                  TYPE                                  DATA   AGE
+default-token-8vrsc   kubernetes.io/service-account-token   3      26h
+```
+
+There is a cluster rule `admin`, and no related rolebinding.
+```
+root@cka001:~# kubectl get clusterrole admin -n jh-namespace
+NAME    CREATED AT
+admin   2022-06-25T06:24:44Z
+
+root@cka001:~# kubectl get role admin -n jh-namespace
+Error from server (NotFound): roles.rbac.authorization.k8s.io "admin" not found
+
+root@cka001:~# kubectl get role -n jh-namespace
+No resources found in jh-namespace namespace.
+
+root@cka001:~# kubectl get rolebinding -n jh-namespace
+No resources found in jh-namespace namespace.
+```
+
+Let's create a rolebinding `rolebinding-admin` to bind cluster role `admin` to service account `default` in namespapce `jh-namespace`.
+Hence service account `default` is granted adminstrator authorization in namespace `jh-namespace`.
+```
+kubectl create rolebinding <rule> --clusterrole=<clusterrule> --serviceaccount=<namespace>:<name> --namespace=<namespace>
+```
+```
+root@cka001:~# kubectl create rolebinding rolebinding-admin --clusterrole=admin --serviceaccount=jh-namespace:default --namespace=jh-namespace
+rolebinding.rbac.authorization.k8s.io/rolebinding-admin created
+
+root@cka001:~# kubectl get rolebinding -n jh-namespace
+NAME                ROLE                AGE
+rolebinding-admin   ClusterRole/admin   39s
+```
+
+Get token of the service account `default`.
+```
+root@cka001:~# TOKEN=$(kubectl describe secret $(kubectl get secrets | grep default | cut -f1 -d ' ') | grep -E '^token' | cut -f2 -d':' | tr -d ' ')
+root@cka001:~# echo $TOKEN
+```
+
+Get API Service address.
+```
+root@cka001:~# APISERVER=$(kubectl config view | grep https | cut -f 2- -d ":" | tr -d " ")
+root@cka001:~# echo $APISERVER
+```
+
+Get pod resources in namespace `jh-namespace` via API server with JSON layout.
+```
+root@cka001:~# curl $APISERVER/api/v1/namespaces/jh-namespace/pods --header "Authorization: Bearer $TOKEN" --insecure
+```
+
+We can also access the link `$APISERVER/api/v1/namespaces/jh-namespace/pods` in browser for details.
+
+
+
+
+
+
+### Config File
+
+### Bash Autocomplete
+
+### Common Usage
+
+
+
+
+
+## Kubernetes API and Resource
+
+### API Version
+
+### API Group
+
+### Resource
+
+
+
+## Pods
+
+### Basic
+
+### InitContainer
+
+### Static Pod
+
+
+
+
+
+
+
+
+
+
+
+
