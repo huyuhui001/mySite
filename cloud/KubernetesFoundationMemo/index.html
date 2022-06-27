@@ -281,19 +281,19 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#1demo-environment" class="md-nav__link">
-    1.Demo environment
+  <a href="#1-docker-fundamentals" class="md-nav__link">
+    1. Docker Fundamentals
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Docker Fundamentals">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#demo-environment" class="md-nav__link">
+    Demo environment
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#2-docker-fundamentals" class="md-nav__link">
-    2. Docker Fundamentals
-  </a>
-  
-    <nav class="md-nav" aria-label="2. Docker Fundamentals">
-      <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#linux-primitives" class="md-nav__link">
@@ -356,16 +356,23 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#3basic-concepts-of-kubernetes" class="md-nav__link">
-    3.Basic Concepts of Kubernetes
+  <a href="#2basic-concepts-of-kubernetes" class="md-nav__link">
+    2.Basic Concepts of Kubernetes
   </a>
   
-    <nav class="md-nav" aria-label="3.Basic Concepts of Kubernetes">
+    <nav class="md-nav" aria-label="2.Basic Concepts of Kubernetes">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#kubernetes-components" class="md-nav__link">
     Kubernetes Components
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kubernetes-api" class="md-nav__link">
+    Kubernetes API
   </a>
   
 </li>
@@ -377,6 +384,20 @@
   
     <nav class="md-nav" aria-label="Kubernetes Objects">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#objects-overview" class="md-nav__link">
+    Objects Overview:
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#object-management" class="md-nav__link">
+    Object Management:
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#object-names-and-ids" class="md-nav__link">
@@ -458,7 +479,8 @@
                 
                 
                 <h1 id="kubernetes-foundation">Kubernetes Foundation</h1>
-<h2 id="1demo-environment"><strong>1.Demo environment</strong></h2>
+<h2 id="1-docker-fundamentals"><strong>1. Docker Fundamentals</strong></h2>
+<h3 id="demo-environment">Demo environment</h3>
 <p>Linux: openSUSE 15.3</p>
 <pre><code>james@lizard:/opt&gt; cat /etc/os-release 
 NAME=&quot;openSUSE Leap&quot;
@@ -472,7 +494,6 @@ CPE_NAME=&quot;cpe:/o:opensuse:leap:15.3&quot;
 BUG_REPORT_URL=&quot;https://bugs.opensuse.org&quot;
 HOME_URL=&quot;https://www.opensuse.org/&quot;
 </code></pre>
-<h2 id="2-docker-fundamentals"><strong>2. Docker Fundamentals</strong></h2>
 <h3 id="linux-primitives">Linux Primitives</h3>
 <p>chroot(using pivot_root)</p>
 <ul>
@@ -1116,24 +1137,37 @@ Successfully tagged lizard/golang:my1
 
 james@lizard:~&gt; docker push &lt;your acccount id&gt;/golang_0001:v1
 </code></pre>
-<h2 id="3basic-concepts-of-kubernetes">3.Basic Concepts of Kubernetes</h2>
+<h2 id="2basic-concepts-of-kubernetes">2.Basic Concepts of Kubernetes</h2>
 <h3 id="kubernetes-components">Kubernetes Components</h3>
 <p>A Kubernetes cluster consists of the components that represent the <strong>control plane</strong> and a set of machines called <strong>nodes</strong>.</p>
 <p><img alt="The components of a Kubernetes cluster" src="https://d33wubrfki0l68.cloudfront.net/2475489eaf20163ec0f54ddc1d92aa8d4c87c96b/e7c81/images/docs/components-of-kubernetes.svg" /></p>
 <p><strong>Kubernetes Components</strong>: </p>
 <ul>
-<li><strong>Control Plane Components</strong><ul>
-<li><strong>kube-apiserver</strong>: query and manipulate the state of objects in Kubernetes.</li>
-<li><strong>etcd</strong>: all Kubernetes objects are stored on etcd. Kubernetes objects are persistent <strong>entities</strong> in the Kubernetes system, which are used to represent the state of your cluster.</li>
-<li><strong>kube-scheduler</strong>: watches for newly created Pods with no assigned node, and selects a node for them to run on.</li>
-<li><strong>kube-controller-manager</strong>: runs controller processes.<ul>
+<li>Control Plane Components<ul>
+<li>kube-apiserver: <ul>
+<li>query and manipulate the state of objects in Kubernetes.</li>
+<li>play as "communication hub" among all resources in cluster.</li>
+<li>provide cluster security authentication, authorization, and role assignment.</li>
+<li>the only one can connect to <code>etcd</code>.</li>
+</ul>
+</li>
+<li>etcd: <ul>
+<li>all Kubernetes objects are stored on etcd. </li>
+<li>Kubernetes objects are persistent <strong>entities</strong> in the Kubernetes system, which are used to represent the state of your cluster.</li>
+</ul>
+</li>
+<li>kube-scheduler: <ul>
+<li>watches for newly created Pods with no assigned node, and selects a node for them to run on.</li>
+</ul>
+</li>
+<li>kube-controller-manager: runs controller processes.<ul>
 <li><em>Node controller</em>: Responsible for noticing and responding when nodes go down.</li>
 <li><em>Job controller</em>: Watches for Job objects that represent one-off tasks, then creates Pods to run those tasks to completion.</li>
 <li><em>Endpoints controller</em>: Populates the Endpoints object (that is, joins Services &amp; Pods).</li>
 <li><em>Service Account &amp; Token controllers</em>: Create default accounts and API access tokens for new namespaces.</li>
 </ul>
 </li>
-<li><strong>cloud-controller-manager</strong>: embeds cloud-specific control logic and only runs controllers that are specific to your cloud provider, no need for own premises and learning environment.<ul>
+<li>cloud-controller-manager: embeds cloud-specific control logic and only runs controllers that are specific to your cloud provider, no need for own premises and learning environment.<ul>
 <li><em>Node controller</em>: For checking the cloud provider to determine if a node has been deleted in the cloud after it stops responding</li>
 <li><em>Route controller</em>: For setting up routes in the underlying cloud infrastructure</li>
 <li><em>Service controller</em>: For creating, updating and deleting cloud provider load balancers</li>
@@ -1141,10 +1175,27 @@ james@lizard:~&gt; docker push &lt;your acccount id&gt;/golang_0001:v1
 </li>
 </ul>
 </li>
-<li><strong>Node Components</strong><ul>
-<li><strong>kubelet</strong>: An agent that runs on each node in the cluster. It makes sure that containers are running in a Pod.</li>
-<li><strong>kube-proxy</strong>: maintains network rules on nodes.</li>
-<li><strong>Container runtime</strong>: is the software that is responsible for running containers.</li>
+<li>Node Components<ul>
+<li>kubelet: <ul>
+<li>An agent that runs on each node in the cluster. </li>
+<li>Manage node. It makes sure that containers are running in a Pod. <code>kubelet</code> registers and updates nodes information to APIServer, and APIServer stores them into <code>etcd</code>.</li>
+<li>Manage pod. Watch pod via APIServer, and action on pods or containers in pods.</li>
+<li>Health check at container level.</li>
+</ul>
+</li>
+<li>kube-proxy: <ul>
+<li>is a network proxy that runs on each node in cluster.<ul>
+<li>iptables</li>
+<li>ipvs</li>
+</ul>
+</li>
+<li>maintains network rules on nodes.</li>
+</ul>
+</li>
+<li>Container runtime: <ul>
+<li>is the software that is responsible for running containers.</li>
+</ul>
+</li>
 </ul>
 </li>
 <li>Addons<ul>
@@ -1160,8 +1211,31 @@ james@lizard:~&gt; docker push &lt;your acccount id&gt;/golang_0001:v1
 <li><strong>Scaling out</strong> (horizontal scaling) by adding more servers to your architecture to spread the workload across more machines.</li>
 <li><strong>Scaling up</strong> (vertical scaling) by adding more hard drives and memory to increase the computing capacity of physical servers. </li>
 </ul>
+<h3 id="kubernetes-api">Kubernetes API</h3>
+<p>The core of Kubernetes' control plane is the API server. </p>
+<ul>
+<li>CRI: Container Runtime Interface</li>
+<li>CNI: Container Network Interface</li>
+<li>CSI: Container Storage Interface</li>
+</ul>
+<p>The API server exposes an HTTP API that lets end users, different parts of cluster, and external components communicate with one another.</p>
+<p>The Kubernetes API lets we query and manipulate the state of API objects in Kubernetes (for example: Pods, Namespaces, ConfigMaps, and Events).</p>
+<p><strong>Kubernetes API:</strong> </p>
+<ul>
+<li>OpenAPI specification<ul>
+<li>OpenAPI V2</li>
+<li>OpenAPI V3</li>
+</ul>
+</li>
+<li>Persistence. Kubernetes stores the serialized state of objects by writing them into etcd.</li>
+<li>API groups and versioning. Versioning is done at the API level. API resources are distinguished by their API group, resource type, namespace (for namespaced resources), and name.<ul>
+<li>API changes</li>
+</ul>
+</li>
+<li>API Extension</li>
+</ul>
 <h3 id="kubernetes-objects">Kubernetes Objects</h3>
-<p>Objects Overview:</p>
+<h4 id="objects-overview">Objects Overview:</h4>
 <ul>
 <li>Object Spec:<ul>
 <li>providing a description of the characteristics the resource created to have: <em>its desired state</em>.</li>
@@ -1193,7 +1267,7 @@ spec:                # What state you desire for the object
         ports:
         - containerPort: 80
 </code></pre>
-<p>Object Management:</p>
+<h4 id="object-management">Object Management:</h4>
 <p>The <code>kubectl</code> command-line tool supports several different ways to create and manage Kubernetes objects. Read the <a href="https://kubectl.docs.kubernetes.io/">Kubectl book</a> for details.</p>
 <p>A Kubernetes object should be managed using ONLY one technique. Mixing and matching techniques for the same object results in undefined behavior. </p>
 <p>Three management techniques:</p>
