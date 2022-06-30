@@ -1659,7 +1659,22 @@ root@cka001:~# kubectl logs kube-proxy-bj75j -n kube-system
 
 ## Workload Resources
 
+Workload Resources：
 
+* *Pod*. Pod is a collection of containers that can run on a host.
+* *PodTemplate*. PodTemplate describes a template for creating copies of a predefined pod.
+* *ReplicationController*. ReplicationController represents the configuration of a replication controller.
+* *ReplicaSet*. ReplicaSet ensures that a specified number of pod replicas are running at any given time.
+* *Deployment*. Deployment enables declarative updates for *Pods* and *ReplicaSets*.
+* *StatefulSet*. StatefulSet represents a set of pods with consistent identities.
+* *ControllerRevision*. ControllerRevision implements an immutable snapshot of state data.
+* *DaemonSet*. DaemonSet represents the configuration of a daemon set.
+* *Job*. Job represents the configuration of a single job.
+* *CronJob*. CronJob represents the configuration of a single cron job.
+* *HorizontalPodAutoscaler*. configuration of a horizontal pod autoscaler.
+* *HorizontalPodAutoscaler*. HorizontalPodAutoscaler is the configuration for a horizontal pod autoscaler, which automatically manages the replica count of any resource implementing the scale subresource based on the metrics specified.
+* *HorizontalPodAutoscaler v2beta2*. HorizontalPodAutoscaler is the configuration for a horizontal pod autoscaler, which automatically manages the replica count of any resource implementing the scale subresource based on the metrics specified.
+* *PriorityClass*. PriorityClass defines mapping from a priority class name to the priority integer value.
 
 
 
