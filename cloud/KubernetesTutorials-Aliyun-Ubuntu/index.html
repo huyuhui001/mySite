@@ -2051,6 +2051,23 @@ root@cka001:~# journalctl -fu kubelet
 root@cka001:~# kubectl logs kube-proxy-bj75j -n kube-system
 </code></pre>
 <h2 id="workload-resources">Workload Resources</h2>
+<p>Workload Resources：</p>
+<ul>
+<li><em>Pod</em>. Pod is a collection of containers that can run on a host.</li>
+<li><em>PodTemplate</em>. PodTemplate describes a template for creating copies of a predefined pod.</li>
+<li><em>ReplicationController</em>. ReplicationController represents the configuration of a replication controller.</li>
+<li><em>ReplicaSet</em>. ReplicaSet ensures that a specified number of pod replicas are running at any given time.</li>
+<li><em>Deployment</em>. Deployment enables declarative updates for <em>Pods</em> and <em>ReplicaSets</em>.</li>
+<li><em>StatefulSet</em>. StatefulSet represents a set of pods with consistent identities.</li>
+<li><em>ControllerRevision</em>. ControllerRevision implements an immutable snapshot of state data.</li>
+<li><em>DaemonSet</em>. DaemonSet represents the configuration of a daemon set.</li>
+<li><em>Job</em>. Job represents the configuration of a single job.</li>
+<li><em>CronJob</em>. CronJob represents the configuration of a single cron job.</li>
+<li><em>HorizontalPodAutoscaler</em>. configuration of a horizontal pod autoscaler.</li>
+<li><em>HorizontalPodAutoscaler</em>. HorizontalPodAutoscaler is the configuration for a horizontal pod autoscaler, which automatically manages the replica count of any resource implementing the scale subresource based on the metrics specified.</li>
+<li><em>HorizontalPodAutoscaler v2beta2</em>. HorizontalPodAutoscaler is the configuration for a horizontal pod autoscaler, which automatically manages the replica count of any resource implementing the scale subresource based on the metrics specified.</li>
+<li><em>PriorityClass</em>. PriorityClass defines mapping from a priority class name to the priority integer value.</li>
+</ul>
 <h3 id="demo-workload-resources">Demo: Workload Resources</h3>
 <h4 id="deployment_2">Deployment</h4>
 <p>Create deployment via command <code>kubectl create</code>.</p>
