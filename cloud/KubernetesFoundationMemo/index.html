@@ -375,6 +375,26 @@
     Kubernetes API
   </a>
   
+    <nav class="md-nav" aria-label="Kubernetes API">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#api-version" class="md-nav__link">
+    API Version
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#api-group" class="md-nav__link">
+    API Group
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
@@ -453,8 +473,160 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#resource" class="md-nav__link">
+    Resource
+  </a>
+  
+    <nav class="md-nav" aria-label="Resource">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#workload-resources" class="md-nav__link">
+    Workload Resources
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#service-resources" class="md-nav__link">
+    Service Resources
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#config-and-storage-resources" class="md-nav__link">
+    Config and Storage Resources
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#authentication-resources" class="md-nav__link">
+    Authentication Resources
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#authorization-resources" class="md-nav__link">
+    Authorization Resources
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#policy-resources" class="md-nav__link">
+    Policy Resources
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#extend-resources" class="md-nav__link">
+    Extend Resources
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cluster-resources" class="md-nav__link">
+    Cluster Resources
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pods" class="md-nav__link">
+    Pods
+  </a>
+  
+    <nav class="md-nav" aria-label="Pods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic" class="md-nav__link">
+    Basic
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#initcontainer" class="md-nav__link">
+    InitContainer
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#static-pod" class="md-nav__link">
+    Static Pod
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#container-probes" class="md-nav__link">
+    Container probes
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deployment" class="md-nav__link">
+    Deployment
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#replicaset" class="md-nav__link">
+    ReplicaSet
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#statefulset" class="md-nav__link">
+    StatefulSet
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#daemonset" class="md-nav__link">
+    DaemonSet
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#job" class="md-nav__link">
+    Job
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cronjob" class="md-nav__link">
+    CronJob
+  </a>
   
 </li>
       
@@ -1212,6 +1384,9 @@ james@lizard:~&gt; docker push &lt;your acccount id&gt;/golang_0001:v1
 <li><strong>Scaling up</strong> (vertical scaling) by adding more hard drives and memory to increase the computing capacity of physical servers. </li>
 </ul>
 <h3 id="kubernetes-api">Kubernetes API</h3>
+<p>The REST API is the fundamental fabric of Kubernetes. 
+All operations and communications between components, and external user commands are REST API calls that the API Server handles. 
+Consequently, everything in the Kubernetes platform is treated as an <em>API object</em> and has a corresponding entry in the API.</p>
 <p>The core of Kubernetes' control plane is the API server. </p>
 <ul>
 <li>CRI: Container Runtime Interface</li>
@@ -1220,7 +1395,7 @@ james@lizard:~&gt; docker push &lt;your acccount id&gt;/golang_0001:v1
 </ul>
 <p>The API server exposes an HTTP API that lets end users, different parts of cluster, and external components communicate with one another.</p>
 <p>The Kubernetes API lets we query and manipulate the state of API objects in Kubernetes (for example: Pods, Namespaces, ConfigMaps, and Events).</p>
-<p><strong>Kubernetes API:</strong> </p>
+<p>Kubernetes API:</p>
 <ul>
 <li>OpenAPI specification<ul>
 <li>OpenAPI V2</li>
@@ -1233,6 +1408,49 @@ james@lizard:~&gt; docker push &lt;your acccount id&gt;/golang_0001:v1
 </ul>
 </li>
 <li>API Extension</li>
+</ul>
+<h4 id="api-version">API Version</h4>
+<p>The API versioning and software versioning are indirectly related. 
+The API and release versioning proposal describes the relationship between API versioning and software versioning.
+Different API versions indicate different levels of stability and support. </p>
+<p>Here's a summary of each level:</p>
+<ul>
+<li>Alpha:<ul>
+<li>The version names contain alpha (for example, v1alpha1).</li>
+<li>The software may contain bugs. Enabling a feature may expose bugs. A feature may be disabled by default.</li>
+<li>The support for a feature may be dropped at any time without notice.</li>
+<li>The API may change in incompatible ways in a later software release without notice.</li>
+<li>The software is recommended for use only in short-lived testing clusters, due to increased risk of bugs and lack of long-term support.</li>
+</ul>
+</li>
+<li>Beta:<ul>
+<li>The version names contain beta (for example, v2beta3).</li>
+<li>The software is well tested. Enabling a feature is considered safe. Features are enabled by default.</li>
+<li>The support for a feature will not be dropped, though the details may change.</li>
+<li>The schema and/or semantics of objects may change in incompatible ways in a subsequent beta or stable release. When this happens, migration instructions are provided. Schema changes may require deleting, editing, and re-creating API objects. The editing process may not be straightforward. The migration may require downtime for applications that rely on the feature.</li>
+<li>The software is not recommended for production uses. Subsequent releases may introduce incompatible changes. If you have multiple clusters which can be upgraded independently, you may be able to relax this restriction.
+  Note: Please try beta features and provide feedback. After the features exit beta, it may not be practical to make more changes.</li>
+</ul>
+</li>
+<li>Stable:<ul>
+<li>The version name is vX where X is an integer.</li>
+<li>The stable versions of features appear in released software for many subsequent versions.</li>
+</ul>
+</li>
+</ul>
+<p>Command to get current API</p>
+<pre><code>kubectl api-resources
+</code></pre>
+<h4 id="api-group">API Group</h4>
+<p><a href="https://git.k8s.io/design-proposals-archive/api-machinery/api-group.md">API groups</a> make it easier to extend the Kubernetes API. 
+The API group is specified in a REST path and in the apiVersion field of a serialized object.</p>
+<p>There are several API groups in Kubernetes:</p>
+<ul>
+<li>The core (also called legacy) group is found at REST path <code>/api/v1</code>. <ul>
+<li>The core group is not specified as part of the apiVersion field, for example, apiVersion: v1.</li>
+</ul>
+</li>
+<li>The named groups are at REST path <code>/apis/$GROUP_NAME/$VERSION</code> and use apiVersion: <code>$GROUP_NAME/$VERSION</code> (for example, apiVersion: batch/v1). </li>
 </ul>
 <h3 id="kubernetes-objects">Kubernetes Objects</h3>
 <h4 id="objects-overview">Objects Overview:</h4>
@@ -1400,6 +1618,260 @@ These owned objects are dependents of their owner.</p>
 <p>Dependent objects have a <code>metadata.ownerReferences</code> field that references their owner object.</p>
 <p>A valid owner reference consists of the object name and a UID within the same namespace as the dependent object.</p>
 <p>Dependent objects also have an <code>ownerReferences.blockOwnerDeletion</code> field that takes a boolean value and controls whether specific dependents can block garbage collection from deleting their owner object. </p>
+<h3 id="resource">Resource</h3>
+<p>Kubernetes resources and "records of intent" are all stored as API objects, and modified via RESTful calls to the API. 
+The API allows configuration to be managed in a declarative way. 
+Users can interact with the Kubernetes API directly, or via tools like kubectl. 
+The core Kubernetes API is flexible and can also be extended to support custom resources.</p>
+<p>Command <code>kube api-resources</code> to get the supported API resources.</p>
+<p>Command <code>kubectl explain RESOURCE [options]</code> describes the fields associated with each supported API resource. 
+Fields are identified via a simple JSONPath identifier:</p>
+<pre><code>kubectl explain binding
+kubectl explain binding.metadata
+kubectl explain binding.metadata.name
+</code></pre>
+<h4 id="workload-resources">Workload Resources</h4>
+<p><em>Pod</em>. </p>
+<p>Pod is a collection of containers that can run on a host.</p>
+<p><em>PodTemplate</em>. </p>
+<p>PodTemplate describes a template for creating copies of a predefined pod.</p>
+<p><em>ReplicationController</em>. </p>
+<p>ReplicationController represents the configuration of a replication controller.</p>
+<p><em>ReplicaSet</em>. </p>
+<p>ReplicaSet ensures that a specified number of pod replicas are running at any given time.</p>
+<p><em>Deployment</em>. </p>
+<p>Deployment enables declarative updates for <em>Pods</em> and <em>ReplicaSets</em>.</p>
+<p><em>StatefulSet</em>. </p>
+<p>StatefulSet represents a set of pods with consistent identities.</p>
+<p><em>ControllerRevision</em>. </p>
+<p>ControllerRevision implements an immutable snapshot of state data.</p>
+<p><em>DaemonSet</em>. </p>
+<p>DaemonSet represents the configuration of a daemon set.</p>
+<p>Deleting a DaemonSet will clean up the Pods it created.</p>
+<p><em>Job</em>. </p>
+<p>Job represents the configuration of a single job.</p>
+<p><em>CronJob</em>. </p>
+<p>CronJob represents the configuration of a single cron job.</p>
+<p><em>HorizontalPodAutoscaler</em>. </p>
+<p>Configuration of a horizontal pod autoscaler.</p>
+<p><em>HorizontalPodAutoscaler</em>. </p>
+<p>HorizontalPodAutoscaler is the configuration for a horizontal pod autoscaler, which automatically manages the replica count of any resource implementing the scale subresource based on the metrics specified.</p>
+<p><em>HorizontalPodAutoscaler v2beta2</em>. </p>
+<p>HorizontalPodAutoscaler is the configuration for a horizontal pod autoscaler, which automatically manages the replica count of any resource implementing the scale subresource based on the metrics specified.</p>
+<p><em>PriorityClass</em>. </p>
+<p>PriorityClass defines mapping from a priority class name to the priority integer value.</p>
+<h4 id="service-resources">Service Resources</h4>
+<p><em>Service</em>. </p>
+<p>Service is a named abstraction of software service (for example, mysql) consisting of local port (for example 3306) that the proxy listens on, and the selector that determines which pods will answer requests sent through the proxy.</p>
+<p><em>Endpoints</em>. </p>
+<p>Endpoints is a collection of endpoints that implement the actual service.</p>
+<p><em>EndpointSlice</em>. </p>
+<p>EndpointSlice represents a subset of the endpoints that implement a service.</p>
+<p><em>Ingress</em>. </p>
+<p>Ingress is a collection of rules that allow inbound connections to reach the endpoints defined by a backend.</p>
+<p><em>IngressClass</em>. </p>
+<p>IngressClass represents the class of the Ingress, referenced by the Ingress Spec.</p>
+<h4 id="config-and-storage-resources">Config and Storage Resources</h4>
+<p><em>ConfigMap</em>. </p>
+<p>ConfigMap holds configuration data for pods to consume.</p>
+<p><em>Secret</em>. </p>
+<p>Secret holds secret data of a certain type.</p>
+<p><em>Volume</em>. </p>
+<p>Volume represents a named volume in a pod that may be accessed by any container in the pod.</p>
+<p><em>PersistentVolumeClaim</em>. </p>
+<p>PersistentVolumeClaim is a user's request for and claim to a persistent volume.</p>
+<p><em>PersistentVolume</em>. </p>
+<p>PersistentVolume (PV) is a storage resource provisioned by an administrator.</p>
+<p><em>StorageClass</em>. </p>
+<p>StorageClass describes the parameters for a class of storage for which PersistentVolumes can be dynamically provisioned.</p>
+<p><em>VolumeAttachment</em>. </p>
+<p>VolumeAttachment captures the intent to attach or detach the specified volume to/from the specified node.</p>
+<p><em>CSIDriver</em>. </p>
+<p>CSIDriver captures information about a Container Storage Interface (CSI) volume driver deployed on the cluster.</p>
+<p><em>CSINode</em>. </p>
+<p>CSINode holds information about all CSI drivers installed on a node.</p>
+<p><em>CSIStorageCapacity</em>. </p>
+<p>CSIStorageCapacity stores the result of one CSI GetCapacity call.</p>
+<h4 id="authentication-resources">Authentication Resources</h4>
+<p><em>ServiceAccount</em>. </p>
+<p>ServiceAccount binds together: 
+* a name, understood by users, and perhaps by peripheral systems, for an identity 
+* a principal that can be authenticated and authorized 
+* a set of secrets.</p>
+<p><em>TokenRequest</em>. </p>
+<p>TokenRequest requests a token for a given service account.</p>
+<p><em>TokenReview</em>. </p>
+<p>TokenReview attempts to authenticate a token to a known user.</p>
+<p><em>CertificateSigningRequest</em>. </p>
+<p>CertificateSigningRequest objects provide a mechanism to obtain x509 certificates by submitting a certificate signing request, and having it asynchronously approved and issued.</p>
+<h4 id="authorization-resources">Authorization Resources</h4>
+<p><em>LocalSubjectAccessReview</em>. </p>
+<p>LocalSubjectAccessReview checks whether or not a user or group can perform an action in a given namespace.</p>
+<p><em>SelfSubjectAccessReview</em>. </p>
+<p>SelfSubjectAccessReview checks whether or the current user can perform an action.</p>
+<p><em>SelfSubjectRulesReview</em>. </p>
+<p>SelfSubjectRulesReview enumerates the set of actions the current user can perform within a namespace.</p>
+<p><em>SubjectAccessReview</em>. </p>
+<p>SubjectAccessReview checks whether or not a user or group can perform an action.</p>
+<p><em>ClusterRole</em>. </p>
+<p>ClusterRole is a cluster level, logical grouping of PolicyRules that can be referenced as a unit by a RoleBinding or ClusterRoleBinding.</p>
+<p><em>ClusterRoleBinding</em>. </p>
+<p>ClusterRoleBinding references a ClusterRole, but not contain it.</p>
+<p><em>Role</em>. </p>
+<p>Role is a namespaced, logical grouping of PolicyRules that can be referenced as a unit by a RoleBinding.</p>
+<p><em>RoleBinding</em>. </p>
+<p>RoleBinding references a role, but does not contain it.</p>
+<h4 id="policy-resources">Policy Resources</h4>
+<p><em>LimitRange</em>. </p>
+<p>LimitRange sets resource usage limits for each kind of resource in a Namespace.</p>
+<p><em>ResourceQuota</em>. </p>
+<p>ResourceQuota sets aggregate quota restrictions enforced per namespace.</p>
+<p><em>NetworkPolicy</em>. </p>
+<p>NetworkPolicy describes what network traffic is allowed for a set of Pods.</p>
+<p><em>PodDisruptionBudget</em>. </p>
+<p>PodDisruptionBudget is an object to define the max disruption that can be caused to a collection of pods.</p>
+<p><em>PodSecurityPolicy v1beta1</em>. </p>
+<p>PodSecurityPolicy governs the ability to make requests that affect the Security Context that will be applied to a pod and container.</p>
+<h4 id="extend-resources">Extend Resources</h4>
+<p><em>CustomResourceDefinition</em>. </p>
+<p>CustomResourceDefinition represents a resource that should be exposed on the API server.</p>
+<p><em>MutatingWebhookConfiguration</em>. </p>
+<p>MutatingWebhookConfiguration describes the configuration of and admission webhook that accept or reject and may change the object.</p>
+<p>*ValidatingWebhookConfiguration(). </p>
+<p>ValidatingWebhookConfiguration describes the configuration of and admission webhook that accept or reject and object without changing it.</p>
+<h4 id="cluster-resources">Cluster Resources</h4>
+<p><em>Node</em>. </p>
+<p>Node is a worker node in Kubernetes.</p>
+<p><em>Namespace</em>. </p>
+<p>Namespace provides a scope for Names.</p>
+<p><em>Event</em>. </p>
+<p>Event is a report of an event somewhere in the cluster.</p>
+<p><em>APIService</em>. </p>
+<p>APIService represents a server for a particular GroupVersion.</p>
+<p><em>Lease</em>. </p>
+<p>Lease defines a lease concept.</p>
+<p><em>RuntimeClass</em>. </p>
+<p>RuntimeClass defines a class of container runtime supported in the cluster.</p>
+<p><em>FlowSchema v1beta2</em>. </p>
+<p>FlowSchema defines the schema of a group of flows.</p>
+<p><em>PriorityLevelConfiguration v1beta2</em>. </p>
+<p>PriorityLevelConfiguration represents the configuration of a priority level.</p>
+<p><em>Binding</em>. </p>
+<p>Binding ties one object to another; for example, a pod is bound to a node by a scheduler.</p>
+<p><em>ComponentStatus</em>. </p>
+<p>ComponentStatus (and ComponentStatusList) holds the cluster validation info.</p>
+<h2 id="pods">Pods</h2>
+<h3 id="basic">Basic</h3>
+<p>Pods are the smallest deployable units of computing that you can create and manage in Kubernetes.</p>
+<p>A Pod is a group of one or more containers, with shared storage and network resources, and a specification for how to run the containers.</p>
+<p>A Pod's contents are always co-located and co-scheduled, and run in a shared context. </p>
+<p>A Pod models an application-specific "logical host": it contains one or more application containers which are relatively tightly coupled. </p>
+<p>In non-cloud contexts, applications executed on the same physical or virtual machine are analogous to cloud applications executed on the same logical host.</p>
+<p>The shared context of a Pod is a set of Linux namespaces, cgroups, and potentially other facets of isolation - the same things that isolate a Docker container.</p>
+<p>In terms of Docker concepts, a Pod is similar to a group of Docker containers with shared namespaces and shared filesystem volumes.</p>
+<p>Usually you don't need to create Pods directly, even singleton Pods. Instead, create them using workload resources such as <em>Deployment</em> or <em>Job</em>. 
+If your Pods need to track state, consider the StatefulSet resource.</p>
+<p>Pods in a Kubernetes cluster are used in two main ways:</p>
+<ul>
+<li>Pods that run a single container. </li>
+<li>Pods that run multiple containers that need to work together. </li>
+</ul>
+<p>The "one-container-per-Pod" model is the most common Kubernetes use case; 
+in this case, you can think of a Pod as a wrapper around a single container; 
+Kubernetes manages Pods rather than managing the containers directly.</p>
+<p>A Pod can encapsulate an application composed of multiple co-located containers that are tightly coupled and need to share resources. </p>
+<p>These co-located containers form a single cohesive unit of service—for example, one container serving data stored in a shared volume to the public, 
+while a separate sidecar container refreshes or updates those files. 
+The Pod wraps these containers, storage resources, and an ephemeral network identity together as a single unit.</p>
+<p>Grouping multiple co-located and co-managed containers in a single Pod is a relatively advanced use case. 
+You should use this pattern <em>only</em> in specific instances in which your containers are tightly coupled.</p>
+<p>Each Pod is meant to run a single instance of a given application. 
+If you want to scale your application horizontally (to provide more overall resources by running more instances), you should use multiple Pods, one for each instance. 
+In Kubernetes, this is typically referred to as <em>replication</em>. Replicated Pods are usually created and managed as a group by a workload resource and its controller.</p>
+<p>Pods natively provide two kinds of shared resources for their constituent containers: <em><a href="https://kubernetes.io/docs/concepts/workloads/pods/#pod-networking">networking</a></em> and <em><a href="https://kubernetes.io/docs/concepts/workloads/pods/#pod-storage">storage</a></em>.</p>
+<p>A Pod can specify a set of shared storage volumes. All containers in the Pod can access the shared volumes, allowing those containers to share data. </p>
+<p>Each Pod is assigned a unique IP address for each address family.
+Within a Pod, containers share an IP address and port space, and can find each other via <code>localhost</code>.
+Containers that want to interact with a container running in a different Pod can use IP networking to communicate.</p>
+<p>When a Pod gets created, the new Pod is scheduled to run on a Node in your cluster. 
+The Pod remains on that node until the Pod finishes execution, the Pod object is deleted, the Pod is evicted for lack of resources, or the node fails.</p>
+<p>Restarting a container in a Pod should not be confused with restarting a Pod. 
+A Pod is not a process, but an environment for running container(s). 
+A Pod persists until it is deleted.</p>
+<p>You can use workload resources (e.g., Deployment, StatefulSet, DaemonSet) to create and manage multiple Pods for you. 
+A controller for the resource handles replication and rollout and automatic healing in case of Pod failure.</p>
+<p><img alt="Pod with multiple containers" src="https://d33wubrfki0l68.cloudfront.net/aecab1f649bc640ebef1f05581bfcc91a48038c4/728d6/images/docs/pod.svg" /></p>
+<h3 id="initcontainer">InitContainer</h3>
+<p>Some Pods have init containers as well as app containers. Init containers run and complete before the app containers are started.</p>
+<p>You can specify init containers in the Pod specification alongside the containers array (which describes app containers).</p>
+<h3 id="static-pod">Static Pod</h3>
+<p>Static Pods are managed directly by the kubelet daemon on a specific node, without the API server observing them. </p>
+<p>Static Pods are always bound to one Kubelet on a specific node. </p>
+<p>The main use for static Pods is to run a self-hosted control plane: in other words, using the kubelet to supervise the individual control plane components.</p>
+<p>The kubelet automatically tries to create a mirror Pod on the Kubernetes API server for each static Pod. 
+This means that the Pods running on a node are visible on the API server, but cannot be controlled from there.</p>
+<h3 id="container-probes">Container probes</h3>
+<p>A probe is a diagnostic performed periodically by the kubelet on a container. </p>
+<p>To perform a diagnostic, the kubelet either executes code within the container, or makes a network request.</p>
+<p>There are four different ways to check a container using a probe. Each probe must define exactly one of these four mechanisms:</p>
+<ul>
+<li><em>exec</em>. The diagnostic is considered successful if the command exits with a status code of 0.</li>
+<li><em>grpc</em>. The diagnostic is considered successful if the status of the response is SERVING.</li>
+<li><em>httpGet</em>. The diagnostic is considered successful if the response has a status code greater than or equal to 200 and less than 400.</li>
+<li><em>tcpSocket</em>. The diagnostic is considered successful if the port is open.</li>
+</ul>
+<p>Each probe has one of three results:</p>
+<ul>
+<li>Success</li>
+<li>Failure</li>
+<li>Unknown</li>
+</ul>
+<p>Types of probe:</p>
+<ul>
+<li><em>livenessProbe</em>. Indicates whether the container is running. </li>
+<li><em>readinessProbe</em>. Indicates whether the container is ready to respond to requests.</li>
+<li><em>startupProbe</em>. Indicates whether the application within the container is started.</li>
+</ul>
+<h2 id="deployment">Deployment</h2>
+<h2 id="replicaset">ReplicaSet</h2>
+<p>A ReplicaSet’s purpose is to maintain a stable set of replica Pods running at any given time. 
+As such, it is often used to guarantee the availability of a specified number of identical Pods.</p>
+<p>You may never need to manipulate ReplicaSet objects: use a Deployment instead, and define your application in the spec section.</p>
+<p>You can specify how many Pods should run concurrently by setting <code>replicaset.spec.replicas</code>. 
+The ReplicaSet will create/delete its Pods to match this number.
+If you do not specify <code>replicaset.spec.replicas</code>, then it defaults to <code>1</code>.</p>
+<h2 id="statefulset">StatefulSet</h2>
+<h2 id="daemonset">DaemonSet</h2>
+<p>A DaemonSet ensures that all (or some) Nodes run a copy of a Pod. As nodes are removed from the cluster, those Pods are garbage collected. </p>
+<p>Deleting a DaemonSet will clean up the Pods it created.</p>
+<p>Some typical uses of a DaemonSet are:</p>
+<ul>
+<li>running a cluster storage daemon on every node</li>
+<li>running a logs collection daemon on every node</li>
+<li>running a node monitoring daemon on every node</li>
+</ul>
+<p>In a simple case, one DaemonSet, covering all nodes, would be used for each type of daemon. </p>
+<p>A more complex setup might use multiple DaemonSets for a single type of daemon, but with different flags and/or different memory and cpu requests for different hardware types.</p>
+<p>The DaemonSet controller reconciliation process reviews both existing nodes and newly created nodes. </p>
+<p>By default, the Kubernetes scheduler ignores the pods created by the DamonSet, and lets them exist on the node until the node itself is shut down. </p>
+<p>Running Pods on select Nodes:</p>
+<ul>
+<li>If you specify a <code>daemonset.spec.template.spec.nodeSelector</code>, then the DaemonSet controller will create Pods on nodes which match that node selector. </li>
+<li>If you specify a <code>daemonset.spec.template.spec.affinity</code>, then DaemonSet controller will create Pods on nodes which match that node affinity. </li>
+<li>If you do not specify either, then the DaemonSet controller will create Pods on all nodes.</li>
+</ul>
+<p>There is no field <code>replicas</code> in <code>kubectl explain daemonset.spec</code> against with <code>kubectl explain deployment.spec.replicas</code>.
+When a DaemonSet is created, each node will have <em>one</em> DaemonSet Pod running.</p>
+<p>We’ll use a <code>Deployment</code>/<code>ReplicaSet</code> for services, mostly stateless, where we don’t care where the node is running, 
+but we care more about the number of copies of our pod is running, and we can scale those copies/replicas up or down. 
+Rolling updates would also be a benefit here.</p>
+<p>We’ll use a <code>DaemonSet</code> when a copy of our pod must be running on the specific nodes that we require. 
+Our daemon pod also needs to start before any of our other pods.</p>
+<p>A DaemonSet is a simple scalability strategy for background services. 
+When more eligible nodes are added to the cluster, the background service scales up. 
+When nodes are removed, it will automatically scale down.</p>
+<h2 id="job">Job</h2>
+<h2 id="cronjob">CronJob</h2>
 <h2 id="4tutorials">4.Tutorials</h2>
 <ul>
 <li>
