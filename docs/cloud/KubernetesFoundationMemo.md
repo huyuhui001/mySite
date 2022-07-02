@@ -1,6 +1,6 @@
 # Kubernetes Foundation
 
-## **1. Docker Fundamentals**
+## Docker Fundamentals
 
 ### Demo environment
 
@@ -781,7 +781,7 @@ james@lizard:~> docker push <your acccount id>/golang_0001:v1
 
 
 
-## 2.Basic Concepts of Kubernetes
+## Basic Concepts of Kubernetes
 
 ### Kubernetes Components
 
@@ -1171,6 +1171,78 @@ The API allows configuration to be managed in a declarative way.
 Users can interact with the Kubernetes API directly, or via tools like kubectl. 
 The core Kubernetes API is flexible and can also be extended to support custom resources.
 
+* Workload Resources
+    * *Pod*. Pod is a collection of containers that can run on a host.
+    * *PodTemplate*. PodTemplate describes a template for creating copies of a predefined pod.
+    * *ReplicationController*. ReplicationController represents the configuration of a replication controller.
+    * *ReplicaSet*. ReplicaSet ensures that a specified number of pod replicas are running at any given time.
+    * *Deployment*. Deployment enables declarative updates for Pods and ReplicaSets.
+    * *StatefulSet*. StatefulSet represents a set of pods with consistent identities.
+    * *ControllerRevision*. ControllerRevision implements an immutable snapshot of state data.
+    * *DaemonSet*. DaemonSet represents the configuration of a daemon set.
+    * *Job*. Job represents the configuration of a single job.
+    * *CronJob*. CronJob represents the configuration of a single cron job.
+    * *HorizontalPodAutoscaler*. configuration of a horizontal pod autoscaler.
+    * *HorizontalPodAutoscaler*. HorizontalPodAutoscaler is the configuration for a horizontal pod autoscaler, which automatically manages the replica count of any resource implementing the scale subresource based on the metrics specified.
+    * *HorizontalPodAutoscaler v2beta2*. HorizontalPodAutoscaler is the configuration for a horizontal pod autoscaler, which automatically manages the replica count of any resource implementing the scale subresource based on the metrics specified.
+    * *PriorityClass*. PriorityClass defines mapping from a priority class name to the priority integer value.
+* Service Resources
+    * *Service*. Service is a named abstraction of software service (for example, mysql) consisting of local port (for example 3306) that the proxy listens on, and the selector that determines which pods will answer requests sent through the proxy.
+    * *Endpoints*. Endpoints is a collection of endpoints that implement the actual service.
+    * *EndpointSlice*. EndpointSlice represents a subset of the endpoints that implement a service.
+    * *Ingress*. Ingress is a collection of rules that allow inbound connections to reach the endpoints defined by a backend.
+    * *IngressClass*. IngressClass represents the class of the Ingress, referenced by the Ingress Spec.
+* Config and Storage Resources
+    * *ConfigMap*. ConfigMap holds configuration data for pods to consume.
+    * *Secret*. Secret holds secret data of a certain type.
+    * *Volume*. Volume represents a named volume in a pod that may be accessed by any container in the pod.
+    * *PersistentVolumeClaim*. PersistentVolumeClaim is a user's request for and claim to a persistent volume.
+    * *PersistentVolume*. PersistentVolume (PV) is a storage resource provisioned by an administrator.
+    * *StorageClass*. StorageClass describes the parameters for a class of storage for which PersistentVolumes can be dynamically provisioned.
+    * *VolumeAttachment*. VolumeAttachment captures the intent to attach or detach the specified volume to/from the specified node.
+    * *CSIDriver*. CSIDriver captures information about a Container Storage Interface (CSI) volume driver deployed on the cluster.
+    * *CSINode*. CSINode holds information about all CSI drivers installed on a node.
+    * *CSIStorageCapacity*. CSIStorageCapacity stores the result of one CSI GetCapacity call.
+* Authentication Resources
+    * *ServiceAccount*. ServiceAccount binds together: 
+        * a name, understood by users, and perhaps by peripheral systems, for an identity 
+        * a principal that can be authenticated and authorized 
+        * a set of secrets.
+    * *TokenRequest*. TokenRequest requests a token for a given service account.
+    * *TokenReview*. TokenReview attempts to authenticate a token to a known user.
+    * *CertificateSigningRequest*. CertificateSigningRequest objects provide a mechanism to obtain x509 certificates by submitting a certificate signing request, and having it asynchronously approved and issued.
+* Authorization Resources
+    * *LocalSubjectAccessReview*. LocalSubjectAccessReview checks whether or not a user or group can perform an action in a given namespace.
+    * *SelfSubjectAccessReview*. SelfSubjectAccessReview checks whether or the current user can perform an action.
+    * *SelfSubjectRulesReview*. SelfSubjectRulesReview enumerates the set of actions the current user can perform within a namespace.
+    * *SubjectAccessReview*. SubjectAccessReview checks whether or not a user or group can perform an action.
+    * *ClusterRole*. ClusterRole is a cluster level, logical grouping of PolicyRules that can be referenced as a unit by a RoleBinding or ClusterRoleBinding.
+    * *ClusterRoleBinding*. ClusterRoleBinding references a ClusterRole, but not contain it.
+    * *Role*. Role is a namespaced, logical grouping of PolicyRules that can be referenced as a unit by a RoleBinding.
+    * *RoleBinding*. RoleBinding references a role, but does not contain it.
+* Policy Resources
+    * *LimitRange*. LimitRange sets resource usage limits for each kind of resource in a Namespace.
+    * *ResourceQuota*. ResourceQuota sets aggregate quota restrictions enforced per namespace.
+    * *NetworkPolicy*. NetworkPolicy describes what network traffic is allowed for a set of Pods.
+    * *PodDisruptionBudget*. PodDisruptionBudget is an object to define the max disruption that can be caused to a collection of pods.
+    * *PodSecurityPolicy v1beta1*. PodSecurityPolicy governs the ability to make requests that affect the Security Context that will be applied to a pod and container.
+* Extend Resources
+    * *CustomResourceDefinition*. CustomResourceDefinition represents a resource that should be exposed on the API server.
+    * *MutatingWebhookConfiguration*. MutatingWebhookConfiguration describes the configuration of and admission webhook that accept or reject and may change the object.
+    * *ValidatingWebhookConfiguration(). ValidatingWebhookConfiguration describes the configuration of and admission webhook that accept or reject and object without changing it.
+* Cluster Resources
+    * *Node*. Node is a worker node in Kubernetes.
+    * *Namespace*. Namespace provides a scope for Names.
+    * *Event*. Event is a report of an event somewhere in the cluster.
+    * *APIService*. APIService represents a server for a particular GroupVersion.
+    * *Lease*. Lease defines a lease concept.
+    * *RuntimeClass*. RuntimeClass defines a class of container runtime supported in the cluster.
+    * *FlowSchema v1beta2*. FlowSchema defines the schema of a group of flows.
+    * *PriorityLevelConfiguration v1beta2*. PriorityLevelConfiguration represents the configuration of a priority level.
+    * *Binding*. Binding ties one object to another; for example, a pod is bound to a node by a scheduler.
+    * *ComponentStatus*. ComponentStatus (and ComponentStatusList) holds the cluster validation info.
+
+
 Command `kube api-resources` to get the supported API resources.
 
 
@@ -1182,350 +1254,11 @@ kubectl explain binding.metadata
 kubectl explain binding.metadata.name
 ```
 
-#### Workload Resources
 
-*Pod*. 
 
-Pod is a collection of containers that can run on a host.
+## Workload Resources
 
-*PodTemplate*. 
-
-PodTemplate describes a template for creating copies of a predefined pod.
-
-
-*ReplicationController*. 
-
-ReplicationController represents the configuration of a replication controller.
-
-
-*ReplicaSet*. 
-
-ReplicaSet ensures that a specified number of pod replicas are running at any given time.
-
-
-*Deployment*. 
-
-Deployment enables declarative updates for *Pods* and *ReplicaSets*.
-
-
-*StatefulSet*. 
-
-StatefulSet represents a set of pods with consistent identities.
-
-
-*ControllerRevision*. 
-
-ControllerRevision implements an immutable snapshot of state data.
-
-
-*DaemonSet*. 
-
-DaemonSet represents the configuration of a daemon set.
-
-Deleting a DaemonSet will clean up the Pods it created.
-
-
-*Job*. 
-
-Job represents the configuration of a single job.
-
-
-*CronJob*. 
-
-CronJob represents the configuration of a single cron job.
-
-
-*HorizontalPodAutoscaler*. 
-
-Configuration of a horizontal pod autoscaler.
-
-
-*HorizontalPodAutoscaler*. 
-
-HorizontalPodAutoscaler is the configuration for a horizontal pod autoscaler, which automatically manages the replica count of any resource implementing the scale subresource based on the metrics specified.
-
-
-*HorizontalPodAutoscaler v2beta2*. 
-
-HorizontalPodAutoscaler is the configuration for a horizontal pod autoscaler, which automatically manages the replica count of any resource implementing the scale subresource based on the metrics specified.
-
-
-*PriorityClass*. 
-
-PriorityClass defines mapping from a priority class name to the priority integer value.
-
-
-#### Service Resources
-
-*Service*. 
-
-Service is a named abstraction of software service (for example, mysql) consisting of local port (for example 3306) that the proxy listens on, and the selector that determines which pods will answer requests sent through the proxy.
-
-
-*Endpoints*. 
-
-Endpoints is a collection of endpoints that implement the actual service.
-
-
-*EndpointSlice*. 
-
-EndpointSlice represents a subset of the endpoints that implement a service.
-
-
-*Ingress*. 
-
-Ingress is a collection of rules that allow inbound connections to reach the endpoints defined by a backend.
-
-
-
-*IngressClass*. 
-
-IngressClass represents the class of the Ingress, referenced by the Ingress Spec.
-
-
-
-
-#### Config and Storage Resources
-
-*ConfigMap*. 
-
-ConfigMap holds configuration data for pods to consume.
-
-
-*Secret*. 
-
-Secret holds secret data of a certain type.
-
-
-*Volume*. 
-
-Volume represents a named volume in a pod that may be accessed by any container in the pod.
-
-
-*PersistentVolumeClaim*. 
-
-PersistentVolumeClaim is a user's request for and claim to a persistent volume.
-
-
-*PersistentVolume*. 
-
-PersistentVolume (PV) is a storage resource provisioned by an administrator.
-
-*StorageClass*. 
-
-StorageClass describes the parameters for a class of storage for which PersistentVolumes can be dynamically provisioned.
-
-
-*VolumeAttachment*. 
-
-VolumeAttachment captures the intent to attach or detach the specified volume to/from the specified node.
-
-
-*CSIDriver*. 
-
-CSIDriver captures information about a Container Storage Interface (CSI) volume driver deployed on the cluster.
-
-
-*CSINode*. 
-
-CSINode holds information about all CSI drivers installed on a node.
-
-
-*CSIStorageCapacity*. 
-
-CSIStorageCapacity stores the result of one CSI GetCapacity call.
-
-
-
-
-#### Authentication Resources
-
-*ServiceAccount*. 
-
-ServiceAccount binds together: 
-* a name, understood by users, and perhaps by peripheral systems, for an identity 
-* a principal that can be authenticated and authorized 
-* a set of secrets.
-
-
-*TokenRequest*. 
-
-TokenRequest requests a token for a given service account.
-
-
-*TokenReview*. 
-
-TokenReview attempts to authenticate a token to a known user.
-
-
-*CertificateSigningRequest*. 
-
-CertificateSigningRequest objects provide a mechanism to obtain x509 certificates by submitting a certificate signing request, and having it asynchronously approved and issued.
-
-
-
-
-#### Authorization Resources
-
-*LocalSubjectAccessReview*. 
-
-LocalSubjectAccessReview checks whether or not a user or group can perform an action in a given namespace.
-
-
-*SelfSubjectAccessReview*. 
-
-SelfSubjectAccessReview checks whether or the current user can perform an action.
-
-
-*SelfSubjectRulesReview*. 
-
-SelfSubjectRulesReview enumerates the set of actions the current user can perform within a namespace.
-
-
-*SubjectAccessReview*. 
-
-SubjectAccessReview checks whether or not a user or group can perform an action.
-
-
-*ClusterRole*. 
-
-ClusterRole is a cluster level, logical grouping of PolicyRules that can be referenced as a unit by a RoleBinding or ClusterRoleBinding.
-
-
-*ClusterRoleBinding*. 
-
-ClusterRoleBinding references a ClusterRole, but not contain it.
-
-
-*Role*. 
-
-Role is a namespaced, logical grouping of PolicyRules that can be referenced as a unit by a RoleBinding.
-
-
-*RoleBinding*. 
-
-RoleBinding references a role, but does not contain it.
-
-
-
-
-
-
-#### Policy Resources
-
-
-*LimitRange*. 
-
-LimitRange sets resource usage limits for each kind of resource in a Namespace.
-
-
-*ResourceQuota*. 
-
-ResourceQuota sets aggregate quota restrictions enforced per namespace.
-
-
-*NetworkPolicy*. 
-
-NetworkPolicy describes what network traffic is allowed for a set of Pods.
-
-
-*PodDisruptionBudget*. 
-
-PodDisruptionBudget is an object to define the max disruption that can be caused to a collection of pods.
-
-
-*PodSecurityPolicy v1beta1*. 
-
-PodSecurityPolicy governs the ability to make requests that affect the Security Context that will be applied to a pod and container.
-
-
-
-
-
-
-#### Extend Resources
-
-*CustomResourceDefinition*. 
-
-CustomResourceDefinition represents a resource that should be exposed on the API server.
-
-
-*MutatingWebhookConfiguration*. 
-
-MutatingWebhookConfiguration describes the configuration of and admission webhook that accept or reject and may change the object.
-
-
-*ValidatingWebhookConfiguration(). 
-
-ValidatingWebhookConfiguration describes the configuration of and admission webhook that accept or reject and object without changing it.
-
-
-
-#### Cluster Resources
-
-*Node*. 
-
-Node is a worker node in Kubernetes.
-
-
-*Namespace*. 
-
-Namespace provides a scope for Names.
-
-
-*Event*. 
-
-Event is a report of an event somewhere in the cluster.
-
-
-*APIService*. 
-
-APIService represents a server for a particular GroupVersion.
-
-
-*Lease*. 
-
-Lease defines a lease concept.
-
-
-*RuntimeClass*. 
-
-RuntimeClass defines a class of container runtime supported in the cluster.
-
-
-*FlowSchema v1beta2*. 
-
-FlowSchema defines the schema of a group of flows.
-
-
-*PriorityLevelConfiguration v1beta2*. 
-
-PriorityLevelConfiguration represents the configuration of a priority level.
-
-
-*Binding*. 
-
-Binding ties one object to another; for example, a pod is bound to a node by a scheduler.
-
-
-*ComponentStatus*. 
-
-ComponentStatus (and ComponentStatusList) holds the cluster validation info.
-
-
-
-
-
-
-
-
-
-
-
-
-## Pods
-
-### Basic
+### Pods
 
 Pods are the smallest deployable units of computing that you can create and manage in Kubernetes.
 
@@ -1588,14 +1321,14 @@ A controller for the resource handles replication and rollout and automatic heal
 ![Pod with multiple containers](https://d33wubrfki0l68.cloudfront.net/aecab1f649bc640ebef1f05581bfcc91a48038c4/728d6/images/docs/pod.svg)
 
 
-### InitContainer
+#### InitContainer
 
 Some Pods have init containers as well as app containers. Init containers run and complete before the app containers are started.
 
 You can specify init containers in the Pod specification alongside the containers array (which describes app containers).
 
 
-### Static Pod
+#### Static Pod
 
 Static Pods are managed directly by the kubelet daemon on a specific node, without the API server observing them. 
 
@@ -1607,7 +1340,7 @@ The kubelet automatically tries to create a mirror Pod on the Kubernetes API ser
 This means that the Pods running on a node are visible on the API server, but cannot be controlled from there.
 
 
-### Container probes
+#### Container probes
 
 A probe is a diagnostic performed periodically by the kubelet on a container. 
 
@@ -1636,10 +1369,10 @@ Types of probe:
 
 
 
-## Deployment
+### Deployment
 
 
-## ReplicaSet
+### ReplicaSet
 
 A ReplicaSet’s purpose is to maintain a stable set of replica Pods running at any given time. 
 As such, it is often used to guarantee the availability of a specified number of identical Pods.
@@ -1652,13 +1385,13 @@ If you do not specify `replicaset.spec.replicas`, then it defaults to `1`.
 
 
 
-## StatefulSet
+### StatefulSet
 
 
 
 
 
-## DaemonSet
+### DaemonSet
 
 A DaemonSet ensures that all (or some) Nodes run a copy of a Pod. As nodes are removed from the cluster, those Pods are garbage collected. 
 
@@ -1708,13 +1441,192 @@ When nodes are removed, it will automatically scale down.
 
 
 
-## Job
+### Job
 
 
 
 
 
-## CronJob
+### CronJob
+
+
+
+
+
+## Service Resource
+
+
+### Service
+
+Service is a named abstraction of software service (for example, mysql) consisting of local port (for example 3306) that the proxy listens on, and the selector that determines which pods will answer requests sent through the proxy.
+
+The set of Pods targeted by a Service is usually determined by a selector (label selector). 
+
+Type of service resource:
+
+* ClusterIP Service (default): Reliable IP, DNS, and Port. Internal acess only.
+* NodePort Service: Expose to external access.
+* LoadBalancer: Based on NodePort and integrated with loader balance provided by cloud venders (e.g., AWS, GCP, etc.).
+* ExternalName: Acces will be trafficed to external service.
+
+Here is an example of yaml file to create a Service.
+```
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+  labels:
+    tier: application
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    run: nginx
+  type: NodePort
+```
+
+Here is an example of Service.
+
+* IP`10.96.17.77` is ClusterIP(VIP) of the service
+* Port `<unset>  80/TCP` is the port on Pod that service listening within the cluster.
+* TargetPort `8080/TCP` is the port on the container that the service should direct traffic to.
+* NodePort `<unset>  31893/TCP` is the port that can be accessed outside. 
+* Endpoints show the list of Pods matched the service labels. 
+
+```
+Name:                     nginx-deployment
+Namespace:                jh-namespace
+Labels:                   tier=application
+Annotations:              <none>
+Selector:                 run=nginx
+Type:                     NodePort
+IP Family Policy:         SingleStack
+IP Families:              IPv4
+IP:                       10.96.17.77
+IPs:                      10.96.17.77
+Port:                     <unset>  80/TCP
+TargetPort:               8080/TCP
+NodePort:                 <unset>  31893/TCP
+Endpoints:                10.244.1.177:8080,10.244.1.178:8080,10.244.1.179:8080 + 7 more...
+Session Affinity:         None
+External Traffic Policy:  Cluster
+Events:                   <none>
+```
+
+
+
+
+Service `kube-dns` beyond Deployment `coredns` provides cluster DNS service in Kubernetes cluster. 
+
+Service registration:
+
+* Kubernetes uses cluster DNS as service registration.
+* Registration is Service based, not Pod based.
+* Cluster DNS (CoreDNS) is monitoring and discvering new service actively.
+* Service Name, IP, Port will be registered.
+
+
+Procedure of Service registration.
+
+* POST new Service to API Server.
+* Assign ClusterIP to the new Service.
+* Save new Service configuration info to etcd.
+* Create endpoints with related Pod IPs associated with the new Service.
+* Explore the new Service by ClusterDNS.
+* Create DNS info.
+* kube-proxy fetch Service configration info.
+* Create IPSV rule.
+
+
+
+Procedure of Service discovery.
+
+* Request DNS name resolution for a Service name.
+* Receive ClusterIP.
+* Traffic access to ClusterIP.
+* No router. Forward request to Pod's default gateway.
+* Forward request to node.
+* No router. Forward request to Node's default gateway.
+* Proceed the request by Node kernel.
+* Trap the request by IPSV rule.
+* Put destination Pod's IP into the request's destination IP. 
+* The request arrives destination Pod.
+
+
+
+Get DNS configuration.
+```
+root@cka001:/etc# kubectl get service kube-dns -n kube-system
+NAME       TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)                  AGE
+kube-dns   ClusterIP   10.96.0.10   <none>        53/UDP,53/TCP,9153/TCP   7d7h
+
+
+root@cka001:/etc# cat resolv.conf 
+# Dynamic resolv.conf(5) file for glibc resolver(3) generated by resolvconf(8)
+#     DO NOT EDIT THIS FILE BY HAND -- YOUR CHANGES WILL BE OVERWRITTEN
+# 127.0.0.53 is the systemd-resolved stub resolver.
+# run "systemd-resolve --status" to see details about the actual nameservers.
+nameserver 127.0.0.53
+options timeout:2 attempts:3 rotate single-request-reopen
+
+
+root@cka001:/etc# systemd-resolve --status
+  Current DNS Server: 100.100.2.136
+         DNS Servers: 100.100.2.136
+                      100.100.2.138
+```
+
+
+Get information of `kube-dns`.
+```
+root@cka001:~# kubectl describe service kube-dns -n kube-system
+Name:              kube-dns
+Namespace:         kube-system
+Labels:            k8s-app=kube-dns
+                   kubernetes.io/cluster-service=true
+                   kubernetes.io/name=CoreDNS
+Annotations:       prometheus.io/port: 9153
+                   prometheus.io/scrape: true
+Selector:          k8s-app=kube-dns
+Type:              ClusterIP
+IP Family Policy:  SingleStack
+IP Families:       IPv4
+IP:                10.96.0.10
+IPs:               10.96.0.10
+Port:              dns  53/UDP
+TargetPort:        53/UDP
+Endpoints:         10.244.0.2:53,10.244.0.3:53
+Port:              dns-tcp  53/TCP
+TargetPort:        53/TCP
+Endpoints:         10.244.0.2:53,10.244.0.3:53
+Port:              metrics  9153/TCP
+TargetPort:        9153/TCP
+Endpoints:         10.244.0.2:9153,10.244.0.3:9153
+Session Affinity:  None
+Events:            <none>
+```
+
+
+FQDN format: `<object-name>.<namespace>.svc.cluster.local`. We call `<object-name>` as unqualified name, or short name.
+
+
+
+Namespaces can partition the cluster's address space. At the same time, it can also be used to implement access control and resource quotas.
+
+
+
+
+
+
+### Endpoints 
+
+Endpoints is a collection of endpoints that implement the actual service.
+
+When a service is created, it associates with a Endpoint object, `kubectl get endpoints <service_name>`.
+
+A list of matched Pod by service label is maintained as Endpoint object, add new matched Pods and remove not matched Pods.
 
 
 
@@ -1726,14 +1638,7 @@ When nodes are removed, it will automatically scale down.
 
 
 
-
-
-
-
-
-
-
-## 4.Tutorials
+## Tutorials
 
 * [Tutorials: local deployment](KubernetesTutorials-Local-Deploy.md)
 
