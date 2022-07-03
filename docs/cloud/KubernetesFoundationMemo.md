@@ -1387,6 +1387,34 @@ If you do not specify `replicaset.spec.replicas`, then it defaults to `1`.
 
 ### StatefulSet
 
+StatefulSet Characteristics (aka, stick ID):
+
+* Pod's name is immutable after created.
+* DNS hostname is immutable after created.
+* Mounted volume is immutable after created.
+
+Stick ID of StatefulSet won't be changed after failure, scaling, and other operations. 
+
+Naming convention of StatefulSet: `<StatefulSetName>-<Integer>`.
+
+StatefulSet can be scalling by itsself, but Deployment need rely on ReplicaSet for scalling.
+
+Recommendation: reduce StatefulSet to 0 first instead of delete it directly.
+
+
+*headless* Service and *governing* Service:
+
+* Headless Service is a normal Kubernetes Service object that its spec.clusterIP is set to `None`.
+* When `spec.ServiceName` of StatefulSet is set to the headless Service name, the StatefulSet is now a governing Service.
+
+
+General procedure to create a StatefulSet: 
+
+* Create a StorageClass
+* Create Headless Service
+* Create StatefulSet based on above two.
+
+
 
 
 
@@ -1621,6 +1649,35 @@ When a service is created, it associates with a Endpoint object, `kubectl get en
 
 A list of matched Pod by service label is maintained as Endpoint object, add new matched Pods and remove not matched Pods.
 
+
+
+
+
+
+
+
+## Config and Storage Resources
+
+
+
+spec.accessModes defines mount option of a PV:
+
+* ReadWriteOnce(RWO). A PV can be mounted only to a PVC with read/write mode, like block device.
+* ReadWriteMany(RWM). A PV can be mounted to more than one PVC with read/write mode, like NFS.
+* ReadOnlyMany(ROM). A PV can be mounted to more than one PVC with read only mode.
+
+A PV can only be set with one option.
+Pod mount PVC, not PV.
+
+
+
+Procedure of StorageClass deployment and implementation:
+
+* Create Kubernetes cluster and backend storage.
+* Make sure the provisioner/plugin is ready in Kubernetes.
+* Create a StorageClass object to link to backend storage. The StorageClass will create related PV automatically.
+* Create a PVC object to link to the StorageClass we created.
+* Deploy a Pod and use the PVC volume.
 
 
 

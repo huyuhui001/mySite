@@ -1792,15 +1792,706 @@ Selector:               app=nginx
 
 
 
+## Health Check
 
-今天的小作业：
-1. 创建一个具有两个容器的Pod（镜像可以随意选择）
-2. DaemonSet可以设置replicas参数吗？为什么？
-3. kubectl查看Pod日志时如何按关键字过滤
+### Status of Pod and Container
 
-https://howtoforge.com/multi-container-pods-in-kubernetes/
+Create a yaml file `multi-pods.yaml`. 
+```
+root@cka001:~# cat > multi-pods.yaml  <<EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: multi-pods
+  name: multi-pods
+spec:
+  containers:
+  - image: nginx
+    name: nginx
+  - image: busybox
+    name: busybox
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+EOF
+```
+
+Apply the yaml file to create a Pod `multi-pods` with two containers `nginx` and `busybox`. 
+```
+root@cka001:~# kubectl apply -f multi-pods.yaml
+```
+
+Minotor the status with option `--watch`. The status of Pod was changed from `ContainerCreating` to `NotReady` to `CrashLoopBackOff`.
+```
+root@cka001:~# kubectl get pod multi-pods --watch
+NAME         READY   STATUS              RESTARTS   AGE
+multi-pods   0/2     ContainerCreating   0          49s
+multi-pods   1/2     NotReady            1          99s
+multi-pods   1/2     CrashLoopBackOff    2          110s
+```
+
+Get details of the Pod `multi-pods`, focus on Container's state under segment `Containers` and Conditions of Pod under segment `Conditions`.
+```
+root@cka001:~# kubectl describe pod multi-pods
+......
+Containers:
+  nginx:
+    ......
+    State:          Running
+      Started:      Sun, 03 Jul 2022 12:52:42 +0800
+    Ready:          True
+    Restart Count:  0
+    ......
+  busybox:
+    ......
+    State:          Terminated
+      Reason:       Completed
+      Exit Code:    0
+      Started:      Sun, 03 Jul 2022 12:58:43 +0800
+      Finished:     Sun, 03 Jul 2022 12:58:43 +0800
+    Ready:          False
+    Restart Count:  6
+    ......
+Conditions:
+  Type              Status
+  Initialized       True     # Set to True when initCounter completed successfully.
+  Ready             False    # Set to True when ContainersReady is True.
+  ContainersReady   False    # Set to True when all containers are ready.
+  PodScheduled      True     # Set to True when Pos schedule completed successfully.
+...... 
+```
 
 
 
+
+
+### LivenessProbe
+
+Create a yaml file `liveness.yaml` with `livenessProbe` setting and apply it.
+```
+root@cka001:~# cat > liveness.yaml <<EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    test: liveness
+  name: liveness-exec
+spec:
+  containers:
+  - name: liveness
+    image: busybox
+    args:
+    - /bin/sh
+    - -c
+    - touch /tmp/healthy; sleep 30; rm -rf /tmp/healthy; sleep 30
+    livenessProbe:
+      exec:
+        command:
+        - cat
+        - /tmp/healthy
+      initialDelaySeconds: 5
+      periodSeconds: 5
+EOF
+
+root@cka001:~# kubectl apply -f liveness.yaml
+```
+
+Let's see what happened in the Pod `liveness-exec`.
+
+* Create a folder `/tmp/healthy`.
+* Execute the the command `cat /tmp/healthy` and return successful code.
+* After 30 seconds, execute command `rm -rf /tmp/healthy` to delete the folder. The probe `livenessProbe` detects the failure and return error message.
+* After 30 seconds, pull the image again and the folder is created again `touch /tmp/healthy`.
+
+Once failure detected, image will be pulled again and the folder `/tmp/healthy` is in place again.
+
+Execute the command `kubectl describe pod liveness-exec` every 30 seconds to check the messge changes. 
+
+
+
+### ReadinessProbe
+
+Create a yaml file `readiness.yaml` with `readinessProbe` setting and apply it.
+```
+root@cka001:~# cat > readiness.yaml <<EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: readiness
+spec:
+    containers:
+    - name: readiness
+      image: busybox
+      args:
+      - /bin/sh
+      - -c
+      - touch /tmp/healthy; sleep 5;rm -rf /tmp/healthy; sleep 30
+      readinessProbe:
+        exec:
+          command:
+          - cat
+          - /tmp/healthy
+        initialDelaySeconds: 10
+        periodSeconds: 5
+EOF
+
+root@cka001:~# kubectl apply -f readiness.yaml
+```
+
+The ready status of the Pod is 0/1, that is, the Pod is not up successfully.
+```
+root@cka001:~# kubectl get pod readiness --watch
+NAME        READY   STATUS    RESTARTS   AGE
+readiness   0/1     Running   0          15s
+```
+
+Execute command `kubectl describe pod readiness` to check status of Pod. We will see failure message `Readiness probe failed`.
+
+
+
+### 实际意义
+
+基于 Nginx 的 Deployment + Service 的健康检查实践，创建对应 YAML 并应用
+
+```shell
+cat > nginx-healthcheck.yaml <<EOF
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-healthcheck
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      name: nginx-healthcheck
+  template:
+    metadata:
+      labels:
+        name: nginx-healthcheck
+    spec:
+      containers:
+        - name: nginx-healthcheck
+          image: nginx:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80  
+          livenessProbe:
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            tcpSocket:
+              port: 80
+            timeoutSeconds: 5   
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+              scheme: HTTP
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 5
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-healthcheck
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+  type: NodePort
+  selector:
+    name: nginx-healthcheck
+EOF
+
+kubectl apply -f nginx-healthcheck.yaml
+```
+
+查看 nginx-healthcheck Pod
+
+```shell
+kubectl get pod -owide
+```
+
+输出
+
+```shell
+NAME                                 READY   STATUS             RESTARTS   AGE     IP            NODE    NOMINATED NODE   READINES
+nginx-healthcheck-5bfd86bd46-cvw8r   1/1     Running            0          2m15s   10.244.0.72   cka001   <none>           <none>
+nginx-healthcheck-5bfd86bd46-cw8bz   1/1     Running            0          7m45s   10.244.0.71   cka002   <none>           <none>
+```
+
+通过 curl 访问 Pod IP，修改为自己实际的 Pod IP
+
+```shell
+curl 10.244.0.72
+curl 10.244.0.71
+```
+
+正常输出 Nginx 的 index.html 页面
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+    body {
+        width: 35em;
+        margin: 0 auto;
+        font-family: Tahoma, Verdana, Arial, sans-serif;
+    }
+</style>
+</head>
+<body>
+<h1>Welcome to nginx!</h1>
+<p>If you see this page, the nginx web server is successfully installed and
+working. Further configuration is required.</p>
+
+<p>For online documentation and support please refer to
+<a href="http://nginx.org/">nginx.org</a>.<br/>
+Commercial support is available at
+<a href="http://nginx.com/">nginx.com</a>.</p>
+
+<p><em>Thank you for using nginx.</em></p>
+</body>
+</html>
+```
+
+查看 Service 的详情
+
+```shell
+kubectl describe svc nginx-healthcheck
+```
+
+关注 Endpoints 字段
+
+```SHELL
+Name:                     nginx-healthcheck
+Namespace:                default
+Labels:                   <none>
+Annotations:              <none>
+Selector:                 name=nginx-healthcheck
+Type:                     NodePort
+IP Families:              <none>
+IP:                       10.107.42.168
+IPs:                      10.107.42.168
+Port:                     <unset>  80/TCP
+TargetPort:               80/TCP
+NodePort:                 <unset>  30388/TCP
+Endpoints:                10.244.0.71:80,10.244.0.72:80
+Session Affinity:         None
+External Traffic Policy:  Cluster
+Events:                   <none>
+```
+
+也可以通过 endpoints 对象查看
+
+```
+kubectl get endpoints nginx-healthcheck
+```
+
+输出
+
+```
+NAME                ENDPOINTS                       AGE
+nginx-healthcheck   10.244.0.71:80,10.244.0.72:80   10m
+```
+
+此时 两个 nginx-healthcheck Pod 都正常提供服务。
+
+删除其中一个 nginx-healthcheck Pod 的 index.html 文件，模拟应用异常 readinessProbe 就绪探针检查失败的场景
+
+exec 进入 nginx-healthcheck Pod 的容器里面，删除 index.html 文件，nginx-healthcheck-5bfd86bd46-cvw8r 需要修改为实际的 Pod Name
+
+```shell
+kubectl exec -it nginx-healthcheck-5bfd86bd46-cvw8r -- bash
+cd /usr/share/nginx/html/
+rm -rf index.html
+exit
+```
+
+重新查看这个 Pod 的详情，Pod Name 替换为自己实际的 Pod
+
+```shell
+kubectl describe pod nginx-healthcheck-5bfd86bd46-cvw8r
+```
+
+出现 Readiness probe failed 的异常事件
+
+```shell
+Events:
+  Type     Reason     Age               From               Message
+  ----     ------     ----              ----               -------
+  Normal   Scheduled  10m               default-scheduler  Successfully assigned default/nginx-healthcheck-5bfd86bd46-cvw8r to cka01
+  Normal   Pulled     10m               kubelet            Container image "nginx:latest" already present on machine
+  Normal   Created    10m               kubelet            Created container nginx-healthcheck
+  Normal   Started    10m               kubelet            Started container nginx-healthcheck
+  Warning  Unhealthy  0s (x3 over 10s)  kubelet            Readiness probe failed: HTTP probe failed with statuscode: 403
+root@cka01:~# kubectl describe pod nginx-healthcheck-5bfd86bd46-cvw8r
+```
+
+通过 curl 访问 Pod IP，修改为自己实际的 Pod IP
+
+```shell
+curl 10.244.0.72
+```
+
+输出 403 错误
+
+```html
+<html>
+<head><title>403 Forbidden</title></head>
+<body>
+<center><h1>403 Forbidden</h1></center>
+<hr><center>nginx/1.19.10</center>
+</body>
+</html>
+```
+
+查看 Service 的详情
+
+```shell
+kubectl describe svc nginx-healthcheck
+```
+
+关注 Endpoints 字段，只剩下一个 nginx-healthcheck Pod 的 endpoint
+
+```SHELL
+Name:                     nginx-healthcheck
+Namespace:                default
+Labels:                   <none>
+Annotations:              <none>
+Selector:                 name=nginx-healthcheck
+Type:                     NodePort
+IP Families:              <none>
+IP:                       10.107.42.168
+IPs:                      10.107.42.168
+Port:                     <unset>  80/TCP
+TargetPort:               80/TCP
+NodePort:                 <unset>  30388/TCP
+Endpoints:                10.244.0.71:80
+Session Affinity:         None
+External Traffic Policy:  Cluster
+Events:                   <none>
+```
+
+也可以通过 endpoints 对象查看，同样只剩下一个 nginx-healthcheck Pod 的 endpoint
+
+```shell
+kubectl get endpoints nginx-healthcheck
+```
+
+输出
+
+```shell
+NAME                ENDPOINTS        AGE
+nginx-healthcheck   10.244.0.71:80   20m
+```
+
+此时只有一个 nginx-healthcheck Pod 正常提供服务，另外一个 Pod 由于就绪健康检查不通过，被移出了 endpoints 列表。
+
+恢复 index.html 文件模拟应用故障恢复，记得替换 nginx-healthcheck-5bfd86bd46-cvw8r 为实际 Pod Name
+
+```shell
+kubectl exec -it nginx-healthcheck-5bfd86bd46-cvw8r -- bash
+cd /usr/share/nginx/html/
+cat > index.html << EOF 
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+    body {
+        width: 35em;
+        margin: 0 auto;
+        font-family: Tahoma, Verdana, Arial, sans-serif;
+    }
+</style>
+</head>
+<body>
+<h1>Welcome to nginx!</h1>
+<p>If you see this page, the nginx web server is successfully installed and
+working. Further configuration is required.</p>
+
+<p>For online documentation and support please refer to
+<a href="http://nginx.org/">nginx.org</a>.<br/>
+Commercial support is available at
+<a href="http://nginx.com/">nginx.com</a>.</p>
+
+<p><em>Thank you for using nginx.</em></p>
+</body>
+</html>
+EOF
+
+exit
+```
+
+检查，记得将示例 Pod Name 替换为自己实际的 Pod
+
+```shell
+kubectl describe pod nginx-healthcheck-5bfd86bd46-cvw8r
+
+kubectl describe svc nginx-healthcheck
+
+kubectl get endpoints nginx-healthcheck
+```
+
+
+## Namespace
+
+查看 Namespace
+```shell
+kubectl get namespace
+```
+
+查看 Namespace 的 Label
+
+```shell
+kubectl get ns --show-labels
+```
+
+创建 Namespace
+
+```shell
+kubectl create namespace cka
+```
+
+给 Namespace 打 Label
+
+```shell
+kubectl label ns cka cka=true
+```
+
+在 cka Namespace 下创建 Nginx Deployment
+
+```shell
+kubectl create deploy nginx --image=nginx --namespace cka
+```
+
+查看 cka Namespace 下的 Deployment 和 Pod
+
+```shell
+kubectl get deploy,pod -n cka
+```
+
+删除 Namespace（思考一下，删除之后，Namespace 下的资源对象会如何？）
+
+```shell
+kubectl delete ns cka
+```
+
+
+
+
+
+## HPA
+
+
+- HPA 需要依赖 Metrics Server 组件，先安装 Metrics Server
+
+下载 Metrics Server YAML 文件
+
+```shell
+wget https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+```
+
+替换 YAML 文件中的 gcr 镜像
+
+```
+sed -i 's/k8s\.gcr\.io\/metrics-server\/metrics-server\:v0\.6\.1/registry\.aliyuncs\.com\/google_containers\/metrics-server\:v0\.6\.1/g' components.yaml
+```
+
+修改 metrics-server 的启动参数，增加 `--kubelet-insecure-tls` 参数禁用证书验证
+
+```shell
+vim components.yaml
+```
+
+```
+    spec:
+      containers:
+      - args:
+        - --cert-dir=/tmp
+        - --secure-port=4443
+        - --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname
+        - --kubelet-use-node-status-port
+        - --metric-resolution=15s
+        - --kubelet-insecure-tls
+```
+
+![image-20220702020852780](https://typora-picgo-1304429945.cos.ap-guangzhou.myqcloud.com/image-20220702020852780.png)
+
+```shell
+kubectl apply -f components.yaml
+```
+
+确认 metrics-server 服务运行正常
+
+```shell
+kubectl get pod -n kube-system |grep metrics-server
+```
+
+验证 metrics-server 功能正常，`kubectl top node` 阔以查看到节点的 CPU、内存使用情况
+
+```shell
+kubectl top node
+```
+
+```shell
+NAME     CPU(cores)   CPU%   MEMORY(bytes)   MEMORY%
+cka001   127m         6%     921Mi           24%
+cka002   68m          3%     352Mi           9%
+cka003   44m          2%     366Mi           9%
+```
+
+---
+
+
+
+### 部署待压测应用 podinfo
+
+创建 YAML 并应用
+```shell
+cat > podinfo.yaml << EOF
+apiVersion: v1
+kind: Service
+metadata:
+  name: podinfo
+  labels:
+    app: podinfo
+spec:
+  type: NodePort
+  ports:
+    - port: 9898
+      targetPort: 9898
+      nodePort: 31198
+      protocol: TCP
+  selector:
+    app: podinfo
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: podinfo
+  labels:
+    app: podinfo
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: podinfo
+  template:
+    metadata:
+      labels:
+        app: podinfo
+    spec:
+      containers:
+      - name: podinfod
+        image: stefanprodan/podinfo:0.0.1
+        imagePullPolicy: Always
+        command:
+          - ./podinfo
+          - -port=9898
+          - -logtostderr=true
+          - -v=2
+        ports:
+        - containerPort: 9898
+          protocol: TCP
+        resources:
+          requests:
+            memory: "32Mi"
+            cpu: "10m"
+          limits:
+            memory: "256Mi"
+            cpu: "100m"
+EOF
+
+kubectl apply -f podinfo.yaml
+```
+
+---
+
+
+
+### 配置 HPA
+
+创建 HPA YAML 并应用，触发器阀值为 CPU 的平均使用率超过 50% 时触发弹性伸缩，保证最少有 2 个 Replicas，最多 10 个 Replicas。 
+```SHELL
+cat > hpa.yaml <<EOF
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: nginx
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: podinfo
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 50
+EOF
+
+kubectl apply -f hpa.yaml
+```
+
+查看
+```shell
+kubectl get hpa
+NAME    REFERENCE            TARGETS    MINPODS   MAXPODS   REPLICAS   AGE
+nginx   Deployment/podinfo   100%/50%   2         10        2          47s
+```
+
+---
+
+
+
+### 压测
+
+使用 ab 进行压力测试，模拟 1000 个并发量
+
+#### 安装 ab
+
+```shell
+apt install apache2-utils -y
+```
+
+ab 命令最基本的参数是 `-n` 和 `-c`：
+```bash
+-n 执行的请求数量
+-c 并发请求个数
+
+其它参数：
+-t 测试所进行的最大秒数
+-p 包含了需要 POST 的数据的文件
+-T POST 数据所使用的 Content-type 头信息
+-k 启用 HTTP KeepAlive 功能，即在一个 HTTP 会话中执行多个请求，默认时，不启用 KeepAlive 功能
+```
+
+命令示例：
+```shell
+ab -n 1000 -c 100 http://www.baidu.com/
+```
+
+#### 并发压测
+
+```
+ab -c 1000 -t 60 http://127.0.0.1:31198/
+```
+
+可以看见随着 CPU 压力的增加，Deployment 已经自动 scale 了
+```shell
+kubectl get hpa -w
+NAME    REFERENCE            TARGETS    MINPODS   MAXPODS   REPLICAS   AGE
+nginx   Deployment/podinfo   940%/50%   2         10        8          13m
+```
+需要注意的是，scale up 是一个阶段性的过程，并不是一次性就直接 scale 到 max 了，而是一个阶段性的过程，扩容算法就是上文介绍的内容。隔段时间没操作压力下来后，会自动 scale down 缩减 Pod。
+
+持续观察一段时间（5~10分钟），由于并发压测的结束，CPU 使用率下降，开始逐渐自动 scale down 收缩 Pod
+
+```shell
+kubectl get hpa -w
+```
 
 
