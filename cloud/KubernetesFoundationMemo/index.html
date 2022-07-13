@@ -602,6 +602,67 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#config-and-storage-resources" class="md-nav__link">
+    Config and Storage Resources
+  </a>
+  
+    <nav class="md-nav" aria-label="Config and Storage Resources">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#volumes" class="md-nav__link">
+    Volumes
+  </a>
+  
+    <nav class="md-nav" aria-label="Volumes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#emptydir" class="md-nav__link">
+    emptyDir
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hostpath" class="md-nav__link">
+    hostPath
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#storage-class" class="md-nav__link">
+    Storage Class
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pv" class="md-nav__link">
+    PV
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#access-modes" class="md-nav__link">
+    Access Modes
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#tutorials" class="md-nav__link">
     Tutorials
   </a>
@@ -1772,6 +1833,27 @@ As such, it is often used to guarantee the availability of a specified number of
 The ReplicaSet will create/delete its Pods to match this number.
 If you do not specify <code>replicaset.spec.replicas</code>, then it defaults to <code>1</code>.</p>
 <h3 id="statefulset">StatefulSet</h3>
+<p>StatefulSet Characteristics (aka, stick ID):</p>
+<ul>
+<li>Pod's name is immutable after created.</li>
+<li>DNS hostname is immutable after created.</li>
+<li>Mounted volume is immutable after created.</li>
+</ul>
+<p>Stick ID of StatefulSet won't be changed after failure, scaling, and other operations. </p>
+<p>Naming convention of StatefulSet: <code>&lt;StatefulSetName&gt;-&lt;Integer&gt;</code>.</p>
+<p>StatefulSet can be scalling by itsself, but Deployment need rely on ReplicaSet for scalling.</p>
+<p>Recommendation: reduce StatefulSet to 0 first instead of delete it directly.</p>
+<p><em>headless</em> Service and <em>governing</em> Service:</p>
+<ul>
+<li>Headless Service is a normal Kubernetes Service object that its spec.clusterIP is set to <code>None</code>.</li>
+<li>When <code>spec.ServiceName</code> of StatefulSet is set to the headless Service name, the StatefulSet is now a governing Service.</li>
+</ul>
+<p>General procedure to create a StatefulSet: </p>
+<ul>
+<li>Create a StorageClass</li>
+<li>Create Headless Service</li>
+<li>Create StatefulSet based on above two.</li>
+</ul>
 <h3 id="daemonset">DaemonSet</h3>
 <p>A DaemonSet ensures that all (or some) Nodes run a copy of a Pod. As nodes are removed from the cluster, those Pods are garbage collected. </p>
 <p>Deleting a DaemonSet will clean up the Pods it created.</p>
@@ -1835,7 +1917,7 @@ spec:
 <li>IP<code>10.96.17.77</code> is ClusterIP(VIP) of the service</li>
 <li>Port <code>&lt;unset&gt;  80/TCP</code> is the port on Pod that service listening within the cluster.</li>
 <li>TargetPort <code>8080/TCP</code> is the port on the container that the service should direct traffic to.</li>
-<li>NodePort <code>&lt;unset&gt;  31893/TCP</code> is the port that can be accessed outside. </li>
+<li>NodePort <code>&lt;unset&gt;  31893/TCP</code> is the port that can be accessed outside. Default range is <code>30000~32767</code>. The port is exposed across <strong>all</strong> nodes in cluster.</li>
 <li>Endpoints show the list of Pods matched the service labels. </li>
 </ul>
 <pre><code>Name:                     nginx-deployment
@@ -1934,6 +2016,66 @@ Events:            &lt;none&gt;
 <p>Endpoints is a collection of endpoints that implement the actual service.</p>
 <p>When a service is created, it associates with a Endpoint object, <code>kubectl get endpoints &lt;service_name&gt;</code>.</p>
 <p>A list of matched Pod by service label is maintained as Endpoint object, add new matched Pods and remove not matched Pods.</p>
+<h2 id="config-and-storage-resources">Config and Storage Resources</h2>
+<h3 id="volumes">Volumes</h3>
+<h4 id="emptydir">emptyDir</h4>
+<p>An <code>emptyDir</code> volume is first created when a Pod is assigned to a node, and exists as long as that Pod is running on that node. </p>
+<p>The <code>emptyDir</code> volume is initially empty. </p>
+<p>All containers in the Pod can read and write the same files in the <code>emptyDir</code> volume, though that volume can be mounted at the same or different paths in each container. </p>
+<p>When a Pod is removed from a node for any reason, the data in the <code>emptyDir</code> is deleted permanently.</p>
+<p>A container crashing does not remove a Pod from a node. The data in an <code>emptyDir</code> volume is safe across container crashes.</p>
+<p>Usage:</p>
+<ul>
+<li>scratch space, such as for a disk-based merge sort</li>
+<li>checkpointing a long computation for recovery from crashes</li>
+<li>holding files that a content-manager container fetches while a webserver container serves the data</li>
+</ul>
+<h4 id="hostpath">hostPath</h4>
+<p>A <code>hostPath</code> volume mounts a file or directory from the host node's filesystem into your Pod. 
+This is not something that most Pods will need, but it offers a powerful escape hatch for some applications.</p>
+<p><code>hostPath</code> volumes present many security risks, and it is a best practice to avoid the use of HostPaths when possible. 
+When a HostPath volume MUST be used, it should be scoped to only the required file or directory, and mounted as ReadOnly.</p>
+<p>If restricting HostPath access to specific directories through AdmissionPolicy, volumeMounts MUST be required to use readOnly mounts for the policy to be effective.</p>
+<p>Usage: </p>
+<ul>
+<li>Running together with DaemonSet, e.g., EFK Fluentd mount log directory of local host in order to collect host log information.</li>
+<li>Running on a specific node by using <code>hostPath</code> volumne, which can get high performance disk I/O.</li>
+<li>Running a container that needs access to Docker internals; use a hostPath of <code>/var/lib/docker</code>.</li>
+<li>Running cAdvisor in a container; use a hostPath of <code>/sys</code>.</li>
+<li>Allowing a Pod to specify whether a given hostPath should exist prior to the Pod running, whether it should be created, and what it should exist as.</li>
+</ul>
+<h3 id="storage-class">Storage Class</h3>
+<p>Procedure of StorageClass deployment and implementation:</p>
+<ul>
+<li>Create Kubernetes cluster and backend storage.</li>
+<li>Make sure the provisioner/plugin is ready in Kubernetes.</li>
+<li>Create a StorageClass object to link to backend storage. The StorageClass will create related PV automatically.</li>
+<li>Create a PVC object to link to the StorageClass we created.</li>
+<li>Deploy a Pod and use the PVC volume.</li>
+</ul>
+<h3 id="pv">PV</h3>
+<p>PV Recycle Policy.</p>
+<ul>
+<li>Retain.</li>
+<li>Delete.</li>
+<li>Recycle. </li>
+</ul>
+<p>PV in-tree type:</p>
+<ul>
+<li>hostPath</li>
+<li>local</li>
+<li>NFS</li>
+<li>CSI</li>
+</ul>
+<h3 id="access-modes">Access Modes</h3>
+<p><code>spec.accessModes</code> defines mount option of a PV:</p>
+<ul>
+<li>ReadWriteOnce(RWO). A PV can be mounted only to a PVC with read/write mode, like block device.</li>
+<li>ReadWriteMany(RWM). A PV can be mounted to more than one PVC with read/write mode, like NFS.</li>
+<li>ReadOnlyMany(ROM). A PV can be mounted to more than one PVC with read only mode.</li>
+<li>ReadWriteOncePod (RWOP). Only support CSI type PV, can be mounted by single Pod.</li>
+</ul>
+<p>A PV can only be set with one option. Pod mount PVC, not PV.</p>
 <h2 id="tutorials">Tutorials</h2>
 <ul>
 <li>
