@@ -38,6 +38,19 @@ Disable firewall by command `ufw disable` in all VMs.
 
 Turn off swap by command `swapoff -a` in all VMs.
 
+Disable swap on Ubuntu.
+```
+sudo ufw disable
+```
+
+Check status of swap on Ubuntu.
+```
+sudo ufw status verbose
+```
+
+
+
+
 ### Set timezone and locale
 
 Set timezone and local for all VMs. For ECS with Ubuntu 20.04 version created by Aliyun, this step is not needed.
@@ -200,16 +213,24 @@ Update `apt-transport-https`,  `ca-certificates`, and `curl`.
 # apt-get update && sudo apt-get install -y apt-transport-https ca-certificates curl
 ```
 
-Install gpg certificate.
+Install gpg certificate. Just choose one of below command and execute.
 ```
+# Tested in 20.04 release.
 # curl https://mirrors.aliyun.com/kubernetes/apt/doc/apt-key.gpg | apt-key add -
+
+# Tested in 22.04 release
+# sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://mirrors.aliyun.com/kubernetes/apt/doc/apt-key.gpg
 ```
 
-Add Kubernetes repo.
+Add Kubernetes repo. Just choose one of below command and execute.
 ```
+# Tested in 20.04 release
 # cat <<EOF >/etc/apt/sources.list.d/kubernetes.list
 deb https://mirrors.aliyun.com/kubernetes/apt/ kubernetes-xenial main
 EOF
+
+# Tested in 22.04 release
+# echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://mirrors.aliyun.com/kubernetes/apt/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
 ```
 
 Update  and install dependencied packages.
@@ -347,6 +368,51 @@ Clean up rule of `IPVS` if using `IPVS`.
 ```
 # ipvsadm --clear
 ```
+
+
+
+### Troubleshooting
+
+**Issue**: 
+The connection to the server <master>:6443 was refused - did you specify the right host or port?
+
+**Try**:
+
+[Reference](https://discuss.kubernetes.io/t/the-connection-to-the-server-host-6443-was-refused-did-you-specify-the-right-host-or-port/552/15)
+
+Check environment setting.
+```
+env | grep -i kub
+```
+
+Check container status.
+```
+sudo systemctl status containerd.service 
+```
+
+Check kubelet service.
+```
+sudo systemctl status kubelet.service 
+```
+
+Check port listening status.
+```
+netstat -pnlt | grep 6443
+```
+
+Check firewall status.
+```
+sudo systemctl status firewalld.service
+```
+
+Check log.
+```
+journalctl -xeu kubelet
+```
+
+
+
+
 
 
 ## Snapshot of deployment
@@ -1798,7 +1864,7 @@ Selector:               app=nginx
 
 Create a yaml file `multi-pods.yaml`. 
 ```
-root@cka001:~# cat > multi-pods.yaml  <<EOF
+cat > multi-pods.yaml  <<EOF
 apiVersion: v1
 kind: Pod
 metadata:
@@ -1818,7 +1884,7 @@ EOF
 
 Apply the yaml file to create a Pod `multi-pods` with two containers `nginx` and `busybox`. 
 ```
-root@cka001:~# kubectl apply -f multi-pods.yaml
+kubectl apply -f multi-pods.yaml
 ```
 
 Minotor the status with option `--watch`. The status of Pod was changed from `ContainerCreating` to `NotReady` to `CrashLoopBackOff`.
@@ -1867,6 +1933,8 @@ Conditions:
 
 ### LivenessProbe
 
+Detail description of the demo can be found on the [Kubernetes document](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/).
+
 Create a yaml file `liveness.yaml` with `livenessProbe` setting and apply it.
 ```
 root@cka001:~# cat > liveness.yaml <<EOF
@@ -1883,7 +1951,7 @@ spec:
     args:
     - /bin/sh
     - -c
-    - touch /tmp/healthy; sleep 30; rm -rf /tmp/healthy; sleep 30
+    - touch /tmp/healthy; sleep 30; rm -rf /tmp/healthy; sleep 600
     livenessProbe:
       exec:
         command:
@@ -1900,20 +1968,37 @@ Let's see what happened in the Pod `liveness-exec`.
 
 * Create a folder `/tmp/healthy`.
 * Execute the the command `cat /tmp/healthy` and return successful code.
-* After 30 seconds, execute command `rm -rf /tmp/healthy` to delete the folder. The probe `livenessProbe` detects the failure and return error message.
-* After 30 seconds, pull the image again and the folder is created again `touch /tmp/healthy`.
+* After `35` seconds, execute command `rm -rf /tmp/healthy` to delete the folder. The probe `livenessProbe` detects the failure and return error message.
+* The kubelet kills the container and restarts it. The folder is created again `touch /tmp/healthy`.
 
-Once failure detected, image will be pulled again and the folder `/tmp/healthy` is in place again.
 
-Execute the command `kubectl describe pod liveness-exec` every 30 seconds to check the messge changes. 
+
+By command `kubectl describe pod liveness-exec`, wec can see below event message. Once failure detected, image will be pulled again and the folder `/tmp/healthy` is in place again.
+```
+Events:
+  Type     Reason     Age                   From               Message
+  ----     ------     ----                  ----               -------
+  Normal   Scheduled  4m21s                 default-scheduler  Successfully assigned jh-namespace/liveness-exec to cka002
+  Normal   Pulled     4m19s                 kubelet            Successfully pulled image "busybox" in 1.906981795s
+  Normal   Pulled     3m4s                  kubelet            Successfully pulled image "busybox" in 1.967545593s
+  Normal   Created    109s (x3 over 4m19s)  kubelet            Created container liveness
+  Normal   Started    109s (x3 over 4m19s)  kubelet            Started container liveness
+  Normal   Pulled     109s                  kubelet            Successfully pulled image "busybox" in 2.051565102s
+  Warning  Unhealthy  66s (x9 over 3m46s)   kubelet            Liveness probe failed: cat: can't open '/tmp/healthy': No such file or directory
+  Normal   Killing    66s (x3 over 3m36s)   kubelet            Container liveness failed liveness probe, will be restarted
+  Normal   Pulling    36s (x4 over 4m21s)   kubelet            Pulling image "busybox"
+```
+
 
 
 
 ### ReadinessProbe
 
+Readiness probes are configured similarly to liveness probes. The only difference is that you use the readinessProbe field instead of the livenessProbe field.
+
 Create a yaml file `readiness.yaml` with `readinessProbe` setting and apply it.
 ```
-root@cka001:~# cat > readiness.yaml <<EOF
+cat > readiness.yaml <<EOF
 apiVersion: v1
 kind: Pod
 metadata:
@@ -1925,7 +2010,7 @@ spec:
       args:
       - /bin/sh
       - -c
-      - touch /tmp/healthy; sleep 5;rm -rf /tmp/healthy; sleep 30
+      - touch /tmp/healthy; sleep 5;rm -rf /tmp/healthy; sleep 600
       readinessProbe:
         exec:
           command:
@@ -1935,7 +2020,7 @@ spec:
         periodSeconds: 5
 EOF
 
-root@cka001:~# kubectl apply -f readiness.yaml
+kubectl apply -f readiness.yaml
 ```
 
 The ready status of the Pod is 0/1, that is, the Pod is not up successfully.
@@ -1946,14 +2031,28 @@ readiness   0/1     Running   0          15s
 ```
 
 Execute command `kubectl describe pod readiness` to check status of Pod. We will see failure message `Readiness probe failed`.
+```
+Events:
+  Type     Reason     Age               From               Message
+  ----     ------     ----              ----               -------
+  Normal   Scheduled  35s               default-scheduler  Successfully assigned jh-namespace/readiness to cka003
+  Normal   Pulling    35s               kubelet            Pulling image "busybox"
+  Normal   Pulled     32s               kubelet            Successfully pulled image "busybox" in 2.420171698s
+  Normal   Created    32s               kubelet            Created container readiness
+  Normal   Started    32s               kubelet            Started container readiness
+  Warning  Unhealthy  5s (x4 over 20s)  kubelet            Readiness probe failed: cat: can't open '/tmp/healthy': No such file or directory
+```
+
+
+Liveness probes do not wait for readiness probes to succeed. If you want to wait before executing a liveness probe you should use initialDelaySeconds or a startupProbe.
 
 
 
-### 实际意义
+### Demo of Health Check
 
-基于 Nginx 的 Deployment + Service 的健康检查实践，创建对应 YAML 并应用
+Set up yaml file of health check for Nginx based Deployment + Service and apply it.
 
-```shell
+```
 cat > nginx-healthcheck.yaml <<EOF
 apiVersion: apps/v1
 kind: Deployment
@@ -2004,43 +2103,38 @@ spec:
     name: nginx-healthcheck
 EOF
 
+
 kubectl apply -f nginx-healthcheck.yaml
 ```
 
-查看 nginx-healthcheck Pod
-
-```shell
+Check nginx-healthcheck Pod.
+```
 kubectl get pod -owide
 ```
 
-输出
-
-```shell
-NAME                                 READY   STATUS             RESTARTS   AGE     IP            NODE    NOMINATED NODE   READINES
-nginx-healthcheck-5bfd86bd46-cvw8r   1/1     Running            0          2m15s   10.244.0.72   cka001   <none>           <none>
-nginx-healthcheck-5bfd86bd46-cw8bz   1/1     Running            0          7m45s   10.244.0.71   cka002   <none>           <none>
+Get below result.
+```
+NAME                                 READY   STATUS    RESTARTS   AGE   IP            NODE     NOMINATED NODE   READINESS GATES
+nginx-healthcheck-79fc55d944-9jbvj   1/1     Running   0          50s   10.244.2.82   cka003   <none>           <none>
+nginx-healthcheck-79fc55d944-rwx7n   1/1     Running   0          50s   10.244.1.11   cka002   <none>           <none>
 ```
 
-通过 curl 访问 Pod IP，修改为自己实际的 Pod IP
-
-```shell
-curl 10.244.0.72
-curl 10.244.0.71
+Access Pod IP via `curl` command, e.g., above example.
+```
+curl 10.244.2.82
+curl 10.244.1.11
 ```
 
-正常输出 Nginx 的 index.html 页面
-
-```html
+We will see a successful `index.html` conten of Nginx below with above example.
+```
 <!DOCTYPE html>
 <html>
 <head>
 <title>Welcome to nginx!</title>
 <style>
-    body {
-        width: 35em;
-        margin: 0 auto;
-        font-family: Tahoma, Verdana, Arial, sans-serif;
-    }
+html { color-scheme: light dark; }
+body { width: 35em; margin: 0 auto;
+font-family: Tahoma, Verdana, Arial, sans-serif; }
 </style>
 </head>
 <body>
@@ -2058,144 +2152,149 @@ Commercial support is available at
 </html>
 ```
 
-查看 Service 的详情
-
-```shell
+Check details of Service craeted in above example.
+```
 kubectl describe svc nginx-healthcheck
 ```
 
-关注 Endpoints 字段
-
-```SHELL
+We will see below output. There are two Pods information listed in `Endpoints`.
+```
 Name:                     nginx-healthcheck
-Namespace:                default
+Namespace:                jh-namespace
 Labels:                   <none>
 Annotations:              <none>
 Selector:                 name=nginx-healthcheck
 Type:                     NodePort
-IP Families:              <none>
-IP:                       10.107.42.168
-IPs:                      10.107.42.168
+IP Family Policy:         SingleStack
+IP Families:              IPv4
+IP:                       10.98.196.231
+IPs:                      10.98.196.231
 Port:                     <unset>  80/TCP
 TargetPort:               80/TCP
-NodePort:                 <unset>  30388/TCP
-Endpoints:                10.244.0.71:80,10.244.0.72:80
+NodePort:                 <unset>  31505/TCP
+Endpoints:                10.244.1.11:80,10.244.2.82:80
 Session Affinity:         None
 External Traffic Policy:  Cluster
 Events:                   <none>
 ```
 
-也可以通过 endpoints 对象查看
-
+We can also get information of Endpoints.
 ```
 kubectl get endpoints nginx-healthcheck
 ```
-
-输出
-
+Get below result.
 ```
 NAME                ENDPOINTS                       AGE
-nginx-healthcheck   10.244.0.71:80,10.244.0.72:80   10m
+nginx-healthcheck   10.244.1.11:80,10.244.2.82:80   8m35s
 ```
 
-此时 两个 nginx-healthcheck Pod 都正常提供服务。
+Till now, two `nginx-healthcheck` Pods are working and providing service as expected. 
 
-删除其中一个 nginx-healthcheck Pod 的 index.html 文件，模拟应用异常 readinessProbe 就绪探针检查失败的场景
+Let's simulate an error by deleting and `index.html` file in on of `nginx-healthcheck` Pod and see what's readinessProbe will do.
 
-exec 进入 nginx-healthcheck Pod 的容器里面，删除 index.html 文件，nginx-healthcheck-5bfd86bd46-cvw8r 需要修改为实际的 Pod Name
-
-```shell
-kubectl exec -it nginx-healthcheck-5bfd86bd46-cvw8r -- bash
+First, execute `kubectl exec -it <your_pod_name> -- bash` to log into `nginx-healthcheck` Pod, and delete the `index.html` file.
+```
+kubectl exec -it nginx-healthcheck-79fc55d944-9jbvj -- bash
 cd /usr/share/nginx/html/
 rm -rf index.html
 exit
 ```
 
-重新查看这个 Pod 的详情，Pod Name 替换为自己实际的 Pod
-
-```shell
-kubectl describe pod nginx-healthcheck-5bfd86bd46-cvw8r
+After that, let's check the status of above Pod that `index.html` file was deleted.
+```
+kubectl describe pod nginx-healthcheck-79fc55d944-9jbvj
 ```
 
-出现 Readiness probe failed 的异常事件
-
-```shell
+We can now see `Readiness probe failed` error event message.
+```
 Events:
-  Type     Reason     Age               From               Message
-  ----     ------     ----              ----               -------
-  Normal   Scheduled  10m               default-scheduler  Successfully assigned default/nginx-healthcheck-5bfd86bd46-cvw8r to cka01
-  Normal   Pulled     10m               kubelet            Container image "nginx:latest" already present on machine
-  Normal   Created    10m               kubelet            Created container nginx-healthcheck
-  Normal   Started    10m               kubelet            Started container nginx-healthcheck
-  Warning  Unhealthy  0s (x3 over 10s)  kubelet            Readiness probe failed: HTTP probe failed with statuscode: 403
-root@cka01:~# kubectl describe pod nginx-healthcheck-5bfd86bd46-cvw8r
+  Type     Reason     Age                From               Message
+  ----     ------     ----               ----               -------
+  Normal   Scheduled  29m                default-scheduler  Successfully assigned jh-namespace/nginx-healthcheck-79fc55d944-9jbvj to cka003
+  Normal   Pulled     29m                kubelet            Container image "nginx:latest" already present on machine
+  Normal   Created    29m                kubelet            Created container nginx-healthcheck
+  Normal   Started    29m                kubelet            Started container nginx-healthcheck
+  Warning  Unhealthy  1s (x16 over 71s)  kubelet            Readiness probe failed: HTTP probe failed with statuscode: 403
 ```
 
-通过 curl 访问 Pod IP，修改为自己实际的 Pod IP
-
-```shell
-curl 10.244.0.72
+Let's check another Pod. 
+```
+kubectl describe pod nginx-healthcheck-79fc55d944-rwx7n
+```
+There is no error info.
+```
+Events:
+  Type    Reason     Age   From               Message
+  ----    ------     ----  ----               -------
+  Normal  Scheduled  31m   default-scheduler  Successfully assigned jh-namespace/nginx-healthcheck-79fc55d944-rwx7n to cka002
+  Normal  Pulled     31m   kubelet            Container image "nginx:latest" already present on machine
+  Normal  Created    31m   kubelet            Created container nginx-healthcheck
+  Normal  Started    31m   kubelet            Started container nginx-healthcheck
 ```
 
-输出 403 错误
+Now, access Pod IP via `curl` command and see what the result of each Pod.
+```
+curl 10.244.2.82
+curl 10.244.1.11
+```
 
-```html
+We will receive error while access the first Pod `curl 10.244.2.82`. The second Pos works well `curl 10.244.1.11`. 
+```
 <html>
 <head><title>403 Forbidden</title></head>
 <body>
 <center><h1>403 Forbidden</h1></center>
-<hr><center>nginx/1.19.10</center>
+<hr><center>nginx/1.23.0</center>
 </body>
 </html>
 ```
 
-查看 Service 的详情
-
-```shell
+Let's check current status of Nginx Service after one of Pods runs into failure. 
+```
 kubectl describe svc nginx-healthcheck
 ```
 
-关注 Endpoints 字段，只剩下一个 nginx-healthcheck Pod 的 endpoint
-
-```SHELL
+In below output, there is only one Pod information listed in Endpoint.
+```
 Name:                     nginx-healthcheck
-Namespace:                default
+Namespace:                jh-namespace
 Labels:                   <none>
 Annotations:              <none>
 Selector:                 name=nginx-healthcheck
 Type:                     NodePort
-IP Families:              <none>
-IP:                       10.107.42.168
-IPs:                      10.107.42.168
+IP Family Policy:         SingleStack
+IP Families:              IPv4
+IP:                       10.98.196.231
+IPs:                      10.98.196.231
 Port:                     <unset>  80/TCP
 TargetPort:               80/TCP
-NodePort:                 <unset>  30388/TCP
-Endpoints:                10.244.0.71:80
+NodePort:                 <unset>  31505/TCP
+Endpoints:                10.244.1.11:80
 Session Affinity:         None
 External Traffic Policy:  Cluster
 Events:                   <none>
 ```
 
-也可以通过 endpoints 对象查看，同样只剩下一个 nginx-healthcheck Pod 的 endpoint
-
-```shell
-kubectl get endpoints nginx-healthcheck
+Same result we can get by checking information of Endpoints, which is only Pod is running.
 ```
-
-输出
-
-```shell
+kubectl get endpoints nginx-healthcheck 
+```
+Output:
+```
 NAME                ENDPOINTS        AGE
-nginx-healthcheck   10.244.0.71:80   20m
+nginx-healthcheck   10.244.1.11:80   40m
 ```
 
-此时只有一个 nginx-healthcheck Pod 正常提供服务，另外一个 Pod 由于就绪健康检查不通过，被移出了 endpoints 列表。
+Conclusion: 
+By delete the index.html file, the Pod is in unhealth status and is removed from endpoint list. 
+One one health Pod can provide normal service.
 
-恢复 index.html 文件模拟应用故障恢复，记得替换 nginx-healthcheck-5bfd86bd46-cvw8r 为实际 Pod Name
+Let's re-create the `index.html` file again in the Pod. 
+```
+kubectl exec -it nginx-healthcheck-79fc55d944-9jbvj -- bash
 
-```shell
-kubectl exec -it nginx-healthcheck-5bfd86bd46-cvw8r -- bash
 cd /usr/share/nginx/html/
+
 cat > index.html << EOF 
 <!DOCTYPE html>
 <html>
@@ -2227,57 +2326,68 @@ EOF
 exit
 ```
 
-检查，记得将示例 Pod Name 替换为自己实际的 Pod
-
-```shell
-kubectl describe pod nginx-healthcheck-5bfd86bd46-cvw8r
-
+We now can see that two Pods are back to Endpoints to provide service now.
+```
 kubectl describe svc nginx-healthcheck
 
 kubectl get endpoints nginx-healthcheck
 ```
 
+Re-access Pod IP via `curl` command and we can see both are back to normal status.
+```
+curl 10.244.2.82
+curl 10.244.1.11
+```
+
+Verify the Pod status again. 
+```
+kubectl describe pod nginx-healthcheck-79fc55d944-9jbvj
+```
+
+
 
 ## Namespace
 
-查看 Namespace
-```shell
+Get list of Namespace
+```
 kubectl get namespace
 ```
 
-查看 Namespace 的 Label
-
-```shell
+Get list of Namespace with Label information.
+```
 kubectl get ns --show-labels
 ```
 
-创建 Namespace
-
-```shell
+Create a Namespace
+```
 kubectl create namespace cka
 ```
 
-给 Namespace 打 Label
-
-```shell
+Label the new created Namespace `cka`.
+```
 kubectl label ns cka cka=true
 ```
 
-在 cka Namespace 下创建 Nginx Deployment
-
-```shell
+Create Nginx Deployment in Namespace `cka`. 
+```
 kubectl create deploy nginx --image=nginx --namespace cka
 ```
 
-查看 cka Namespace 下的 Deployment 和 Pod
-
-```shell
+Check Deployments and Pods running in namespace `cka`.
+```
 kubectl get deploy,pod -n cka
 ```
+Result is below.
+```
+NAME                    READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/nginx   1/1     1            1           2m14s
 
-删除 Namespace（思考一下，删除之后，Namespace 下的资源对象会如何？）
+NAME                         READY   STATUS    RESTARTS   AGE
+pod/nginx-85b98978db-bmkhf   1/1     Running   0          2m14s
+```
 
-```shell
+Delete namespace `cka`. All resources in the namespaces will be gone.
+```
 kubectl delete ns cka
 ```
 
@@ -2285,30 +2395,32 @@ kubectl delete ns cka
 
 
 
-## HPA
+## Horizontal Pod Autoscaling (HPA)
 
 
-- HPA 需要依赖 Metrics Server 组件，先安装 Metrics Server
+- Install Metrics Server component
 
-下载 Metrics Server YAML 文件
-
-```shell
+Download yaml file for Metrics Server component
+```
 wget https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
 ```
 
-替换 YAML 文件中的 gcr 镜像
+Replace Google image by Aliyun image `image: registry.aliyuncs.com/google_containers/metrics-server:v0.6.1`.
 
 ```
 sed -i 's/k8s\.gcr\.io\/metrics-server\/metrics-server\:v0\.6\.1/registry\.aliyuncs\.com\/google_containers\/metrics-server\:v0\.6\.1/g' components.yaml
 ```
 
-修改 metrics-server 的启动参数，增加 `--kubelet-insecure-tls` 参数禁用证书验证
-
-```shell
-vim components.yaml
+Change `arg` of `metrics-server` by adding `--kubelet-insecure-tls` to disable tls certificate validation. 
 ```
-
+vi components.yaml
 ```
+Updated `arg` of `metrics-server` is below.
+```
+  template:
+    metadata:
+      labels:
+        k8s-app: metrics-server
     spec:
       containers:
       - args:
@@ -2318,41 +2430,49 @@ vim components.yaml
         - --kubelet-use-node-status-port
         - --metric-resolution=15s
         - --kubelet-insecure-tls
+        image: registry.aliyuncs.com/google_containers/metrics-server:v0.6.1
+
 ```
 
-![image-20220702020852780](https://typora-picgo-1304429945.cos.ap-guangzhou.myqcloud.com/image-20220702020852780.png)
-
-```shell
+Appy the yaml file `components.yaml` to deploy `metrics-server`.
+```
 kubectl apply -f components.yaml
 ```
-
-确认 metrics-server 服务运行正常
-
-```shell
-kubectl get pod -n kube-system |grep metrics-server
+Below resources were crested. 
+```
+serviceaccount/metrics-server created
+clusterrole.rbac.authorization.k8s.io/system:aggregated-metrics-reader created
+clusterrole.rbac.authorization.k8s.io/system:metrics-server created
+rolebinding.rbac.authorization.k8s.io/metrics-server-auth-reader created
+clusterrolebinding.rbac.authorization.k8s.io/metrics-server:system:auth-delegator created
+clusterrolebinding.rbac.authorization.k8s.io/system:metrics-server created
+service/metrics-server created
+deployment.apps/metrics-server created
+apiservice.apiregistration.k8s.io/v1beta1.metrics.k8s.io created
 ```
 
-验证 metrics-server 功能正常，`kubectl top node` 阔以查看到节点的 CPU、内存使用情况
+Verify if `metrics-server` Pod is running as expected.
+```
+kubectl get pod -n kube-system -owide | grep metrics-server
+```
 
-```shell
+Get current usage of CPU, memory of each node.
+```
 kubectl top node
 ```
-
-```shell
-NAME     CPU(cores)   CPU%   MEMORY(bytes)   MEMORY%
-cka001   127m         6%     921Mi           24%
-cka002   68m          3%     352Mi           9%
-cka003   44m          2%     366Mi           9%
+Result:
+```
+NAME     CPU(cores)   CPU%   MEMORY(bytes)   MEMORY%   
+cka001   148m         7%     1746Mi          45%
+cka002   41m          2%     1326Mi          34%       
+cka003   39m          1%     1383Mi          36%
 ```
 
----
 
+### Deploy a Service `podinfo`
 
-
-### 部署待压测应用 podinfo
-
-创建 YAML 并应用
-```shell
+Create and apply the yaml file `podinfo.yaml` to deploy Deployment and Service `podinfo` for further stress testing.
+```
 cat > podinfo.yaml << EOF
 apiVersion: v1
 kind: Service
@@ -2407,17 +2527,16 @@ spec:
             cpu: "100m"
 EOF
 
+
 kubectl apply -f podinfo.yaml
 ```
 
----
 
 
-
-### 配置 HPA
-
-创建 HPA YAML 并应用，触发器阀值为 CPU 的平均使用率超过 50% 时触发弹性伸缩，保证最少有 2 个 Replicas，最多 10 个 Replicas。 
-```SHELL
+### Config HPA
+ 
+Create and apply yaml file `hpa.yaml` for HPA by setting CPU threshold `50%` to trigger auto-scalling with minimal `2` and maximal `10` Replicas.
+```
 cat > hpa.yaml <<EOF
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
@@ -2433,65 +2552,3319 @@ spec:
   targetCPUUtilizationPercentage: 50
 EOF
 
+
 kubectl apply -f hpa.yaml
 ```
 
-查看
-```shell
-kubectl get hpa
-NAME    REFERENCE            TARGETS    MINPODS   MAXPODS   REPLICAS   AGE
-nginx   Deployment/podinfo   100%/50%   2         10        2          47s
+Get status of HPA.
 ```
+kubectl get hpa
+```
+Result:
+```
+NAME    REFERENCE            TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+nginx   Deployment/podinfo   10%/50%   2         10        2          26s
+```
+
+
+
+
+### Stress Testing
+
+Here we will use `ab` tool to simulate 1000 concurrency.
+
+The `ab` command is a command line load testing and benchmarking tool for web servers that allows you to simulate high traffic to a website. 
+
+The short definition form apache.org is: The acronym `ab` stands for Apache Bench where bench is short for benchmarking.
+
+#### Install ab
+
+Execute below command to install `ab` tool.
+```
+apt install apache2-utils -y
+```
+
+Most common options of `ab` are `-n` and `-c`：
+```
+-n requests     Number of requests to perform
+-c concurrency  Number of multiple requests to make at a time
+-t timelimit    Seconds to max. to spend on benchmarking. This implies -n 50000
+-p postfile     File containing data to POST. Remember also to set -T      
+-T content-type Content-type header to use for POST/PUT data, eg. 'application/x-www-form-urlencoded'. Default is 'text/plain'
+-k              Use HTTP KeepAlive feature
+```
+
+Example: 
+```
+ab -n 1000 -c 100 http://www.baidu.com/
+```
+
+#### Concurrency Stres Test 
+
+Simulate 1000 concurrency request to current node running command `ab`.
+```
+ab -c 1000 -t 60 http://127.0.0.1:31198/
+```
+
+By command `kubectl get hpa -w` we can see that CPU workload has been increasing.
+```
+NAME    REFERENCE            TARGETS    MINPODS   MAXPODS   REPLICAS   AGE
+nginx   Deployment/podinfo   388%/50%   2         10        10         32m
+```
+And see auto-scalling automically triggered via commands `kubectl get pod` and `kubectl get deployment`.
+```
+NAME                                 READY   STATUS    RESTARTS   AGE
+nginx-healthcheck-79fc55d944-9jbvj   1/1     Running   0          153m
+nginx-healthcheck-79fc55d944-rwx7n   1/1     Running   0          153m
+podinfo-668b5b9b5b-4rxwr             1/1     Running   0          51m
+podinfo-668b5b9b5b-6vm5k             1/1     Running   0          6m
+podinfo-668b5b9b5b-7p74p             1/1     Running   0          5m45s
+podinfo-668b5b9b5b-8929m             1/1     Running   0          5m45s
+podinfo-668b5b9b5b-9fr28             1/1     Running   0          51m
+podinfo-668b5b9b5b-dz74z             1/1     Running   0          6m
+podinfo-668b5b9b5b-fzszt             1/1     Running   0          5m30s
+podinfo-668b5b9b5b-gb2qq             1/1     Running   0          5m45s
+podinfo-668b5b9b5b-tbdvj             1/1     Running   0          5m30s
+podinfo-668b5b9b5b-z6dlh             1/1     Running   0          5m45s
+```
+
+Please be noted the scale up is a phased process rather than a sudden event to scale to max. 
+And it'll be scaled down to a balanced status when CPU workload is down.
+```
+kubectl get hpa -w
+```
+After several hours, we can see below result with above command.
+```
+NAME    REFERENCE            TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+nginx   Deployment/podinfo   0%/50%    2         10        2          8h 
+```
+
+
+
+## Service
+
+### ClusterIP
+
+#### Create Service
+
+Create a Deployment `http-app`.
+Create a Service with same name and link with Development by Label Selector. 
+Service type is `ClusterIP`, which is default type and accessable internally. 
+
+Create yaml file `svc-clusterip.yaml` and apply it to create Deployment and Service `http-app`.
+```
+cat > svc-clusterip.yaml <<EOF
+apiVersion: v1
+kind: Service
+metadata:
+  name: httpd-app
+spec:
+  type: ClusterIP
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+  selector:
+    app: httpd
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: httpd-app
+spec:
+  selector:
+    matchLabels:
+      app: httpd
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: httpd
+    spec:
+      containers:
+      - name: httpd
+        image: httpd
+        ports:
+        - containerPort: 80
+EOF
+
+kubectl apply -f svc-clusterip.yaml
+```
+
+Execute command `kubectl get deployment,service,pod -o wide` to check resources we created. 
+```
+NAME                        READY   UP-TO-DATE   AVAILABLE   AGE    CONTAINERS   IMAGES   SELECTOR
+deployment.apps/httpd-app   2/2     2            2           3m1s   httpd        httpd    app=httpd
+
+NAME                TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE    SELECTOR
+service/httpd-app   ClusterIP   10.100.67.181   <none>        80/TCP    3m1s   app=httpd
+
+NAME                             READY   STATUS    RESTARTS   AGE    IP            NODE     NOMINATED NODE   READINESS GATES
+pod/httpd-app-6496d888c9-mg2jt   1/1     Running   0          3m1s   10.244.2.97   cka003   <none>           <none>
+pod/httpd-app-6496d888c9-pdgq8   1/1     Running   0          3m1s   10.244.1.19   cka002   <none>           <none>
+```
+
+Verify the access from node `cka001` to Pod IPs.
+```
+curl 10.244.2.97
+curl 10.244.1.19
+```
+And receive below successful information.
+```
+<html><body><h1>It works!</h1></body></html>
+```
+
+Verify the access via ClusterIP with Port.
+```
+curl 10.100.67.181:80
+```
+And receive below successful information.
+```
+<html><body><h1>It works!</h1></body></html>
+```
+
+
+
+#### Expose Service
+
+Create and attach to a temporary Pod `Busybox` and use `nslookup` to verify DNS resolution. The option `--rm` means delete the Pod after exit.
+```
+kubectl run -it nslookup --rm --image=busybox:1.28
+```
+
+After attach to the Pod, run command `nslookup httpd-app`. The IP address `10.100.67.181` of name `httpd-app` we received is the ClusterIP of Service `httpd-app`.
+```
+/ # nslookup httpd-app
+Server:    10.96.0.10
+Address 1: 10.96.0.10 kube-dns.kube-system.svc.cluster.local
+
+Name:      httpd-app
+Address 1: 10.100.67.181 httpd-app.jh-namespace.svc.cluster.local
+```
+
+We can check the IP of temporary Pod `Busybox` in a new terminal by executing command `kubectl get pod -o wide`. The Pod `Busybox` has different IP `10.244.2.98`.
+```
+root@cka001:~# kubectl get pod nslookup
+NAME                         READY   STATUS    RESTARTS   AGE   IP            NODE     NOMINATED NODE   READINESS GATES
+nslookup                     1/1     Running   0          12m   10.244.2.98   cka003   <none>           <none>
+```
+
+
+
+
+### NodePort
+
+Create and apply yaml file `svc-nodeport.yaml` to create a Service `httpd-app`.
+```
+cat > svc-nodeport.yaml <<EOF
+apiVersion: v1
+kind: Service
+metadata:
+  name: httpd-app
+spec:
+  type: NodePort
+  ports:
+  - port: 80
+    targetPort: 80
+    nodePort: 30080
+  selector:
+     app: httpd
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: httpd-app
+spec:
+  selector:
+    matchLabels:
+      app: httpd
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: httpd
+    spec:
+      containers:
+      - name: httpd
+        image: httpd
+        ports:
+        - containerPort: 80
+EOF
+
+
+kubectl apply -f svc-nodeport.yaml
+```
+
+We will receive below output. The command `kubectl apply -f <yaml_file>` will update configuration to existing resources.
+Here the Service `httpd-app` is changed from `ClusterIP` to `NodePort` type. No change to the Deployment `httpd-app`.
+```
+service/httpd-app configured
+deployment.apps/httpd-app unchanged
+```
+
+Check the Service `httpd-app` via `kubectl get svc`. 
+IP is the same.
+Type is changed to NodePort.
+Port numbers is changed from `80/TCP` to `80:30080/TCP`.
+```
+NAME        TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+httpd-app   NodePort   10.100.67.181   <none>        80:30080/TCP   78m
+```
+
+Test the connection to the Service `httpd-app` via command `curl <your_node_ip>:30080`. It's node IP, not cluster IP, nor Pod IP.
+We will receive below successful information.
+```
+<html><body><h1>It works!</h1></body></html>
+```
+
+
+### Special Service
+
+#### Headless Service
+
+Create and apply yaml file `svc-headless.yaml` to create a `Headless Service`.
+```
+cat > svc-headless.yaml <<EOF
+apiVersion: v1
+kind: Service
+metadata:
+  name: web
+  labels:
+    app: web
+spec:
+  ports:
+  - port: 80
+    name: web
+  clusterIP: None
+  selector:
+    app: web
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: web
+spec:
+  serviceName: "web"
+  replicas: 2
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+      - name: web
+        image: nginx
+        ports:
+        - containerPort: 80
+          name: web
+EOF
+
+kubectl apply -f svc-headless.yaml
+```
+
+Check Pos by command `kubectl get pod -owide -l app=web`.
+```
+NAME    READY   STATUS    RESTARTS   AGE   IP            NODE     NOMINATED NODE   READINESS GATES
+web-0   1/1     Running   0          85s   10.244.2.99   cka003   <none>           <none>
+web-1   1/1     Running   0          82s   10.244.1.20   cka002   <none>           <none>
+```
+
+Get details of the Service by command `kubectl describe svc -l app=web`.
+```
+Name:              web
+Namespace:         jh-namespace
+Labels:            app=web
+Annotations:       <none>
+Selector:          app=web
+Type:              ClusterIP
+IP Family Policy:  SingleStack
+IP Families:       IPv4
+IP:                None
+IPs:               None
+Port:              web  80/TCP
+TargetPort:        80/TCP
+Endpoints:         10.244.1.20:80,10.244.2.99:80
+Session Affinity:  None
+Events:            <none>
+```
+
+启动一个Busybox Pod，使用 nslookup 来 测试 DNS 解析
+
+Attach to the temporary Pod `Busybox` and use `nslookup` to verify DNS resolution.
+```
+kubectl run -it nslookup --rm --image=busybox:1.28
+```
+
+With `nslookup` command for Headless Service `web`, we received two IP of Pods, not ClusterIP due to Headless Service. 
+```
+/ # nslookup web
+Server:    10.96.0.10
+Address 1: 10.96.0.10 kube-dns.kube-system.svc.cluster.local
+
+Name:      web
+Address 1: 10.244.2.99 web-0.web.jh-namespace.svc.cluster.local
+Address 2: 10.244.1.20 web-1.web.jh-namespace.svc.cluster.local
+```
+
+We can also use `nslookup` for `web-0.web` and `web-0.web`. Every Pod of Headless Service has own Service Name for DNS lookup.
+```
+/ # nslookup web-0.web
+Server:    10.96.0.10
+Address 1: 10.96.0.10 kube-dns.kube-system.svc.cluster.local
+
+Name:      web-0.web
+Address 1: 10.244.2.99 web-0.web.jh-namespace.svc.cluster.local
+```
+
+Clean up all resources created before.
+
+
+
+
+
+
+## Ingress
+
+### Deploy Ingress Controller
+
+Get Ingress Controller yaml file.
+```
+wget https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.2.1/deploy/static/provider/cloud/deploy.yaml
+```
+
+Replace grc.io to Aliyun.
+
+* `k8s.gcr.io/ingress-nginx/kube-webhook-certgen` to `registry.aliyuncs.com/google_containers/kube-webhook-certgen`.
+* `k8s.gcr.io/ingress-nginx/controller` to `registry.aliyuncs.com/google_containers/nginx-ingress-controller`.
+
+```
+sed -i 's/k8s.gcr.io\/ingress-nginx\/kube-webhook-certgen/registry.aliyuncs.com\/google\_containers\/kube-webhook-certgen/g' deploy.yaml
+sed -i 's/k8s.gcr.io\/ingress-nginx\/controller/registry.aliyuncs.com\/google\_containers\/nginx-ingress-controller/g' deploy.yaml
+```
+
+Apply the yaml file `deploy.yaml` to create Ingress Nginx.
+```
+kubectl apply -f deploy.yaml
+```
+
+Check the status of Pod.
+Please be noted that a new namespace `ingress-nginx` was created and Ingress Nginx resources are running under the new namespace.
+```
+kubectl get pod -n ingress-nginx
+```
+The result is below.
+```
+NAME                                        READY   STATUS      RESTARTS   AGE
+ingress-nginx-admission-create-dcsww        0/1     Completed   0          3m32s
+ingress-nginx-admission-patch-hslwf         0/1     Completed   0          3m32s
+ingress-nginx-controller-556fbd6d6f-trl9r   1/1     Running     0          3m32s
+```
+
+
+
+
+### Create Deployments
+
+Create two deployment `nginx-app-1` and `nginx-app-2`.
+```
+cat > nginx-app.yaml << EOF
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-app-1
+spec:
+  selector:
+    matchLabels:
+      app: nginx-app-1
+  replicas: 1 
+  template:
+    metadata:
+      labels:
+        app: nginx-app-1
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+        volumeMounts:
+          - name: html
+            mountPath: /usr/share/nginx/html
+      volumes:
+       - name: html
+         hostPath:
+           path: /root/html-1
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-app-2
+spec:
+  selector:
+    matchLabels:
+      app: nginx-app-2
+  replicas: 1 
+  template:
+    metadata:
+      labels:
+        app: nginx-app-2
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+        volumeMounts:
+          - name: html
+            mountPath: /usr/share/nginx/html
+      volumes:
+       - name: html
+         hostPath:
+           path: /root/html-2
+EOF
+
+
+kubectl apply -f nginx-app.yaml
+```
+
+Get status of Pods by executing `kubectl get pod -o wide`. Two Pods are running on node `cka003` with two different Pod IPs.
+```
+NAME                           READY   STATUS    RESTARTS   AGE   IP             NODE     NOMINATED NODE   READINESS GATES
+nginx-app-1-695b7b647d-l76bh   1/1     Running   0          34s   10.244.2.104   cka003   <none>           <none>
+nginx-app-2-7f6bf6f4d4-lvbz8   1/1     Running   0          34s   10.244.2.105   cka003   <none>           <none>
+```
+
+Access to two Pod via curl. We get `403` error.
+```
+curl 10.244.2.104
+```
+
+Log onto node `cka003` and create `index.html` file in path `/root/html-1/`. The directory `/root/html-1/` is already in place after `nginx-app-1` and `nginx-app-2` created.
+```
+echo 'This is test 1 !!' > /root/html-1/index.html
+echo 'This is test 2 !!' > /root/html-2/index.html
+```
+
+Check Pods status again by executing `kubectl get pod -o wide`.
+```
+NAME                           READY   STATUS    RESTARTS   AGE     IP             NODE     NOMINATED NODE   READINESS GATES
+nginx-app-1-695b7b647d-l76bh   1/1     Running   0          6m11s   10.244.2.104   cka003   <none>           <none>
+nginx-app-2-7f6bf6f4d4-lvbz8   1/1     Running   0          6m11s   10.244.2.105   cka003   <none>           <none>
+```
+
+Access to two Pod via curl. 
+```
+curl 10.244.2.104
+curl 10.244.2.105
+```
+We get correct information now.
+```
+This is test 1 !!
+This is test 2 !!
+```
+
+
+### Create Service
+
+Create Service `nginx-app-1` and `nginx-app-2` and map to related deployment `nginx-app-1` and `nginx-app-2`.
+```
+cat > nginx-svc.yaml << EOF
+apiVersion: v1
+kind: Service
+metadata:
+ name: nginx-app-1
+spec:
+ ports:
+ - protocol: TCP
+   port: 80
+   targetPort: 80
+ selector:
+   app: nginx-app-1
+---
+kind: Service
+apiVersion: v1
+metadata:
+ name: nginx-app-2
+spec:
+ ports:
+ - protocol: TCP
+   port: 80
+   targetPort: 80
+ selector:
+   app: nginx-app-2
+EOF
+
+
+kubectl apply -f nginx-svc.yaml
+```
+
+Check the status by executing `kubectl get svc -o wide`.
+```
+NAME          TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)   AGE   SELECTOR
+nginx-app-1   ClusterIP   10.111.95.99   <none>        80/TCP    22s   app=nginx-app-1
+nginx-app-2   ClusterIP   10.96.15.218   <none>        80/TCP    22s   app=nginx-app-2
+```
+
+Access to two Service via curl. 
+```
+curl 10.111.95.99
+curl 10.96.15.218
+```
+We get correct information.
+```
+This is test 1 !!
+This is test 2 !!
+```
+
+
+
+
+
+### Create Ingress
+
+Create Ingress resource via file `nginx-app-ingress.yaml`. 
+Map to two Services `nginx-app-1` and `nginx-app-1` we created..
+Change the namespace if needed.
+```
+cat > nginx-app-ingress.yaml << EOF
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-app
+  namespace: jh-namespace
+spec:
+  ingressClassName: "nginx"
+  rules:
+  - host: app1.com
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: nginx-app-1
+            port: 
+              number: 80
+  - host: app2.com
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: nginx-app-2
+            port:
+              number: 80
+EOF
+
+
+kubectl apply -f nginx-app-ingress.yaml
+```
+
+Get Ingress status by executing command `kubectl get ingress`.
+```  
+NAME        CLASS   HOSTS               ADDRESS   PORTS   AGE
+nginx-app   nginx   app1.com,app2.com             80      64s
+```
+
+
+
+### Test Accessiblity
+
+By executing `kubectl get pod -n ingress-nginx -o wide`, we know Ingress Controllers are running on node `cka002`.
+```
+NAME                                        READY   STATUS      RESTARTS   AGE   IP             NODE     NOMINATED NODE   READINESS GATES
+ingress-nginx-admission-create-dcsww        0/1     Completed   0          33m   10.244.2.102   cka003   <none>           <none>
+ingress-nginx-admission-patch-hslwf         0/1     Completed   0          33m   10.244.2.103   cka003   <none>           <none>
+ingress-nginx-controller-556fbd6d6f-trl9r   1/1     Running     0          33m   10.244.1.22    cka002   <none>           <none>
+```
+
+By executing `kubectl get node -o wide`, we know node `cka002`'s IP is `172.16.18.159`.
+```
+NAME     STATUS   ROLES                  AGE   VERSION   INTERNAL-IP     EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION      CONTAINER-RUNTIME
+cka001   Ready    control-plane,master   13d   v1.23.8   172.16.18.161   <none>        Ubuntu 20.04.4 LTS   5.4.0-113-generic   containerd://1.5.9
+cka002   Ready    <none>                 13d   v1.23.8   172.16.18.160   <none>        Ubuntu 20.04.4 LTS   5.4.0-113-generic   containerd://1.5.9
+cka003   Ready    <none>                 13d   v1.23.8   172.16.18.159   <none>        Ubuntu 20.04.4 LTS   5.4.0-113-generic   containerd://1.5.9
+```
+
+Add below into `/etc/hosts file` in one of node. Put node IP below. In above example, IP of node `cka002` is `172.16.18.160`, which is running `ingress-nginx-controller`.
+```
+cat >> /etc/hosts << EOF
+172.16.18.160   app1.com
+172.16.18.160   app2.com
+EOF
+```
+
+By executing `kubectl -n ingress-nginx get svc` to get NodePort of Ingress Controller. 
+```
+NAME                                 TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)                      AGE
+ingress-nginx-controller             LoadBalancer   10.110.117.253   <pending>     80:31640/TCP,443:31338/TCP   40m
+ingress-nginx-controller-admission   ClusterIP      10.107.32.104    <none>        443/TCP                      40m
+```
+
+Two files `index.html` are in two Pods, the web services are exposed to outside via node IP. 
+Hence we can see below result. The `ingress-nginx-controller` plays a central entry point for outside access, and provide two ports for different backend services from Pods.
+```
+curl app1.com:31640
+This is test 1 !!
+```
+```
+curl app2.com:31338
+This is test 2 !!
+```
+
+
+## Storage
+
+### emptyDir
+
+Create a Pod with `emptyDir` type Volume.
+```
+cat > pod-emptydir.yaml <<EOF
+apiVersion: v1
+kind: Pod
+metadata:
+ name: hello-producer
+spec:
+ containers:
+ - image: busybox
+   name: producer
+   volumeMounts:
+   - mountPath: /producer_dir
+     name: shared-volume
+   args:
+   - /bin/sh
+   - -c
+   - echo "hello world" > /producer_dir/hello; sleep 30000
+ volumes:
+ - name: shared-volume
+   emptyDir: {}
+EOF
+
+
+kubectl apply -f pod-emptydir.yaml
+```
+
+Check which node the Pod `hello-producer` is running. 
+```
+kubectl get pod hello-producer -owide
+```
+The Pod is running on node `cka003`.
+```
+NAME             READY   STATUS    RESTARTS   AGE    IP             NODE     NOMINATED NODE   READINESS GATES
+hello-producer   1/1     Running   0          106s   10.244.2.106   cka003   <none>           <none>
+```
+
+Log onto `cka003` because the Pod `hello-producer` is running on the node.
+
+Set up the environment `CONTAINER_RUNTIME_ENDPOINT` for command `crictl`. Suggest to do the same for all nodes.
+```
+export CONTAINER_RUNTIME_ENDPOINT=unix:///run/containerd/containerd.sock
+```
+Run command `crictl ps` to get the container ID of Pod `hello-producer`.
+```
+crictl ps |grep hello-producer
+```
+The ID of container `producer` is `05f5e1bb6a1bb`.
+```
+CONTAINER           IMAGE               CREATED             STATE               NAME                ATTEMPT             POD ID              POD
+05f5e1bb6a1bb       62aedd01bd852       15 minutes ago      Running             producer            0                   995cbc23eb763       hello-producer
+```
+Run command `crictl inspect` to get the path of mounted `shared-volume`, which is `emptyDir`.
+```
+crictl inspect 05f5e1bb6a1bb | grep source | grep empty
+```
+The result is below.
+```
+"source": "/var/lib/kubelet/pods/272ba5fa-e213-4c79-ab57-d4c91f4371ba/volumes/kubernetes.io~empty-dir/shared-volume",
+```
+Change the path to the path of mounted `shared-volume` we get above.
+```
+cd /var/lib/kubelet/pods/272ba5fa-e213-4c79-ab57-d4c91f4371ba/volumes/kubernetes.io~empty-dir/shared-volume
+cat hello
+```
+We will see the content of file `hello`. 
+
+The path `/producer_dir` inside the Pod is mounted to the local host path. 
+The file `/producer_dir/hello` we created inside the Pod is actually in the host local path.
+
+
+
+Let's delete the container `producer`, the file `hello` is still there.
+```
+crictl ps
+crictl stop <your_container_id>
+crictl rm <your_container_id>
+ls /var/lib/kubelet/pods/272ba5fa-e213-4c79-ab57-d4c91f4371ba/volumes/kubernetes.io~empty-dir/shared-volume
+```
+
+
+Let's delete the Pod `hello-producer`, the file `hello` was gone with error `No such file or directory`.
+```
+kubectl delete pod hello-producer
+ls /var/lib/kubelet/pods/272ba5fa-e213-4c79-ab57-d4c91f4371ba/volumes/kubernetes.io~empty-dir/shared-volume
+```
+
+
+
+
+
+
+
+
+
+### hostPath
+
+Apply below yaml file to create a MySQL Pod and mount a `hostPath`.
+It'll mount host directory `/tmp/mysql` to Pod directory `/var/lib/mysql`.
+Check locally if directory `/tmp/mysql` is in place. If not, create it using `mkdir /tmp/mysql`.
+```
+cat > mysql-hostpath.yaml <<EOF
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+ name: mysql
+spec:
+ selector:
+   matchLabels:
+     app: mysql
+ template:
+   metadata:
+     labels:
+       app: mysql
+   spec:
+     containers:
+     - image: mysql:8.0
+       name: mysql
+       env:
+       - name: MYSQL_ROOT_PASSWORD
+         value: password
+       ports:
+       - containerPort: 3306
+         name: mysql
+       volumeMounts:
+       - name: mysql-vol
+         mountPath: /var/lib/mysql
+     volumes:
+     - hostPath:
+            path: /tmp/mysql
+       name: mysql-vol
+EOF
+
+kubectl apply -f mysql-hostpath.yaml
+```
+
+
+#### Verify MySQL Availability
+
+Check status of MySQL Pod. Need document the Pod name and node it's running on.
+```
+kubectl get pod -l app=mysql -o wide
+```
+
+Attach into the MySQL Pod on the running node.
+```
+kubectl exec -it <your_pod_name> -- bash
+```
+
+Within the Pod, go to directory `/var/lib/mysql`, all files in the directory are same with all files in host directory `/tmp/mysql`.
+
+Connect to the database in the Pod.
+```
+mysql -h 127.0.0.1 -uroot -ppassword
+```
+
+Operate the database.
+```
+mysql> show databases;
+mysql> connect mysql;
+mysql> show tables;
+```
+
+
+
+### PV and PVC
+
+Here we will use NFS as backend storage to demo how to deploy PV and PVC.
+
+#### Set up NFS Server
+
+##### Install nfs-kernel-server
+
+Log onto `cka002`.
+
+Choose one Worker `cka002` to build NFS server. 
+```
+sudo apt-get install -y nfs-kernel-server
+```
+
+##### Configure Share Folder
+
+Create share folder.  
+```
+mkdir /nfsdata
+```
+
+Append one line in file `/etc/exports`.
+```
+cat >> /etc/exports << EOF
+/nfsdata *(rw,sync,no_root_squash)
+EOF
+```
+
+There are many different NFS sharing options, including these:
+
+* `*`: accessable to all IPs, or specific IPs.
+* `rw`: Share as read-write. Keep in mind that normal Linux permissions still apply. (Note that this is a default option.)
+* `ro`: Share as read-only.
+* `sync`: File data changes are made to disk immediately, which has an impact on performance, but is less likely to result in data loss. On som* `distributions this is the default.
+* `async`: The opposite of sync; file data changes are made initially to memory. This speeds up performance but is more likely to result in data loss. O* `some distributions this is the default.
+* `root_squash`: Map the root user and group account from the NFS client to the anonymous accounts, typically either the nobody account or the nfsnobod* `account. See the next section, “User ID Mapping,” for more details. (Note that this is a default option.)
+* `no_root_squash`: Map the root user and group account from the NFS client to the local root and group accounts.
+
+
+We will use password-free remote mount based on `nfs` and `rpcbind` services between Linux servers, not based on `smb` service. 
+The two servers must first grant credit, install and set up nfs and rpcbind services on the server side, set the common directory, start the service, and mount it on the client
+
+Start `rpcbind` service.
+```
+sudo systemctl enable rpcbind
+sudo systemctl restart rpcbind
+```
+
+Start `nfs` service.
+```
+sudo systemctl enable nfs-server
+sudo systemctl start nfs-server
+```
+
+Once `/etc/exports` is changed, we need run below command to make change effected.
+```
+exportfs -ra
+```
+
+Check whether sharefolder is configured. 
+```
+showmount -e
+```
+And see below output.
+```
+Export list for cka002:
+/nfsdata *
+```
+
+
+
+##### Install NFS Client
+
+Install NFS client on all nodes.
+```
+sudo apt-get install -y nfs-common
+```
+
+
+
+##### Verify NFS Server
+
+Log onto any nodes to verify NFS service and sharefolder list.
+
+Log onto `cka001` and check sharefolder status on `cka002`.
+```
+showmount -e cka002
+```
+Below result will be shown if no issues.
+```
+Export list for cka002:
+/nfsdata *
+```
+
+
+
+##### Mount NFS
+
+Execute below command to mount remote NFS folder on any other non-NFS-server node, e.g., `cka001` or `cka003`.
+```
+mkdir /remote-nfs-dir
+mount -t nfs cka002:/nfsdata /remote-nfs-dir/
+```
+
+Use command `df -h` to verify mount point. Below is the sample output.
+```
+Filesystem       Size  Used Avail Use% Mounted on
+cka002:/nfsdata   40G  6.8G   31G  18% /remote-nfs-dir
+```
+
+#### Create PV
+
+Create a PV with below yaml file `mysql-pv.yaml`. Replace the NFS Server IP with actual IP that NFS server is running on.
+```
+cat > mysql-pv.yaml <<EOF
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+ name: mysql-pv
+spec:
+ accessModes:
+     - ReadWriteOnce
+ capacity:
+   storage: 1Gi
+ persistentVolumeReclaimPolicy: Retain
+ storageClassName: nfs
+ nfs:
+   path: /nfsdata/
+   server: 172.16.18.160
+EOF
+
+kubectl apply -f mysql-pv.yaml
+```
+
+Check the PV.
+```
+kubectl get pv
+```
+The result:
+```
+NAME       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS      CLAIM   STORAGECLASS   REASON   AGE
+mysql-pv   1Gi        RWO            Retain           Available           nfs                     9s
+```
+
+
+#### Create PVC
+
+Create a PVC with below yaml file `mysql-pvc.yaml`, specify storage size, access mode, and storage class. 
+The PVC will be binded with PV automatically viw storage class name. 
+```
+cat > mysql-pvc.yaml <<EOF
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: nfs
+EOF
+
+kubectl apply -f mysql-pvc.yaml
+```
+
+
+
+#### Consume PVC
+
+Create a Deployment to consume the PVC created.
+```
+cat > mysql.yaml <<EOF
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+ name: mysql
+spec:
+ selector:
+   matchLabels:
+     app: mysql
+ template:
+   metadata:
+     labels:
+       app: mysql
+   spec:
+     containers:
+     - image: mysql:8.0
+       name: mysql
+       env:
+       - name: MYSQL_ROOT_PASSWORD
+         value: password
+       ports:
+       - containerPort: 3306
+         name: mysql
+       volumeMounts:
+       - name: mysql-persistent-storage
+         mountPath: /var/lib/mysql
+         subPath: mysqldata
+     volumes:
+     - name: mysql-persistent-storage
+       persistentVolumeClaim:
+        claimName: mysql-pvc
+EOF
+
+
+kubectl apply -f mysql.yaml
+```
+
+Now we can see MySQL files were moved to directory `/nfsdata` on `cka002`
+
+
+
+
+### StorageClass
+
+#### Configure RBAC Authorization
+
+RBAC authorization uses the rbac.authorization.k8s.io API group to drive authorization decisions, allowing you to dynamically configure policies through the Kubernetes API.
+
+* ServiceAccount: `nfs-client-provisioner`
+* namespace: `jh-namespace`
+
+* ClusterRole: `nfs-client-provisioner-runner`
+* ClusterRoleBinding: `run-nfs-client-provisioner`, roleRefer: above ClusterRole, link to above ServiceAccount.
+
+* Role: `leader-locking-nfs-client-provisioner`
+* RoleBinding: `leader-locking-nfs-client-provisioner`, roleRefer: above Role, link to above ServiceAccount.
+
+
+Create RBAC Authorization.
+```
+cat > nfs-provisioner-rbac.yaml <<EOF
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: nfs-client-provisioner
+  # replace with namespace where provisioner is deployed
+  namespace: jh-namespace
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: nfs-client-provisioner-runner
+rules:
+  - apiGroups: [""]
+    resources: ["nodes"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["persistentvolumes"]
+    verbs: ["get", "list", "watch", "create", "delete"]
+  - apiGroups: [""]
+    resources: ["persistentvolumeclaims"]
+    verbs: ["get", "list", "watch", "update"]
+  - apiGroups: ["storage.k8s.io"]
+    resources: ["storageclasses"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["events"]
+    verbs: ["create", "update", "patch"]
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: run-nfs-client-provisioner
+subjects:
+  - kind: ServiceAccount
+    name: nfs-client-provisioner
+    # replace with namespace where provisioner is deployed
+    namespace: jh-namespace
+roleRef:
+  kind: ClusterRole
+  name: nfs-client-provisioner-runner
+  apiGroup: rbac.authorization.k8s.io
+---
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: leader-locking-nfs-client-provisioner
+  # replace with namespace where provisioner is deployed
+  namespace: jh-namespace
+rules:
+  - apiGroups: [""]
+    resources: ["endpoints"]
+    verbs: ["get", "list", "watch", "create", "update", "patch"]
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: leader-locking-nfs-client-provisioner
+  # replace with namespace where provisioner is deployed
+  namespace: jh-namespace
+subjects:
+  - kind: ServiceAccount
+    name: nfs-client-provisioner
+    # replace with namespace where provisioner is deployed
+    namespace: jh-namespace
+roleRef:
+  kind: Role
+  name: leader-locking-nfs-client-provisioner
+  apiGroup: rbac.authorization.k8s.io
+EOF
+
+
+kubectl apply -f nfs-provisioner-rbac.yaml
+```
+
+
+#### Install `nfs-provisioner`
+
+Create NFS Provisioner with below yaml file. 
+```
+cat > nfs-provisioner-deployment.yaml <<EOF
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nfs-client-provisioner
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nfs-client-provisioner
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: nfs-client-provisioner
+    spec:
+      serviceAccountName: nfs-client-provisioner
+      containers:
+        - name: nfs-client-provisioner
+          image: liyinlin/nfs-subdir-external-provisioner:v4.0.2
+          volumeMounts:
+            - name: nfs-client-root
+              mountPath: /persistentvolumes
+          env:
+            - name: PROVISIONER_NAME
+              value: k8s-sigs.io/nfs-subdir-external-provisioner
+            - name: NFS_SERVER
+              value: 172.16.18.160
+            - name: NFS_PATH
+              value: /nfsdata
+      volumes:
+        - name: nfs-client-root
+          nfs:
+            server: 172.16.18.160
+            path: /nfsdata
+EOF
+
+kubectl apply -f nfs-provisioner-deployment.yaml
+```
+
+
+#### Create NFS StorageClass
+
+
+Create yaml file `nfs-storageclass.yaml`.
+```
+vi nfs-storageclass.yaml
+```
+And add below info to create NFS StorageClass.
+```
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: nfs-client
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"
+provisioner: k8s-sigs.io/nfs-subdir-external-provisioner
+parameters:
+  pathPattern: "${.PVC.namespace}/${.PVC.annotations.nfs.io/storage-path}"
+  onDelete: delete
+```
+Apply the yaml file.
+```
+kubectl apply -f nfs-storageclass.yaml
+```
+
+
+
+#### Verify
+
+##### Create PVC
+
+Create PVC 
+```
+cat > storageclass-pvc.yaml <<EOF
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: nfs-pvc-from-sc
+spec:
+  storageClassName: nfs-client
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+EOF
+
+kubectl apply -f storageclass-pvc.yaml
+```
+
+Check the PVC status we ceated.
+```
+kubectl get pvc nfs-pvc-from-sc
+```
+```
+NAME              STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+nfs-pvc-from-sc   Bound    pvc-25eaa043-911e-46c7-b17e-f65256f52725   1Gi        RWX            nfs-client     39h
+```
+
+
+
+
+##### Consume PVC
+
+Create Pod to consume the PVC>
+```
+cat > mysql-with-sc-pvc.yaml <<EOF
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-with-sc-pvc
+spec:
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+      - image: mysql:8.0
+        name: mysql
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: password
+        ports:
+        - containerPort: 3306
+          name: mysql
+        volumeMounts:
+        - name: mysql-pv
+          mountPath: /var/lib/mysql
+      volumes:
+      - name: mysql-pv
+        persistentVolumeClaim:
+          claimName: nfs-pvc-from-sc
+EOF
+
+
+kubectl apply -f mysql-with-sc-pvc.yaml
+```
+
+
+Check the Deployment status.
+```
+kubectl get deployment mysql-with-sc-pvc -o wide
+```
+```
+NAME                READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS   IMAGES      SELECTOR
+mysql-with-sc-pvc   1/1     1            1           39h   mysql        mysql:8.0   app=mysql
+```
+
+Check related Pods status. Be noted that the Pod `mysql-with-sc-pvc-7c97d875f8-dwfkc` is running on `cka003`.
+```
+kubectl get pod -o wide -l app=mysql
+```
+```
+NAME                                 READY   STATUS    RESTARTS   AGE   IP             NODE     NOMINATED NODE   READINESS GATES
+mysql-774db46945-sztrp               1/1     Running   0          40h   10.244.1.23    cka002   <none>           <none>
+mysql-with-sc-pvc-7c97d875f8-dwfkc   1/1     Running   0          38h   10.244.2.110   cka003   <none>           <none>
+```
+
+Let's check directory `/nfsdata/` on NFS server. 
+```
+ll /nfsdata/
+```
+Two folders were created. Same content of `/remote-nfs-dir/` on other nodes.
+```
+drwxrwxrwx  6 systemd-coredump root 4096 Jul 10 23:08 jh-namespace/
+drwxr-xr-x  6 systemd-coredump root 4096 Jul 10 21:23 mysqldata/
+```
+
+One sub-folder's name is namespace under directory `/nfsdata/` and it is mounted to Pod.
+By default, namespace name will be used at mount point. 
+If we want to use customized folder for that purpose, we need claim an annotation `nfs.io/storage-path`, e.g., `test-path` in below example.
+```
+cat > test-claim.yaml <<EOF
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: test-claim
+  namespace: kube-system
+  annotations:
+    nfs.io/storage-path: "test-path"
+spec:
+  storageClassName: nfs-client
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+EOF
+
+kubectl apply -f test-claim.yaml
+```
+
+In above case, the PVC was created in `kube-system` Namespace, hence we can see directory `test-path` is under directory`kube-system`. 
+Overall directory structure of folder `/nfsdata/` looks like below.
+```
+tree /nfsdata/
+```
+```
+/nfsdata/
+├── jh-namespace
+│   ├── mysql.sock -> /var/run/mysqld/mysqld.sock
+│   ├── sys
+│   │   └── sys_config.ibd
+│   ├── undo_001
+│   └── undo_002
+├── kube-system
+│   └── test-path
+└── mysqldata
+```
+
+Please be noted that above rule is following `nfs-subdir-external-provisioner` implementation. It's may be different with other `provisioner`.
+
+Detail about `nfs-subdir-external-provisioner` project is [here](https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner)
 
 ---
 
 
 
-### 压测
+### Configuration
 
-使用 ab 进行压力测试，模拟 1000 个并发量
+#### ConfigMap
 
-#### 安装 ab
+Create a yaml file `configmap.yaml` for ConfigMap.
+```
+vi configmap.yaml
+```
+Paste below content.
+```
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    cattle.io/creator: norman
+  name: nginx
+  namespace: jh-namespace
+data:
+  nginx.conf: |-
+    user  nginx;
+    worker_processes  2;
 
+    error_log  /var/log/nginx/error.log warn;
+    pid        /var/run/nginx.pid;
+
+
+    events {
+        worker_connections  1024;
+    }
+
+
+    http {
+        include       /etc/nginx/mime.types;
+        default_type  application/octet-stream;
+
+        log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                          '$status $body_bytes_sent "$http_referer" '
+                          '"$http_user_agent" "$http_x_forwarded_for"';
+
+        access_log  /var/log/nginx/access.log  main;
+
+        sendfile        on;
+        #tcp_nopush     on;
+
+        keepalive_timeout  65;
+
+        #gzip  on;
+
+        include /etc/nginx/conf.d/*.conf;
+    }
+```
+
+Apply the ConfigMap.
+```
+kubectl apply -f configmap.yaml
+```
+
+Create Pod `nginx-with-cm`.
+```
+cat > nginx-with-cm.yaml <<EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-with-cm
+spec:
+ containers:
+ - name: nginx
+   image: nginx
+   volumeMounts:
+   - name: foo
+     mountPath: "/etc/nginx/nginx.conf"
+     subPath:  nginx.conf
+ volumes:
+ - name: foo
+   configMap:
+     name: nginx
+EOF
+
+kubectl apply -f nginx-with-cm.yaml
+```
+
+Be noted:
+
+* By default to mount ConfigMap, Kubernetes will overwrite all content of the mount point. We can use `volumeMounts.subPath` to specify that only overwrite the file `nginx.conf`.
+* Is we use `volumeMounts.subPath` to mount a Container Volume, Kubernetes won't do hot update to reflect real-time update.
+
+
+Verify if the `nginx.conf` mounted from outside is in the Container by comparing with above file.
+```
+kubectl exec -it nginx-with-cm -- sh 
+cat /etc/nginx/nginx.conf
+```
+
+
+
+
+#### Secret
+
+Encode password with base64  
+```
+echo -n admin | base64  
+YWRtaW4=
+
+echo -n 123456 | base64
+MTIzNDU2
+```
+
+Create Secret.
+```
+cat > secret.yaml <<EOF
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mysecret
+data:
+  username: YWRtaW4=
+  password: MTIzNDU2
+EOF
+
+kubectl apply -f secret.yaml
+```
+
+Using Volume to mount (injection) Secret to a Pod.
+```
+cat > busybox-with-secret.yaml <<EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: busybox-with-secret
+spec:
+ containers:
+ - name: mypod
+   image: busybox
+   args:
+    - /bin/sh
+    - -c
+    - sleep 1000000;
+   volumeMounts:
+   - name: foo
+     mountPath: "/tmp/secret"
+ volumes:
+ - name: foo
+   secret:
+    secretName: mysecret
+EOF
+
+kubectl apply -f busybox-with-secret.yaml
+```
+
+Let's attach to the Pod `busybox-with-secret` to verify if two data elements of `mysecret` are successfully mounted to the path `/tmp/secret` within the Pod.
+```
+kubectl exec -it busybox-with-secret -- sh
+```
+By executing below command, we can see two data elements are in the directory `/tmp/secret` as file type. 
+```
+/ # ls -l /tmp/secret/
+lrwxrwxrwx    1 root     root            15 Jul 12 16:13 password -> ..data/password
+lrwxrwxrwx    1 root     root            15 Jul 12 16:13 username -> ..data/username
+```
+And we can get the content of each element, which are predefined before.
+```
+/ # cat /tmp/secret/username
+admin
+
+/ # cat /tmp/secret/password
+123456
+```
+
+
+
+#### Additional Keys
+
+##### Various way to create ConfigMap
+
+ConfigMap can be created by file, directory, or value. 
+
+Let's create a ConfigMap `colors` includes:
+
+* Four files with four color names.
+* One file with favorite color name.
+
+```
+mkdir configmap
+cd configmap
+mkdir primary
+
+echo c > primary/cyan
+echo m > primary/magenta
+echo y > primary/yellow
+echo k > primary/black
+echo "known as key" >> primary/black
+echo blue > favorite
+```
+Final structure looks like below via command `tree configmap`.
+```
+configmap
+├── favorite
+└── primary
+    ├── black
+    ├── cyan
+    ├── magenta
+    └── yellow
+```
+
+Create ConfigMap referring above files we created. Make sure we are now in the path `~/configmap`.
+```
+kubectl create configmap colors \
+--from-literal=text=black  \
+--from-file=./favorite  \
+--from-file=./primary/
+```
+
+Check content of the ConfigMap `colors`.
+```
+kubectl get configmap colors -o yaml
+```
+```
+apiVersion: v1
+data:
+  black: |
+    k
+    known as key
+  cyan: |
+    c
+  favorite: |
+    blue
+  magenta: |
+    m
+  text: black
+  yellow: |
+    y
+kind: ConfigMap
+metadata:
+  creationTimestamp: "2022-07-12T16:38:27Z"
+  name: colors
+  namespace: jh-namespace
+  resourceVersion: "2377258"
+  uid: d5ab133f-5e4d-41d4-bc9e-2bbb22a872a1
+```
+
+
+
+
+##### Set environment variable via ConfigMap
+
+Here we will create a Pod `pod-configmap-env` and set the environment variable `ilike` and assign value of `favorite` from ConfigMap `colors`.
+```
+cat > pod-configmap-env.yaml << EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-configmap-env
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    env:
+    - name: ilike
+      valueFrom:
+        configMapKeyRef:
+          name: colors
+          key: favorite
+EOF
+
+kubectl apply -f pod-configmap-env.yaml
+```
+
+Attach to the Pod `pod-configmap-env`.
+```
+kubectl exec -it pod-configmap-env -- bash
+```
+
+Verify the value of env variable `ilike` is `blue`, which is the value of `favorite` of ConfigMap `colors`.
+```
+root@pod-configmap-env:/# echo $ilike
+blue
+```
+
+We can also use all key-value of ConfigMap to set up environment variables of Pod.
+```
+cat > pod-configmap-env-2.yaml << EOF
+apiVersion: v1
+kind: Pod
+metadata:
+ name: pod-configmap-env-2
+spec:
+ containers:
+ - name: nginx
+   image: nginx
+   envFrom:
+    - configMapRef:
+        name: colors
+EOF
+
+kubectl apply -f pod-configmap-env-2.yaml
+```
+
+Attach to the Pod `pod-configmap-env-2`.
+```
+kubectl exec -it pod-configmap-env-2 -- bash
+```
+
+Verify the value of env variables based on key-values we defined in ConfigMap `colors`.
+```
+root@pod-configmap-env-2:/# echo $black
+k known as key
+root@pod-configmap-env-2:/# echo $cyan
+c
+root@pod-configmap-env-2:/# echo $favorite
+blue
+```
+
+
+
+
+
+
+## Scheduling
+
+### nodeSelector
+
+Let's assume the scenario below.
+
+* We have a group of high performance servers.
+* Some applications require high performance computing.
+* These applicaiton need to be scheduled and running on those high performance servers.
+
+We can leverage Kubernetes attributes node `label` and `nodeSelector` to group resources as a whole for scheduling to meet above requirement.
+
+
+
+
+#### Label Node
+
+Here I will label `cka002` with `Configuration=hight`.
+
+```
+kubectl label node cka002 configuration=hight
+```
+
+Verify. We wil see the label `configuration=hight` on `cka002`.
+```
+kubectl get node --show-labels
+```
+
+
+#### Configure nodeSelector for Pod
+
+Create a Pod and use `nodeSelector` to schedule the Pod running on specified node.
+```
+cat > mysql-nodeselector.yaml <<EOF
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+ name: mysql-nodeselector
+spec:
+ selector:
+   matchLabels:
+     app: mysql
+ template:
+   metadata:
+     labels:
+       app: mysql
+   spec:
+     containers:
+     - image: mysql:8.0
+       name: mysql
+       env:
+       - name: MYSQL_ROOT_PASSWORD
+         value: password
+       ports:
+       - containerPort: 3306
+         name: mysql
+     nodeSelector:
+       configuration: hight
+EOF
+
+kubectl apply -f mysql-nodeselector.yaml
+```
+
+Let's check with node the Pod `mysql-nodeselector` is running.
+```
+kubectl get pod -l app=mysql -o wide |  grep mysql-nodeselector
+```
+
+With below result, Pod `mysql-nodeselector` is running on `cka002` node.
+```
+NAME                                  READY   STATUS    RESTARTS   AGE     IP             NODE     NOMINATED NODE   READINESS GATES
+mysql-nodeselector-6b7d9c875d-227t6   1/1     Running   0          50s     10.244.1.26    cka002   <none>           <none>
+```
+
+
+
+### nodeName
+
+Be noted, `nodeName` has hightest priority as it's not scheduled by `Scheduler`.
+
+Create a Pod `nginx-nodename` with `nodeName=cka003`.
+```
+cat > nginx-nodename.yaml <<EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-nodename
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+  nodeName: cka003
+EOF
+
+kubectl apply -f nginx-nodename.yaml
+```
+
+Verify if Pod `nginx-nodename` is running on `ckc003 node.
+```
+kubectl get pod -owide |grep nginx-nodename
+```
+```
+NAME                                      READY   STATUS    RESTARTS   AGE     IP             NODE     NOMINATED NODE   READINESS GATES
+nginx-nodename                            1/1     Running   0          6s      10.244.2.113   cka003   <none>           <none>
+```
+
+
+
+
+### Affinity
+
+In Kubernetes cluster, some Pods have frequent interaction with other Pods. With that situation, it's suggested to schedule these Pods running on same node. 
+For example, Two Pods Nginx and Mysql, we need deploy them on one node if they frequently communicate.
+
+We can use `podAffinity` to select Pods based on their relationship. 
+
+There are two scheduling type of `podAffinity`.
+
+* `requiredDuringSchedulingIgnoredDuringExecution`(硬亲和)
+* `preferredDuringSchedulingIgnoredDuringExecution`(软亲和)
+
+`topologyKey` could be set by below types:
+
+* `kubernetes.io/hostname` ＃NodeName
+* `failure-domain.beta.kubernetes.io/zone` ＃Zone 
+* `failure-domain.beta.kubernetes.io/region` # Region 
+
+We can set node Label to classify Name/Zone/Region of node, which can be used by `podAffinity`.
+
+Create a Pod Nginx.
+```
+cat > pod_nginx.yaml <<EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  labels:
+    app: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+EOF
+
+
+kubectl apply -f pod_nginx.yaml
+```
+
+Create a Pod MySql.
+```
+cat > pod_mysql.yaml <<EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mysql
+  labels:
+    app: mysql
+spec:
+  containers:
+  - name: mysql
+    image: mysql
+    env:
+     - name: "MYSQL_ROOT_PASSWORD"
+       value: "123456"
+  affinity:
+    podAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+          - key: app
+            operator: In
+            values:
+            - nginx
+        topologyKey: kubernetes.io/hostname
+EOF
+
+kubectl apply -f pod_mysql.yaml
+```
+
+As we configured `podAffinity`, so Pod `mysql` will be scheduled to the same node with Pod `nginx` by Label `app:nginx`.
+
+Via the command `kubectl get pod -o wide` we can get two Pods are running on node `cka002`.
+```
+NAME                                      READY   STATUS    RESTARTS   AGE     IP             NODE     NOMINATED NODE   READINESS GATES
+mysql                                     1/1     Running   0          2m48s   10.244.1.28    cka002   <none>           <none>
+nginx                                     1/1     Running   0          9m53s   10.244.1.27    cka002   <none>           <none>
+```
+
+
+
+
+
+
+
+
+### Taints & Tolerations
+
+#### Concept
+
+Node affinity is a property of Pods that attracts them to a set of nodes (either as a preference or a hard requirement). 
+Taints are the opposite -- they allow a node to repel a set of pods.
+
+Tolerations are applied to pods. 
+Tolerations allow the scheduler to schedule pods with matching taints. 
+Tolerations allow scheduling but don't guarantee scheduling: the scheduler also evaluates other parameters as part of its function.
+
+Taints and tolerations work together to ensure that pods are not scheduled onto inappropriate nodes. 
+One or more taints are applied to a node; this marks that the node should not accept any pods that do not tolerate the taints.
+
+In the production environment, we generally configure Taints for Control Plane nodes (in fact, most K8s installation tools automatically add Taints to Control Plane nodes), because Control Plane only runs Kubernetes system components. 
+If it is used to run application Pods, it is easy to consume resources. In the end, the Control Plane node will crash. 
+If we need to add additional system components to the Control Plane node later, we can configure Tolerations for the corresponding system component Pod to tolerate taints.
+
+
+#### Set Taints
+
+Set `cka003` node to taint node. Set status to `NoSchedule`, which won't impact existing Pods running on `cka003`.
+```
+kubectl taint nodes cka003 key=value:NoSchedule
+```
+
+#### Set Tolerations
+
+We can use Tolerations to let Pods schedule to a taint node. 
+
+
+```
+cat > mysql-tolerations.yaml <<EOF
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+ name: mysql-tolerations
+spec:
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+      - image: mysql:8.0
+        name: mysql
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: password
+        ports:
+        - containerPort: 3306
+          name: mysql
+      tolerations:
+      - key: "key"
+        operator: "Equal"
+        value: "value"
+        effect: "NoSchedule"
+EOF
+
+kubectl apply -f mysql-tolerations.yaml
+```
+
+The Pod of Deployment `mysql-tolerations` is scheduled and running on node `cka003` with `tolerations` setting, which is a taint node.
+```
+kubectl get pod -o wide | grep mysql-tolerations
+```
+```
+NAME                                      READY   STATUS    RESTARTS   AGE     IP             NODE     NOMINATED NODE   READINESS GATES
+mysql-tolerations-5c5986944b-cg9bs        1/1     Running   0          57s     10.244.2.114   cka003   <none>           <none>
+```
+
+
+
+
+#### Remove Taints
+
+```
+kubectl taint nodes cka003 key-
+```
+
+
+
+## ResourceQuota
+
+### Create Namespace
+
+Ceate a Namespace
+```
+kubectl create ns quota-object-example
+```
+
+### Create ResourceQuota
+
+Create a Namespace ResourceQuota and apply to namespace `quota-object-example`.
+Within the namespace, we can only create 1 PVC, 1 LoadBalancer Service, can not create NodePort Service.
+```
+cat > resourcequota.yaml <<EOF
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: object-quota-demo
+  namespace: quota-object-example
+spec:
+  hard:
+    persistentvolumeclaims: "1"
+    services.loadbalancers: "2"
+    services.nodeports: "0"
+EOF
+
+
+kubectl apply -f resourcequota.yaml
+```
+
+
+### Verify & Test
+
+Check Quota status
+```
+kubectl get resourcequota object-quota-demo --namespace=quota-object-example --output=yaml
+```
+Key information is below. 
+```
+spec:
+  hard:
+    persistentvolumeclaims: "1"
+    services.loadbalancers: "2"
+    services.nodeports: "0"
+status:
+  hard:
+    persistentvolumeclaims: "1"
+    services.loadbalancers: "2"
+    services.nodeports: "0"
+  used:
+    persistentvolumeclaims: "0"
+    services.loadbalancers: "0"
+    services.nodeports: "0"
+```
+
+#### Test NodePort
+
+Create a Deployment `ns-quota-test` on namespace `quota-object-example`.
+```
+kubectl create deployment ns-quota-test --image nginx --namespace=quota-object-example
+```
+
+Expose the Deployment via NodePort    
+```
+kubectl expose deployment ns-quota-test --port=80 --type=NodePort --namespace=quota-object-example
+```
+We receive below error, which is expected because we set Quota `services.nodeports: 0`.
 ```shell
-apt install apache2-utils -y
+Error from server (Forbidden): services "ns-quota-test" is forbidden: exceeded quota: object-quota-demo, requested: services.nodeports=1, used: services.nodeports=0, limited: services.nodeports=0
+```
+  
+
+#### Test PVC
+
+Create a PVC `pvc-quota-demo` on namespace `quota-object-example`.
+```
+cat > test-pvc-quota.yaml << EOF
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: pvc-quota-demo
+  namespace: quota-object-example
+spec:
+  storageClassName: nfs-client
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 3Gi
+EOF
+
+
+kubectl apply -f test-pvc-quota.yaml
 ```
 
-ab 命令最基本的参数是 `-n` 和 `-c`：
-```bash
--n 执行的请求数量
--c 并发请求个数
-
-其它参数：
--t 测试所进行的最大秒数
--p 包含了需要 POST 的数据的文件
--T POST 数据所使用的 Content-type 头信息
--k 启用 HTTP KeepAlive 功能，即在一个 HTTP 会话中执行多个请求，默认时，不启用 KeepAlive 功能
+Check the Quota status.
+```
+kubectl get resourcequota object-quota-demo --namespace=quota-object-example --output=yaml
+```
+Here `persistentvolumeclaims` is used `1`, and the quota is also `1`. If we create PVC again, will receive 403 error.
+```
+spec:
+  hard:
+    persistentvolumeclaims: "1"
+    services.loadbalancers: "2"
+    services.nodeports: "0"
+status:
+  hard:
+    persistentvolumeclaims: "1"
+    services.loadbalancers: "2"
+    services.nodeports: "0"
+  used:
+    persistentvolumeclaims: "1"
+    services.loadbalancers: "0"
+    services.nodeports: "0"
 ```
 
-命令示例：
+
+
+
+## LimitRange
+
+A *LimitRange* provides constraints that can:
+
+* Enforce minimum and maximum compute resources usage per Pod or Container in a namespace.
+* Enforce minimum and maximum storage request per PersistentVolumeClaim in a namespace.
+* Enforce a ratio between request and limit for a resource in a namespace.
+* Set default request/limit for compute resources in a namespace and automatically inject them to Containers at runtime.
+
+
+
+
+### Create Namespace
+
+Create a Namespace `default-cpu-example` for demo.
+```
+kubectl create namespace default-cpu-example
+```
+
+### Set LimitRange
+
+Create LimitRange by below yaml file to define range of CPU Request and CPU Limit for a Container.
+After apply LimitRange resource, the CPU limitation will affect all new created Pods.
+```
+cat > cpu-limitrange.yaml << EOF
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: cpu-limit-range
+  namespace: default-cpu-example
+spec:
+  limits:
+  - default:
+      cpu: 1
+    defaultRequest:
+      cpu: 0.5
+    type: Container
+EOF
+
+
+kubectl apply -f cpu-limitrange.yaml
+```
+
+
+
+### Test via Pod
+
+#### Scenario 1: Pod without specified limits
+
+Create a Pod without any specified limits.
+```
+cat > default-cpu-demo-pod.yaml << EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: default-cpu-demo
+  namespace: default-cpu-example
+spec:
+  containers:
+  - name: default-cpu-demo-ctr
+    image: nginx
+EOF
+
+
+kubectl apply -f default-cpu-demo-pod.yaml
+```
+
+Verify details of the Pod we created. The Pod inherits the both CPU Limits and CPU Requests from namespace as its default.
+```
+kubectl get pod default-cpu-demo --output=yaml --namespace=default-cpu-example
+```
+```
+spec:
+  containers:
+  - image: nginx
+    imagePullPolicy: Always
+    name: default-cpu-demo-ctr
+    resources:
+      limits:
+        cpu: "1"
+      requests:
+        cpu: 500m
+```
+
+
+
+#### Scenario 2: Pod with CPU limit, without CPU Request
+
+Create Pod with specified CPU limits only.  
+```
+cat > default-cpu-demo-limit.yaml <<EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: default-cpu-demo-limit
+  namespace: default-cpu-example
+spec:
+  containers:
+  - name: default-cpu-demo-limit-ctr
+    image: nginx
+    resources:
+      limits:
+        cpu: "1"
+EOF
+
+kubectl apply -f default-cpu-demo-limit.yaml
+```
+
+Verify details of the Pod we created. The Pod inherits the CPU Request from namespace as its default and specifies own CPU Limits.
+```
+kubectl get pod default-cpu-demo-limit --output=yaml --namespace=default-cpu-example
+```
+```
+spec:
+  containers:
+  - image: nginx
+    imagePullPolicy: Always
+    name: default-cpu-demo-limit-ctr
+    resources:
+      limits:
+        cpu: "1"
+      requests:
+        cpu: "1"
+```
+
+#### Scenario 3: Pod with CPU Request onlyl, without CPU Limits
+
+Create Pod with specified CPU Request only. 
+```
+cat > default-cpu-demo-request.yaml <<EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: default-cpu-demo-request
+  namespace: default-cpu-example
+spec:
+  containers:
+  - name: default-cpu-demo-request-ctr
+    image: nginx
+    resources:
+      requests:
+        cpu: "0.75"
+EOF
+
+kubectl apply -f default-cpu-demo-request.yaml
+```
+
+Verify details of the Pod we created. The Pod inherits the CPU Limits from namespace as its default and specifies own CPU Requests.
+```
+kubectl get pod default-cpu-demo-request --output=yaml --namespace=default-cpu-example
+```
+```
+spec:
+  containers:
+  - image: nginx
+    imagePullPolicy: Always
+    name: default-cpu-demo-request-ctr
+    resources:
+      limits:
+        cpu: "1"
+      requests:
+        cpu: 750m
+```
+
+
+## Troubleshooting
+
+### Event
+
+Usage:
+```
+kubectl describe <resource_type> <resource_name> --namespace=<namespace_name>
+```
+
+Get event information of a Pod
+
+Create a Tomcat Pod.
+```
+kubectl run tomcat --image=tomcat
+```
+
+Check event of above deplyment.
+```
+kubectl describe pod/tomcat
+```
+Get below event information.
+```
+Events:
+  Type    Reason     Age   From               Message
+  ----    ------     ----  ----               -------
+  Normal  Scheduled  55s   default-scheduler  Successfully assigned jh-namespace/tomcat to cka002
+  Normal  Pulling    54s   kubelet            Pulling image "tomcat"
+  Normal  Pulled     21s   kubelet            Successfully pulled image "tomcat" in 33.134162692s
+  Normal  Created    19s   kubelet            Created container tomcat
+  Normal  Started    19s   kubelet            Started container tomcat
+```
+
+Get event information for a Namespace.
+```
+kubectl get events -n <your_namespace_name>
+```
+Get current default namespace event information.
+```
+LAST SEEN   TYPE      REASON           OBJECT                          MESSAGE
+70s         Warning   FailedGetScale   horizontalpodautoscaler/nginx   deployments/scale.apps "podinfo" not found
+2m16s       Normal    Scheduled        pod/tomcat                      Successfully assigned jh-namespace/tomcat to cka002
+2m15s       Normal    Pulling          pod/tomcat                      Pulling image "tomcat"
+102s        Normal    Pulled           pod/tomcat                      Successfully pulled image "tomcat" in 33.134162692s
+100s        Normal    Created          pod/tomcat                      Created container tomcat
+100s        Normal    Started          pod/tomcat                      Started container tomcat
+```
+
+Get event information for all Namespace.
+```
+kubectl get events -A
+```
+
+
+
+
+### Logs
+
+Usage:
+```
+kubectl logs <pod_name> -n <namespace_name>
+```
+
+Options:
+
+* `--tail <n>`: display only the most recent `<n>` lines of output
+* `-f`: streaming the output
+
+Get the most recent 100 lines of output.
+```
+kubectl logs -f tomcat --tail 100
+```
+
+If it's multipPod, use `-c` to specify Container.
+```
+kubectl logs -f tomcat --tail 100 -c tomcat
+```
+
+
+
+
+### Monitoring Indicators
+
+#### Nodes
+
+Get node monitoring information
+```
+kubectl top node
+```
+Output:
+```
+NAME     CPU(cores)   CPU%   MEMORY(bytes)   MEMORY%
+cka001   147m         7%     1940Mi          50%
+cka002   62m          3%     2151Mi          56%
+cka003   63m          3%     1825Mi          47%
+```
+
+Get Pod monitoring information
+```
+kubectl top pod
+```
+Output:
+```
+root@cka001:~# kubectl top pod
+NAME                                      CPU(cores)   MEMORY(bytes)   
+busybox-with-secret                       0m           0Mi
+mysql                                     2m           366Mi
+mysql-774db46945-sztrp                    2m           349Mi
+mysql-nodeselector-6b7d9c875d-227t6       2m           365Mi
+mysql-tolerations-5c5986944b-cg9bs        2m           366Mi
+mysql-with-sc-pvc-7c97d875f8-dwfkc        2m           349Mi
+nfs-client-provisioner-699db7fd58-bccqs   2m           7Mi
+nginx                                     0m           3Mi
+nginx-app-1-695b7b647d-l76bh              0m           3Mi
+nginx-app-2-7f6bf6f4d4-lvbz8              0m           3Mi
+nginx-nodename                            0m           3Mi
+nginx-with-cm                             0m           3Mi
+pod-configmap-env                         0m           3Mi
+pod-configmap-env-2                       0m           3Mi
+tomcat                                    1m           58Mi
+```
+
+Sort output by CPU or Memory using option `--sort-by`.
+```
+kubectl top pod --sort-by=cpu
+```
+Output:
+```
+NAME                                      CPU(cores)   MEMORY(bytes)   
+nfs-client-provisioner-699db7fd58-bccqs   2m           7Mi
+mysql                                     2m           366Mi
+mysql-774db46945-sztrp                    2m           349Mi
+mysql-nodeselector-6b7d9c875d-227t6       2m           365Mi
+mysql-tolerations-5c5986944b-cg9bs        2m           366Mi
+mysql-with-sc-pvc-7c97d875f8-dwfkc        2m           349Mi
+tomcat                                    1m           58Mi
+nginx                                     0m           3Mi
+nginx-app-1-695b7b647d-l76bh              0m           3Mi
+nginx-app-2-7f6bf6f4d4-lvbz8              0m           3Mi
+nginx-nodename                            0m           3Mi
+nginx-with-cm                             0m           3Mi
+pod-configmap-env                         0m           3Mi
+pod-configmap-env-2                       0m           3Mi
+busybox-with-secret                       0m           0Mi
+```
+
+
+
+
+
+
+
+### Node Eviction
+
+Disable scheduling for a Node.
+```
+kubectl cordon <node_name>
+```
+Example:
+```
+kubectl cordon cka003
+```
+Node status:
+```
+NAME     STATUS                     ROLES                  AGE   VERSION
+cka001   Ready                      control-plane,master   18d   v1.23.8
+cka002   Ready                      <none>                 18d   v1.23.8
+cka003   Ready,SchedulingDisabled   <none>                 18d   v1.23.8
+```
+
+Enable scheduling for a Node.
+```
+kubectl uncordon <node_name>
+```
+Example:
+```
+kubectl uncordon cka003
+```
+Node status:
+```
+NAME     STATUS   ROLES                  AGE   VERSION
+cka001   Ready    control-plane,master   18d   v1.23.8
+cka002   Ready    <none>                 18d   v1.23.8
+cka003   Ready    <none>                 18d   v1.23.8
+```
+
+Evict Pods on a Node.
+```
+kubectl drain <node_name>
+kubectl drain <node_name> --ignore-daemonsets
+kubectl drain <node_name> --ignore-daemonsets --delete-emptydir-data
+```
+
+
+
+## RBAC
+
+Role-based access control (RBAC) is a method of regulating access to computer or network resources based on the roles of individual users within the organization.
+
+### Install cfssl
+
+Install `cfssl` tool
+```
+apt install golang-cfssl
+```
+
+
+
+### Create user
+
+#### Create file `ca-config.json`
+
+Change to directory `/etc/kubernetes/pki`.
+```
+cd /etc/kubernetes/pki
+```
+
+Check if file `ca-config.json` is in place in current directory.
+```
+ll ca-config.json
+```
+
+If not, create it.
+
+* We can add multiple profiles to specify different expiry date, scenario, parameters, etc.. 
+- Profile will be used to sign certificate.
+
+```
+cat > ca-config.json <<EOF
+{
+  "signing": {
+    "default": {
+      "expiry": "87600h"
+    },
+    "profiles": {
+      "kubernetes": {
+        "usages": [
+            "signing",
+            "key encipherment",
+            "server auth",
+            "client auth"
+        ],
+        "expiry": "87600h"
+      }
+    }
+  }
+}
+EOF
+```
+
+
+
+#### Create csr file for signature
+
+Stay in the directory `/etc/kubernetes/pki`.
+
+Create csr file.
+```
+cat > test-cka-csr.json <<EOF
+{
+  "CN": "test-cka",
+  "hosts": [],
+  "key": {
+    "algo": "rsa",
+    "size": 2048
+  },
+  "names": [
+    {
+      "C": "CN",
+      "ST": "BeiJing",
+      "L": "BeiJing",
+      "O": "k8s",
+      "OU": "System"
+    }
+  ]
+}
+EOF
+```
+
+Generate certifcate and key.
+```
+cfssl gencert -ca=ca.crt -ca-key=ca.key -config=ca-config.json -profile=kubernetes test-cka-csr.json | cfssljson -bare test-cka
+```
+
+Get below files.
+```
+ll -tr | grep test-cka
+```
+```
+-rw-r--r-- 1 root root  997 Jul 13 20:11 test-cka.csr
+-rw-r--r-- 1 root root  221 Jul 13 20:09 test-cka-csr.json
+-rw------- 1 root root 1675 Jul 13 20:11 test-cka-key.pem
+-rw-r--r-- 1 root root 1281 Jul 13 20:11 test-cka.pem
+```
+
+
+
+
+
+
+
+#### Create file kubeconfig
+
+Export env `KUBE_APISERVER`. Put master node IP `172.16.18.161` here.
+```
+export KUBE_APISERVER="https://172.16.18.161:6443"
+```
+```
+NAME     STATUS   ROLES                  AGE   VERSION   INTERNAL-IP     EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION      CONTAINER-RUNTIME
+cka001   Ready    control-plane,master   18d   v1.23.8   172.16.18.161   <none>        Ubuntu 20.04.4 LTS   5.4.0-113-generic   containerd://1.5.9
+cka002   Ready    <none>                 18d   v1.23.8   172.16.18.160   <none>        Ubuntu 20.04.4 LTS   5.4.0-113-generic   containerd://1.5.9
+cka003   Ready    <none>                 18d   v1.23.8   172.16.18.159   <none>        Ubuntu 20.04.4 LTS   5.4.0-113-generic   containerd://1.5.9
+```
+
+Verify the setting.
+```
+echo $KUBE_APISERVER
+```
+Output:
+```
+https://172.16.18.161:6443
+```
+
+
+##### Set up cluster
+
+Stay in the directory `/etc/kubernetes/pki`.
+
+Generate kubeconfig file.
+```
+kubectl config set-cluster kubernetes --certificate-authority=/etc/kubernetes/pki/ca.crt --embed-certs=true --server=${KUBE_APISERVER} --kubeconfig=test-cka.kubeconfig
+```
+Output:
+```
+Cluster "kubernetes" set.
+```
+
+Now we get the new config file `test-cka.kubeconfig`
+```
+ll -tr | grep test-cka
+```
+Output:
+```
+-rw-r--r-- 1 root root  221 Jul 13 20:09 test-cka-csr.json
+-rw-r--r-- 1 root root 1281 Jul 13 20:11 test-cka.pem
+-rw------- 1 root root 1675 Jul 13 20:11 test-cka-key.pem
+-rw-r--r-- 1 root root  997 Jul 13 20:11 test-cka.csr
+-rw------- 1 root root 1671 Jul 13 20:21 test-cka.kubeconfig
+```
+
+Get content of file `test-cka.kubeconfig`.
+```
+cat test-cka.kubeconfig
+```
+```
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority-data: LS0tLS1CRUdJT......==
+    server: https://172.16.18.161:6443
+  name: kubernetes
+contexts: null
+current-context: ""
+kind: Config
+preferences: {}
+users: null
+```
+
+
+
+
+##### Set up user
+
+In file `test-cka.kubeconfig`, user info is null. 
+
+Set up user.
+```
+kubectl config set-credentials test-cka --client-certificate=/etc/kubernetes/pki/test-cka.pem --client-key=/etc/kubernetes/pki/test-cka-key.pem --embed-certs=true --kubeconfig=test-cka.kubeconfig
+```
+Output
+```
+User "test-cka" set.
+```
+
+Now file `test-cka.kubeconfig` was updated and user information was added.
+```
+cat test-cka.kubeconfig
+```
+```
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority-data: LS0t......Cg==
+    server: https://172.16.18.161:6443
+  name: kubernetes
+contexts: null
+current-context: ""
+kind: Config
+preferences: {}
+users:
+- name: test-cka
+  user:
+    client-certificate-data: LS0t...S0K
+    client-key-data: LS0t......Cg==
+```
+
+Now we have a complete kubeconfig file.
+When we use it to get node information, receive error below because we did not set up current-context in kubeconfig file.
+```
+kubectl --kubeconfig test-cka.kubeconfig get nodes
+```
+```
+The connection to the server localhost:8080 was refused - did you specify the right host or port?
+```
+
+Current contents is empty.
+```
+kubectl --kubeconfig test-cka.kubeconfig config get-contexts
+```
+```
+CURRENT   NAME   CLUSTER   AUTHINFO   NAMESPACE
+```
+
+
+
+##### Set up Context
+
+Set up context. 
+```
+kubectl config set-context kubernetes --cluster=kubernetes --user=test-cka  --kubeconfig=test-cka.kubeconfig
+```
+Output:
+```
+Context "kubernetes" created.
+```
+
+Now we have context now but the `CURRENT` flag is empty.
+```
+kubectl --kubeconfig test-cka.kubeconfig config get-contexts
+```
+Output:
+```
+CURRENT   NAME         CLUSTER      AUTHINFO   NAMESPACE
+          kubernetes   kubernetes   test-cka
+```
+
+Set up default context. The context will link clusters and users for multiple clusters environment and we can switch to different cluster.
+```
+kubectl config use-context kubernetes --kubeconfig=test-cka.kubeconfig 
+```
+```
+Switched to context "kubernetes".
+```
+
+##### Verify
+
+Now `CURRENT` is marked with `*`, that is, current-context is set up.
+```
+kubectl --kubeconfig=/etc/kubernetes/pki/test-cka.kubeconfig config get-contexts
+```
+```
+CURRENT   NAME         CLUSTER      AUTHINFO   NAMESPACE
+*         kubernetes   kubernetes   test-cka    
+```
+
+When we get Pods infor we get error because user `test-cka` does not have authorization in the cluster.
+```
+kubectl --kubeconfig=test-cka.kubeconfig get pod 
+```
+```
+Error from server (Forbidden): pods is forbidden: User "test-cka" cannot list resource "pods" in API group "" in the namespace "default"
+```
+```
+kubectl --kubeconfig=test-cka.kubeconfig get node
+```
+```
+Error from server (Forbidden): nodes is forbidden: User "test-cka" cannot list resource "nodes" in API group "" at the cluster scope
+```
+
+
+
+### Role & RoleBinding
+
+Back to home directory.
+```
+cd ~
+```
+
+#### Create Role and RoleBinding
+
+Create a role `pod-reader` with only `get`,`watch`,`list` authorization for Pod resource in `default` namespace.
+```
+cat > role.yaml <<EOF
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: default
+  name: pod-reader
+rules:
+- apiGroups: [""] # Empty "" means core API group
+  resources: ["pods"]
+  verbs: ["get", "watch", "list"]
+EOF
+
+
+kubectl apply -f role.yaml
+```
+
+Bind the role `pod-reader` to user `test-cka`.
+```
+cat > rolebinding.yaml << EOF
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: read-pods
+  namespace: default
+subjects:
+- kind: User
+  name: test-cka
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: pod-reader
+  apiGroup: rbac.authorization.k8s.io
+EOF
+
+
+kubectl apply -f rolebinding.yaml
+```
+
+#### Verify Authorization
+
+##### Check Pod Status
+
+Get Pods status via user `test-cka`.
+```
+kubectl --kubeconfig /etc/kubernetes/pki/test-cka.kubeconfig get pod
+```
+```
+No resources found in default namespace.
+```
+
+
+##### Check Node Status
+
+We receive error to get node status because the role we defined is only for Pod resource.
+```
+kubectl --kubeconfig /etc/kubernetes/pki/test-cka.kubeconfig get node
+```
 ```shell
-ab -n 1000 -c 100 http://www.baidu.com/
+Error from server (Forbidden): nodes is forbidden: User "test-cka" cannot list resource "nodes" in API group "" at the cluster scope
 ```
 
-#### 并发压测
+
+
+##### Delete Pod
+
+We receive error when try to delete a Pod because we only have `get`,`watch`,`list` for Pod, no `delete` authorization.
 
 ```
-ab -c 1000 -t 60 http://127.0.0.1:31198/
+kubectl --kubeconfig /etc/kubernetes/pki/test-cka.kubeconfig delete pod nslookup
+```
+```
+Error from server (Forbidden): pods "nslookup" is forbidden: User "test-cka" cannot delete resource "pods" in API group "" in the namespace "default"
 ```
 
-可以看见随着 CPU 压力的增加，Deployment 已经自动 scale 了
-```shell
-kubectl get hpa -w
-NAME    REFERENCE            TARGETS    MINPODS   MAXPODS   REPLICAS   AGE
-nginx   Deployment/podinfo   940%/50%   2         10        8          13m
-```
-需要注意的是，scale up 是一个阶段性的过程，并不是一次性就直接 scale 到 max 了，而是一个阶段性的过程，扩容算法就是上文介绍的内容。隔段时间没操作压力下来后，会自动 scale down 缩减 Pod。
 
-持续观察一段时间（5~10分钟），由于并发压测的结束，CPU 使用率下降，开始逐渐自动 scale down 收缩 Pod
 
-```shell
-kubectl get hpa -w
+##### Check Pods in other Namespace
+
+We receive error to get Pods status in other namespace because the role we defined is only for `default` namespace.
 ```
+kubectl --kubeconfig /etc/kubernetes/pki/test-cka.kubeconfig get pod -n kube-system
+```
+```
+Error from server (Forbidden): pods is forbidden: User "test-cka" cannot list resource "pods" in API group "" in the namespace "kube-system"
+```
+
+
+
+### ClusterRole & ClusterRoleBinding
+
+#### Create ClusterRole and ClusterRoleBinding
+
+Create a ClusterRole with authorization `get`,`watch`,`list` for `nodes` resource.
+```
+cat > clusterrole.yaml <<EOF
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: nodes-reader
+rules:
+- apiGroups: [""]
+  resources: ["nodes"]
+  verbs: ["get", "watch", "list"]
+EOF
+
+
+kubectl apply -f clusterrole.yaml
+```
+
+Bind ClusterRole `nodes-reader` to user `test-cka`.
+
+```
+cat > clusterrolebinding.yaml << EOF
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: read-nodes-global
+subjects:
+- kind: User
+  name: test-cka
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: nodes-reader
+  apiGroup: rbac.authorization.k8s.io
+EOF
+
+
+kubectl apply -f clusterrolebinding.yaml
+```
+
+#### Verify Authorization
+
+Try to get node information, no error received.
+```
+kubectl --kubeconfig /etc/kubernetes/pki/test-cka.kubeconfig get node
+```
+```
+NAME     STATUS   ROLES                  AGE   VERSION
+cka001   Ready    control-plane,master   18d   v1.23.8
+cka002   Ready    <none>                 18d   v1.23.8
+cka003   Ready    <none>                 18d   v1.23.8
+```
+
+
+
+## Network Policy
+
+Delete Flannel
+```
+kubectl delete -f https://raw.githubusercontent.com/coreos/flannel/v0.18.1/Documentation/kube-flannel.yml
+```
+or
+```
+kubectl delete -f kube-flannel.yml
+```
+Output:
+```
+Warning: policy/v1beta1 PodSecurityPolicy is deprecated in v1.21+, unavailable in v1.25+
+podsecuritypolicy.policy "psp.flannel.unprivileged" deleted
+clusterrole.rbac.authorization.k8s.io "flannel" deleted
+clusterrolebinding.rbac.authorization.k8s.io "flannel" deleted
+serviceaccount "flannel" deleted
+configmap "kube-flannel-cfg" deleted
+daemonset.apps "kube-flannel-ds" deleted
+```
+
+
+Clean up iptables for all nodes.
+```
+rm -rf /var/run/flannel /opt/cni /etc/cni /var/lib/cni
+iptables -F && iptables -t nat -F && iptables -t mangle -F && iptables -X
+```
+
+Log out and log on to host (e.g., cka001) again. Install Calico.
+```
+curl https://docs.projectcalico.org/manifests/calico.yaml -O
+
+kubectl apply -f calico.yaml
+```
+Output:
+```
+configmap/calico-config created
+customresourcedefinition.apiextensions.k8s.io/bgpconfigurations.crd.projectcalico.org created
+customresourcedefinition.apiextensions.k8s.io/bgppeers.crd.projectcalico.org created
+customresourcedefinition.apiextensions.k8s.io/blockaffinities.crd.projectcalico.org created
+customresourcedefinition.apiextensions.k8s.io/caliconodestatuses.crd.projectcalico.org created
+customresourcedefinition.apiextensions.k8s.io/clusterinformations.crd.projectcalico.org created
+customresourcedefinition.apiextensions.k8s.io/felixconfigurations.crd.projectcalico.org created
+customresourcedefinition.apiextensions.k8s.io/globalnetworkpolicies.crd.projectcalico.org created
+customresourcedefinition.apiextensions.k8s.io/globalnetworksets.crd.projectcalico.org created
+customresourcedefinition.apiextensions.k8s.io/hostendpoints.crd.projectcalico.org created
+customresourcedefinition.apiextensions.k8s.io/ipamblocks.crd.projectcalico.org created
+customresourcedefinition.apiextensions.k8s.io/ipamconfigs.crd.projectcalico.org created
+customresourcedefinition.apiextensions.k8s.io/ipamhandles.crd.projectcalico.org created
+customresourcedefinition.apiextensions.k8s.io/ippools.crd.projectcalico.org created
+customresourcedefinition.apiextensions.k8s.io/ipreservations.crd.projectcalico.org created
+customresourcedefinition.apiextensions.k8s.io/kubecontrollersconfigurations.crd.projectcalico.org created
+customresourcedefinition.apiextensions.k8s.io/networkpolicies.crd.projectcalico.org created
+customresourcedefinition.apiextensions.k8s.io/networksets.crd.projectcalico.org created
+clusterrole.rbac.authorization.k8s.io/calico-kube-controllers created
+clusterrolebinding.rbac.authorization.k8s.io/calico-kube-controllers created
+clusterrole.rbac.authorization.k8s.io/calico-node created
+clusterrolebinding.rbac.authorization.k8s.io/calico-node created
+daemonset.apps/calico-node created
+serviceaccount/calico-node created
+deployment.apps/calico-kube-controllers created
+serviceaccount/calico-kube-controllers created
+poddisruptionbudget.policy/calico-kube-controllers created
+```
+
+Verify status of Calico. 
+```
+kubectl get pod -n kube-system | grep calico
+```
+
+Output. Make sure all Pods are running
+```
+NAME                                       READY   STATUS        RESTARTS   AGE
+calico-kube-controllers-7bc6547ffb-tjfcg   1/1     Running       0          30m
+calico-node-7x8jm                          1/1     Running       0          30m
+calico-node-cwxj5                          1/1     Running       0          30m
+calico-node-rq978                          1/1     Running       0          30m
+```
+
+If facing any error, check log in the Container.
+```
+# Get Container ID
+crictl ps
+
+# Get log info
+crictl logs <your_container_id>
+```
+
+
+As we change CNI from Flannel to Calico, we need delete all Pods. All of Pods will be created automatically again. 
+```
+kubectl delete pod -A --all
+```
+
+Make sure all Pods are up and running successfully.
+```
+kubectl get pod -A
+```
+
+
+
+
+
+
+
+### Inbound Rules
+
+#### Create workload for test.
+
+Create three Deployments `pod-netpol-1`,`pod-netpol-2`,`pod-netpol-3`.
+
+```
+cat > pod-netpol.yaml << EOF
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: pod-netpol-1
+  name: pod-netpol-1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pod-netpol-1
+  template:
+    metadata:
+      labels:
+        app: pod-netpol-1
+    spec:
+      containers:
+      - image: busybox
+        name: busybox
+        command: ["sh", "-c", "sleep 1h"]
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: pod-netpol-2
+  name: pod-netpol-2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pod-netpol-2
+  template:
+    metadata:
+      labels:
+        app: pod-netpol-2
+    spec:
+      containers:
+      - image: busybox
+        name: busybox
+        command: ["sh", "-c", "sleep 1h"]
+        
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: pod-netpol-3
+  name: pod-netpol-3
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pod-netpol-3
+  template:
+    metadata:
+      labels:
+        app: pod-netpol-3
+    spec:
+      containers:
+      - image: busybox
+        name: busybox
+        command: ["sh", "-c", "sleep 1h"]       
+EOF
+
+kubectl apply -f pod-netpol.yaml
+```
+
+Check Pods IP.
+```
+kubectl get pod -owide
+```
+Output:
+```
+NAME                                      READY   STATUS    RESTARTS   AGE   IP             NODE     NOMINATED NODE   READINESS GATES
+pod-netpol-1-6494f6bf8b-6nwwf             1/1     Running   0          19s   10.244.102.9   cka003   <none>           <none>
+pod-netpol-2-77478d77ff-96hgd             1/1     Running   0          19s   10.244.112.9   cka002   <none>           <none>
+pod-netpol-3-68977dcb48-j9fkb             1/1     Running   0          19s   10.244.102.8   cka003   <none>           <none>
+```
+
+Attach to Pod `pod-netpol-1`
+```
+kubectl exec -it pod-netpol-1-6494f6bf8b-6nwwf -- sh
+```
+
+Execute command `ping` to check if pod-netpol-2 and pod-netpol-3 are pingable. 
+```
+/ # ping 10.244.112.9
+3 packets transmitted, 3 packets received, 0% packet loss
+
+/ # ping 10.244.102.8
+3 packets transmitted, 3 packets received, 0% packet loss
+```
+
+
+
+#### Deny For All Ingress
+
+Create deny policy for all ingress.
+```
+cat > networkpolicy-default-deny-ingress.yaml << EOF
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-ingress
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+EOF
+
+
+kubectl apply -f networkpolicy-default-deny-ingress.yaml
+```
+
+Attach to Pod `pod-netpol-1` again
+```
+kubectl exec -it pod-netpol-1-6494f6bf8b-6nwwf -- sh
+```
+
+Execute command `ping` to check if pod-netpol-2 and pod-netpol-3 are pingable. Both ping are denied as expected.
+```
+/ # ping 10.244.112.9
+3 packets transmitted, 0 packets received, 100% packet loss
+
+/ # ping 10.244.102.8
+3 packets transmitted, 0 packets received, 100% packet loss
+```
+
+
+
+#### Allow For Specific Ingress
+
+Create NetworkPlicy to allow ingress from pod-netpol-1 to pod-netpol-2.
+```
+cat > allow-pod-netpol-1-to-pod-netpol-2.yaml <<EOF
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-pod-netpol-1-to-pod-netpol-2
+spec:
+  podSelector:
+    matchLabels:
+      app: pod-netpol-2
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: pod-netpol-1
+EOF
+
+kubectl apply -f allow-pod-netpol-1-to-pod-netpol-2.yaml
+```
+
+#### Verify NetworkPolicy
+
+Attach to Pod `pod-netpol-1` again.
+```
+kubectl exec -it pod-netpol-1-6494f6bf8b-6nwwf -- sh
+```
+
+Execute command `ping` to check if pod-netpol-2 and pod-netpol-3 are pingable. 
+As expected, pod-netpol-2 is reachable and pod-netpol-3 is still unreachable. 
+```
+/ # ping 10.244.112.9
+3 packets transmitted, 3 packets received, 0% packet loss
+
+/ # ping 10.244.102.8
+3 packets transmitted, 0 packets received, 100% packet loss
+```
+
+
+
+### Inbound Across Namespace
+
+#### Create workload and namespace for test
+
+Create Namespace `ns-netpol`.
+Create Deployment `pod-netpol`.
+
+```
+kubectl create ns ns-netpol
+
+cat > pod-netpol.yaml << EOF
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: pod-netpol
+  name: pod-netpol
+  namespace: ns-netpol
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pod-netpol
+  template:
+    metadata:
+      labels:
+        app: pod-netpol
+    spec:
+      containers:
+      - image: busybox
+        name: busybox
+        command: ["sh", "-c", "sleep 1h"]
+EOF
+
+
+kubectl apply -f pod-netpol.yaml
+```
+
+Check Pod status on new namespace.
+```
+kubectl get pod -n ns-netpol
+```
+Output:
+```
+NAME                          READY   STATUS    RESTARTS   AGE
+pod-netpol-5b67b6b496-zxppp   1/1     Running   0          10s
+```
+
+Attach into `pod-netpol` Pod.
+```
+kubectl exec -it pod-netpol-5b67b6b496-zxppp -n ns-netpol -- sh
+```
+
+Try to ping pod-netpol-2 (`10.244.112.9`) in Namespace `jh-namespace`. It's unreachable. 
+```
+ping 10.244.112.9
+3 packets transmitted, 0 packets received, 100% packet loss
+```
+
+
+
+#### Create Allow Ingress
+
+Create NetworkPolicy to allow access to pod-netpol-2 in namespace `jh-namespace` from all Pods in namespace `pod-netpol`.
+```
+cat > allow-ns-netpol-to-pod-netpol-2.yaml <<EOF
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-ns-netpol-to-pod-netpol-2
+spec:
+  podSelector:
+    matchLabels:
+      app: pod-netpol-2
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          allow: to-pod-netpol-2
+EOF
+
+kubectl apply -f allow-ns-netpol-to-pod-netpol-2.yaml
+```
+
+
+
+#### Verify Policy
+
+Attach into `pod-netpol` Pod.
+```
+kubectl exec -it pod-netpol-5b67b6b496-zxppp -n ns-netpol -- sh
+```
+
+Try to ping pod-netpol-2 (`10.244.112.9`) in Namespace `jh-namespace`. It's still unreachable. 
+```
+ping 10.244.112.9
+3 packets transmitted, 0 packets received, 100% packet loss
+```
+
+What we allowed ingress is from namespace with label `allow: to-pod-netpol-2`, but namespace `ns-netpol` does not have it and we need label it.
+```
+kubectl label ns ns-netpol allow=to-pod-netpol-2
+```
+
+Attach into `pod-netpol` Pod.
+```
+kubectl exec -it pod-netpol-5b67b6b496-zxppp -n ns-netpol -- sh
+```
+
+Try to ping pod-netpol-2 (`10.244.112.9`) in Namespace `jh-namespace`. It's now reachable. 
+```
+ping 10.244.112.9
+3 packets transmitted, 3 packets received, 0% packet loss
+```
+
+Be noted that we can use namespace default label as well.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

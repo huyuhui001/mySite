@@ -1520,7 +1520,7 @@ Here is an example of Service.
 * IP`10.96.17.77` is ClusterIP(VIP) of the service
 * Port `<unset>  80/TCP` is the port on Pod that service listening within the cluster.
 * TargetPort `8080/TCP` is the port on the container that the service should direct traffic to.
-* NodePort `<unset>  31893/TCP` is the port that can be accessed outside. 
+* NodePort `<unset>  31893/TCP` is the port that can be accessed outside. Default range is `30000~32767`. The port is exposed across **all** nodes in cluster.
 * Endpoints show the list of Pods matched the service labels. 
 
 ```
@@ -1658,19 +1658,57 @@ A list of matched Pod by service label is maintained as Endpoint object, add new
 
 ## Config and Storage Resources
 
+### Volumes
+
+#### emptyDir
+
+An `emptyDir` volume is first created when a Pod is assigned to a node, and exists as long as that Pod is running on that node. 
+
+The `emptyDir` volume is initially empty. 
+
+All containers in the Pod can read and write the same files in the `emptyDir` volume, though that volume can be mounted at the same or different paths in each container. 
+
+When a Pod is removed from a node for any reason, the data in the `emptyDir` is deleted permanently.
+
+A container crashing does not remove a Pod from a node. The data in an `emptyDir` volume is safe across container crashes.
 
 
-spec.accessModes defines mount option of a PV:
+Usage:
 
-* ReadWriteOnce(RWO). A PV can be mounted only to a PVC with read/write mode, like block device.
-* ReadWriteMany(RWM). A PV can be mounted to more than one PVC with read/write mode, like NFS.
-* ReadOnlyMany(ROM). A PV can be mounted to more than one PVC with read only mode.
-
-A PV can only be set with one option.
-Pod mount PVC, not PV.
+* scratch space, such as for a disk-based merge sort
+* checkpointing a long computation for recovery from crashes
+* holding files that a content-manager container fetches while a webserver container serves the data
 
 
 
+
+
+
+#### hostPath
+
+A `hostPath` volume mounts a file or directory from the host node's filesystem into your Pod. 
+This is not something that most Pods will need, but it offers a powerful escape hatch for some applications.
+
+`hostPath` volumes present many security risks, and it is a best practice to avoid the use of HostPaths when possible. 
+When a HostPath volume MUST be used, it should be scoped to only the required file or directory, and mounted as ReadOnly.
+
+If restricting HostPath access to specific directories through AdmissionPolicy, volumeMounts MUST be required to use readOnly mounts for the policy to be effective.
+
+
+Usage: 
+
+* Running together with DaemonSet, e.g., EFK Fluentd mount log directory of local host in order to collect host log information.
+* Running on a specific node by using `hostPath` volumne, which can get high performance disk I/O.
+* Running a container that needs access to Docker internals; use a hostPath of `/var/lib/docker`.
+* Running cAdvisor in a container; use a hostPath of `/sys`.
+* Allowing a Pod to specify whether a given hostPath should exist prior to the Pod running, whether it should be created, and what it should exist as.
+
+
+
+
+
+
+### Storage Class
 Procedure of StorageClass deployment and implementation:
 
 * Create Kubernetes cluster and backend storage.
@@ -1681,7 +1719,32 @@ Procedure of StorageClass deployment and implementation:
 
 
 
+### PV
 
+PV Recycle Policy.
+
+* Retain.
+* Delete.
+* Recycle. 
+
+
+PV in-tree type:
+
+* hostPath
+* local
+* NFS
+* CSI
+
+
+### Access Modes
+`spec.accessModes` defines mount option of a PV:
+
+* ReadWriteOnce(RWO). A PV can be mounted only to a PVC with read/write mode, like block device.
+* ReadWriteMany(RWM). A PV can be mounted to more than one PVC with read/write mode, like NFS.
+* ReadOnlyMany(ROM). A PV can be mounted to more than one PVC with read only mode.
+* ReadWriteOncePod (RWOP). Only support CSI type PV, can be mounted by single Pod.
+
+A PV can only be set with one option. Pod mount PVC, not PV.
 
 
 
