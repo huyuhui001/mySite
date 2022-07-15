@@ -370,15 +370,16 @@ import sys
 import csv
 import json
 </code></pre>
-<p>将表格型数据读取为DataFrame对象是pandas的重要特性。\
-下面是部分实现文件读取功能的函数，read_csv和read_table可能是后期我们使用最多的函数。\
-\
-这些函数的可选参数主要有以下几种类型：
-* 索引：可以将一列或多个列作为返回的DataFrame，从文件或用户处获得列名，或者没有列名。
-* 类型推断和数据转换：包括用户自定义的值转换和自定义的缺失值符号列表。
-* 日期时间解析：包括组合功能，也包括将分散在多个列上的日期和时间信息组合成结果中的单个列。
-* 迭代：支持对大型文件的分块迭代。
-* 未清洗数据问题：跳过行、页脚、注释以及其他次要数据，比如使用逗号分隔千位的数字。</p>
+<p>将表格型数据读取为DataFrame对象是pandas的重要特性。
+下面是部分实现文件读取功能的函数，read_csv和read_table可能是后期我们使用最多的函数。</p>
+<p>这些函数的可选参数主要有以下几种类型：</p>
+<ul>
+<li>索引：可以将一列或多个列作为返回的DataFrame，从文件或用户处获得列名，或者没有列名。</li>
+<li>类型推断和数据转换：包括用户自定义的值转换和自定义的缺失值符号列表。</li>
+<li>日期时间解析：包括组合功能，也包括将分散在多个列上的日期和时间信息组合成结果中的单个列。</li>
+<li>迭代：支持对大型文件的分块迭代。</li>
+<li>未清洗数据问题：跳过行、页脚、注释以及其他次要数据，比如使用逗号分隔千位的数字。</li>
+</ul>
 <pre><code>file01 = '../examples/ex1.csv'
 # 使用read_csv将文件读入一个DataFrame
 df = pd.read_csv(file01)
@@ -423,8 +424,8 @@ print(parased)
 #      c         13      14
 #      d         15      16
 </code></pre>
-<p>下例中，由于列名的数量比数据的列数少一个，因此read_table推断第一列应当作为DataFrame的索引。\
-ex3.txt原始文件内容</p>
+<p>下例中，由于列名的数量比数据的列数少一个，因此read_table推断第一列应当作为DataFrame的索引。</p>
+<p>ex3.txt原始文件内容</p>
 <pre><code>A         B         C
 aaa   -0.264438         -1.026059   -0.619500
 bbb  0.927272    0.302904 -0.032399
@@ -462,9 +463,9 @@ print(result)
 # 1  5   6   7   8   world
 # 2  9  10  11  12     foo
 </code></pre>
-<p>缺失值处理 \
-默认情况下，pandas使用一些常见的标识，例如NA和NULL \
-下例中ex5.csv原始文件内容</p>
+<p>缺失值处理 </p>
+<p>默认情况下，pandas使用一些常见的标识，例如<code>NA</code>和<code>NULL</code></p>
+<p>下例中ex5.csv原始文件内容</p>
 <pre><code>something,a,b,c,d,message
 one,1,2,3,4,NA
 two,5,6,,8,world
@@ -495,8 +496,8 @@ print(result)
 }
 result = pd.read_csv('../examples/ex5.csv', na_values=sentinels)
 </code></pre>
-<p>把message列所有值为foo或NA的替换为Null \
-把something列所有值为two的替换为Null</p>
+<p>把message列所有值为foo或NA的替换为Null </p>
+<p>把something列所有值为two的替换为Null</p>
 <pre><code>print(result)
 #   something  a   b     c   d message
 # 0       one  1   2   3.0   4     NaN
@@ -520,7 +521,7 @@ result = pd.read_csv('../examples/ex6.csv', chunksize=1000)  # 分块读入文�
 print(result)  # 返回的是一个TextParser对象, 允许你根据chunksize遍历文件。
 # &lt;pandas.io.parsers.readers.TextFileReader object at 0x7f2b3cd01730&gt;
 </code></pre>
-<p>可以遍历ex6.csv，并对’key’列聚合获得计数值</p>
+<p>可以遍历<code>ex6.csv</code>，并对<code>key</code>列聚合获得计数值</p>
 <pre><code>tot = pd.Series([], dtype=float)  # 这里需要显式指定dtype，后续Python会将默认值从float64变成object，目前默认是float64
 for piece in result:
     tot = tot.add(piece['key'].value_counts(), fill_value=0)
@@ -546,7 +547,7 @@ print(data)
 # 1       two  5   6   NaN   8   world
 # 2     three  9  10  11.0  12     foo
 </code></pre>
-<p>使用DataFrame的to_csv方法，将数据导出为逗号分隔的文件</p>
+<p>使用DataFrame的<code>to_csv</code>方法，将数据导出为逗号分隔的文件</p>
 <pre><code>data.to_csv('../examples/out.csv')
 # 输出out.csv的内容
 # ,something,a,b,c,d,message
@@ -554,7 +555,7 @@ print(data)
 # 1,two,5,6,,8,world
 # 2,three,9,10,11.0,12,foo
 </code></pre>
-<p>使用DataFrame的to_csv方法，将数据导出为其他的分隔符的文件</p>
+<p>使用DataFrame的<code>to_csv</code>方法，将数据导出为其他的分隔符的文件</p>
 <pre><code>data.to_csv(sys.stdout, sep='|')
 # |something|a|b|c|d|message
 # 0|one|1|2|3.0|4|
@@ -579,7 +580,7 @@ data.to_csv(sys.stdout, sep=',', na_rep='NULL', index=False, header=False, colum
 # 5,6,NULL
 # 9,10,11.0
 </code></pre>
-<p>Series也有to_csv方法</p>
+<p>Series也有<code>to_csv</code>方法</p>
 <pre><code>dates = pd.date_range('1/1/2000', periods=7)
 ts = pd.Series(np.arange(7), index=dates)
 ts.to_csv('../examples/tseries.csv', header=False)
@@ -593,8 +594,8 @@ ts.to_csv('../examples/tseries.csv', header=False)
 # 2000-01-07,6
 </code></pre>
 <h4 id="_5">使用分隔格式</h4>
-<p>绝大多数的表型数据都可以使用函数pandas.read_table从硬盘中读取。 \
-然而，在某些情况下，接收一个带有一行或多行错误的文件并不少见，read_table也无法解决这种情况。</p>
+<p>绝大多数的表型数据都可以使用函数<code>pandas.read_table</code>从硬盘中读取。 </p>
+<p>然而，在某些情况下，接收一个带有一行或多行错误的文件并不少见，<code>read_table</code>也无法解决这种情况。</p>
 <p>ex7.csv 文件内容</p>
 <pre><code>&quot;a&quot;,&quot;b&quot;,&quot;c&quot;
 &quot;1&quot;,&quot;2&quot;,&quot;3&quot;
@@ -618,8 +619,8 @@ with open('../examples/ex7.csv') as f:
 print(data_dict)  # 输出结果
 # {'a': ('1', '1'), 'b': ('2', '2'), 'c': ('3', '3')}
 </code></pre>
-<p>如果需根据不同的分隔符、字符串引用约定或行终止符定义一种新的格式时，可以: \
-方法1：使用csv.Dialect定义一个简单的子类</p>
+<p>如果需根据不同的分隔符、字符串引用约定或行终止符定义一种新的格式时，可以: </p>
+<p>方法1：使用csv.Dialect定义一个简单的子类</p>
 <pre><code>class my_dialect(csv.Dialect):
     lineterminator = '\n'
     delimiter = ';'  # 这里只能是一个字符
@@ -636,8 +637,8 @@ f.close()
 # ['1,&quot;2&quot;,&quot;3&quot;']
 # ['1,&quot;2&quot;,&quot;3&quot;']
 </code></pre>
-<p>方法2：直接将CSV方言参数(dialect)传入csv.reader的关键字参数 \
-比较详细的介绍方言和分隔符：https://blog.csdn.net/tcy23456/article/details/85291994</p>
+<p>方法2：直接将CSV方言参数(dialect)传入csv.reader的关键字参数。
+比较详细的<a href="https://blog.csdn.net/tcy23456/article/details/85291994">介绍方言和分隔符</a></p>
 <pre><code>f = open('../examples/ex7.csv')
 reader = csv.reader(f, delimiter='|')
 for line in reader:  # 遍历reader，产生元组，元组的值为删除了引号的字符
@@ -647,10 +648,10 @@ f.close()
 # ['1,&quot;2&quot;,&quot;3&quot;']
 # ['1,&quot;2&quot;,&quot;3&quot;']
 </code></pre>
-<p>对于具有更复杂或固定的多字符分隔符的文件，将无法使用csv模块。 \
-在此类情况下，将使用字符串的split方法或正则表达式方法re.split进行行拆分和其他清理工作。 \
-需要手动写入被分隔的文件时，你可以使用csv.writer。 \
-这个函数接收一个已经打开的可写入文件对象以及和csv.reader相同的CSV方言、格式选项</p>
+<p>对于具有更复杂或固定的多字符分隔符的文件，将无法使用csv模块。 
+在此类情况下，将使用字符串的split方法或正则表达式方法re.split进行行拆分和其他清理工作。 
+需要手动写入被分隔的文件时，你可以使用csv.writer。 
+这个函数接收一个已经打开的可写入文件对象以及和csv.reader相同的CSV方言、格式选项.</p>
 <pre><code>with open('../examples/mydata.csv', 'w') as f:
     writer = csv.writer(f, dialect=my_dialect)
     writer.writerow(('1', '2', '3'))
@@ -695,18 +696,17 @@ print(result)
 print(asjson)
 # {&quot;name&quot;: &quot;Wes&quot;, &quot;places_lived&quot;: [&quot;United States&quot;, &quot;Spain&quot;, &quot;Germany&quot;], &quot;pet&quot;: null, &quot;siblings&quot;: [{&quot;name&quot;: &quot;Scott&quot;, &quot;age&quot;: 30, &quot;pets&quot;: [&quot;Zeus&quot;, &quot;Zuko&quot;]}, {&quot;name&quot;: &quot;Katie&quot;, &quot;age&quot;: 38, &quot;pets&quot;: [&quot;Sixes&quot;, &quot;Stache&quot;, &quot;Cisco&quot;]}]}
 </code></pre>
-<p>将JSON对象或对象列表转换为DataFrame或其他数据结构 \
-比较方便的方式是将字典构成的列表（之前是JSON对象）传入DataFrame构造函数，并选出数据字段的子集</p>
+<p>将JSON对象或对象列表转换为DataFrame或其他数据结构。</p>
+<p>比较方便的方式是将字典构成的列表（之前是JSON对象）传入DataFrame构造函数，并选出数据字段的子集。</p>
 <pre><code>siblings = pd.DataFrame(result['siblings'], columns=['name', 'age'])
 print(siblings)
 #     name  age
 # 0  Scott   30
 # 1  Katie   38
 </code></pre>
-<p>pandas.read_json可以自动将JSON数据集按照指定次序转换为Series或DataFrame \
-pandas.read_json的默认选项是假设JSON数组中的每个对象是表里的一行 \
-读取、操作JSON数据（包括嵌套记录）的拓展示例，请参看第7章的USDA食品数据库示例 \
-例如读取 data = pd.read_json('../examples/example_new.json') </p>
+<p>pandas.read_json可以自动将JSON数据集按照指定次序转换为Series或DataFrame。
+pandas.read_json的默认选项是假设JSON数组中的每个对象是表里的一行。</p>
+<p>例如读取 data = pd.read_json('../examples/example_new.json') </p>
 <pre><code>data = pd.read_json('../examples/example.json')
 print(data)
 #    a  b  c
@@ -719,7 +719,7 @@ print(data.to_json(orient='records'))
 # [{&quot;a&quot;:1,&quot;b&quot;:2,&quot;c&quot;:3},{&quot;a&quot;:4,&quot;b&quot;:5,&quot;c&quot;:6},{&quot;a&quot;:7,&quot;b&quot;:8,&quot;c&quot;:9}]
 </code></pre>
 <h4 id="xmlhtml">XML和HTML：网络抓取</h4>
-<p>pandas的内建函数read_html可以使用lxml和Beautiful Soup等库将HTML中的表自动解析为DataFrame对象</p>
+<p>pandas的内建函数read_html可以使用lxml和Beautiful Soup等库将HTML中的表自动解析为DataFrame对象。</p>
 <pre><code>tables = pd.read_html('../examples/fdic_failed_bank_list.html')
 print(len(tables))
 # 1
