@@ -14,13 +14,11 @@ Create User
 # sudo adduser vagrant
 # sudo usermod -aG adm,sudo,syslog,cdrom,dip,plugdev,lxd vagrant
 # sudo passwd vagrant
-vagrant
 ```
 
 Set password for root
 ```
 # sudo passwd root
-123456
 ```
 
 Update guest's hostname
