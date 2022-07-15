@@ -1751,16 +1751,6 @@ A PV can only be set with one option. Pod mount PVC, not PV.
 
 
 
-## Tutorials
-
-* [Tutorials: local deployment](KubernetesTutorials-Local-Deploy.md)
-
-* [Tutorials: Kyma@SAP BTP](KubernetesTutorials-BTP-trail.md)
-
-* [Tutorials: Ubuntu@Aliyun](KubernetesTutorials-Aliyun-Ubuntu.md)
-
-* [Tutorials: openSUSE@Aliyun](KubernetesTutorials-Aliyun-openSUSE.md)
-
 
 
 
