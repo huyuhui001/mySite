@@ -6,8 +6,7 @@
 
 * Kubernetes Foundation
     - [Learning Memo](./cloud/KubernetesFoundationMemo.md)
-    - [Tutorials: local deployment](./cloud/KubernetesTutorials-Local-Deploy.md)
+    - [Tutorials: Deployment](./cloud/Kubernetes-Deployment.md)
     - [Tutorials: Kyma@SAP BTP](./cloud/KubernetesTutorials-BTP-trail.md)
-    - [Tutorials: Ubuntu@Aliyun](./cloud/KubernetesTutorials-Aliyun-Ubuntu.md)
-    - [Tutorials: openSUSE@Aliyun](./cloud/KubernetesTutorials-Aliyun-openSUSE.md)
+    - [Tutorials: Ubuntu@Aliyun](./cloud/KubernetesTutorials-Aliyun-Ubuntu.md)(Prepare for CKA)
 
