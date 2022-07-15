@@ -6,6 +6,8 @@ Create guest machine with VMWare Player.
 
 * 4 GB RAM
 * 2 CPUs with 2 Cores.
+* OS: Ubuntu Server 22.04
+
 
 ### Ubuntu Post Installation
 
