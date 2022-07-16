@@ -281,11 +281,11 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#installation-on-ubuntu-server" class="md-nav__link">
-    Installation on Ubuntu Server
+  <a href="#single-node-installation" class="md-nav__link">
+    Single Node Installation
   </a>
   
-    <nav class="md-nav" aria-label="Installation on Ubuntu Server">
+    <nav class="md-nav" aria-label="Single Node Installation">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -310,7 +310,97 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#reset-cluster" class="md-nav__link">
+    Reset cluster
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#install-helm" class="md-nav__link">
+    Install Helm
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#multiple-nodes-installation" class="md-nav__link">
+    Multiple Nodes Installation
+  </a>
+  
+    <nav class="md-nav" aria-label="Multiple Nodes Installation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ubuntu-post-installation_1" class="md-nav__link">
+    Ubuntu Post Installation
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#install-containerd" class="md-nav__link">
+    Install Containerd
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#install-nerdctl" class="md-nav__link">
+    Install nerdctl
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#install-kubernetes_1" class="md-nav__link">
+    Install Kubernetes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#setup-master-node" class="md-nav__link">
+    Setup Master Node
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#install-flannel" class="md-nav__link">
+    Install Flannel
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#setup-work-nodes" class="md-nav__link">
+    Setup Work Nodes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#check-cluster-status" class="md-nav__link">
+    Check Cluster Status
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reset-cluster_1" class="md-nav__link">
+    Reset cluster
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#install-helm_1" class="md-nav__link">
     Install Helm
   </a>
   
@@ -385,14 +475,14 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#install-containerd" class="md-nav__link">
+  <a href="#install-containerd_1" class="md-nav__link">
     Install Containerd
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#install-nerdctl" class="md-nav__link">
+  <a href="#install-nerdctl_1" class="md-nav__link">
     Install nerdctl
   </a>
   
@@ -406,35 +496,35 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#setup-master-node" class="md-nav__link">
+  <a href="#setup-master-node_1" class="md-nav__link">
     Setup Master Node
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#setup-work-nodes" class="md-nav__link">
+  <a href="#setup-work-nodes_1" class="md-nav__link">
     Setup Work Nodes
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#install-flannel" class="md-nav__link">
+  <a href="#install-flannel_1" class="md-nav__link">
     Install Flannel
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#check-cluster-status" class="md-nav__link">
+  <a href="#check-cluster-status_1" class="md-nav__link">
     Check Cluster Status
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#reset-cluster" class="md-nav__link">
+  <a href="#reset-cluster_2" class="md-nav__link">
     Reset cluster
   </a>
   
@@ -459,34 +549,43 @@
                 
                 
                 <h1 id="tutorials-local-installation">Tutorials: Local Installation</h1>
-<h2 id="installation-on-ubuntu-server">Installation on Ubuntu Server</h2>
+<h2 id="single-node-installation">Single Node Installation</h2>
+<p>VMWare Setting.</p>
+<ul>
+<li>VMnet1: host-only, subnet: 192.168.150.0/24</li>
+<li>VMnet8: NAT, subnet: 11.0.1.0/24</li>
+</ul>
 <p>Create guest machine with VMWare Player.</p>
 <ul>
 <li>4 GB RAM</li>
-<li>2 CPUs with 2 Cores.</li>
-<li>OS: Ubuntu Server 22.04</li>
+<li>2 CPUs with 2 Cores</li>
+<li>Ubuntu Server 22.04</li>
+<li>NAT</li>
 </ul>
+<p>Kubernetes running on Docker.</p>
 <h3 id="ubuntu-post-installation">Ubuntu Post Installation</h3>
-<p>Create User</p>
-<pre><code># sudo adduser vagrant
-# sudo usermod -aG adm,sudo,syslog,cdrom,dip,plugdev,lxd vagrant
-# sudo passwd vagrant
+<p>Create user <code>vagrant</code>.</p>
+<pre><code>sudo adduser vagrant
+sudo usermod -aG adm,sudo,syslog,cdrom,dip,plugdev,lxd vagrant
+sudo passwd vagrant
 </code></pre>
-<p>Set password for root</p>
-<pre><code># sudo passwd root
+<p>Set password for <code>root</code>.</p>
+<pre><code>sudo passwd root
 </code></pre>
-<p>Update guest's hostname</p>
-<pre><code>$ sudo hostnamectl set-hostname ubusvr
-$ sudo hostnamectl set-hostname ubusvr --pretty
+<p>Update guest's hostname. Here it's <code>ubusvr</code>.</p>
+<pre><code>sudo hostnamectl set-hostname ubusvr
+sudo hostnamectl set-hostname ubusvr --pretty
 </code></pre>
-<pre><code>$ cat /etc/machine-info
-PRETTY_HOSTNAME=ubusvr
+<p>Verify if the hostname is set to <code>ubusvr</code>.</p>
+<pre><code>cat /etc/machine-info
 </code></pre>
-<pre><code>$ cat /etc/hostname
-ubusvr
+<p>Verify if the hostname is set to <code>ubusvr</code>.</p>
+<pre><code>cat /etc/hostname
 </code></pre>
-<pre><code>$ cat /etc/hosts
-127.0.0.1 localhost
+<p>Verify if the hostname of <code>127.0.1.1</code> is set to <code>ubusvr</code>. </p>
+<pre><code>cat /etc/hosts
+</code></pre>
+<pre><code>127.0.0.1 localhost
 127.0.1.1 ubusrv
 
 # The following lines are desirable for IPv6 capable hosts
@@ -496,8 +595,226 @@ ff00::0 ip6-mcastprefix
 ff02::1 ip6-allnodes
 ff02::2 ip6-allrouters
 </code></pre>
-<p>Set guest with fix ip, e.g, <code>11.0.1.131</code></p>
-<pre><code>$ sudo vi 00-installer-config.yaml
+<p>Set guest with fix ip, e.g, <code>11.0.1.136</code>.</p>
+<pre><code>sudo vi 00-installer-config.yaml
+</code></pre>
+<pre><code>network:
+  ethernets:
+    ens33:
+      dhcp4: false
+      addresses:
+      - 11.0.1.136/24
+      nameservers:
+        addresses:
+        - 11.0.1.2
+      routes:
+      - to: default
+        via: 11.0.1.2
+  version: 2
+</code></pre>
+<pre><code>sudo netplan apply
+</code></pre>
+<p>Disable swap</p>
+<pre><code>sudo swapoff -a
+sudo ufw disable
+sudo ufw status verbose
+</code></pre>
+<p>And comment the last line of swap setting in file <code>/etc/fstab</code>. Need reboot guest here.</p>
+<pre><code>/dev/disk/by-uuid/df370d2a-83e5-4895-8c7f-633f2545e3fe / ext4 defaults 0 1
+# /swap.img     none    swap    sw      0       0
+</code></pre>
+<p>Setup timezone</p>
+<pre><code>sudo ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+sudo echo 'LANG=&quot;en_US.UTF-8&quot;' &gt;&gt; /etc/profile
+source /etc/profile
+</code></pre>
+<p>Something like this after execute command <code>ll /etc/localtime</code></p>
+<pre><code>lrwxrwxrwx 1 root root 33 Jul 15 22:00 /etc/localtime -&gt; /usr/share/zoneinfo/Asia/Shanghai
+</code></pre>
+<p>Kernel setting</p>
+<pre><code>cat &lt;&lt;EOF | sudo tee /etc/modules-load.d/containerd.conf
+overlay
+br_netfilter
+EOF
+</code></pre>
+<pre><code>sudo modprobe overlay
+sudo modprobe br_netfilter
+</code></pre>
+<pre><code>cat &lt;&lt;EOF | sudo tee /etc/sysctl.d/99-kubernetes-cri.conf
+net.bridge.bridge-nf-call-iptables  = 1
+net.ipv4.ip_forward                 = 1
+net.bridge.bridge-nf-call-ip6tables = 1
+EOF
+</code></pre>
+<pre><code>sudo sysctl --system
+</code></pre>
+<h3 id="install-docker">Install Docker</h3>
+<p><a href="https://docs.docker.com/engine/install/ubuntu/">Reference</a> </p>
+<pre><code>sudo apt-get install \
+ca-certificates \
+curl \
+gnupg \
+lsb-release
+</code></pre>
+<pre><code>sudo mkdir -p /etc/apt/keyrings
+
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+
+sudo chmod a+r /etc/apt/keyrings/docker.gpg
+
+echo &quot;deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable&quot; | sudo tee /etc/apt/sources.list.d/docker.list &gt; /dev/null
+</code></pre>
+<pre><code>sudo apt-get update
+
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+</code></pre>
+<pre><code>sudo systemctl status docker.service
+
+sudo systemctl status containerd.service
+</code></pre>
+<pre><code>sudo groupadd docker
+sudo usermod -aG docker $USER
+</code></pre>
+<p>Setup Containerd</p>
+<pre><code>containerd config default | sudo tee /etc/containerd/config.toml
+sudo vi /etc/containerd/config.toml
+</code></pre>
+<pre><code>sudo systemctl restart containerd
+sudo systemctl status containerd
+</code></pre>
+<h3 id="install-kubernetes">Install Kubernetes</h3>
+<p>Install kubeadm</p>
+<pre><code>sudo apt-get update &amp;&amp; sudo apt-get install -y apt-transport-https ca-certificates curl
+</code></pre>
+<pre><code>sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://mirrors.aliyun.com/kubernetes/apt/doc/apt-key.gpg
+
+echo &quot;deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://mirrors.aliyun.com/kubernetes/apt/ kubernetes-xenial main&quot; | sudo tee /etc/apt/sources.list.d/kubernetes.list
+</code></pre>
+<pre><code>sudo apt-get update
+sudo apt-get install ebtables
+sudo apt-get install libxtables12
+sudo apt-get upgrade iptables
+</code></pre>
+<pre><code>apt policy kubeadm
+</code></pre>
+<pre><code>sudo apt-get -y install kubelet=1.23.8-00 kubeadm=1.23.8-00 kubectl=1.23.8-00 --allow-downgrades
+</code></pre>
+<p>Setup Master Node</p>
+<pre><code>sudo kubeadm config print init-defaults
+</code></pre>
+<p>Dry run</p>
+<pre><code>sudo kubeadm init --dry-run --pod-network-cidr=10.244.0.0/16 --image-repository=registry.aliyuncs.com/google_containers --kubernetes-version=v1.23.8
+</code></pre>
+<p>Run</p>
+<pre><code>sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --image-repository=registry.aliyuncs.com/google_containers --kubernetes-version=v1.23.8
+</code></pre>
+<pre><code>mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+</code></pre>
+<p>Install Flannel</p>
+<pre><code>kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+</code></pre>
+<p>Setup on Worker Node</p>
+<p>Command usage:</p>
+<pre><code>kubeadm join &lt;your master node eth0 ip&gt;:6443 --token &lt;token generated by kubeadm init&gt; --discovery-token-ca-cert-hash &lt;hash key generated by kubeadm init&gt;
+</code></pre>
+<pre><code>kubeadm join 11.0.1.136:6443 --token 6zqh1u.8b4afzc2ov4e7iuj \
+  --discovery-token-ca-cert-hash sha256:815fdb9dd9e3ae0af07ffaf6c216964388098b150ef01ee3ae900c261a429d24
+</code></pre>
+<p>Setup bash auto completion on all nodes</p>
+<pre><code>sudo apt install -y bash-completion
+source /usr/share/bash-completion/bash_completion
+source &lt;(kubectl completion bash)
+echo &quot;source &lt;(kubectl completion bash)&quot; &gt;&gt; ~/.bashrc
+</code></pre>
+<p>Create alias</p>
+<pre><code>echo 'alias k=kubectl' &gt;&gt;~/.bashrc
+echo 'complete -o default -F __start_kubectl k' &gt;&gt;~/.bashrc
+</code></pre>
+<p>Check Cluster Status</p>
+<pre><code>kubectl cluster-info
+kubectl get nodes -owide
+kubectl get pod -A
+</code></pre>
+<h3 id="reset-cluster">Reset cluster</h3>
+<p>CAUTION: below steps will destroy current cluster. </p>
+<p>Delete all nodes in the cluster.</p>
+<pre><code>kubeadm reset
+</code></pre>
+<p>Clean up rule of <code>iptables</code>.</p>
+<pre><code>iptables -F &amp;&amp; iptables -t nat -F &amp;&amp; iptables -t mangle -F &amp;&amp; iptables -X
+</code></pre>
+<p>Clean up rule of <code>IPVS</code> if using <code>IPVS</code>.</p>
+<pre><code>ipvsadm --clear
+</code></pre>
+<h3 id="install-helm">Install Helm</h3>
+<p>Helm Client Installation: </p>
+<pre><code>curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+</code></pre>
+<pre><code>chmod 700 get_helm.sh
+</code></pre>
+<pre><code>./get_helm.sh
+</code></pre>
+<p>Output:</p>
+<pre><code>Downloading https://get.helm.sh/helm-v3.9.0-linux-amd64.tar.gz
+Verifying checksum... Done.
+Preparing to install helm into /usr/local/bin
+helm installed into /usr/local/bin/helm
+</code></pre>
+<h2 id="multiple-nodes-installation">Multiple Nodes Installation</h2>
+<p>VMWare Setting.</p>
+<ul>
+<li>VMnet1: host-only, subnet: 192.168.150.0/24</li>
+<li>VMnet8: NAT, subnet: 11.0.1.0/24</li>
+</ul>
+<p>Create guest machine with VMWare Player.</p>
+<ul>
+<li>4 GB RAM</li>
+<li>2 CPUs with 2 Cores</li>
+<li>Ubuntu Server 22.04</li>
+<li>NAT</li>
+</ul>
+<p>Kubernetes running on Containerd.</p>
+<h3 id="ubuntu-post-installation_1">Ubuntu Post Installation</h3>
+<p>Create user <code>james</code> on all guests.</p>
+<pre><code>sudo adduser james
+sudo usermod -aG adm,sudo,syslog,cdrom,dip,plugdev,lxd james
+sudo passwd james
+</code></pre>
+<p>Set password for <code>root</code> on all guests.</p>
+<pre><code>sudo passwd root
+</code></pre>
+<p>Update all guests' hostname, <code>ubu01</code>,<code>ubu02</code>,<code>ubu03</code>,<code>ubu04</code>. </p>
+<pre><code>sudo hostnamectl set-hostname ubu01
+sudo hostnamectl set-hostname ubu01 --pretty
+</code></pre>
+<p>Verify if the hostname is set to expected name, e.g., <code>ubu01</code>.</p>
+<pre><code>cat /etc/machine-info
+</code></pre>
+<p>Verify if the hostname is set to expected name, e.g., <code>ubu01</code>.</p>
+<pre><code>cat /etc/hostname
+</code></pre>
+<p>Verify if the hostname of <code>127.0.1.1</code> is set to expected name, e.g., <code>ubu01</code>. And add all nodes  into the file <code>/etc/hosts</code>.</p>
+<pre><code>cat /etc/hosts
+</code></pre>
+<pre><code>127.0.0.1 localhost
+127.0.1.1 ubu01
+
+11.0.1.131 ubu01
+11.0.1.132 ubu02
+11.0.1.133 ubu03
+11.0.1.134 ubu04
+
+# The following lines are desirable for IPv6 capable hosts
+::1     ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+</code></pre>
+<p>Set all guests with fixed IP, e.g, <code>11.0.1.131</code>.</p>
+<pre><code>sudo vi 00-installer-config.yaml
 </code></pre>
 <pre><code>network:
   ethernets:
@@ -513,122 +830,197 @@ ff02::2 ip6-allrouters
         via: 11.0.1.2
   version: 2
 </code></pre>
-<pre><code>$ sudo netplan apply
+<pre><code>sudo netplan apply
 </code></pre>
-<p>Disable swap</p>
-<pre><code>$ sudo swapoff -a
-$ sudo ufw disable
-$ sudo ufw status verbose
+<p>Disable swap on all nodes.</p>
+<pre><code>sudo swapoff -a
+sudo ufw disable
+sudo ufw status verbose
 </code></pre>
-<p>Setup timezone</p>
-<pre><code>$ sudo ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
-$ sudo echo 'LANG=&quot;en_US.UTF-8&quot;' &gt;&gt; /etc/profile
-$ source /etc/profile
-$ ll /etc/localtime
+<p>And comment the last line of swap setting in file <code>/etc/fstab</code>. Need <em>reboot</em> guest here.</p>
+<pre><code>/dev/disk/by-uuid/df370d2a-83e5-4895-8c7f-633f2545e3fe / ext4 defaults 0 1
+# /swap.img     none    swap    sw      0       0
 </code></pre>
-<p>Kernel setting</p>
-<pre><code>$ cat &lt;&lt;EOF | sudo tee /etc/modules-load.d/containerd.conf
+<p>Setup timezone on all nodes</p>
+<pre><code>sudo ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+sudo echo 'LANG=&quot;en_US.UTF-8&quot;' &gt;&gt; /etc/profile
+source /etc/profile
+</code></pre>
+<p>Something like this after execute command <code>ll /etc/localtime</code></p>
+<pre><code>lrwxrwxrwx 1 root root 33 Jul 15 22:00 /etc/localtime -&gt; /usr/share/zoneinfo/Asia/Shanghai
+</code></pre>
+<p>Kernel setting on all nodes.</p>
+<pre><code>cat &lt;&lt;EOF | sudo tee /etc/modules-load.d/containerd.conf
 overlay
 br_netfilter
 EOF
-
-$ sudo modprobe overlay
-$ sudo modprobe br_netfilter
-
-$ cat &lt;&lt;EOF | sudo tee /etc/sysctl.d/99-kubernetes-cri.conf
+</code></pre>
+<pre><code>sudo modprobe overlay
+sudo modprobe br_netfilter
+</code></pre>
+<pre><code>cat &lt;&lt;EOF | sudo tee /etc/sysctl.d/99-kubernetes-cri.conf
 net.bridge.bridge-nf-call-iptables  = 1
 net.ipv4.ip_forward                 = 1
 net.bridge.bridge-nf-call-ip6tables = 1
 EOF
-
-$ sudo sysctl --system
 </code></pre>
-<h3 id="install-docker">Install Docker</h3>
-<p><a href="https://docs.docker.com/engine/install/ubuntu/">Reference</a> </p>
-<pre><code>$ sudo apt-get install \
-ca-certificates \
-curl \
-gnupg \
-lsb-release
-
-$ sudo mkdir -p /etc/apt/keyrings
-
-$ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-
-$ sudo chmod a+r /etc/apt/keyrings/docker.gpg
-
-$ echo &quot;deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable&quot; | sudo tee /etc/apt/sources.list.d/docker.list &gt; /dev/null
-
-$ sudo apt-get update
-
-$ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
-
-$ sudo systemctl status docker.service
-
-$ sudo systemctl status containerd.service
-
-$ sudo groupadd docker
-$ sudo usermod -aG docker $USER
+<pre><code>sudo sysctl --system
 </code></pre>
-<p>Setup Containerd</p>
-<pre><code>$ containerd config default | sudo tee /etc/containerd/config.toml
-$ sudo vi /etc/containerd/config.toml
-
-$ sudo systemctl restart containerd
-$ sudo systemctl status containerd
+<h3 id="install-containerd">Install Containerd</h3>
+<p>Install Containerd sevice on all nodes.</p>
+<p>Backup source file.</p>
+<pre><code>sudo cp /etc/apt/sources.list /etc/apt/sources.list.bak
 </code></pre>
-<h3 id="install-kubernetes">Install Kubernetes</h3>
-<p>Install kubeadm</p>
-<pre><code>$ sudo apt-get update &amp;&amp; sudo apt-get install -y apt-transport-https ca-certificates curl
-
-$ sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://mirrors.aliyun.com/kubernetes/apt/doc/apt-key.gpg
-
-$ echo &quot;deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://mirrors.aliyun.com/kubernetes/apt/ kubernetes-xenial main&quot; | sudo tee /etc/apt/sources.list.d/kubernetes.list
-
-$ sudo apt-get update
-$ sudo apt-get install ebtables
-$ sudo apt-get install libxtables12
-$ sudo apt-get upgrade iptables
-
-$ apt policy kubeadm
-
-$ sudo apt-get -y install kubelet=1.23.8-00 kubeadm=1.23.8-00 kubectl=1.23.8-00 --allow-downgrades
+<p>Install Containered.</p>
+<pre><code>sudo apt-get update &amp;&amp; sudo apt-get install -y containerd
 </code></pre>
-<p>Setup Master Node</p>
-<pre><code>$ sudo kubeadm config print init-defaults
-
-$ sudo kubeadm init --dry-run --pod-network-cidr=10.244.0.0/16 --image-repository=registry.aliyuncs.com/google_containers --kubernetes-version=v1.23.8
-
-$ sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --image-repository=registry.aliyuncs.com/google_containers --kubernetes-version=v1.23.8
-
-$ mkdir -p $HOME/.kube
-$ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-$ sudo chown $(id -u):$(id -g) $HOME/.kube/config
+<p>Configure Containerd. Modify file <code>/etc/containerd/config.toml</code>.</p>
+<pre><code>sudo mkdir -p /etc/containerd
+containerd config default | sudo tee /etc/containerd/config.toml
+vi /etc/containerd/config.toml
 </code></pre>
-<p>Install Flannel</p>
-<pre><code>$ kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
-</code></pre>
-<p>Setup on Worker Node</p>
-<pre><code>$ kubeadm join &lt;your master node eth0 ip&gt;:6443 --token &lt;token generated by kubeadm init&gt; --discovery-token-ca-cert-hash &lt;hash key generated by kubeadm init&gt;
+<p>Update <code>sandbox_image</code> with new value <code>"registry.aliyuncs.com/google_containers/pause:3.6"</code>.
+Update <code>SystemdCgroup</code> with new value <code>true</code>.</p>
+<pre><code>[plugins]
+  [plugins.&quot;io.containerd.gc.v1.scheduler&quot;]
 
-$ kubeadm join 11.0.1.136:6443 --token 6zqh1u.8b4afzc2ov4e7iuj \
-        --discovery-token-ca-cert-hash sha256:815fdb9dd9e3ae0af07ffaf6c216964388098b150ef01ee3ae900c261a429d24
-</code></pre>
-<p>Setup bash auto completion on all nodes</p>
-<pre><code>$ sudo apt install -y bash-completion
-$ source /usr/share/bash-completion/bash_completion
-$ source &lt;(kubectl completion bash)
-$ echo &quot;source &lt;(kubectl completion bash)&quot; &gt;&gt; ~/.bashrc
+  [plugins.&quot;io.containerd.grpc.v1.cri&quot;]
+    sandbox_image = &quot;registry.aliyuncs.com/google_containers/pause:3.6&quot;
 
-$ echo 'alias k=kubectl' &gt;&gt;~/.bashrc
-$ echo 'complete -o default -F __start_kubectl k' &gt;&gt;~/.bashrc
+    [plugins.&quot;io.containerd.grpc.v1.cri&quot;.cni]
+    [plugins.&quot;io.containerd.grpc.v1.cri&quot;.containerd]
+      [plugins.&quot;io.containerd.grpc.v1.cri&quot;.containerd.default_runtime]
+        [plugins.&quot;io.containerd.grpc.v1.cri&quot;.containerd.default_runtime.options]
+      [plugins.&quot;io.containerd.grpc.v1.cri&quot;.containerd.runtimes]
+        [plugins.&quot;io.containerd.grpc.v1.cri&quot;.containerd.runtimes.runc]
+
+          [plugins.&quot;io.containerd.grpc.v1.cri&quot;.containerd.runtimes.runc.options]
+            SystemdCgroup = true
 </code></pre>
-<p>Check Cluster Status</p>
-<pre><code>$ kubectl cluster-info
-$ kubectl get nodes -owide
-$ kubectl get pod -A
+<p>Restart Containerd service.</p>
+<pre><code>sudo systemctl restart containerd
+sudo systemctl status containerd
 </code></pre>
-<h3 id="install-helm">Install Helm</h3>
+<h3 id="install-nerdctl">Install nerdctl</h3>
+<p>Install nerdctl sevice on all nodes.</p>
+<p>The goal of <a href="https://github.com/containerd/nerdctl"><code>nerdctl</code></a> is to facilitate experimenting the cutting-edge features of containerd that are not present in Docker.</p>
+<pre><code>wget https://github.com/containerd/nerdctl/releases/download/v0.21.0/nerdctl-0.21.0-linux-amd64.tar.gz
+
+tar -zxvf nerdctl-0.21.0-linux-amd64.tar.gz
+
+cp nerdctl /usr/bin/
+</code></pre>
+<p>Verify nerdctl.</p>
+<pre><code># nerdctl --help
+</code></pre>
+<p>To list local Kubernetes containers.</p>
+<pre><code># nerdctl -n k8s.io ps
+</code></pre>
+<h3 id="install-kubernetes_1">Install Kubernetes</h3>
+<p>Install Kubernetes on all nodes.</p>
+<p>Install dependencied packages.</p>
+<pre><code>sudo apt-get update &amp;&amp; sudo apt-get install -y apt-transport-https ca-certificates curl
+</code></pre>
+<p>Install gpg certificate.</p>
+<pre><code># For Ubuntu 20.04 release
+curl https://mirrors.aliyun.com/kubernetes/apt/doc/apt-key.gpg | apt-key add -
+
+# For Ubuntu 22.04 release
+sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://mirrors.aliyun.com/kubernetes/apt/doc/apt-key.gpg
+</code></pre>
+<p>Add Kubernetes repo. </p>
+<pre><code># For Ubuntu 20.04 release
+cat &lt;&lt;EOF &gt;/etc/apt/sources.list.d/kubernetes.list
+deb https://mirrors.aliyun.com/kubernetes/apt/ kubernetes-xenial main
+EOF
+
+# For Ubuntu 22.04 release
+echo &quot;deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://mirrors.aliyun.com/kubernetes/apt/ kubernetes-xenial main&quot; | sudo tee /etc/apt/sources.list.d/kubernetes.list
+</code></pre>
+<p>Update and install dependencied packages.</p>
+<pre><code>sudo apt-get update
+sudo apt-get install ebtables
+sudo apt-get install libxtables12
+sudo apt-get upgrade iptables
+</code></pre>
+<p>Check available versions of kubeadm.</p>
+<pre><code>apt policy kubeadm
+</code></pre>
+<p>Install <code>1.23.8-00</code> version.</p>
+<pre><code>sudo apt-get -y install kubelet=1.23.8-00 kubeadm=1.23.8-00 kubectl=1.23.8-00 --allow-downgrades
+</code></pre>
+<p>Set <code>kubectl</code> <a href="https://github.com/scop/bash-completion">auto-completion</a> following the <a href="https://kubernetes.io/docs/tasks/tools/included/optional-kubectl-configs-bash-linux/">guideline</a>.</p>
+<pre><code>sudo apt install -y bash-completion
+source /usr/share/bash-completion/bash_completion
+source &lt;(kubectl completion bash)
+echo &quot;source &lt;(kubectl completion bash)&quot; &gt;&gt; ~/.bashrc
+</code></pre>
+<p>If we set an alias for kubectl, we can extend shell completion to work with that alias:</p>
+<pre><code>echo 'alias k=kubectl' &gt;&gt;~/.bashrc
+echo 'complete -o default -F __start_kubectl k' &gt;&gt;~/.bashrc
+</code></pre>
+<h3 id="setup-master-node">Setup Master Node</h3>
+<p>Check kubeadm default parameters for initialization.</p>
+<pre><code>sudo kubeadm config print init-defaults
+</code></pre>
+<p>Dry run</p>
+<pre><code>sudo kubeadm init --dry-run --pod-network-cidr=10.244.0.0/16 --image-repository=registry.aliyuncs.com/google_containers --kubernetes-version=v1.23.8
+</code></pre>
+<p>Initialize master node. Save the output, which will be used later on work nodes.</p>
+<pre><code>sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --image-repository=registry.aliyuncs.com/google_containers --kubernetes-version=v1.23.8
+</code></pre>
+<p>Set <code>kubeconfig</code> file for current user.</p>
+<pre><code>mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+</code></pre>
+<h3 id="install-flannel">Install Flannel</h3>
+<p><a href="https://github.com/flannel-io/flannel">Flannel</a> is a simple and easy way to configure a layer 3 network fabric designed for Kubernetes.</p>
+<p>Deploy Flannel on master node.
+In the kube-flannel.yml we can get the default network setting of Flannel, which is same with <code>--pod-network-cidr=10.244.0.0/16</code> we defined before when we initiated <code>kubeadm</code>.</p>
+<pre><code>  net-conf.json: |
+    {
+      &quot;Network&quot;: &quot;10.244.0.0/16&quot;,
+      &quot;Backend&quot;: {
+        &quot;Type&quot;: &quot;vxlan&quot;
+      }
+    }
+</code></pre>
+<pre><code>kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+</code></pre>
+<p>Output:</p>
+<pre><code>Warning: policy/v1beta1 PodSecurityPolicy is deprecated in v1.21+, unavailable in v1.25+
+podsecuritypolicy.policy/psp.flannel.unprivileged created
+clusterrole.rbac.authorization.k8s.io/flannel created
+clusterrolebinding.rbac.authorization.k8s.io/flannel created
+serviceaccount/flannel created
+configmap/kube-flannel-cfg created
+daemonset.apps/kube-flannel-ds created
+</code></pre>
+<h3 id="setup-work-nodes">Setup Work Nodes</h3>
+<p>Command usage:</p>
+<pre><code>kubeadm join &lt;your master node eth0 ip&gt;:6443 --token &lt;token generated by kubeadm init&gt; --discovery-token-ca-cert-hash &lt;hash key generated by kubeadm init&gt;
+</code></pre>
+<p>Use <code>kubeadm token</code> to generate the join token and hash value.</p>
+<pre><code>kubeadm token create --print-join-command
+</code></pre>
+<h3 id="check-cluster-status">Check Cluster Status</h3>
+<pre><code>kubectl cluster-info
+kubectl get nodes -owide
+kubectl get pod -A
+</code></pre>
+<h3 id="reset-cluster_1">Reset cluster</h3>
+<p>CAUTION: below steps will destroy current cluster. </p>
+<p>Delete all nodes in the cluster.</p>
+<pre><code>kubeadm reset
+</code></pre>
+<p>Clean up rule of <code>iptables</code>.</p>
+<pre><code>iptables -F &amp;&amp; iptables -t nat -F &amp;&amp; iptables -t mangle -F &amp;&amp; iptables -X
+</code></pre>
+<p>Clean up rule of <code>IPVS</code> if using <code>IPVS</code>.</p>
+<pre><code>ipvsadm --clear
+</code></pre>
+<h3 id="install-helm_1">Install Helm</h3>
 <p>Helm is the Kubernetes package manager. It doesn't come with Kubernetes. </p>
 <p>Three concepts of helm:</p>
 <ul>
@@ -654,12 +1046,14 @@ $ kubectl get pod -A
 <li><a href="https://github.com/helm/helm">source code</a>.</li>
 </ul>
 <p>Helm Client Installation: </p>
-<pre><code>$ curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
-$ chmod 700 get_helm.sh
+<pre><code>curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
 </code></pre>
-<pre><code>$ ./get_helm.sh
+<pre><code>chmod 700 get_helm.sh
 </code></pre>
-<pre><code>Downloading https://get.helm.sh/helm-v3.9.0-linux-amd64.tar.gz
+<pre><code>./get_helm.sh
+</code></pre>
+<p>Output:</p>
+<pre><code>Downloading https://get.helm.sh/helm-v3.9.1-linux-amd64.tar.gz
 Verifying checksum... Done.
 Preparing to install helm into /usr/local/bin
 helm installed into /usr/local/bin/helm
@@ -731,7 +1125,7 @@ EOF
 <p>By commadn <code>sysctl -w net.ipv4.ip_forward=1</code>, the change takes effect immediately, but it is not persistent. After a system reboot, the default value is loaded. Write the settings to <code>/etc/sysctl.conf</code> is to set a parameter permanently, you’ll need to  or another configuration file in the /etc/sysctl.d directory:</p>
 <pre><code># sudo sysctl --system
 </code></pre>
-<h3 id="install-containerd">Install Containerd</h3>
+<h3 id="install-containerd_1">Install Containerd</h3>
 <p>Install docker in all VMs.</p>
 <pre><code># zypper install docker
 </code></pre>
@@ -767,7 +1161,7 @@ Update <code>SystemdCgroup</code> with new value <code>true</code>.</p>
 <pre><code># sudo systemctl restart containerd
 # sudo systemctl status containerd
 </code></pre>
-<h3 id="install-nerdctl">Install nerdctl</h3>
+<h3 id="install-nerdctl_1">Install nerdctl</h3>
 <p>Install nerdctl sevice fro all VMs.</p>
 <p>The goal of <a href="https://github.com/containerd/nerdctl"><code>nerdctl</code></a> is to facilitate experimenting the cutting-edge features of containerd that are not present in Docker.</p>
 <pre><code># wget https://github.com/containerd/nerdctl/releases/download/v0.21.0/nerdctl-0.21.0-linux-amd64.tar.gz
@@ -811,7 +1205,7 @@ EOF
 <p>Enable kubelet service on boot:</p>
 <pre><code># sudo systemctl enable kubelet
 </code></pre>
-<h3 id="setup-master-node">Setup Master Node</h3>
+<h3 id="setup-master-node_1">Setup Master Node</h3>
 <p>Set up Control Plane on VM playing master node.</p>
 <p>Check kubeadm default parameters for initialization.</p>
 <pre><code># kubeadm config print init-defaults
@@ -834,7 +1228,7 @@ Be noted that <code>10.244.0.0/16</code> is default range of flannel. If it's ch
 # source &lt;(kubectl completion bash)
 # echo &quot;source &lt;(kubectl completion bash)&quot; &gt;&gt; ~/.bashrc
 </code></pre>
-<h3 id="setup-work-nodes">Setup Work Nodes</h3>
+<h3 id="setup-work-nodes_1">Setup Work Nodes</h3>
 <p>Perform on all VMs playing work nodes.</p>
 <pre><code># kubeadm join &lt;your master node ip&gt;:6443 --token &lt;token generated by kubeadm init&gt; --discovery-token-ca-cert-hash &lt;hash key generated by kubeadm init&gt;
 </code></pre>
@@ -845,7 +1239,7 @@ leap1   Ready    control-plane,master   16m     v1.23.8
 leap2   Ready    &lt;none&gt;                 9m39s   v1.23.8
 leap3   Ready    &lt;none&gt;                 9m51s   v1.23.8
 </code></pre>
-<h3 id="install-flannel">Install Flannel</h3>
+<h3 id="install-flannel_1">Install Flannel</h3>
 <p><a href="https://github.com/flannel-io/flannel">Flannel</a> is a simple and easy way to configure a layer 3 network fabric designed for Kubernetes.</p>
 <p>Deploy Flannel on master node.
 In the kube-flannel.yml we can get the default network setting of Flannel, which is same with <code>--pod-network-cidr=10.244.0.0/16</code> we defined before when we initiated <code>kubeadm</code>.</p>
@@ -866,7 +1260,7 @@ serviceaccount/flannel created
 configmap/kube-flannel-cfg created
 daemonset.apps/kube-flannel-ds created
 </code></pre>
-<h3 id="check-cluster-status">Check Cluster Status</h3>
+<h3 id="check-cluster-status_1">Check Cluster Status</h3>
 <p>Perform <code>kubectl cluster-info</code> command on master node we will get below information.</p>
 <ul>
 <li>Kubernetes control plane is running at https://<mster node ip>:6443</li>
@@ -876,7 +1270,7 @@ daemonset.apps/kube-flannel-ds created
 # kubectl get nodes -owide
 # kubectl get pod -A
 </code></pre>
-<h3 id="reset-cluster">Reset cluster</h3>
+<h3 id="reset-cluster_2">Reset cluster</h3>
 <p>CAUTION: below steps will destroy current cluster. </p>
 <p>Delete all nodes in the cluster.</p>
 <pre><code># kubeadm reset
