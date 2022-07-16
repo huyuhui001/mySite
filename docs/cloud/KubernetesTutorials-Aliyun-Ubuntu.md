@@ -111,7 +111,7 @@ sudo sysctl --system
 
 ### Install Containerd
 
-Install Containerd sevice fro all VMs.
+Install Containerd sevice for all VMs.
 
 Backup source file.
 ```
@@ -233,7 +233,7 @@ EOF
 # echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://mirrors.aliyun.com/kubernetes/apt/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
 ```
 
-Update  and install dependencied packages.
+Update and install dependencied packages.
 ```
 # apt-get update
 # apt-get install ebtables
