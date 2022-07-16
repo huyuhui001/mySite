@@ -1,0 +1,15 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-ns-netpol-to-pod-netpol-2
+spec:
+  podSelector:
+    matchLabels:
+      app: pod-netpol-2
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          allow: to-pod-netpol-2
