@@ -4,6 +4,7 @@ Document what I have been learning as further reference and reminder.
 
 What's past is prologue. It’s never too late to do. 
 
-James
+-- James, from Shanghai China (*Certified DB2 DBA; SAP Basis; SUSE Administrator*)
 
-*IBM Certified Advanced DB2 DBA; SAP Certified Basis Consultant; SUSE Certified Administrator*
+
+
