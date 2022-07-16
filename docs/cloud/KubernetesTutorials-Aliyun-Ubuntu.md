@@ -1,6 +1,6 @@
 # Kubernetes Tutourials: Ubuntu@Aliyun
 
-## Deployment
+## 1.Deployment
 
 ### Preparation
 
@@ -415,7 +415,7 @@ journalctl -xeu kubelet
 
 
 
-## Snapshot of deployment
+## 2.Snapshot of deployment
 
 Till now, the initial deployment is completed sucessfully.
 
@@ -698,7 +698,7 @@ After we stop kubelet service on `cka003`, the two running on `cka003` are termi
 
 
 
-## kubectl
+## 3.kubectl
 
 Three approach to operate Kubernetes cluster:
 
@@ -959,10 +959,10 @@ Get the logs for a container in a pod or specified resource. If the pod has only
 
 
 
-## Kubernetes API and Resource
+## 4.Kubernetes API and Resource
 
 
-### Demo: Static Pod
+### Static Pod
 
 Create yaml file in directory `/etc/kubernetes/manifests/`.
 `kubectl` will automatically check yaml file in `/etc/kubernetes/manifests/` and create the static pod once it's detected.
@@ -982,7 +982,7 @@ root@cka001:~# rm /etc/kubernetes/manifests/my-nginx.yaml
 
 
 
-### Demo: Init containers
+### Init containers
 
 This example defines a simple Pod that has two init containers in `02-init-pod.yaml`. 
 The first waits for myservice, and the second waits for mydb. 
@@ -1070,7 +1070,7 @@ myapp-pod   1/1     Running   0          13m
 ```
 
 
-### Demo Mutil-Container Pod
+### Mutil-Container Pod
 
 Create the sampel yaml file `multi-pod.yaml`.
 ```
@@ -1138,7 +1138,7 @@ bin  boot  dev  docker-entrypoint.d  docker-entrypoint.sh  etc  home  lib  lib64
 
 
 
-### Demo: Usage of kubectl
+### Usage of kubectl
 
 #### Grant Authorization to ServiceAccount
 With Kubernetes 1.23 and lower version, when we create a new namespace, Kubernetes will automatically create a ServiceAccount `default` and a token `default-token-xxxxx`.
@@ -1779,12 +1779,9 @@ root@cka001:~# kubectl get jobs -w
 
 
 
-## Label and Annotation
+## 5.Label and Annotation
 
-
-
-
-### Demo: Label and Annotation
+### Label and Annotation
 
 #### Label
 
@@ -1858,7 +1855,7 @@ Selector:               app=nginx
 
 
 
-## Health Check
+## 6.Health Check
 
 ### Status of Pod and Container
 
@@ -2346,7 +2343,7 @@ kubectl describe pod nginx-healthcheck-79fc55d944-9jbvj
 
 
 
-## Namespace
+## 7.Namespace
 
 Get list of Namespace
 ```
@@ -2395,7 +2392,7 @@ kubectl delete ns cka
 
 
 
-## Horizontal Pod Autoscaling (HPA)
+## 8.Horizontal Pod Autoscaling (HPA)
 
 
 - Install Metrics Server component
@@ -2641,7 +2638,7 @@ nginx   Deployment/podinfo   0%/50%    2         10        2          8h
 
 
 
-## Service
+## 9.Service
 
 ### ClusterIP
 
@@ -2926,7 +2923,7 @@ Clean up all resources created before.
 
 
 
-## Ingress
+## 10.Ingress
 
 ### Deploy Ingress Controller
 
@@ -3217,7 +3214,7 @@ This is test 2 !!
 ```
 
 
-## Storage
+## 11.Storage
 
 ### emptyDir
 
@@ -4241,7 +4238,7 @@ blue
 
 
 
-## Scheduling
+## 12.Scheduling
 
 ### nodeSelector
 
@@ -4521,7 +4518,7 @@ kubectl taint nodes cka003 key-
 
 
 
-## ResourceQuota
+## 13.ResourceQuota
 
 ### Create Namespace
 
@@ -4642,7 +4639,7 @@ status:
 
 
 
-## LimitRange
+## 14.LimitRange
 
 A *LimitRange* provides constraints that can:
 
@@ -4807,7 +4804,7 @@ spec:
 ```
 
 
-## Troubleshooting
+## 15.Troubleshooting
 
 ### Event
 
@@ -5001,7 +4998,7 @@ kubectl drain <node_name> --ignore-daemonsets --delete-emptydir-data
 
 
 
-## RBAC
+## 16.RBAC
 
 Role-based access control (RBAC) is a method of regulating access to computer or network resources based on the roles of individual users within the organization.
 
@@ -5444,7 +5441,9 @@ cka003   Ready    <none>                 18d   v1.23.8
 
 
 
-## Network Policy
+## 17.Network Policy
+
+### Replace Flannel by Calico
 
 Delete Flannel
 ```
@@ -5859,7 +5858,7 @@ Be noted that we can use namespace default label as well.
 
 
 
-## Cluster Management
+## 18.Cluster Management
 
 ### `etcd` Backup and Restore
 
@@ -6418,7 +6417,7 @@ cka003   Ready    <none>          19d   v1.24.2
 
 
 
-## Helm Chart
+## 19.Helm Chart
 
 ### Install Helm
 
@@ -7109,9 +7108,9 @@ Template.BasePath            # 当前模板目录路径
 
 
 
-## Homework
+## 20.讨论
 
-### 6/26
+**6/26**
 
 1. 将cka003节点的kubelet服务关闭
 
@@ -7120,12 +7119,12 @@ Template.BasePath            # 当前模板目录路径
 3. 在集群层面观察对应节点处于什么状态，本来在节点上运行的Pod发生了什么（kubectl get pod -owide -A -w持续监视Pod变化）
 
 
-### 6/28
+**6/28**
 
 1. 用alias给kubectl设置一个别名k，以后操作kubectl就可以只打k啦，比如k get node
 
 
-### 6/30
+**6/30**
 
 1. 创建一个具有两个容器的Pod（镜像可以随意选择）
 2. DaemonSet可以设置replicas参数吗？为什么？
@@ -7134,7 +7133,7 @@ Template.BasePath            # 当前模板目录路径
 https://howtoforge.com/multi-container-pods-in-kubernetes/
 
 
-### 7/3
+**7/3**
 
 1. 如何基于健康检查实操中的nginx-healthcheck模拟livenessProbe存活探针检查失败的场景？
     * 提示1：nginx-healthcheck的livenessProbe探测的是80端口的存活
@@ -7146,14 +7145,14 @@ https://howtoforge.com/multi-container-pods-in-kubernetes/
 
 
 
-### 7/5
+**7/5**
 
 1. 通过kubectl create deploy nginx --image=nginx命令创建的Deployment，忘记加容器端口了，如何修改Deployment加上端口
 2. 验证Service的internalTrafficPolicy参数
 
 
 
-### 7/7
+**7/7**
 
 提示，用官网的YAML示例修改：
 
@@ -7163,13 +7162,13 @@ https://howtoforge.com/multi-container-pods-in-kubernetes/
 4. 修改这个Pod，添加一个emptyDir类型的Volume挂载，挂载目录自定义
 
 
-### 7/10
+**7/10**
 
 1. kubectl top命令查看Pod和Node的资源利用率如何按照利用率排序？
 
 
 
-### 7/12
+**7/12**
 
 1. kubectl命令行方式创建ClusterRole，定义对Deployment的create权限
 2. kubectl命令行方式创建一个Namespace
