@@ -733,22 +733,6 @@ Note:
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## Installation on openSUSE
 
 Before, Kubic from openSUSE is focusing on kubeadm as open source project. CaaSP is comercial product for Kubenetes, compared with Kubic. 
