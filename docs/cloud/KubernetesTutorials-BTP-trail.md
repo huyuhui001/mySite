@@ -1,6 +1,6 @@
 # Tutorials: SAP BTP trail account
 
-## kubectl basics
+## 1.kubectl basics
 
 Register account of [SAP BTP trail system](https://account.hanatrial.ondemand.com/). I am using BTP Kyma runtime for the demo.
 
@@ -180,7 +180,7 @@ Further information & references:
 
 
 
-## Work on pod
+## 2.Work on pod
 
 ### Create pod
 Create new namespace `jh-namespace` for my demo.
@@ -475,7 +475,7 @@ Further references:
 
 
 
-## Deployment
+## 3.Deployment
 
 A Deployment provides declarative updates for Pods and ReplicaSets.
 The pod encapsulated the container and takes care of the desired state, that is, the deployment. 
@@ -1001,7 +1001,7 @@ Further references:
 
 
 
-## Expose application
+## 4.Expose application
 
 ### Create deployment
 
@@ -1232,7 +1232,7 @@ Further references:
 
 
 
-## Persistence
+## 5.Persistence
 
 Docker has a concept of volumes, though it is somewhat looser and less managed. 
 A Docker volume is a directory on disk or in another container. Docker provides volume drivers, but the functionality is somewhat limited.
@@ -1418,7 +1418,7 @@ Further references:
 
 
 
-## ConfigMaps and Secrets
+## 6.ConfigMaps and Secrets
 
 ConfigMaps and secrets build generic images and run them  with a specific configuration in an secured environment. 
 
@@ -1771,7 +1771,7 @@ Further references:
 
 
 
-## Ingress
+## 7.Ingress
 
 Ingress resources allow us to expose services through a URL. 
 We can configure an Ingress so that traffic can be directed to different services, depending on the URL that is used for a request. 
@@ -1928,7 +1928,7 @@ Further references:
 
 
 
-## StatefulSet
+## 8.StatefulSet
 
 Like a Deployment, a StatefulSet manages Pods that are based on an identical container spec. 
 Unlike a Deployment, a StatefulSet maintains a sticky identity for each of their Pods. 
@@ -2167,7 +2167,7 @@ Further references
 
 
 
-## Network Policy
+## 9.Network Policy
 
 Network policies namespace based to help us restrict access to the nginx deployment. 
 From within any pod that is not labeled correctly we will not be able to access our nginx instances.
@@ -2239,7 +2239,7 @@ Further references
 
 
 
-## Helming
+## 10.Helming
 
 Helm is the Kubernetes package manager. It doesn't come with Kubernetes. 
 
