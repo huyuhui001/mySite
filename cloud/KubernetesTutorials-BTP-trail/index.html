@@ -281,11 +281,11 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#kubectl-basics" class="md-nav__link">
-    kubectl basics
+  <a href="#1kubectl-basics" class="md-nav__link">
+    1.kubectl basics
   </a>
   
-    <nav class="md-nav" aria-label="kubectl basics">
+    <nav class="md-nav" aria-label="1.kubectl basics">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -329,11 +329,11 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#work-on-pod" class="md-nav__link">
-    Work on pod
+  <a href="#2work-on-pod" class="md-nav__link">
+    2.Work on pod
   </a>
   
-    <nav class="md-nav" aria-label="Work on pod">
+    <nav class="md-nav" aria-label="2.Work on pod">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -377,11 +377,11 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#deployment" class="md-nav__link">
-    Deployment
+  <a href="#3deployment" class="md-nav__link">
+    3.Deployment
   </a>
   
-    <nav class="md-nav" aria-label="Deployment">
+    <nav class="md-nav" aria-label="3.Deployment">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -439,11 +439,11 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#expose-application" class="md-nav__link">
-    Expose application
+  <a href="#4expose-application" class="md-nav__link">
+    4.Expose application
   </a>
   
-    <nav class="md-nav" aria-label="Expose application">
+    <nav class="md-nav" aria-label="4.Expose application">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -473,11 +473,11 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#persistence" class="md-nav__link">
-    Persistence
+  <a href="#5persistence" class="md-nav__link">
+    5.Persistence
   </a>
   
-    <nav class="md-nav" aria-label="Persistence">
+    <nav class="md-nav" aria-label="5.Persistence">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -500,11 +500,11 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#configmaps-and-secrets" class="md-nav__link">
-    ConfigMaps and Secrets
+  <a href="#6configmaps-and-secrets" class="md-nav__link">
+    6.ConfigMaps and Secrets
   </a>
   
-    <nav class="md-nav" aria-label="ConfigMaps and Secrets">
+    <nav class="md-nav" aria-label="6.ConfigMaps and Secrets">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -562,11 +562,11 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#ingress" class="md-nav__link">
-    Ingress
+  <a href="#7ingress" class="md-nav__link">
+    7.Ingress
   </a>
   
-    <nav class="md-nav" aria-label="Ingress">
+    <nav class="md-nav" aria-label="7.Ingress">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -582,11 +582,11 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#statefulset" class="md-nav__link">
-    StatefulSet
+  <a href="#8statefulset" class="md-nav__link">
+    8.StatefulSet
   </a>
   
-    <nav class="md-nav" aria-label="StatefulSet">
+    <nav class="md-nav" aria-label="8.StatefulSet">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -602,15 +602,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#network-policy" class="md-nav__link">
-    Network Policy
+  <a href="#9network-policy" class="md-nav__link">
+    9.Network Policy
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#helming" class="md-nav__link">
-    Helming
+  <a href="#10helming" class="md-nav__link">
+    10.Helming
   </a>
   
 </li>
@@ -629,7 +629,7 @@
                 
                 
                 <h1 id="tutorials-sap-btp-trail-account">Tutorials: SAP BTP trail account</h1>
-<h2 id="kubectl-basics">kubectl basics</h2>
+<h2 id="1kubectl-basics">1.kubectl basics</h2>
 <p>Register account of <a href="https://account.hanatrial.ondemand.com/">SAP BTP trail system</a>. I am using BTP Kyma runtime for the demo.</p>
 <p>Choose the entitlements for <code>k8sdev</code> subdomain:</p>
 <ul>
@@ -755,7 +755,7 @@ I have to send HTTP requests to the cluster. asking for the available nodes.</p>
 <li><a href="https://kubernetes.io/docs/reference/kubectl/cheatsheet/">kubectl cheat sheet</a></li>
 <li><a href="https://kubernetes.io/docs/reference/kubectl/jsonpath/">jsonpath in kubectl</a></li>
 </ul>
-<h2 id="work-on-pod">Work on pod</h2>
+<h2 id="2work-on-pod">2.Work on pod</h2>
 <h3 id="create-pod">Create pod</h3>
 <p>Create new namespace <code>jh-namespace</code> for my demo.</p>
 <pre><code>james@lizard:~&gt; kubectl create namespace jh-namespace
@@ -981,7 +981,7 @@ We can use <code>initContainers</code> to run some containers (e.g., <code>myser
 <li><a href="https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/">Lifecycle &amp; phases</a></li>
 <li><a href="https://www.cnblogs.com/zhenyuyaodidiao/p/6514907.html">Kubernetes pod design pattern</a></li>
 </ul>
-<h2 id="deployment">Deployment</h2>
+<h2 id="3deployment">3.Deployment</h2>
 <p>A Deployment provides declarative updates for Pods and ReplicaSets.
 The pod encapsulated the container and takes care of the desired state, that is, the deployment. 
 The "desired state" means that a specified quorum of running instances is fulfilled.</p>
@@ -1409,7 +1409,7 @@ deployment.apps &quot;nginx&quot; deleted
 <li><a href="https://kubernetes.io/docs/concepts/workloads/controllers/replicationcontroller/">Replication controller</a></li>
 <li><a href="https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/">Labels in K8s</a></li>
 </ul>
-<h2 id="expose-application">Expose application</h2>
+<h2 id="4expose-application">4.Expose application</h2>
 <h3 id="create-deployment">Create deployment</h3>
 <p>Create nginx deployment via below <code>04-deployment.yaml</code> yaml file.</p>
 <pre><code>james@lizard:~&gt; cat 04-deployment.yaml
@@ -1584,7 +1584,7 @@ deployment.apps &quot;nginx-deployment&quot; deleted
 <li><a href="https://kubernetes.io/docs/tasks/access-application-cluster/connecting-frontend-backend/">Connecting a front end to a backend</a></li>
 <li><a href="https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/">Cluster internal DNS</a></li>
 </ul>
-<h2 id="persistence">Persistence</h2>
+<h2 id="5persistence">5.Persistence</h2>
 <p>Docker has a concept of volumes, though it is somewhat looser and less managed. 
 A Docker volume is a directory on disk or in another container. Docker provides volume drivers, but the functionality is somewhat limited.</p>
 <p>Kubernetes supports many types of <a href="https://kubernetes.io/docs/concepts/storage/volumes/">volumes</a>. A Pod can use any number of volume types simultaneously. </p>
@@ -1735,7 +1735,7 @@ james@lizard:~&gt; kubectl describe pv pv-shoot--kyma--eb68ebe-e3c25178-13ec-4b2
 <li><a href="https://kubernetes.io/docs/concepts/storage/storage-classes/">storage classes</a></li>
 <li><a href="https://kubernetes.io/docs/concepts/storage/volume-snapshots/">volume snapshots</a></li>
 </ul>
-<h2 id="configmaps-and-secrets">ConfigMaps and Secrets</h2>
+<h2 id="6configmaps-and-secrets">6.ConfigMaps and Secrets</h2>
 <p>ConfigMaps and secrets build generic images and run them  with a specific configuration in an secured environment. </p>
 <p>Clean up the deployments, services, PVCs.</p>
 <h3 id="create-pvc">Create PVC</h3>
@@ -2016,7 +2016,7 @@ curl: (52) Empty reply from server
 <li><a href="https://kubernetes.io/docs/concepts/configuration/secret/">secrets in k8s</a></li>
 <li><a href="https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/">options to use a configMap</a></li>
 </ul>
-<h2 id="ingress">Ingress</h2>
+<h2 id="7ingress">7.Ingress</h2>
 <p>Ingress resources allow us to expose services through a URL. 
 We can configure an Ingress so that traffic can be directed to different services, depending on the URL that is used for a request. </p>
 <p>Find out the cluster's and project's names: </p>
@@ -2151,7 +2151,7 @@ Annotations are also key-value pairs.</p>
 <li><a href="https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/">list of ingress controllers</a></li>
 <li><a href="https://www.nginx.com/products/nginx/kubernetes-ingress-controller">nginx ingress controller</a></li>
 </ul>
-<h2 id="statefulset">StatefulSet</h2>
+<h2 id="8statefulset">8.StatefulSet</h2>
 <p>Like a Deployment, a StatefulSet manages Pods that are based on an identical container spec. 
 Unlike a Deployment, a StatefulSet maintains a sticky identity for each of their Pods. 
 These pods are created from the same spec, but are not interchangeable: each has a persistent identifier that it maintains across any rescheduling.</p>
@@ -2342,7 +2342,7 @@ statefulset.apps/web patched
 <li><a href="https://kubernetes.io/docs/concepts/workloads/pods/init-containers/">init containers</a></li>
 <li><a href="https://kubernetes.io/docs/tasks/debug-application-cluster/debug-init-containers/">debugging of init containers</a></li>
 </ul>
-<h2 id="network-policy">Network Policy</h2>
+<h2 id="9network-policy">9.Network Policy</h2>
 <p>Network policies namespace based to help us restrict access to the nginx deployment. 
 From within any pod that is not labeled correctly we will not be able to access our nginx instances.</p>
 <p>The network policy features two selector sections:</p>
@@ -2394,7 +2394,7 @@ pod &quot;tester&quot; deleted
 <li><a href="https://kubernetes.io/docs/concepts/services-networking/network-policies/">network policy basics</a></li>
 <li><a href="https://kubernetes.io/docs/tasks/administer-cluster/declare-network-policy/">example / tutorial on network policies</a></li>
 </ul>
-<h2 id="helming">Helming</h2>
+<h2 id="10helming">10.Helming</h2>
 <p>Helm is the Kubernetes package manager. It doesn't come with Kubernetes. </p>
 <p>Three concepts of helm:</p>
 <ul>
