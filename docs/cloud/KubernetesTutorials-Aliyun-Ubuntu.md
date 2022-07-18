@@ -579,576 +579,7 @@ sudo systemctl status containerd
 
 ## 2.Post Installation
 
-### Install cfssl
 
-Install `cfssl` tool
-```
-apt install golang-cfssl
-```
-
-### Set Multiple Contexts
-
-#### Current Context
-
-Execute command `kubectl config` to get current contenxt.
-```
-kubectl config get-contexts
-```
-We get below key information of the cluster.
-
-* Cluster Name: kubernetes
-* System account: kubenetes-admin
-* Current context name: kubernetes-admin@kubernetes (format: `<system_account>@<cluster_name>`)
-```
-CURRENT   NAME                          CLUSTER      AUTHINFO           NAMESPACE
-*         kubernetes-admin@kubernetes   kubernetes   kubernetes-admin 
-```
-
-
-#### Create CA Config File
-
-
-Get overview of directory `/etc/kubernetes/pki`.
-```
-tree /etc/kubernetes/pki
-```
-```
-/etc/kubernetes/pki
-├── apiserver.crt
-├── apiserver-etcd-client.crt
-├── apiserver-etcd-client.key
-├── apiserver.key
-├── apiserver-kubelet-client.crt
-├── apiserver-kubelet-client.key
-├── ca.crt
-├── ca.key
-├── etcd
-│   ├── ca.crt
-│   ├── ca.key
-│   ├── healthcheck-client.crt
-│   ├── healthcheck-client.key
-│   ├── peer.crt
-│   ├── peer.key
-│   ├── server.crt
-│   └── server.key
-├── front-proxy-ca.crt
-├── front-proxy-ca.key
-├── front-proxy-client.crt
-├── front-proxy-client.key
-├── sa.key
-└── sa.pub
-```
-
-
-Change to directory `/etc/kubernetes/pki`.
-```
-cd /etc/kubernetes/pki
-```
-
-Check if file `ca-config.json` is in place in current directory.
-```
-ll ca-config.json
-```
-
-If not, create it.
-
-* We can add multiple profiles to specify different expiry date, scenario, parameters, etc.. 
-* Profile will be used to sign certificate.
-* `87600` hours are about 10 years.
-
-
-Here we will create 3 additional profiles `dev`, `qas`, `prd`.
-```
-cat > ca-config.json <<EOF
-{
-  "signing": {
-    "default": {
-      "expiry": "87600h"
-    },
-    "profiles": {
-      "kubernetes": {
-        "usages": [
-            "signing",
-            "key encipherment",
-            "server auth",
-            "client auth"
-        ],
-        "expiry": "87600h"
-      },
-      "dev": {
-        "usages": [
-            "signing",
-            "key encipherment",
-            "server auth",
-            "client auth"
-        ],
-        "expiry": "87600h"
-      },
-      "qas": {
-        "usages": [
-            "signing",
-            "key encipherment",
-            "server auth",
-            "client auth"
-        ],
-        "expiry": "87600h"
-      },
-      "prd": {
-        "usages": [
-            "signing",
-            "key encipherment",
-            "server auth",
-            "client auth"
-        ],
-        "expiry": "87600h"
-      }
-    }
-  }
-}
-EOF
-```
-
-
-
-#### Create csr file for signature
-
-Stay in the directory `/etc/kubernetes/pki`.
-
-Create csr file `cn-cka-sha-csr.json`.
-```
-cat > cn-cka-sha-csr.json <<EOF
-{
-  "CN": "cn-cka-sha",
-  "hosts": [],
-  "key": {
-    "algo": "rsa",
-    "size": 2048
-  },
-  "names": [
-    {
-      "C": "CN",
-      "ST": "Shanghai",
-      "L": "Shanghai",
-      "O": "K8s",
-      "OU": "System"
-    }
-  ]
-}
-EOF
-```
-
-Generate certifcate and key for each profile we defined above.
-```
-cfssl gencert -ca=ca.crt -ca-key=ca.key -config=ca-config.json -profile=kubernetes cn-cka-sha-csr.json | cfssljson -bare cn-cka-sha-kubernetes
-cfssl gencert -ca=ca.crt -ca-key=ca.key -config=ca-config.json -profile=dev cn-cka-sha-csr.json | cfssljson -bare cn-cka-sha-dev
-cfssl gencert -ca=ca.crt -ca-key=ca.key -config=ca-config.json -profile=qas cn-cka-sha-csr.json | cfssljson -bare cn-cka-sha-qas
-cfssl gencert -ca=ca.crt -ca-key=ca.key -config=ca-config.json -profile=prd cn-cka-sha-csr.json | cfssljson -bare cn-cka-sha-prd
-```
-
-Get below files.
-```
-ll -tr | grep cn-cka-sha
-```
-```
--rw-r--r-- 1 root root  225 Jul 17 17:37 cn-cka-sha-csr.json
--rw-r--r-- 1 root root 1285 Jul 17 22:06 cn-cka-sha-kubernetes.pem
--rw------- 1 root root 1675 Jul 17 22:06 cn-cka-sha-kubernetes-key.pem
--rw-r--r-- 1 root root 1005 Jul 17 22:06 cn-cka-sha-kubernetes.csr
--rw-r--r-- 1 root root 1285 Jul 17 22:06 cn-cka-sha-dev.pem
--rw------- 1 root root 1679 Jul 17 22:06 cn-cka-sha-dev-key.pem
--rw-r--r-- 1 root root 1005 Jul 17 22:06 cn-cka-sha-dev.csr
--rw-r--r-- 1 root root 1285 Jul 17 22:06 cn-cka-sha-qas.pem
--rw------- 1 root root 1679 Jul 17 22:06 cn-cka-sha-qas-key.pem
--rw-r--r-- 1 root root 1005 Jul 17 22:06 cn-cka-sha-qas.csr
--rw-r--r-- 1 root root 1285 Jul 17 22:06 cn-cka-sha-prd.pem
--rw------- 1 root root 1679 Jul 17 22:06 cn-cka-sha-prd-key.pem
--rw-r--r-- 1 root root 1005 Jul 17 22:06 cn-cka-sha-prd.csr
-```
-
-
-
-
-
-
-
-#### Create file kubeconfig
-
-Get the IP of Control Plane (e.g., `172.16.18.161` here) to composite evn variable `KUBE_APISERVER` (`https://<control_plane_ip>:<port>`).
-```
-kubectl get node -owide
-```
-```
-NAME     STATUS   ROLES                  AGE   VERSION   INTERNAL-IP     EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION      CONTAINER-RUNTIME
-cka001   Ready    control-plane,master   18d   v1.23.8   172.16.18.161   <none>        Ubuntu 20.04.4 LTS   5.4.0-113-generic   containerd://1.5.9
-cka002   Ready    <none>                 18d   v1.23.8   172.16.18.160   <none>        Ubuntu 20.04.4 LTS   5.4.0-113-generic   containerd://1.5.9
-cka003   Ready    <none>                 18d   v1.23.8   172.16.18.159   <none>        Ubuntu 20.04.4 LTS   5.4.0-113-generic   containerd://1.5.9
-```
-
-Export env `KUBE_APISERVER`.
-```
-echo "export KUBE_APISERVER=\"https://172.16.18.161:6443\"" >> ~/.bashrc
-source ~/.bashrc
-```
-
-Verify the setting.
-```
-echo $KUBE_APISERVER
-```
-Output:
-```
-https://172.16.18.161:6443
-```
-
-
-##### Set up cluster
-
-Stay in the directory `/etc/kubernetes/pki`.
-
-Generate kubeconfig file.
-```
-kubectl config set-cluster kubernetes \
-  --certificate-authority=/etc/kubernetes/pki/ca.crt \
-  --embed-certs=true \
-  --server=${KUBE_APISERVER} \
-  --kubeconfig=cn-cka-sha.kubeconfig
-```
-Output:
-```
-Cluster "kubernetes" set.
-```
-
-Now we get the new config file `cn-cka-sha.kubeconfig`
-```
-ll -tr | grep cn-cka-sha
-```
-Output:
-```
--rw-r--r-- 1 root root  225 Jul 17 17:37 cn-cka-sha-csr.json
--rw-r--r-- 1 root root 1285 Jul 17 22:06 cn-cka-sha-kubernetes.pem
--rw------- 1 root root 1675 Jul 17 22:06 cn-cka-sha-kubernetes-key.pem
--rw-r--r-- 1 root root 1005 Jul 17 22:06 cn-cka-sha-kubernetes.csr
--rw-r--r-- 1 root root 1285 Jul 17 22:06 cn-cka-sha-dev.pem
--rw------- 1 root root 1679 Jul 17 22:06 cn-cka-sha-dev-key.pem
--rw-r--r-- 1 root root 1005 Jul 17 22:06 cn-cka-sha-dev.csr
--rw-r--r-- 1 root root 1285 Jul 17 22:06 cn-cka-sha-qas.pem
--rw------- 1 root root 1679 Jul 17 22:06 cn-cka-sha-qas-key.pem
--rw-r--r-- 1 root root 1005 Jul 17 22:06 cn-cka-sha-qas.csr
--rw-r--r-- 1 root root 1285 Jul 17 22:06 cn-cka-sha-prd.pem
--rw------- 1 root root 1679 Jul 17 22:06 cn-cka-sha-prd-key.pem
--rw-r--r-- 1 root root 1005 Jul 17 22:06 cn-cka-sha-prd.csr
--rw------- 1 root root 1671 Jul 17 22:58 cn-cka-sha.kubeconfig
-```
-
-Get content of file `cn-cka-sha.kubeconfig`.
-```
-cat cn-cka-sha.kubeconfig
-```
-```
-apiVersion: v1
-clusters:
-- cluster:
-    certificate-authority-data: LS0tLS1CRUdJT......==
-    server: https://172.16.18.161:6443
-  name: kubernetes
-contexts: null
-current-context: ""
-kind: Config
-preferences: {}
-users: null
-```
-
-
-
-
-##### Set up user
-
-In file `cn-cka-sha.kubeconfig`, user info is null. 
-
-Set up user.
-```
-kubectl config set-credentials cn-cka-sha-kubernetes \
-  --client-certificate=/etc/kubernetes/pki/cn-cka-sha-kubernetes.pem \
-  --client-key=/etc/kubernetes/pki/cn-cka-sha-kubernetes-key.pem \
-  --embed-certs=true \
-  --kubeconfig=cn-cka-sha.kubeconfig
-
-kubectl config set-credentials cn-cka-sha-dev \
-  --client-certificate=/etc/kubernetes/pki/cn-cka-sha-dev.pem \
-  --client-key=/etc/kubernetes/pki/cn-cka-sha-dev-key.pem \
-  --embed-certs=true \
-  --kubeconfig=cn-cka-sha.kubeconfig
-
-kubectl config set-credentials cn-cka-sha-qas \
-  --client-certificate=/etc/kubernetes/pki/cn-cka-sha-qas.pem \
-  --client-key=/etc/kubernetes/pki/cn-cka-sha-qas-key.pem \
-  --embed-certs=true \
-  --kubeconfig=cn-cka-sha.kubeconfig
-
-kubectl config set-credentials cn-cka-sha-prd \
-  --client-certificate=/etc/kubernetes/pki/cn-cka-sha-prd.pem \
-  --client-key=/etc/kubernetes/pki/cn-cka-sha-prd-key.pem \
-  --embed-certs=true \
-  --kubeconfig=cn-cka-sha.kubeconfig
-```
-
-Now file `cn-cka-sha.kubeconfig` was updated and user information was added.
-```
-cat cn-cka-sha.kubeconfig
-```
-```
-apiVersion: v1
-clusters:
-- cluster:
-    certificate-authority-data: <your_key>
-    server: https://172.16.18.161:6443
-  name: kubernetes
-contexts: null
-current-context: ""
-kind: Config
-preferences: {}
-users:
-- name: cn-cka-sha-dev
-  user:
-    client-certificate-data: <your_key>
-    client-key-data: <your_key>
-- name: cn-cka-sha-kubernetes
-  user:
-    client-certificate-data: <your_key>
-    client-key-data: <your_key>
-- name: cn-cka-sha-prd
-  user:
-    client-certificate-data: <your_key>
-    client-key-data: <your_key>
-- name: cn-cka-sha-qas
-  user:
-    client-certificate-data: <your_key>
-    client-key-data: <your_key>
-```
-
-Now we have a complete kubeconfig file `cn-cka-sha.kubeconfig`.
-When we use it to get node information, receive error below because we did not set up current-context in kubeconfig file.
-```
-kubectl --kubeconfig=cn-cka-sha.kubeconfig get nodes
-```
-```
-The connection to the server localhost:8080 was refused - did you specify the right host or port?
-```
-
-Current contents is empty.
-```
-kubectl --kubeconfig=cn-cka-sha.kubeconfig config get-contexts
-```
-```
-CURRENT   NAME   CLUSTER   AUTHINFO   NAMESPACE
-```
-
-
-
-##### Set up Context
-
-Set up context. 
-```
-kubectl config set-context kubernetes --cluster=kubernetes --user=cn-cka-sha-kubernetes  --kubeconfig=cn-cka-sha.kubeconfig
-kubectl config set-context dev --cluster=kubernetes --user=cn-cka-sha-dev  --kubeconfig=cn-cka-sha.kubeconfig
-kubectl config set-context qas --cluster=kubernetes --user=cn-cka-sha-qas  --kubeconfig=cn-cka-sha.kubeconfig
-kubectl config set-context prd --cluster=kubernetes --user=cn-cka-sha-prd  --kubeconfig=cn-cka-sha.kubeconfig
-```
-
-Now we have context now but the `CURRENT` flag is empty.
-```
-kubectl --kubeconfig=cn-cka-sha.kubeconfig config get-contexts
-```
-Output:
-```
-CURRENT   NAME         CLUSTER      AUTHINFO                NAMESPACE
-          dev          kubernetes   cn-cka-sha-dev          
-          kubernetes   kubernetes   cn-cka-sha-kubernetes   
-          prd          kubernetes   cn-cka-sha-prd          
-          qas          kubernetes   cn-cka-sha-qas  
-```
-
-Set up default context. The context will link clusters and users for multiple clusters environment and we can switch to different cluster.
-```
-kubectl --kubeconfig=cn-cka-sha.kubeconfig config use-context dev
-```
-
-
-##### Verify
-
-Now `CURRENT` is marked with `*`, that is, current-context is set up.
-```
-kubectl --kubeconfig=/etc/kubernetes/pki/cn-cka-sha.kubeconfig config get-contexts
-```
-```
-CURRENT   NAME         CLUSTER      AUTHINFO                NAMESPACE
-*         dev          kubernetes   cn-cka-sha-dev          
-          kubernetes   kubernetes   cn-cka-sha-kubernetes   
-          prd          kubernetes   cn-cka-sha-prd          
-          qas          kubernetes   cn-cka-sha-qas    
-```
-
-Because user `dev` does not have authorization in the cluster, we will receive `forbidden` error when we try to get information of Pods or Nodes.
-```
-kubectl --kubeconfig=/etc/kubernetes/pki/cn-cka-sha.kubeconfig get pod 
-kubectl --kubeconfig=/etc/kubernetes/pki/cn-cka-sha.kubeconfig get node
-```
-
-
-#### Merge kubeconfig files
-
-Make a copy of your existing config
-```
-cp ~/.kube/config ~/.kube/config.old 
-```
-
-Merge the two config files together into a new config file `/tmp/config`.
-```
-KUBECONFIG=~/.kube/config:/etc/kubernetes/pki/cn-cka-sha.kubeconfig kubectl config view --flatten > /tmp/config
-```
-
-Replace the old config with the new merged config
-```
-mv /tmp/config ~/.kube/config
-```
-
-Now the new `~/.kube/config` looks like below.
-```
-apiVersion: v1
-clusters:
-- cluster:
-    certificate-authority-data: <your_key>
-    server: https://172.16.18.161:6443
-  name: kubernetes
-contexts:
-- context:
-    cluster: kubernetes
-    user: cn-cka-sha-dev
-  name: dev
-- context:
-    cluster: kubernetes
-    user: cn-cka-sha-kubernetes
-  name: kubernetes
-- context:
-    cluster: kubernetes
-    user: kubernetes-admin
-  name: kubernetes-admin@kubernetes
-- context:
-    cluster: kubernetes
-    user: cn-cka-sha-prd
-  name: prd
-- context:
-    cluster: kubernetes
-    user: cn-cka-sha-qas
-  name: qas
-current-context: kubernetes-admin@kubernetes
-kind: Config
-preferences: {}
-users:
-- name: cn-cka-sha-dev
-  user:
-    client-certificate-data: <your_key>
-    client-key-data: <your_key>
-- name: cn-cka-sha-kubernetes
-  user:
-    client-certificate-data: <your_key>
-    client-key-data: <your_key>
-- name: cn-cka-sha-prd
-  user:
-    client-certificate-data: <your_key>
-    client-key-data: <your_key>
-- name: cn-cka-sha-qas
-  user:
-    client-certificate-data: <your_key>
-    client-key-data: <your_key>
-- name: kubernetes-admin
-  user:
-    client-certificate-data: <your_key>
-    client-key-data: <your_key>
-```
-
-
-
-Verify contexts after kubeconfig merged.
-```
-kubectl config get-contexts
-```
-Current context is the system default `kubernetes-admin@kubernetes`.
-```
-CURRENT   NAME                          CLUSTER      AUTHINFO                NAMESPACE
-          dev                           kubernetes   cn-cka-sha-dev          
-          kubernetes                    kubernetes   cn-cka-sha-kubernetes   
-*         kubernetes-admin@kubernetes   kubernetes   kubernetes-admin        
-          prd                           kubernetes   cn-cka-sha-prd          
-          qas                           kubernetes   cn-cka-sha-qas 
-```
-
-
-
-### Namespaces & Contexts
-
-Get list of Namespace with Label information.
-```
-kubectl get ns --show-labels
-```
-
-Create Namespaces.
-```
-kubectl create namespace kubernetes
-kubectl create namespace dev
-kubectl create namespace qas
-kubectl create namespace prd
-```
-
-Use below command to set a context with new update, e.g, update default namespace, etc..
-```
-kubectl config set-context <context name> --cluster=<cluster name> --namespace=<namespace name> --user=<user name> 
-```
-
-Let's set default namespace to each context.
-```
-kubectl config set-context kubernetes-admin@kubernetes --cluster=kubernetes --namespace=default --user=kubernetes-admin
-kubectl config set-context kubernetes --cluster=kubernetes --namespace=kubernetes --user=cn-cka-sha-kubernetes
-kubectl config set-context dev --cluster=kubernetes --namespace=dev --user=cn-cka-sha-dev
-kubectl config set-context qas --cluster=kubernetes --namespace=qas --user=cn-cka-sha-qas
-kubectl config set-context prd --cluster=kubernetes --namespace=prd --user=cn-cka-sha-prd
-```
-
-Let's check current context information.
-```
-kubectl config get-contexts
-```
-Output:
-```
-CURRENT   NAME                          CLUSTER      AUTHINFO                NAMESPACE
-          dev                           kubernetes   cn-cka-sha-dev          dev
-          kubernetes                    kubernetes   cn-cka-sha-kubernetes   kubernetes
-*         kubernetes-admin@kubernetes   kubernetes   kubernetes-admin        default
-          prd                           kubernetes   cn-cka-sha-prd          prd
-          qas                           kubernetes   cn-cka-sha-qas          qas
-```
-
-To switch to a new context, use below command.
-```
-kubectl config use-contexts <context name>
-```
-For example.
-```
-kubectl config use-context dev
-```
-Verify if it's changed as expected.
-```
-kubectl config get-contexts
-```
-```
-CURRENT   NAME                          CLUSTER      AUTHINFO                NAMESPACE
-*         dev                           kubernetes   cn-cka-sha-dev          dev
-          kubernetes                    kubernetes   cn-cka-sha-kubernetes   kubernetes
-          kubernetes-admin@kubernetes   kubernetes   kubernetes-admin        default
-          prd                           kubernetes   cn-cka-sha-prd          prd
-          qas                           kubernetes   cn-cka-sha-qas          qas
-```
-
-Please be noted, four users beginning with `cn-cka-sha` we created don't have any authorizations, e.g., access namespaces, get pods, etc..
 
 
 
@@ -5741,155 +5172,644 @@ kubectl drain <node_name> --ignore-daemonsets --delete-emptydir-data
 
 Role-based access control (RBAC) is a method of regulating access to computer or network resources based on the roles of individual users within the organization.
 
+
+When using client certificate authentication, we can generate certificates manually through `easyrsa`, `openssl` or `cfssl`.
+
+Tasks in this section:
+
+1. Create differnet profiles for one cluster.
+2. Use `cfssl` generate certificates for each profile.
+3. Create new kubeconfig file with all profiles and associated users.
+4. Merge old and new kubeconfig files into new kubeconfig file. We can switch different context for further demo.
+
+Best pracice: 
+
+The purpose of kubeconfig is to grant different authorizations to different users for different clusters. 
+Different contexts will link to different clusters.
+
+It's not recommended to put multiple users' contexts for one cluster in one kubeconfig. 
+It's recommended to use one kubeconfig file for one user.
+
+
+
+### Install cfssl
+
+Install `cfssl` tool
+```
+apt install golang-cfssl
+```
+
+### Set Multiple Contexts
+
+#### Current Context
+
+Execute command `kubectl config` to get current contenxt.
+```
+kubectl config get-contexts
+```
+We get below key information of the cluster.
+
+* Cluster Name: kubernetes
+* System account: kubenetes-admin
+* Current context name: kubernetes-admin@kubernetes (format: `<system_account>@<cluster_name>`)
+```
+CURRENT   NAME                          CLUSTER      AUTHINFO           NAMESPACE
+*         kubernetes-admin@kubernetes   kubernetes   kubernetes-admin 
+```
+
+
+#### Create CA Config File
+
+
+Get overview of directory `/etc/kubernetes/pki`.
+```
+tree /etc/kubernetes/pki
+```
+```
+/etc/kubernetes/pki
+├── apiserver.crt
+├── apiserver-etcd-client.crt
+├── apiserver-etcd-client.key
+├── apiserver.key
+├── apiserver-kubelet-client.crt
+├── apiserver-kubelet-client.key
+├── ca.crt
+├── ca.key
+├── etcd
+│   ├── ca.crt
+│   ├── ca.key
+│   ├── healthcheck-client.crt
+│   ├── healthcheck-client.key
+│   ├── peer.crt
+│   ├── peer.key
+│   ├── server.crt
+│   └── server.key
+├── front-proxy-ca.crt
+├── front-proxy-ca.key
+├── front-proxy-client.crt
+├── front-proxy-client.key
+├── sa.key
+└── sa.pub
+```
+
+
+Change to directory `/etc/kubernetes/pki`.
+```
+cd /etc/kubernetes/pki
+```
+
+Check if file `ca-config.json` is in place in current directory.
+```
+ll ca-config.json
+```
+
+If not, create it.
+
+* We can add multiple profiles to specify different expiry date, scenario, parameters, etc.. 
+* Profile will be used to sign certificate.
+* `87600` hours are about 10 years.
+
+
+Here we will create 1 additional profile `dev`.
+```
+cat > ca-config.json <<EOF
+{
+  "signing": {
+    "default": {
+      "expiry": "87600h"
+    },
+    "profiles": {
+      "dev": {
+        "usages": [
+            "signing",
+            "key encipherment",
+            "server auth",
+            "client auth"
+        ],
+        "expiry": "87600h"
+      }
+    }
+  }
+}
+EOF
+```
+
+
+
+#### Create CSR file for signature
+
+A CertificateSigningRequest (CSR) resource is used to request that a certificate be signed by a denoted signer, after which the request may be approved or denied before finally being signed.
+
+
+It is important to set `CN` and `O` attribute of the CSR. 
+
+* The `CN` is the *name of the user* to request CSR.
+* The `O` is the *group* that this user will belong to. We can refer to RBAC for standard groups.
+
+Stay in the directory `/etc/kubernetes/pki`.
+
+Create csr file `cka-dev-csr.json`. 
+`CN` is `cka-dev`.
+`O` is `k8s`.
+```
+cat > cka-dev-csr.json <<EOF
+{
+  "CN": "cka-dev",
+  "hosts": [],
+  "key": {
+    "algo": "rsa",
+    "size": 2048
+  },
+  "names": [
+    {
+      "C": "CN",
+      "ST": "Shanghai",
+      "L": "Shanghai",
+      "O": "k8s",
+      "OU": "System"
+    }
+  ]
+}
+EOF
+```
+
+Generate certifcate and key for the profile we defined above.
+`cfssljson -bare cka-dev` will generate two files, `cka-dev.pem` as public key and `cka-dev-key.pem` as private key.
+```
+cfssl gencert -ca=ca.crt -ca-key=ca.key -config=ca-config.json -profile=dev cka-dev-csr.json | cfssljson -bare cka-dev
+```
+
+Get below files.
+```
+ll -tr | grep cka-dev
+```
+```
+-rw-r--r-- 1 root root  222 Jul 18 20:36 cka-dev-csr.json
+-rw-r--r-- 1 root root 1281 Jul 18 20:49 cka-dev.pem
+-rw------- 1 root root 1679 Jul 18 20:49 cka-dev-key.pem
+-rw-r--r-- 1 root root 1001 Jul 18 20:49 cka-dev.csr
+```
+
+
+
+
+
+
+
+#### Create file kubeconfig
+
+Get the IP of Control Plane (e.g., `172.16.18.161` here) to composite evn variable `KUBE_APISERVER` (`https://<control_plane_ip>:<port>`).
+```
+kubectl get node -owide
+```
+```
+NAME     STATUS   ROLES                  AGE   VERSION   INTERNAL-IP     EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION      CONTAINER-RUNTIME
+cka001   Ready    control-plane,master   18d   v1.23.8   172.16.18.161   <none>        Ubuntu 20.04.4 LTS   5.4.0-113-generic   containerd://1.5.9
+cka002   Ready    <none>                 18d   v1.23.8   172.16.18.160   <none>        Ubuntu 20.04.4 LTS   5.4.0-113-generic   containerd://1.5.9
+cka003   Ready    <none>                 18d   v1.23.8   172.16.18.159   <none>        Ubuntu 20.04.4 LTS   5.4.0-113-generic   containerd://1.5.9
+```
+
+Export env `KUBE_APISERVER`.
+```
+echo "export KUBE_APISERVER=\"https://172.16.18.161:6443\"" >> ~/.bashrc
+source ~/.bashrc
+```
+
+Verify the setting.
+```
+echo $KUBE_APISERVER
+```
+Output:
+```
+https://172.16.18.161:6443
+```
+
+
+##### Set up cluster
+
+Stay in the directory `/etc/kubernetes/pki`.
+
+Generate kubeconfig file.
+```
+kubectl config set-cluster kubernetes \
+  --certificate-authority=/etc/kubernetes/pki/ca.crt \
+  --embed-certs=true \
+  --server=${KUBE_APISERVER} \
+  --kubeconfig=cka-dev.kubeconfig
+```
+
+Now we get the new config file `cka-dev.kubeconfig`
+```
+ll -tr | grep cka-dev
+```
+Output:
+```
+-rw-r--r-- 1 root root  222 Jul 18 20:36 cka-dev-csr.json
+-rw-r--r-- 1 root root 1281 Jul 18 20:49 cka-dev.pem
+-rw------- 1 root root 1679 Jul 18 20:49 cka-dev-key.pem
+-rw-r--r-- 1 root root 1001 Jul 18 20:49 cka-dev.csr
+-rw------- 1 root root 1671 Jul 18 20:50 cka-dev.kubeconfig
+```
+
+Get content of file `cka-dev.kubeconfig`.
+```
+cat cka-dev.kubeconfig
+```
+```
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority-data: <your_key>
+    server: https://172.16.18.161:6443
+  name: kubernetes
+contexts: null
+current-context: ""
+kind: Config
+preferences: {}
+users: null
+```
+
+
+
+
+##### Set up user
+
+In file `cka-dev.kubeconfig`, user info is null. 
+
+Set up user `cka-dev`.
+```
+kubectl config set-credentials cka-dev \
+  --client-certificate=/etc/kubernetes/pki/cka-dev.pem \
+  --client-key=/etc/kubernetes/pki/cka-dev-key.pem \
+  --embed-certs=true \
+  --kubeconfig=cka-dev.kubeconfig
+```
+
+Now file `cka-dev.kubeconfig` was updated and user information was added.
+```
+cat cka-dev.kubeconfig
+```
+```
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority-data: <your_key>
+    server: https://172.16.18.161:6443
+  name: kubernetes
+contexts: null
+current-context: ""
+kind: Config
+preferences: {}
+users:
+- name: cka-dev
+  user:
+    client-certificate-data: <your_key>
+    client-key-data: <your_key>
+```
+
+Now we have a complete kubeconfig file `cka-dev.kubeconfig`.
+When we use it to get node information, receive error below because we did not set up current-context in kubeconfig file.
+```
+kubectl --kubeconfig=cka-dev.kubeconfig get nodes
+```
+```
+The connection to the server localhost:8080 was refused - did you specify the right host or port?
+```
+
+Current contents is empty.
+```
+kubectl --kubeconfig=cka-dev.kubeconfig config get-contexts
+```
+```
+CURRENT   NAME   CLUSTER   AUTHINFO   NAMESPACE
+```
+
+
+
+##### Set up Context
+
+Set up context. 
+```
+kubectl config set-context dev --cluster=kubernetes --user=cka-dev  --kubeconfig=cka-dev.kubeconfig
+```
+
+Now we have context now but the `CURRENT` flag is empty.
+```
+kubectl --kubeconfig=cka-dev.kubeconfig config get-contexts
+```
+Output:
+```
+CURRENT   NAME   CLUSTER      AUTHINFO   NAMESPACE
+          dev    kubernetes   cka-dev 
+```
+
+Set up default context. The context will link clusters and users for multiple clusters environment and we can switch to different cluster.
+```
+kubectl --kubeconfig=cka-dev.kubeconfig config use-context dev
+```
+
+
+##### Verify
+
+Now `CURRENT` is marked with `*`, that is, current-context is set up.
+```
+kubectl --kubeconfig=cka-dev.kubeconfig config get-contexts
+```
+```
+CURRENT   NAME   CLUSTER      AUTHINFO   NAMESPACE
+*         dev    kubernetes   cka-dev      
+```
+
+Because user `cka-dev` does not have authorization in the cluster, we will receive `forbidden` error when we try to get information of Pods or Nodes.
+```
+kubectl --kubeconfig=/etc/kubernetes/pki/cka-dev.kubeconfig get pod 
+kubectl --kubeconfig=/etc/kubernetes/pki/cka-dev.kubeconfig get node
+```
+
+
+#### Merge kubeconfig files
+
+Make a copy of your existing config
+```
+cp ~/.kube/config ~/.kube/config.old 
+```
+
+Merge the two config files together into a new config file `/tmp/config`.
+```
+KUBECONFIG=~/.kube/config:/etc/kubernetes/pki/cka-dev.kubeconfig  kubectl config view --flatten > /tmp/config
+```
+
+Replace the old config with the new merged config
+```
+mv /tmp/config ~/.kube/config
+```
+
+Now the new `~/.kube/config` looks like below.
+```
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority-data: <your_key>
+    server: https://172.16.18.161:6443
+  name: kubernetes
+contexts:
+- context:
+    cluster: kubernetes
+    user: cka-dev
+  name: cka-dev@kubernetes
+- context:
+    cluster: kubernetes
+    user: kubernetes-admin
+  name: kubernetes-admin@kubernetes
+current-context: kubernetes-admin@kubernetes
+kind: Config
+preferences: {}
+users:
+- name: cka-dev
+  user:
+    client-certificate-data: <your_key>
+    client-key-data: <your_key>
+- name: kubernetes-admin
+  user:
+    client-certificate-data: <your_key>
+    client-key-data: <your_key>
+```
+
+
+
+Verify contexts after kubeconfig merged.
+```
+kubectl config get-contexts
+```
+Current context is the system default `kubernetes-admin@kubernetes`.
+```
+CURRENT   NAME                          CLUSTER      AUTHINFO           NAMESPACE
+          cka-dev@kubernetes            kubernetes   cka-dev            
+*         kubernetes-admin@kubernetes   kubernetes   kubernetes-admin   
+```
+
+
+
+### Namespaces & Contexts
+
+Get list of Namespace with Label information.
+```
+kubectl get ns --show-labels
+```
+
+Create Namespace `dev`.
+```
+kubectl create namespace dev
+```
+
+Use below command to set a context with new update, e.g, update default namespace, etc..
+```
+kubectl config set-context <context name> --cluster=<cluster name> --namespace=<namespace name> --user=<user name> 
+```
+
+Let's set default namespace to each context.
+```
+kubectl config set-context kubernetes-admin@kubernetes --cluster=kubernetes --namespace=default --user=kubernetes-admin
+kubectl config set-context dev@kubernetes --cluster=kubernetes --namespace=dev --user=cka-dev
+```
+
+Let's check current context information.
+```
+kubectl config get-contexts
+```
+Output:
+```
+CURRENT   NAME                          CLUSTER      AUTHINFO           NAMESPACE
+          cka-dev@kubernetes            kubernetes   cka-dev            dev
+*         kubernetes-admin@kubernetes   kubernetes   kubernetes-admin   default
+```
+
+To switch to a new context, use below command.
+```
+kubectl config use-contexts <context name>
+```
+
+For example.
+```
+kubectl config use-context dev
+```
+Verify if it's changed as expected.
+```
+kubectl config get-contexts
+```
+```
+CURRENT   NAME                          CLUSTER      AUTHINFO           NAMESPACE
+*         cka-dev@kubernetes            kubernetes   cka-dev            dev
+          kubernetes-admin@kubernetes   kubernetes   kubernetes-admin   default
+```
+
+Be noted, four users beginning with `cka-dev` created don't have any authorizations, e.g., access namespaces, get pods, etc..
+Referring RBAC to grant their authorizations. 
+
+
+
+
+
+
 ### Role & RoleBinding
 
-#### Create Role and RoleBinding
 
-Create a role `pod-reader` with only `get`,`watch`,`list` authorization for Pod resource in `default` namespace.
+Switch to context `kubernetes-admin@kubernetes`.
 ```
-cat > role.yaml <<EOF
+kubectl config use-context kubernetes-admin@kubernetes
+```
+
+
+Use `kubectl create role` command  with option `--dry-run=client` and `-o yaml` to generate yaml template for customizing. 
+```
+kubectl create role admin-dev --resource=pods --verb=get --verb=list --verb=watch --dry-run=client -o yaml
+```
+
+Create role with yaml file.
+```
+cat > role-cka-dev.yaml << EOF
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  namespace: default
-  name: pod-reader
+  namespace: dev
+  name: admin-dev
 rules:
-- apiGroups: [""] # Empty "" means core API group
-  resources: ["pods"]
-  verbs: ["get", "watch", "list"]
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  verbs:
+  - get
+  - watch
+  - list
 EOF
 
-
-kubectl apply -f role.yaml
+kubectl apply -f role-cka-dev.yaml
 ```
 
-Bind the role `pod-reader` to user `test-cka`.
+Use `kubectl create rolebinding` command  with option `--dry-run=client` and `-o yaml` to generate yaml template for customizing.
 ```
-cat > rolebinding.yaml << EOF
-kind: RoleBinding
+kubectl create rolebinding admin --role=admin-dev --user=cka-dev --dry-run=client -o yaml
+```
+
+Create rolebinding with yaml file.
+```
+cat > role-binding-cka-dev.yaml << EOF
 apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
 metadata:
-  name: read-pods
-  namespace: default
-subjects:
-- kind: User
-  name: test-cka
-  apiGroup: rbac.authorization.k8s.io
+  name: admin
+  namespace: dev
 roleRef:
-  kind: Role
-  name: pod-reader
   apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: admin-dev
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: User
+  name: cka-dev
 EOF
 
-
-kubectl apply -f rolebinding.yaml
+kubectl apply -f role-binding-cka-dev.yaml
 ```
 
-#### Verify Authorization
+Verify authorzation of user `cka-dev` on Namespace `dev`.
 
-##### Check Pod Status
-
-Get Pods status via user `test-cka`.
+Switch to context `cka-dev@kubernetes`.
 ```
-kubectl --kubeconfig /etc/kubernetes/pki/test-cka.kubeconfig get pod
-```
-```
-No resources found in default namespace.
-```
-
-
-##### Check Node Status
-
-We receive error to get node status because the role we defined is only for Pod resource.
-```
-kubectl --kubeconfig /etc/kubernetes/pki/test-cka.kubeconfig get node
-```
-```shell
-Error from server (Forbidden): nodes is forbidden: User "test-cka" cannot list resource "nodes" in API group "" at the cluster scope
+kubectl config use-context cka-dev@kubernetes
 ```
 
 
 
-##### Delete Pod
-
-We receive error when try to delete a Pod because we only have `get`,`watch`,`list` for Pod, no `delete` authorization.
-
+Get Pods status in Namespace `dev`. Success!
 ```
-kubectl --kubeconfig /etc/kubernetes/pki/test-cka.kubeconfig delete pod nslookup
-```
-```
-Error from server (Forbidden): pods "nslookup" is forbidden: User "test-cka" cannot delete resource "pods" in API group "" in the namespace "default"
+kubectl get pod -n dev
 ```
 
+Get Pods status in Namespace `kube-system`. Failed, because the authorzation is only for Namespace `dev`.
+```
+kubectl get pod -n kube-system
+```
+
+Get Nodes status. Failed, because the role we defined is only for Pod resource.
+```
+kubectl get node
+```
+
+Create a Pod in Namespace `dev`. Failed because we only have `get`,`watch`,`list` for Pod, no `create` authorization.
+```
+kubectl run nginx --image=nginx -n dev
+```
 
 
-##### Check Pods in other Namespace
-
-We receive error to get Pods status in other namespace because the role we defined is only for `default` namespace.
-```
-kubectl --kubeconfig /etc/kubernetes/pki/test-cka.kubeconfig get pod -n kube-system
-```
-```
-Error from server (Forbidden): pods is forbidden: User "test-cka" cannot list resource "pods" in API group "" in the namespace "kube-system"
-```
 
 
 
 ### ClusterRole & ClusterRoleBinding
 
-#### Create ClusterRole and ClusterRoleBinding
+Switch to context `kubernetes-admin@kubernetes`.
+```
+kubectl config use-context kubernetes-admin@kubernetes
+```
 
 Create a ClusterRole with authorization `get`,`watch`,`list` for `nodes` resource.
 ```
-cat > clusterrole.yaml <<EOF
+cat > clusterrole-cka-dev.yaml <<EOF
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: nodes-reader
+  name: nodes-admin
 rules:
-- apiGroups: [""]
-  resources: ["nodes"]
-  verbs: ["get", "watch", "list"]
+- apiGroups:
+  - ""
+  resources: 
+  - nodes
+  verbs:
+  - get
+  - watch
+  - list
 EOF
 
 
-kubectl apply -f clusterrole.yaml
+kubectl apply -f clusterrole-cka-dev.yaml
 ```
 
-Bind ClusterRole `nodes-reader` to user `test-cka`.
+Bind ClusterRole `nodes-admin` to user `cka-dev`.
 
 ```
-cat > clusterrolebinding.yaml << EOF
+cat > clusterrolebinding-cka-dev.yaml << EOF
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: read-nodes-global
+  name: admin
 subjects:
 - kind: User
-  name: test-cka
+  name: cka-dev
   apiGroup: rbac.authorization.k8s.io
 roleRef:
   kind: ClusterRole
-  name: nodes-reader
+  name: nodes-admin
   apiGroup: rbac.authorization.k8s.io
 EOF
 
 
-kubectl apply -f clusterrolebinding.yaml
+kubectl apply -f clusterrolebinding-cka-dev.yaml
 ```
 
-#### Verify Authorization
+Verify Authorization
 
-Try to get node information, no error received.
+Switch to context `cka-dev@kubernetes`.
 ```
-kubectl --kubeconfig /etc/kubernetes/pki/test-cka.kubeconfig get node
+kubectl config use-context cka-dev@kubernetes
 ```
+
+Get node information. Success!
 ```
-NAME     STATUS   ROLES                  AGE   VERSION
-cka001   Ready    control-plane,master   18d   v1.23.8
-cka002   Ready    <none>                 18d   v1.23.8
-cka003   Ready    <none>                 18d   v1.23.8
+kubectl get node
 ```
+
+
 
 
 
@@ -7559,7 +7479,7 @@ Template.BasePath            # 当前模板目录路径
 
 
 
-## A1.讨论
+## A1.Discussion
 
 **6/26**
 
