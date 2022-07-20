@@ -31,4 +31,3 @@ Start up local service for testing.
 ```
 mkdocs serve
 ```
-
