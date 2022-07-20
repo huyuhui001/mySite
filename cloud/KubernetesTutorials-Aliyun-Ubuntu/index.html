@@ -3188,6 +3188,7 @@ EOF
 <pre><code>cd ~
 </code></pre>
 <p><code>calico/node</code> runs as a daemon set so that it is installed on every node in the cluster.</p>
+<p>Change <code>image: calico/node:v3.20.0</code> to right version. </p>
 <p>Create the daemon set</p>
 <pre><code>kubectl apply -f - &lt;&lt;EOF
 kind: DaemonSet
@@ -3576,25 +3577,19 @@ k8s.io     20            60        0
 <p>Get containers under specific namespace with <code>-n</code> option.</p>
 <pre><code>nerdctl -n k8s.io ps
 </code></pre>
-<pre><code>CONTAINER ID    IMAGE                                                                      COMMAND                   CREATED       STATUS    PORTS    NAMES
-06d6c23a4d38    registry.aliyuncs.com/google_containers/pause:3.6                          &quot;/pause&quot;                  2 days ago    Up                 k8s://kube-system/kube-apiserver-cka001                                               
-086f9192513d    registry.aliyuncs.com/google_containers/kube-controller-manager:v1.23.8    &quot;kube-controller-man…&quot;    2 days ago    Up                 k8s://kube-system/kube-controller-manager-cka001/kube-controller-manager              
-0923a733ee1e    registry.aliyuncs.com/google_containers/pause:3.6                          &quot;/pause&quot;                  2 days ago    Up                 k8s://kube-system/coredns-6d8c4cb4d-z5cbb                                             
-0d6d7cea48ae    registry.aliyuncs.com/google_containers/coredns:v1.8.6                     &quot;/coredns -conf /etc…&quot;    2 days ago    Up                 k8s://kube-system/coredns-6d8c4cb4d-z5cbb/coredns                                     
-43fe1ef0aac2    registry.aliyuncs.com/google_containers/pause:3.6                          &quot;/pause&quot;                  2 days ago    Up                 k8s://kube-system/kube-proxy-rzmpb                                                    
-454abe460028    registry.aliyuncs.com/google_containers/pause:3.6                          &quot;/pause&quot;                  2 days ago    Up                 k8s://kube-system/coredns-6d8c4cb4d-kv98s                                             
-508464b96dcf    registry.aliyuncs.com/google_containers/etcd:3.5.1-0                       &quot;etcd --advertise-cl…&quot;    2 days ago    Up                 k8s://kube-system/etcd-cka001/etcd                                                    
-535f7cf7f001    registry.aliyuncs.com/google_containers/pause:3.6                          &quot;/pause&quot;                  2 days ago    Up                 k8s://kube-system/kube-controller-manager-cka001                                      
-5434068a0358    registry.aliyuncs.com/google_containers/kube-apiserver:v1.23.8             &quot;kube-apiserver --ad…&quot;    2 days ago    Up                 k8s://kube-system/kube-apiserver-cka001/kube-apiserver                                
-67c0b63b50e6    registry.aliyuncs.com/google_containers/kube-scheduler:v1.23.8             &quot;kube-scheduler --au…&quot;    2 days ago    Up                 k8s://kube-system/kube-scheduler-cka001/kube-scheduler                                
-71afea5a6fb5    registry.aliyuncs.com/google_containers/pause:3.6                          &quot;/pause&quot;                  2 days ago    Up                 k8s://kube-system/etcd-cka001                                                         
-874a0e2798aa    registry.aliyuncs.com/google_containers/kube-proxy:v1.23.8                 &quot;/usr/local/bin/kube…&quot;    2 days ago    Up                 k8s://kube-system/kube-proxy-rzmpb/kube-proxy                                         
-c0bdd2f73da7    registry.aliyuncs.com/google_containers/pause:3.6                          &quot;/pause&quot;                  2 days ago    Up                 k8s://kube-system/kube-scheduler-cka001                                               
-cb32b00cb43b    registry.aliyuncs.com/google_containers/coredns:v1.8.6                     &quot;/coredns -conf /etc…&quot;    2 days ago    Up                 k8s://kube-system/coredns-6d8c4cb4d-kv98s/coredns                                     
-d57a2071270a    docker.io/calico/node:v3.23.2                                              &quot;start_runit&quot;             2 days ago    Up                 k8s://kube-system/calico-node-9577c/calico-node                                       
-d74d2d4c6a01    registry.aliyuncs.com/google_containers/pause:3.6                          &quot;/pause&quot;                  2 days ago    Up                 k8s://kube-system/calico-node-9577c                                                   
-ebfebd851a31    registry.aliyuncs.com/google_containers/pause:3.6                          &quot;/pause&quot;                  2 days ago    Up                 k8s://kube-system/calico-kube-controllers-7bc6547ffb-sf5xf                            
-f5a876bc5e3f    docker.io/calico/kube-controllers:v3.23.2                                  &quot;/usr/bin/kube-contr…&quot;    2 days ago    Up                 k8s://kube-system/calico-kube-controllers-7bc6547ffb-sf5xf/calico-kube-controllers    
+<pre><code>CONTAINER ID    IMAGE                                                                      COMMAND                   CREATED           STATUS    PORTS    NAMES
+027b1167f7d0    registry.aliyuncs.com/google_containers/pause:3.6                          &quot;/pause&quot;                  7 hours ago       Up                 k8s://kube-system/etcd-cka001
+2e6e2571bb4e    registry.aliyuncs.com/google_containers/kube-apiserver:v1.23.8             &quot;kube-apiserver --ad…&quot;    7 hours ago       Up                 k8s://kube-system/kube-apiserver-cka001/kube-apiserver
+381ee220fd2f    registry.aliyuncs.com/google_containers/pause:3.6                          &quot;/pause&quot;                  7 hours ago       Up                 k8s://kube-system/kube-scheduler-cka001
+596917cbbb26    registry.aliyuncs.com/google_containers/kube-controller-manager:v1.23.8    &quot;kube-controller-man…&quot;    7 hours ago       Up                 k8s://kube-system/kube-controller-manager-cka001/kube-controller-manager
+5fecb056a080    registry.aliyuncs.com/google_containers/pause:3.6                          &quot;/pause&quot;                  7 hours ago       Up                 k8s://kube-system/kube-controller-manager-cka001
+7d94a2daaa50    registry.aliyuncs.com/google_containers/kube-proxy:v1.23.8                 &quot;/usr/local/bin/kube…&quot;    7 hours ago       Up                 k8s://kube-system/kube-proxy-kwhwj/kube-proxy
+90ff5ef27b9d    registry.aliyuncs.com/google_containers/pause:3.6                          &quot;/pause&quot;                  7 hours ago       Up                 k8s://kube-system/kube-apiserver-cka001
+9a0a6f6b0aed    docker.io/calico/node:v3.23.3                                              &quot;start_runit&quot;             44 seconds ago    Up                 k8s://kube-system/calico-node-94fqj/calico-node
+bfbd0ba3c8e1    registry.aliyuncs.com/google_containers/pause:3.6                          &quot;/pause&quot;                  44 seconds ago    Up                 k8s://kube-system/calico-node-94fqj
+ca75c9280dfd    registry.aliyuncs.com/google_containers/kube-scheduler:v1.23.8             &quot;kube-scheduler --au…&quot;    7 hours ago       Up                 k8s://kube-system/kube-scheduler-cka001/kube-scheduler
+dc177e25c7de    registry.aliyuncs.com/google_containers/etcd:3.5.1-0                       &quot;etcd --advertise-cl…&quot;    7 hours ago       Up                 k8s://kube-system/etcd-cka001/etcd
+e79a3f675a6e    registry.aliyuncs.com/google_containers/pause:3.6                          &quot;/pause&quot;                  7 hours ago       Up                 k8s://kube-system/kube-proxy-kwhwj
 </code></pre>
 <pre><code>nerdctl -n default ps
 </code></pre>

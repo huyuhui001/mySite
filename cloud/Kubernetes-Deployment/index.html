@@ -712,7 +712,7 @@ sudo apt-get upgrade iptables
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 </code></pre>
-<p>Install Flannel</p>
+<p>Install Flannel. If NetworkPolicy is the case, then install Calico. Refer to the section "Install Calico or Flannel" of <a href="../KubernetesTutorials-Aliyun-Ubuntu/">Tutorials</a> of Adminstration on Ubuntu@Aliyun.</p>
 <pre><code>kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
 </code></pre>
 <p>Setup on Worker Node</p>
@@ -975,6 +975,7 @@ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 </code></pre>
 <h3 id="install-flannel">Install Flannel</h3>
+<p>If NetworkPolicy is the case, then install Calico. Refer to the section "Install Calico or Flannel" of <a href="../KubernetesTutorials-Aliyun-Ubuntu/">Tutorials</a> of Adminstration on Ubuntu@Aliyun.</p>
 <p><a href="https://github.com/flannel-io/flannel">Flannel</a> is a simple and easy way to configure a layer 3 network fabric designed for Kubernetes.</p>
 <p>Deploy Flannel on master node.
 In the kube-flannel.yml we can get the default network setting of Flannel, which is same with <code>--pod-network-cidr=10.244.0.0/16</code> we defined before when we initiated <code>kubeadm</code>.</p>
