@@ -223,7 +223,7 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 ```
 
 
-Install Flannel. If NetworkPolicy is the case, then install Calico. Refer to the section "Install Calico or Flannel" of [Tutorials](./cloud/KubernetesTutorials-Aliyun-Ubuntu.md) of Adminstration on Ubuntu@Aliyun.
+Install Flannel. If NetworkPolicy is the case, then install Calico. Refer to the section "Install Calico or Flannel" of [Tutorials](KubernetesTutorials-Aliyun-Ubuntu.md) of Adminstration on Ubuntu@Aliyun.
 ```
 kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
 ```
@@ -606,7 +606,7 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
 ### Install Flannel
 
-If NetworkPolicy is the case, then install Calico. Refer to the section "Install Calico or Flannel" of [Tutorials](./cloud/KubernetesTutorials-Aliyun-Ubuntu.md) of Adminstration on Ubuntu@Aliyun.
+If NetworkPolicy is the case, then install Calico. Refer to the section "Install Calico or Flannel" of [Tutorials](KubernetesTutorials-Aliyun-Ubuntu.md) of Adminstration on Ubuntu@Aliyun.
 
 [Flannel](https://github.com/flannel-io/flannel) is a simple and easy way to configure a layer 3 network fabric designed for Kubernetes.
 
