@@ -714,7 +714,8 @@ Run these commands as **root**.
 sudo su
 ```
 
-Install the CNI plugin Binaries. Get right release in the link `https://github.com/projectcalico/cni-plugin/releases`.
+Install the CNI plugin Binaries. 
+Get right release in the link `https://github.com/projectcalico/cni-plugin/releases`, and link `https://github.com/containernetworking/plugins/releases`.
 ```
 mkdir -p /opt/cni/bin
 
