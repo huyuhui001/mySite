@@ -34,10 +34,6 @@ Add private IPs in the `/etc/hosts` file in all VMs.
 
 Disable firewall by command `ufw disable` in all VMs.
 
-### Turn off swap
-
-Turn off swap by command `swapoff -a` in all VMs.
-
 Disable swap on Ubuntu.
 ```
 sudo ufw disable
@@ -49,21 +45,27 @@ sudo ufw status verbose
 ```
 
 
+### Turn off swap
+
+Turn off swap by command `swapoff -a` in all VMs.
 
 
 ### Set timezone and locale
 
 Set timezone and local for all VMs. For ECS with Ubuntu 20.04 version created by Aliyun, this step is not needed.
 ```
-# ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
-# sudo echo 'LANG="en_US.UTF-8"' >> /etc/profile
-# source /etc/profile
+ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+sudo echo 'LANG="en_US.UTF-8"' >> /etc/profile
+source /etc/profile
 ```
 Something like this:
 ```
-root@cka001:~# ll /etc/localtime
+ll /etc/localtime
+```
+```
 lrwxrwxrwx 1 root root 33 May 24 18:14 /etc/localtime -> /usr/share/zoneinfo/Asia/Shanghai
 ```
+
 
 ### Kernel setting
 
@@ -76,7 +78,7 @@ Service `containerd` depends on `overlay` filesystem. Sometimes referred to as u
 
 The `br_netfilter` module is required to enable transparent masquerading and to facilitate Virtual Extensible LAN (VxLAN) traffic for communication between Kubernetes pods across the cluster. 
 ```
-# cat <<EOF | sudo tee /etc/modules-load.d/containerd.conf
+cat <<EOF | sudo tee /etc/modules-load.d/containerd.conf
 overlay
 br_netfilter
 EOF
@@ -84,8 +86,8 @@ EOF
 
 Load `overlay` and `br_netfilter` modules.
 ```
-# sudo modprobe overlay
-# sudo modprobe br_netfilter
+sudo modprobe overlay
+sudo modprobe br_netfilter
 ```
 
 Create file `99-kubernetes-cri.conf` to set up configure file for Kubernetes CRI.
@@ -94,7 +96,7 @@ Set `net/bridge/bridge-nf-call-iptables=1` to ensure simple configurations (like
 
 IP forwarding is also known as routing. When it comes to Linux, it may also be called Kernel IP forwarding because it uses the kernel variable `net.ipv4.ip_forward` to enable or disable the IP forwarding feature. The default preset value is `ip_forward=0`. Hence, the Linux IP forwarding feature is disabled by default.
 ```
-# cat <<EOF | sudo tee /etc/sysctl.d/99-kubernetes-cri.conf
+cat <<EOF | sudo tee /etc/sysctl.d/99-kubernetes-cri.conf
 net.bridge.bridge-nf-call-iptables  = 1
 net.ipv4.ip_forward                 = 1
 net.bridge.bridge-nf-call-ip6tables = 1
@@ -115,7 +117,7 @@ Install Containerd sevice for all VMs.
 
 Backup source file.
 ```
-# sudo cp /etc/apt/sources.list /etc/apt/sources.list.bak
+sudo cp /etc/apt/sources.list /etc/apt/sources.list.bak
 ```
 
 Add proper repo sources. For ECS with Ubuntu 20.04 version created by Aliyun, this step is not needed.
@@ -146,14 +148,14 @@ EOF
 
 Install Containered.
 ```
-# sudo apt-get update && sudo apt-get install -y containerd
+sudo apt-get update && sudo apt-get install -y containerd
 ```
 
 Configure Containerd. Modify file `/etc/containerd/config.toml`.
 ```
-# sudo mkdir -p /etc/containerd
-# containerd config default | sudo tee /etc/containerd/config.toml
-# vi /etc/containerd/config.toml
+sudo mkdir -p /etc/containerd
+containerd config default | sudo tee /etc/containerd/config.toml
+vi /etc/containerd/config.toml
 ```
 
 Update `sandbox_image` with new value `"registry.aliyuncs.com/google_containers/pause:3.6"`.
@@ -189,21 +191,25 @@ Install nerdctl sevice fro all VMs.
 
 The goal of [`nerdctl`](https://github.com/containerd/nerdctl) is to facilitate experimenting the cutting-edge features of containerd that are not present in Docker.
 
+Get the release from the link https://github.com/containerd/nerdctl/releases.
+
 ```
-# wget https://github.com/containerd/nerdctl/releases/download/v0.21.0/nerdctl-0.21.0-linux-amd64.tar.gz
-# tar -zxvf nerdctl-0.21.0-linux-amd64.tar.gz
-# cp nerdctl /usr/bin/
+wget https://github.com/containerd/nerdctl/releases/download/v0.22.0/nerdctl-0.22.0-linux-amd64.tar.gz
+tar -zxvf nerdctl-0.22.0-linux-amd64.tar.gz
+cp nerdctl /usr/bin/
 ```
 
 Verify nerdctl.
 ```
-# nerdctl --help
+nerdctl --help
 ```
 
 To list local Kubernetes containers.
 ```
-# nerdctl -n k8s.io ps
+nerdctl -n k8s.io ps
 ```
+
+
 
 
 ### Install kubeadm
@@ -238,7 +244,7 @@ Update and install dependencied packages.
 ```
 apt-get update
 apt-get install ebtables
-apt-get install libxtables12=1.8.4-3ubuntu2
+apt-get install libxtables12
 apt-get upgrade iptables
 ```
 
@@ -300,11 +306,35 @@ networking:
 scheduler: {}
 ```
 
-Dry rune and run. 
-Save the output, which will be used later on work nodes.
+Dry rune and run. Save the output, which will be used later on work nodes.
 
-`--pod-network-cidr string`: Specify range of IP addresses for the pod network. If set, the control plane will automatically allocate CIDRs for every node.
-`--service-cidr string`: Default: "10.96.0.0/12". Use alternative range of IP address for service VIPs.
+With `kubeadm init` to initiate cluster, we need understand below three options about network.
+
+* `--pod-network-cidr`: 
+    * Specify range of IP addresses for the pod network. If set, the control plane will automatically allocate CIDRs for every node.
+    * Be noted that `10.244.0.0/16` is default range of flannel. If it's changed here, please do change the same when deploy `Flannel`.
+* `--apiserver-bind-port`: 
+    * Port for the API Server to bind to. (default 6443)
+* `--service-cidr`: 
+    * Use alternative range of IP address for service VIPs. (default "10.96.0.0/12")
+
+Note: 
+
+* service VIPs (a.k.a. Cluster IP), specified by option `--service-cidr`.
+* podCIDR (a.k.a. endpoint IP)，specified by option `--pod-network-cidr`.
+
+There are 4 distinct networking problems to address:
+
+* Highly-coupled container-to-container communications: this is solved by Pods (podCIDR) and localhost communications.
+* Pod-to-Pod communications: 
+    * a.k.a. container-to-container. 
+    * Example with Flannel, the flow is: Pod --> veth pair --> cni0 --> flannel.1 --> host eth0 --> host eth0 --> flannel.1 --> cni0 --> veth pair --> Pod.
+* Pod-to-Service communications:
+    * Flow: Pod --> Kernel --> Servive iptables --> service --> Pod iptables --> Pod
+* External-to-Service communications: 
+    * LoadBalancer: SLB --> NodePort --> Service --> Pod
+
+`kube-proxy` is responsible for iptables, not traffic. 
 
 ```
 kubeadm init \
@@ -364,9 +394,19 @@ cka002   Ready    <none>                 9m39s   v1.23.8
 cka003   Ready    <none>                 9m27s   v1.23.8
 ```
 
+
+
+
+
+
+
+
 ### Install Calico or Flannel
 
-Choose Calico or Flannel.
+Choose Calico or Flannel. 
+
+For NetworkPolicy purpose, choose Calico.
+
 
 #### Install Flannel
 
@@ -397,13 +437,1037 @@ daemonset.apps/kube-flannel-ds created
 
 #### Install Calico
 
-Clean up iptables for all nodes.
+[End-to-end Calico installation](https://projectcalico.docs.tigera.io/getting-started/kubernetes/hardway/)
+
+
+##### The Calico Datastore
+
+In order to use Kubernetes as the Calico datastore, we need to define the custom resources Calico uses.
+
+Download and examine the list of Calico custom resource definitions, and open it in a file editor.
 ```
-rm -rf /var/run/flannel /opt/cni /etc/cni /var/lib/cni
-iptables -F && iptables -t nat -F && iptables -t mangle -F && iptables -X
+wget https://projectcalico.docs.tigera.io/manifests/crds.yaml
 ```
 
-Log out and log on to host (e.g., cka001) again. Install Calico.
+Create the custom resource definitions in Kubernetes.
+```
+kubectl apply -f crds.yaml
+```
+
+Install `calicoctl`. To interact directly with the Calico datastore, use the `calicoctl` client tool.
+
+Download the calicoctl binary to a Linux host with access to Kubernetes. 
+The latest release of calicoctl can be found in the [git page](https://github.com/projectcalico/calico/releases) and replace below `v3.23.2` by actual release number.
+```
+wget https://github.com/projectcalico/calico/releases/download/v3.23.3/calicoctl-linux-amd64
+chmod +x calicoctl-linux-amd64
+sudo cp calicoctl-linux-amd64 /usr/local/bin/calicoctl
+```
+
+Configure calicoctl to access Kubernetes
+```
+echo "export KUBECONFIG=/root/.kube/config" >> ~/.bashrc
+echo "export DATASTORE_TYPE=kubernetes" >> ~/.bashrc
+
+echo $KUBECONFIG
+echo $DATASTORE_TYPE
+```
+
+Verify `calicoctl` can reach the datastore by running：
+```
+calicoctl get nodes -o wide
+```
+Output similar to below:
+```
+NAME     ASN   IPV4   IPV6   
+cka001                       
+cka002                       
+cka003  
+```
+
+Nodes are backed by the Kubernetes node object, so we should see names that match `kubectl get nodes`.
+```
+kubectl get nodes -o wide
+```
+```
+NAME     STATUS     ROLES                  AGE   VERSION   INTERNAL-IP     EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION      CONTAINER-RUNTIME
+cka001   NotReady   control-plane,master   23m   v1.23.8   172.16.18.161   <none>        Ubuntu 20.04.4 LTS   5.4.0-113-generic   containerd://1.5.9
+cka002   NotReady   <none>                 22m   v1.23.8   172.16.18.160   <none>        Ubuntu 20.04.4 LTS   5.4.0-113-generic   containerd://1.5.9
+cka003   NotReady   <none>                 21m   v1.23.8   172.16.18.159   <none>        Ubuntu 20.04.4 LTS   5.4.0-113-generic   containerd://1.5.9
+```
+
+
+
+##### Configure IP Pools
+
+A workload is a container or VM that Calico handles the virtual networking for. 
+In Kubernetes, workloads are pods. 
+A workload endpoint is the virtual network interface a workload uses to connect to the Calico network.
+
+IP pools are ranges of IP addresses that Calico uses for workload endpoints.
+
+Get current IP pools in the cluster. So far, it's empty after fresh installation.
+```
+calicoctl get ippools
+```
+```
+NAME   CIDR   SELECTOR 
+```
+
+The Pod CIDR is `10.244.0.0/16` we specified via `kubeadm init`.
+
+Let's create two IP pools for use in the cluster. Each pool can not have any overlaps.
+
+* ipv4-ippool-1: `10.244.0.0/18`
+* ipv4-ippool-2: `10.244.192.0/19`
+
+```
+calicoctl apply -f - <<EOF
+apiVersion: projectcalico.org/v3
+kind: IPPool
+metadata:
+  name: ipv4-ippool-1
+spec:
+  cidr: 10.244.0.0/18
+  ipipMode: Never
+  natOutgoing: true
+  disabled: false
+  nodeSelector: all()
+EOF
+```
+```
+calicoctl apply -f - <<EOF
+apiVersion: projectcalico.org/v3
+kind: IPPool
+metadata:
+  name: ipv4-ippool-2
+spec:
+  cidr: 10.244.192.0/19
+  ipipMode: Never
+  natOutgoing: true
+  disabled: true
+  nodeSelector: all()
+EOF
+```
+
+IP pool now looks like below.
+```
+calicoctl get ippools -o wide
+```
+```
+NAME            CIDR              NAT    IPIPMODE   VXLANMODE   DISABLED   DISABLEBGPEXPORT   SELECTOR   
+ipv4-ippool-1   10.244.0.0/18     true   Never      Never       false      false              all()      
+ipv4-ippool-2   10.244.192.0/19   true   Never      Never       true       false              all()     
+```
+
+
+##### Install CNI plugin
+
+* Provision Kubernetes user account for the plugin.
+
+Kubernetes uses the Container Network Interface (CNI) to interact with networking providers like Calico. 
+The Calico binary that presents this API to Kubernetes is called the CNI plugin and must be installed on every node in the Kubernetes cluster.
+
+The CNI plugin interacts with the Kubernetes API server while creating pods, both to obtain additional information and to update the datastore with information about the pod.
+
+On the Kubernetes *master* node, create a key for the CNI plugin to authenticate with and certificate signing request.
+
+Change to directory `/etc/kubernetes/pki/`.
+```
+cd /etc/kubernetes/pki/
+```
+```
+openssl req -newkey rsa:4096 \
+  -keyout cni.key \
+  -nodes \
+  -out cni.csr \
+  -subj "/CN=calico-cni"
+```
+
+We will sign this certificate using the main Kubernetes CA.
+```
+sudo openssl x509 -req -in cni.csr \
+  -CA /etc/kubernetes/pki/ca.crt \
+  -CAkey /etc/kubernetes/pki/ca.key \
+  -CAcreateserial \
+  -out cni.crt \
+  -days 3650
+```
+Output looks like below. User is `calico-cni`.
+```
+Signature ok
+subject=CN = calico-cni
+Getting CA Private Key
+```
+```
+sudo chown $(id -u):$(id -g) cni.crt
+```
+
+Next, we create a kubeconfig file for the CNI plugin to use to access Kubernetes. 
+Copy this `cni.kubeconfig` file to every node in the cluster.
+
+Stay in directory `/etc/kubernetes/pki/`.
+```
+APISERVER=$(kubectl config view -o jsonpath='{.clusters[0].cluster.server}')
+
+echo $APISERVER
+
+kubectl config set-cluster kubernetes \
+  --certificate-authority=/etc/kubernetes/pki/ca.crt \
+  --embed-certs=true \
+  --server=$APISERVER \
+  --kubeconfig=cni.kubeconfig
+
+kubectl config set-credentials calico-cni \
+  --client-certificate=cni.crt \
+  --client-key=cni.key \
+  --embed-certs=true \
+  --kubeconfig=cni.kubeconfig
+
+kubectl config set-context cni@kubernetes \
+  --cluster=kubernetes \
+  --user=calico-cni \
+  --kubeconfig=cni.kubeconfig
+
+kubectl config use-context cni@kubernetes --kubeconfig=cni.kubeconfig
+```
+
+The context for CNI looks like below.
+```
+kubectl config get-contexts --kubeconfig=/root/.kube/cni.kubeconfig
+```
+```
+CURRENT   NAME             CLUSTER      AUTHINFO     NAMESPACE
+*         cni@kubernetes   kubernetes   calico-cni 
+```
+
+Copy `/root/.kube/cni.kubeconfig` to directory `/root/.kube/` in nodes `cka002` and `cka003`.
+
+
+
+
+* Provision RBAC
+
+Define a cluster role the CNI plugin will use to access Kubernetes.
+
+```
+kubectl apply -f - <<EOF
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: calico-cni
+rules:
+  # The CNI plugin needs to get pods, nodes, and namespaces.
+  - apiGroups: [""]
+    resources:
+      - pods
+      - nodes
+      - namespaces
+    verbs:
+      - get
+  # The CNI plugin patches pods/status.
+  - apiGroups: [""]
+    resources:
+      - pods/status
+    verbs:
+      - patch
+ # These permissions are required for Calico CNI to perform IPAM allocations.
+  - apiGroups: ["crd.projectcalico.org"]
+    resources:
+      - blockaffinities
+      - ipamblocks
+      - ipamhandles
+    verbs:
+      - get
+      - list
+      - create
+      - update
+      - delete
+  - apiGroups: ["crd.projectcalico.org"]
+    resources:
+      - ipamconfigs
+      - clusterinformations
+      - ippools
+    verbs:
+      - get
+      - list
+EOF
+```
+
+Bind the cluster role to the `calico-cni` account.
+```
+kubectl create clusterrolebinding calico-cni --clusterrole=calico-cni --user=calico-cni
+```
+
+
+
+* Install the plugin
+
+Do these steps on **each node** in your cluster.
+
+Run these commands as **root**.
+```
+sudo su
+```
+
+Install the CNI plugin Binaries. Get right release in the link `https://github.com/projectcalico/cni-plugin/releases`.
+```
+curl -L -o /opt/cni/bin/calico https://github.com/projectcalico/cni-plugin/releases/download/v3.20.5/calico-amd64
+
+chmod 755 /opt/cni/bin/calico
+
+curl -L -o /opt/cni/bin/calico-ipam https://github.com/projectcalico/cni-plugin/releases/download/v3.20.5/calico-ipam-amd64
+
+chmod 755 /opt/cni/bin/calico-ipam
+```
+
+Create the config directory
+```
+mkdir -p /etc/cni/net.d/
+```
+
+Copy the kubeconfig from the previous section
+```
+cp ~/.kube/cni.kubeconfig /etc/cni/net.d/calico-kubeconfig
+
+chmod 600 /etc/cni/net.d/calico-kubeconfig
+```
+
+Write the CNI configuration
+```
+cat > /etc/cni/net.d/10-calico.conflist <<EOF
+{
+  "name": "k8s-pod-network",
+  "cniVersion": "0.3.1",
+  "plugins": [
+    {
+      "type": "calico",
+      "log_level": "info",
+      "datastore_type": "kubernetes",
+      "mtu": 1500,
+      "ipam": {
+          "type": "calico-ipam"
+      },
+      "policy": {
+          "type": "k8s"
+      },
+      "kubernetes": {
+          "kubeconfig": "/etc/cni/net.d/calico-kubeconfig"
+      }
+    },
+    {
+      "type": "portmap",
+      "snat": true,
+      "capabilities": {"portMappings": true}
+    }
+  ]
+}
+EOF
+```
+
+Exit from su and go back to the logged in user.
+```
+exit
+```
+
+At this point Kubernetes nodes will become Ready because Kubernetes has a networking provider and configuration installed.
+```
+kubectl get nodes
+```
+
+
+
+##### Install Typha
+
+Typha sits between the Kubernetes API server and per-node daemons like Felix and confd (running in calico/node). 
+It watches the Kubernetes resources and Calico custom resources used by these daemons, and whenever a resource changes it fans out the update to the daemons. 
+This reduces the number of watches the Kubernetes API server needs to serve and improves scalability of the cluster.
+
+* Provision Certificates
+
+We will use mutually authenticated TLS to ensure that calico/node and Typha communicate securely. 
+We generate a certificate authority (CA) and use it to sign a certificate for Typha.
+
+Stay in directory `/etc/kubernetes/pki/`.
+
+Create the CA certificate and key
+```
+openssl req -x509 -newkey rsa:4096 \
+  -keyout typhaca.key \
+  -nodes \
+  -out typhaca.crt \
+  -subj "/CN=Calico Typha CA" \
+  -days 365
+```
+
+Store the CA certificate in a ConfigMap that Typha & calico/node will access.
+```
+kubectl create configmap -n kube-system calico-typha-ca --from-file=typhaca.crt
+```
+
+Create the Typha key and certificate signing request (CSR)
+```
+openssl req -newkey rsa:4096 \
+  -keyout typha.key \
+  -nodes \
+  -out typha.csr \
+  -subj "/CN=calico-typha"
+```
+
+The certificate presents the Common Name (CN) as `calico-typha`. `calico/node` will be configured to verify this name.
+
+Sign the Typha certificate with the CA.
+```
+openssl x509 -req -in typha.csr \
+  -CA typhaca.crt \
+  -CAkey typhaca.key \
+  -CAcreateserial \
+  -out typha.crt \
+  -days 365
+```
+Store the Typha key and certificate in a secret that Typha will access
+```
+kubectl create secret generic -n kube-system calico-typha-certs --from-file=typha.key --from-file=typha.crt
+```
+
+* Provision RBAC
+
+Create a ServiceAccount that will be used to run Typha.
+```
+kubectl create serviceaccount -n kube-system calico-typha
+```
+
+Define a cluster role for Typha with permission to watch Calico datastore objects.
+```
+kubectl apply -f - <<EOF
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: calico-typha
+rules:
+  - apiGroups: [""]
+    resources:
+      - pods
+      - namespaces
+      - serviceaccounts
+      - endpoints
+      - services
+      - nodes
+    verbs:
+      # Used to discover service IPs for advertisement.
+      - watch
+      - list
+  - apiGroups: ["networking.k8s.io"]
+    resources:
+      - networkpolicies
+    verbs:
+      - watch
+      - list
+  - apiGroups: ["crd.projectcalico.org"]
+    resources:
+      - globalfelixconfigs
+      - felixconfigurations
+      - bgppeers
+      - globalbgpconfigs
+      - bgpconfigurations
+      - ippools
+      - ipamblocks
+      - globalnetworkpolicies
+      - globalnetworksets
+      - networkpolicies
+      - clusterinformations
+      - hostendpoints
+      - blockaffinities
+      - networksets
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups: ["crd.projectcalico.org"]
+    resources:
+      #- ippools
+      #- felixconfigurations
+      - clusterinformations
+    verbs:
+      - get
+      - create
+      - update
+EOF
+```
+
+Bind the cluster role to the calico-typha ServiceAccount.
+```
+kubectl create clusterrolebinding calico-typha --clusterrole=calico-typha --serviceaccount=kube-system:calico-typha
+```
+
+* Install Deployment
+
+Since Typha is required by `calico/node`, and `calico/node` establishes the pod network, we run Typha as a host networked pod to avoid a chicken-and-egg problem. 
+We run 3 replicas of Typha so that even during a rolling update, a single failure does not make Typha unavailable.
+```
+kubectl apply -f - <<EOF
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: calico-typha
+  namespace: kube-system
+  labels:
+    k8s-app: calico-typha
+spec:
+  replicas: 3
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      k8s-app: calico-typha
+  template:
+    metadata:
+      labels:
+        k8s-app: calico-typha
+      annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: 'true'
+    spec:
+      hostNetwork: true
+      tolerations:
+        # Mark the pod as a critical add-on for rescheduling.
+        - key: CriticalAddonsOnly
+          operator: Exists
+      serviceAccountName: calico-typha
+      priorityClassName: system-cluster-critical
+      containers:
+      - image: calico/typha:v3.8.0
+        name: calico-typha
+        ports:
+        - containerPort: 5473
+          name: calico-typha
+          protocol: TCP
+        env:
+          # Disable logging to file and syslog since those don't make sense in Kubernetes.
+          - name: TYPHA_LOGFILEPATH
+            value: "none"
+          - name: TYPHA_LOGSEVERITYSYS
+            value: "none"
+          # Monitor the Kubernetes API to find the number of running instances and rebalance
+          # connections.
+          - name: TYPHA_CONNECTIONREBALANCINGMODE
+            value: "kubernetes"
+          - name: TYPHA_DATASTORETYPE
+            value: "kubernetes"
+          - name: TYPHA_HEALTHENABLED
+            value: "true"
+          # Location of the CA bundle Typha uses to authenticate calico/node; volume mount
+          - name: TYPHA_CAFILE
+            value: /calico-typha-ca/typhaca.crt
+          # Common name on the calico/node certificate
+          - name: TYPHA_CLIENTCN
+            value: calico-node
+          # Location of the server certificate for Typha; volume mount
+          - name: TYPHA_SERVERCERTFILE
+            value: /calico-typha-certs/typha.crt
+          # Location of the server certificate key for Typha; volume mount
+          - name: TYPHA_SERVERKEYFILE
+            value: /calico-typha-certs/typha.key
+        livenessProbe:
+          httpGet:
+            path: /liveness
+            port: 9098
+            host: localhost
+          periodSeconds: 30
+          initialDelaySeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /readiness
+            port: 9098
+            host: localhost
+          periodSeconds: 10
+        volumeMounts:
+        - name: calico-typha-ca
+          mountPath: "/calico-typha-ca"
+          readOnly: true
+        - name: calico-typha-certs
+          mountPath: "/calico-typha-certs"
+          readOnly: true
+      volumes:
+      - name: calico-typha-ca
+        configMap:
+          name: calico-typha-ca
+      - name: calico-typha-certs
+        secret:
+          secretName: calico-typha-certs
+EOF
+```
+
+We set `TYPHA_CLIENTCN` to calico-node which is the common name we will use on the certificate `calico/node` will use late.
+
+Verify Typha is up an running with three instances
+```
+kubectl get pods -l k8s-app=calico-typha -n kube-system
+```
+Result looks like below.
+```
+NAME                           READY   STATUS    RESTARTS   AGE
+calico-typha-5b8669646-fsv48   1/1     Running   0          3m16s
+calico-typha-5b8669646-ppqtt   0/1     Pending   0          3m16s
+calico-typha-5b8669646-tj9r5   1/1     Running   0          3m16s
+```
+
+Here is an error message received:
+```
+0/3 nodes are available: 1 node(s) had taint {node-role.kubernetes.io/master: }, that the pod didn't tolerate, 2 node(s) didn't have free ports for the requested pod ports.
+```
+
+
+
+
+* Install Service
+
+`calico/node` uses a Kubernetes Service to get load-balanced access to Typha.
+```
+kubectl apply -f - <<EOF
+apiVersion: v1
+kind: Service
+metadata:
+  name: calico-typha
+  namespace: kube-system
+  labels:
+    k8s-app: calico-typha
+spec:
+  ports:
+    - port: 5473
+      protocol: TCP
+      targetPort: calico-typha
+      name: calico-typha
+  selector:
+    k8s-app: calico-typha
+EOF
+```
+
+Validate that Typha is using TLS.
+```
+TYPHA_CLUSTERIP=$(kubectl get svc -n kube-system calico-typha -o jsonpath='{.spec.clusterIP}')
+curl https://$TYPHA_CLUSTERIP:5473 -v --cacert typhaca.crt
+```
+
+Result
+```
+*   Trying 11.244.203.209:5473...
+* TCP_NODELAY set
+* Connected to 11.244.203.209 (11.244.203.209) port 5473 (#0)
+* ALPN, offering h2
+* ALPN, offering http/1.1
+* successfully set certificate verify locations:
+*   CAfile: typhaca.crt
+  CApath: /etc/ssl/certs
+* TLSv1.3 (OUT), TLS handshake, Client hello (1):
+* TLSv1.3 (IN), TLS handshake, Server hello (2):
+* TLSv1.2 (IN), TLS handshake, Certificate (11):
+* TLSv1.2 (IN), TLS handshake, Server key exchange (12):
+* TLSv1.2 (IN), TLS handshake, Request CERT (13):
+* TLSv1.2 (IN), TLS handshake, Server finished (14):
+* TLSv1.2 (OUT), TLS handshake, Certificate (11):
+* TLSv1.2 (OUT), TLS handshake, Client key exchange (16):
+* TLSv1.2 (OUT), TLS change cipher, Change cipher spec (1):
+* TLSv1.2 (OUT), TLS handshake, Finished (20):
+* TLSv1.2 (IN), TLS alert, bad certificate (554):
+* error:14094412:SSL routines:ssl3_read_bytes:sslv3 alert bad certificate
+* Closing connection 0
+curl: (35) error:14094412:SSL routines:ssl3_read_bytes:sslv3 alert bad certificate
+```
+
+This demonstrates that Typha is presenting its TLS certificate and rejecting our connection because we do not present a certificate. 
+We will later deploy calico/node with a certificate Typha will accept.
+
+
+
+
+
+##### Install calico/node
+
+`calico/node` runs three daemons:
+
+* Felix, the Calico per-node daemon
+* BIRD, a daemon that speaks the BGP protocol to distribute routing information to other nodes
+* confd, a daemon that watches the Calico datastore for config changes and updates BIRD’s config files
+
+
+* Provision Certificates
+
+Create the key `calico/node` will use to authenticate with Typha and the certificate signing request (CSR)
+```
+openssl req -newkey rsa:4096 \
+  -keyout calico-node.key \
+  -nodes \
+  -out calico-node.csr \
+  -subj "/CN=calico-node"
+```
+
+The certificate presents the Common Name (CN) as `calico-node`, which is what we configured Typha to accept in the last lab.
+
+Sign the Felix certificate with the CA we created earlier.
+```
+openssl x509 -req -in calico-node.csr \
+  -CA typhaca.crt \
+  -CAkey typhaca.key \
+  -CAcreateserial \
+  -out calico-node.crt \
+  -days 365
+```
+
+Store the key and certificate in a Secret that calico/node will access.
+```
+kubectl create secret generic -n kube-system calico-node-certs --from-file=calico-node.key --from-file=calico-node.crt
+```
+
+* Provision RBAC
+
+Create the ServiceAccount that calico/node will run as.
+```
+kubectl create serviceaccount -n kube-system calico-node
+```
+
+Provision a cluster role with permissions to read and modify Calico datastore objects
+```
+kubectl apply -f - <<EOF
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: calico-node
+rules:
+  # The CNI plugin needs to get pods, nodes, and namespaces.
+  - apiGroups: [""]
+    resources:
+      - pods
+      - nodes
+      - namespaces
+    verbs:
+      - get
+  # EndpointSlices are used for Service-based network policy rule
+  # enforcement.
+  - apiGroups: ["discovery.k8s.io"]
+    resources:
+      - endpointslices
+    verbs:
+      - watch
+      - list
+  - apiGroups: [""]
+    resources:
+      - endpoints
+      - services
+    verbs:
+      # Used to discover service IPs for advertisement.
+      - watch
+      - list
+      # Used to discover Typhas.
+      - get
+  # Pod CIDR auto-detection on kubeadm needs access to config maps.
+  - apiGroups: [""]
+    resources:
+      - configmaps
+    verbs:
+      - get
+  - apiGroups: [""]
+    resources:
+      - nodes/status
+    verbs:
+      # Needed for clearing NodeNetworkUnavailable flag.
+      - patch
+      # Calico stores some configuration information in node annotations.
+      - update
+  # Watch for changes to Kubernetes NetworkPolicies.
+  - apiGroups: ["networking.k8s.io"]
+    resources:
+      - networkpolicies
+    verbs:
+      - watch
+      - list
+  # Used by Calico for policy information.
+  - apiGroups: [""]
+    resources:
+      - pods
+      - namespaces
+      - serviceaccounts
+    verbs:
+      - list
+      - watch
+  # The CNI plugin patches pods/status.
+  - apiGroups: [""]
+    resources:
+      - pods/status
+    verbs:
+      - patch
+  # Used for creating service account tokens to be used by the CNI plugin
+  - apiGroups: [""]
+    resources:
+      - serviceaccounts/token
+    resourceNames:
+      - calico-node
+    verbs:
+      - create
+  # Calico monitors various CRDs for config.
+  - apiGroups: ["crd.projectcalico.org"]
+    resources:
+      - globalfelixconfigs
+      - felixconfigurations
+      - bgppeers
+      - globalbgpconfigs
+      - bgpconfigurations
+      - ippools
+      - ipamblocks
+      - globalnetworkpolicies
+      - globalnetworksets
+      - networkpolicies
+      - networksets
+      - clusterinformations
+      - hostendpoints
+      - blockaffinities
+    verbs:
+      - get
+      - list
+      - watch
+  # Calico must create and update some CRDs on startup.
+  - apiGroups: ["crd.projectcalico.org"]
+    resources:
+      - ippools
+      - felixconfigurations
+      - clusterinformations
+    verbs:
+      - create
+      - update
+  # Calico stores some configuration information on the node.
+  - apiGroups: [""]
+    resources:
+      - nodes
+    verbs:
+      - get
+      - list
+      - watch
+  # These permissions are required for Calico CNI to perform IPAM allocations.
+  - apiGroups: ["crd.projectcalico.org"]
+    resources:
+      - blockaffinities
+      - ipamblocks
+      - ipamhandles
+    verbs:
+      - get
+      - list
+      - create
+      - update
+      - delete
+  - apiGroups: ["crd.projectcalico.org"]
+    resources:
+      - ipamconfigs
+    verbs:
+      - get
+  # Block affinities must also be watchable by confd for route aggregation.
+  - apiGroups: ["crd.projectcalico.org"]
+    resources:
+      - blockaffinities
+    verbs:
+      - watch
+EOF
+```
+
+Bind the cluster role to the calico-node ServiceAccount
+```
+kubectl create clusterrolebinding calico-node --clusterrole=calico-node --serviceaccount=kube-system:calico-node
+```
+
+
+
+* Install daemon set
+
+`calico/node` runs as a daemon set so that it is installed on every node in the cluster.
+
+Create the daemon set
+```
+kubectl apply -f - <<EOF
+kind: DaemonSet
+apiVersion: apps/v1
+metadata:
+  name: calico-node
+  namespace: kube-system
+  labels:
+    k8s-app: calico-node
+spec:
+  selector:
+    matchLabels:
+      k8s-app: calico-node
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        k8s-app: calico-node
+    spec:
+      nodeSelector:
+        kubernetes.io/os: linux
+      hostNetwork: true
+      tolerations:
+        # Make sure calico-node gets scheduled on all nodes.
+        - effect: NoSchedule
+          operator: Exists
+        # Mark the pod as a critical add-on for rescheduling.
+        - key: CriticalAddonsOnly
+          operator: Exists
+        - effect: NoExecute
+          operator: Exists
+      serviceAccountName: calico-node
+      # Minimize downtime during a rolling upgrade or deletion; tell Kubernetes to do a "force
+      # deletion": https://kubernetes.io/docs/concepts/workloads/pods/pod/#termination-of-pods.
+      terminationGracePeriodSeconds: 0
+      priorityClassName: system-node-critical
+      containers:
+        # Runs calico-node container on each Kubernetes node.  This
+        # container programs network policy and routes on each
+        # host.
+        - name: calico-node
+          image: calico/node:v3.20.0
+          env:
+            # Use Kubernetes API as the backing datastore.
+            - name: DATASTORE_TYPE
+              value: "kubernetes"
+            - name: FELIX_TYPHAK8SSERVICENAME
+              value: calico-typha
+            # Wait for the datastore.
+            - name: WAIT_FOR_DATASTORE
+              value: "true"
+            # Set based on the k8s node name.
+            - name: NODENAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            # Choose the backend to use.
+            - name: CALICO_NETWORKING_BACKEND
+              value: bird
+            # Cluster type to identify the deployment type
+            - name: CLUSTER_TYPE
+              value: "k8s,bgp"
+            # Auto-detect the BGP IP address.
+            - name: IP
+              value: "autodetect"
+            # Disable file logging so kubectl logs works.
+            - name: CALICO_DISABLE_FILE_LOGGING
+              value: "true"
+            # Set Felix endpoint to host default action to ACCEPT.
+            - name: FELIX_DEFAULTENDPOINTTOHOSTACTION
+              value: "ACCEPT"
+            # Disable IPv6 on Kubernetes.
+            - name: FELIX_IPV6SUPPORT
+              value: "false"
+            # Set Felix logging to "info"
+            - name: FELIX_LOGSEVERITYSCREEN
+              value: "info"
+            - name: FELIX_HEALTHENABLED
+              value: "true"
+            # Location of the CA bundle Felix uses to authenticate Typha; volume mount
+            - name: FELIX_TYPHACAFILE
+              value: /calico-typha-ca/typhaca.crt
+            # Common name on the Typha certificate; used to verify we are talking to an authentic typha
+            - name: FELIX_TYPHACN
+              value: calico-typha
+            # Location of the client certificate for connecting to Typha; volume mount
+            - name: FELIX_TYPHACERTFILE
+              value: /calico-node-certs/calico-node.crt
+            # Location of the client certificate key for connecting to Typha; volume mount
+            - name: FELIX_TYPHAKEYFILE
+              value: /calico-node-certs/calico-node.key
+          securityContext:
+            privileged: true
+          resources:
+            requests:
+              cpu: 250m
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                - /bin/calico-node
+                - -shutdown
+          livenessProbe:
+            httpGet:
+              path: /liveness
+              port: 9099
+              host: localhost
+            periodSeconds: 10
+            initialDelaySeconds: 10
+            failureThreshold: 6
+          readinessProbe:
+            exec:
+              command:
+              - /bin/calico-node
+              - -bird-ready
+              - -felix-ready
+            periodSeconds: 10
+          volumeMounts:
+            - mountPath: /lib/modules
+              name: lib-modules
+              readOnly: true
+            - mountPath: /run/xtables.lock
+              name: xtables-lock
+              readOnly: false
+            - mountPath: /var/run/calico
+              name: var-run-calico
+              readOnly: false
+            - mountPath: /var/lib/calico
+              name: var-lib-calico
+              readOnly: false
+            - mountPath: /var/run/nodeagent
+              name: policysync
+            - mountPath: "/calico-typha-ca"
+              name: calico-typha-ca
+              readOnly: true
+            - mountPath: /calico-node-certs
+              name: calico-node-certs
+              readOnly: true
+      volumes:
+        # Used by calico-node.
+        - name: lib-modules
+          hostPath:
+            path: /lib/modules
+        - name: var-run-calico
+          hostPath:
+            path: /var/run/calico
+        - name: var-lib-calico
+          hostPath:
+            path: /var/lib/calico
+        - name: xtables-lock
+          hostPath:
+            path: /run/xtables.lock
+            type: FileOrCreate
+        # Used to create per-pod Unix Domain Sockets
+        - name: policysync
+          hostPath:
+            type: DirectoryOrCreate
+            path: /var/run/nodeagent
+        - name: calico-typha-ca
+          configMap:
+            name: calico-typha-ca
+        - name: calico-node-certs
+          secret:
+            secretName: calico-node-certs
+EOF
+```
+
+Verify that calico/node is running on each node in your cluster, and goes to Running within a few minutes.
+```
+kubectl get pod -l k8s-app=calico-node -n kube-system
+```
+Result looks like below.
+```
+NAME                READY   STATUS    RESTARTS   AGE
+calico-node-9577c   1/1     Running   0          3d
+calico-node-hpv4n   1/1     Running   0          3d
+calico-node-vhtjg   0/1     Running   0          17s
+```
+
+
+
+
+
+
+
+
+Install Calico.
 ```
 curl https://docs.projectcalico.org/manifests/calico.yaml -O
 
@@ -411,47 +1475,187 @@ kubectl apply -f calico.yaml
 ```
 Output:
 ```
-configmap/calico-config created
-customresourcedefinition.apiextensions.k8s.io/bgpconfigurations.crd.projectcalico.org created
-customresourcedefinition.apiextensions.k8s.io/bgppeers.crd.projectcalico.org created
-customresourcedefinition.apiextensions.k8s.io/blockaffinities.crd.projectcalico.org created
-customresourcedefinition.apiextensions.k8s.io/caliconodestatuses.crd.projectcalico.org created
-customresourcedefinition.apiextensions.k8s.io/clusterinformations.crd.projectcalico.org created
-customresourcedefinition.apiextensions.k8s.io/felixconfigurations.crd.projectcalico.org created
-customresourcedefinition.apiextensions.k8s.io/globalnetworkpolicies.crd.projectcalico.org created
-customresourcedefinition.apiextensions.k8s.io/globalnetworksets.crd.projectcalico.org created
-customresourcedefinition.apiextensions.k8s.io/hostendpoints.crd.projectcalico.org created
-customresourcedefinition.apiextensions.k8s.io/ipamblocks.crd.projectcalico.org created
-customresourcedefinition.apiextensions.k8s.io/ipamconfigs.crd.projectcalico.org created
-customresourcedefinition.apiextensions.k8s.io/ipamhandles.crd.projectcalico.org created
-customresourcedefinition.apiextensions.k8s.io/ippools.crd.projectcalico.org created
-customresourcedefinition.apiextensions.k8s.io/ipreservations.crd.projectcalico.org created
-customresourcedefinition.apiextensions.k8s.io/kubecontrollersconfigurations.crd.projectcalico.org created
-customresourcedefinition.apiextensions.k8s.io/networkpolicies.crd.projectcalico.org created
-customresourcedefinition.apiextensions.k8s.io/networksets.crd.projectcalico.org created
-clusterrole.rbac.authorization.k8s.io/calico-kube-controllers created
-clusterrolebinding.rbac.authorization.k8s.io/calico-kube-controllers created
-clusterrole.rbac.authorization.k8s.io/calico-node created
-clusterrolebinding.rbac.authorization.k8s.io/calico-node created
-daemonset.apps/calico-node created
-serviceaccount/calico-node created
-deployment.apps/calico-kube-controllers created
-serviceaccount/calico-kube-controllers created
-poddisruptionbudget.policy/calico-kube-controllers created
+configmap/calico-config unchanged
+customresourcedefinition.apiextensions.k8s.io/bgpconfigurations.crd.projectcalico.org configured
+customresourcedefinition.apiextensions.k8s.io/bgppeers.crd.projectcalico.org configured
+customresourcedefinition.apiextensions.k8s.io/blockaffinities.crd.projectcalico.org configured
+customresourcedefinition.apiextensions.k8s.io/caliconodestatuses.crd.projectcalico.org configured
+customresourcedefinition.apiextensions.k8s.io/clusterinformations.crd.projectcalico.org configured
+customresourcedefinition.apiextensions.k8s.io/felixconfigurations.crd.projectcalico.org configured
+customresourcedefinition.apiextensions.k8s.io/globalnetworkpolicies.crd.projectcalico.org configured
+customresourcedefinition.apiextensions.k8s.io/globalnetworksets.crd.projectcalico.org configured
+customresourcedefinition.apiextensions.k8s.io/hostendpoints.crd.projectcalico.org configured
+customresourcedefinition.apiextensions.k8s.io/ipamblocks.crd.projectcalico.org configured
+customresourcedefinition.apiextensions.k8s.io/ipamconfigs.crd.projectcalico.org configured
+customresourcedefinition.apiextensions.k8s.io/ipamhandles.crd.projectcalico.org configured
+customresourcedefinition.apiextensions.k8s.io/ippools.crd.projectcalico.org configured
+customresourcedefinition.apiextensions.k8s.io/ipreservations.crd.projectcalico.org configured
+customresourcedefinition.apiextensions.k8s.io/kubecontrollersconfigurations.crd.projectcalico.org configured
+customresourcedefinition.apiextensions.k8s.io/networkpolicies.crd.projectcalico.org configured
+customresourcedefinition.apiextensions.k8s.io/networksets.crd.projectcalico.org configured
+clusterrole.rbac.authorization.k8s.io/calico-kube-controllers unchanged
+clusterrolebinding.rbac.authorization.k8s.io/calico-kube-controllers unchanged
+clusterrole.rbac.authorization.k8s.io/calico-node configured
+clusterrolebinding.rbac.authorization.k8s.io/calico-node unchanged
+daemonset.apps/calico-node configured
+serviceaccount/calico-node unchanged
+deployment.apps/calico-kube-controllers configured
+serviceaccount/calico-kube-controllers unchanged
+poddisruptionbudget.policy/calico-kube-controllers configured
 ```
 
 Verify status of Calico. Make sure all Pods are running
 ```
-kubectl get pod -n kube-system | grep calico
+kubectl get pod -n kube-system -o wide | grep calico
 ```
 Output:
 ```
-NAME                                       READY   STATUS        RESTARTS   AGE
-calico-kube-controllers-7bc6547ffb-tjfcg   1/1     Running       0          30m
-calico-node-7x8jm                          1/1     Running       0          30m
-calico-node-cwxj5                          1/1     Running       0          30m
-calico-node-rq978                          1/1     Running       0          30m
+calico-kube-controllers-5c64b68895-2b96w   1/1     Running   2 (2m4s ago)   2m58s   10.244.102.1     cka003   <none>           <none>
+calico-node-l42kd                          1/1     Running   0              119s    172.16.18.160    cka002   <none>           <none>
+calico-node-ndrnw                          1/1     Running   0              3m      172.16.18.159    cka003   <none>           <none>
+calico-node-t64vq                          1/1     Running   0              69s     172.16.18.161    cka001   <none>           <none>
+calico-typha-5b8669646-fsv48               1/1     Running   0              17m     172.16.18.160    cka002   <none>           <none>
+calico-typha-5b8669646-ppqtt               0/1     Pending   0              17m     <none>           <none>   <none>           <none>
+calico-typha-5b8669646-tj9r5               1/1     Running   0              17m     172.16.18.159    cka003   <none>           <none>
 ```
+
+
+
+
+##### Test networking
+
+* Pod to pod pings
+
+Create three busybox instances
+```
+kubectl create deployment pingtest --image=busybox --replicas=3 -- sleep infinity
+```
+
+Check their IP addresses
+```
+kubectl get pods --selector=app=pingtest --output=wide
+```
+Result
+```
+NAME                        READY   STATUS    RESTARTS   AGE   IP             NODE     NOMINATED NODE   READINESS GATES
+pingtest-585b76c894-sfks2   1/1     Running   0          9s    10.244.112.2   cka002   <none>           <none>
+pingtest-585b76c894-xgskp   1/1     Running   0          9s    10.244.112.1   cka002   <none>           <none>
+pingtest-585b76c894-zjjgh   1/1     Running   0          9s    10.244.102.2   cka003   <none>           <none>
+```
+
+Note the IP addresses of the second two pods, then exec into the first one. For example
+```
+kubectl exec -ti pingtest-585b76c894-sfks2 -- sh
+```
+From inside the pod, ping the other two pod IP addresses. For example
+```
+ping 10.244.112.1 -c 4
+```
+
+* Check routes
+
+From one of the nodes, verify that routes exist to each of the pingtest pods’ IP addresses. For example
+```
+ip route get 10.244.102.2
+```
+Result
+```
+10.244.102.2 via 169.254.1.1 dev eth0  src 10.244.112.2 
+```
+
+The via `169.254.1.1` in this example indicates the next-hop for this pod IP, which matches the IP address of the node the pod is scheduled on, as expected.
+IPAM allocations from different pools
+
+Recall that we created two IP pools, but left one disabled.
+```
+calicoctl get ippools -o wide
+```
+Result
+```
+NAME                  CIDR              NAT    IPIPMODE   VXLANMODE   DISABLED   DISABLEBGPEXPORT   SELECTOR   
+default-ipv4-ippool   10.244.0.0/16     true   Always     Never       false      false              all()      
+new-ipv4-ippool       10.245.192.0/24   true   Never      Never       true       false              all() 
+```
+
+Enable the second pool.
+```
+calicoctl apply -f - <<EOF
+apiVersion: projectcalico.org/v3
+kind: IPPool
+metadata:
+  name: new-ipv4-ippool
+spec:
+  cidr: 10.245.192.0/24
+  ipipMode: Never
+  natOutgoing: true
+  disabled: false
+  nodeSelector: all()
+EOF
+```
+
+Create a pod, explicitly requesting an address from pool2
+```
+kubectl apply -f - <<EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pingtest-pool2
+  annotations:
+    cni.projectcalico.org/ipv4pools: "[\"pool2\"]"
+spec:
+  containers:
+  - args:
+    - sleep
+    - infinity
+    image: busybox
+    imagePullPolicy: Always
+    name: pingtest
+EOF
+```
+
+Verify it has an IP address from pool2
+```
+kubectl get pod pingtest-pool2 -o wide
+```
+Result
+```
+NAME             READY   STATUS              RESTARTS   AGE   IP       NODE     NOMINATED NODE   READINESS GATES
+pingtest-pool2   0/1     ContainerCreating   0          9s    <none>   cka003   <none>           <none>
+```
+
+From one of the original pingtest pods, ping the IP address.
+```
+ping 192.168.219.0 -c 4
+```
+
+
+Clean up
+```
+kubectl delete deployments.apps pingtest
+kubectl delete pod pingtest-pool2
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -517,7 +1721,7 @@ iptables -F && iptables -t nat -F && iptables -t mangle -F && iptables -X
 
 Clean up rule of `IPVS` if using `IPVS`.
 ```
-# ipvsadm --clear
+ipvsadm --clear
 ```
 
 
@@ -575,6 +1779,8 @@ sudo systemctl restart containerd
 sudo systemctl status containerd
 ```
 
+Till now, the initial deployment is completed sucessfully.
+
 
 
 ## 2.Post Installation
@@ -587,51 +1793,71 @@ sudo systemctl status containerd
 
 ## 3.Cluster Overview
 
-Till now, the initial deployment is completed sucessfully.
+### Container
 
-### Container Layer
-We are using Containerd service to manage our images and containers via command `nerdctl`.
+We are using Containerd service to manage our images and containers via command `nerdctl`, which is same concept with Docker.
+
+Tasks:
+
+* Get container's namespace.
+* Get container's status.
+
 
 Get current namespaces.
 ```
-root@cka001:~# nerdctl namespace ls
-NAME      CONTAINERS    IMAGES    VOLUMES    LABELS
-k8s.io    18            27        0  
+nerdctl namespace ls
+```
+```
+NAME       CONTAINERS    IMAGES    VOLUMES    LABELS
+default    1             1         0              
+k8s.io     20            60        0      
 ```
 
-Get containers under the namespace `k8s.io` by command `nerdctl -n k8s.io ps`.
+Get containers under specific namespace with `-n` option.
 ```
-root@cka001:~# nerdctl -n k8s.io container ls
-CONTAINER ID    IMAGE                                                                      COMMAND                   CREATED         STATUS    PORTS    NAMES
-1eb9a51e0406    registry.aliyuncs.com/google_containers/kube-apiserver:v1.23.8             "kube-apiserver --ad…"    28 hours ago    Up                 k8s://kube-system/kube-apiserver-cka001/kube-apiserver                      
-1ebee10176c4    registry.aliyuncs.com/google_containers/kube-proxy:v1.23.8                 "/usr/local/bin/kube…"    28 hours ago    Up                 k8s://kube-system/kube-proxy-v7rsr/kube-proxy                               
-2c5e1d183fc7    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  28 hours ago    Up                 k8s://kube-system/kube-apiserver-cka001                                     
-2dd9743cecad    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  27 hours ago    Up                 k8s://kube-system/kube-flannel-ds-rf54c                                     
-39306eef76cd    docker.io/rancher/mirrored-flannelcni-flannel:v0.18.1                      "/opt/bin/flanneld -…"    27 hours ago    Up                 k8s://kube-system/kube-flannel-ds-rf54c/kube-flannel                        
-3ca6fdda63a5    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  28 hours ago    Up                 k8s://kube-system/kube-scheduler-cka001                                     
-49e07d9b2b98    registry.aliyuncs.com/google_containers/coredns:v1.8.6                     "/coredns -conf /etc…"    27 hours ago    Up                 k8s://kube-system/coredns-6d8c4cb4d-9khd8/coredns                           
-555a3bf58832    registry.aliyuncs.com/google_containers/kube-scheduler:v1.23.8             "kube-scheduler --au…"    28 hours ago    Up                 k8s://kube-system/kube-scheduler-cka001/kube-scheduler                      
-5812c42bf572    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  28 hours ago    Up                 k8s://kube-system/etcd-cka001                                               
-8619e3c979a3    registry.aliyuncs.com/google_containers/coredns:v1.8.6                     "/coredns -conf /etc…"    27 hours ago    Up                 k8s://kube-system/coredns-6d8c4cb4d-qcp2l/coredns                           
-a9459900f462    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  27 hours ago    Up                 k8s://kube-system/coredns-6d8c4cb4d-9khd8                                   
-bb2b4624bfd5    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  27 hours ago    Up                 k8s://kube-system/coredns-6d8c4cb4d-qcp2l                                   
-c9462709baff    registry.aliyuncs.com/google_containers/kube-controller-manager:v1.23.8    "kube-controller-man…"    28 hours ago    Up                 k8s://kube-system/kube-controller-manager-cka001/kube-controller-manager    
-e68c3fbc90f9    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  28 hours ago    Up                 k8s://kube-system/kube-proxy-v7rsr                                          
-eae550221813    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  28 hours ago    Up                 k8s://kube-system/kube-controller-manager-cka001                            
-ff6626664c43    registry.aliyuncs.com/google_containers/etcd:3.5.1-0                       "etcd --advertise-cl…"    28 hours ago    Up                 k8s://kube-system/etcd-cka001/etcd     
+nerdctl -n k8s.io ps
+```
+```
+CONTAINER ID    IMAGE                                                                      COMMAND                   CREATED       STATUS    PORTS    NAMES
+06d6c23a4d38    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  2 days ago    Up                 k8s://kube-system/kube-apiserver-cka001                                               
+086f9192513d    registry.aliyuncs.com/google_containers/kube-controller-manager:v1.23.8    "kube-controller-man…"    2 days ago    Up                 k8s://kube-system/kube-controller-manager-cka001/kube-controller-manager              
+0923a733ee1e    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  2 days ago    Up                 k8s://kube-system/coredns-6d8c4cb4d-z5cbb                                             
+0d6d7cea48ae    registry.aliyuncs.com/google_containers/coredns:v1.8.6                     "/coredns -conf /etc…"    2 days ago    Up                 k8s://kube-system/coredns-6d8c4cb4d-z5cbb/coredns                                     
+43fe1ef0aac2    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  2 days ago    Up                 k8s://kube-system/kube-proxy-rzmpb                                                    
+454abe460028    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  2 days ago    Up                 k8s://kube-system/coredns-6d8c4cb4d-kv98s                                             
+508464b96dcf    registry.aliyuncs.com/google_containers/etcd:3.5.1-0                       "etcd --advertise-cl…"    2 days ago    Up                 k8s://kube-system/etcd-cka001/etcd                                                    
+535f7cf7f001    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  2 days ago    Up                 k8s://kube-system/kube-controller-manager-cka001                                      
+5434068a0358    registry.aliyuncs.com/google_containers/kube-apiserver:v1.23.8             "kube-apiserver --ad…"    2 days ago    Up                 k8s://kube-system/kube-apiserver-cka001/kube-apiserver                                
+67c0b63b50e6    registry.aliyuncs.com/google_containers/kube-scheduler:v1.23.8             "kube-scheduler --au…"    2 days ago    Up                 k8s://kube-system/kube-scheduler-cka001/kube-scheduler                                
+71afea5a6fb5    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  2 days ago    Up                 k8s://kube-system/etcd-cka001                                                         
+874a0e2798aa    registry.aliyuncs.com/google_containers/kube-proxy:v1.23.8                 "/usr/local/bin/kube…"    2 days ago    Up                 k8s://kube-system/kube-proxy-rzmpb/kube-proxy                                         
+c0bdd2f73da7    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  2 days ago    Up                 k8s://kube-system/kube-scheduler-cka001                                               
+cb32b00cb43b    registry.aliyuncs.com/google_containers/coredns:v1.8.6                     "/coredns -conf /etc…"    2 days ago    Up                 k8s://kube-system/coredns-6d8c4cb4d-kv98s/coredns                                     
+d57a2071270a    docker.io/calico/node:v3.23.2                                              "start_runit"             2 days ago    Up                 k8s://kube-system/calico-node-9577c/calico-node                                       
+d74d2d4c6a01    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  2 days ago    Up                 k8s://kube-system/calico-node-9577c                                                   
+ebfebd851a31    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  2 days ago    Up                 k8s://kube-system/calico-kube-controllers-7bc6547ffb-sf5xf                            
+f5a876bc5e3f    docker.io/calico/kube-controllers:v3.23.2                                  "/usr/bin/kube-contr…"    2 days ago    Up                 k8s://kube-system/calico-kube-controllers-7bc6547ffb-sf5xf/calico-kube-controllers    
+```
+```
+nerdctl -n default ps
+```
+```
+CONTAINER ID    IMAGE    COMMAND    CREATED    STATUS    PORTS    NAMES
 ```
 
 Some management and commands options of `nertctl`.
 ```
-root@cka001:~# nertctl --help
-root@cka001:~# nerdctl image ls -a
-root@cka001:~# nerdctl volume ls
-root@cka001:~# nerdctl stats
+nertctl --help
+nerdctl image ls -a
+nerdctl volume ls
+nerdctl stats
 ```
 
 Get below network list with command `nerdctl network ls` in Containerd layer.
 ```
-root@cka001:~# nerdctl network ls
+nerdctl network ls
+```
+```
 NETWORK ID    NAME      FILE
               cbr0      /etc/cni/net.d/10-flannel.conflist
 0             bridge    /etc/cni/net.d/nerdctl-bridge.conflist
@@ -648,36 +1874,6 @@ cni0             : inet 10.244.0.1/24 brd 10.244.0.255 qlen 1000
 vethb0a35696@if3 : noqueue master cni0
 veth72791f64@if3 : noqueue master cni0
 ```
-
-With `kubeadm init` to initiate cluster, we need understand below three options about network.
-
-* `--pod-network-cidr`: 
-    * Specify range of IP addresses for the pod network. If set, the control plane will automatically allocate CIDRs for every node.
-    * Be noted that `10.244.0.0/16` is default range of flannel. If it's changed here, please do change the same when deploy `Flannel`.
-* `--apiserver-bind-port`: 
-    * Port for the API Server to bind to. (default 6443)
-* `--service-cidr`: 
-    * Use alternative range of IP address for service VIPs. (default "10.96.0.0/12")
-
-Note: 
-
-* service VIPs (a.k.a. Cluster IP), specified by option `--service-cidr`.
-* podCIDR (a.k.a. endpoint IP)，specified by option `--pod-network-cidr`.
-
-There are 4 distinct networking problems to address:
-
-* Highly-coupled container-to-container communications: this is solved by Pods (podCIDR) and localhost communications.
-* Pod-to-Pod communications: 
-    * a.k.a. container-to-container. 
-    * Example with Flannel, the flow is: Pod --> veth pair --> cni0 --> flannel.1 --> host eth0 --> host eth0 --> flannel.1 --> cni0 --> veth pair --> Pod.
-* Pod-to-Service communications:
-    * Flow: Pod --> Kernel --> Servive iptables --> service --> Pod iptables --> Pod
-* External-to-Service communications: 
-    * LoadBalancer: SLB --> NodePort --> Service --> Pod
-
-`kube-proxy` is responsible for iptables, not traffic. 
-
-
 
 
 
@@ -7484,8 +8680,6 @@ Template.BasePath            # 当前模板目录路径
 **6/26**
 
 1. 将cka003节点的kubelet服务关闭
-
-
 2. 在节点上发生了什么，通过nerdctl查看容器发生了什么
 3. 在集群层面观察对应节点处于什么状态，本来在节点上运行的Pod发生了什么（kubectl get pod -owide -A -w持续监视Pod变化）
 

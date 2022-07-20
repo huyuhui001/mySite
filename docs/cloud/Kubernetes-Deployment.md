@@ -395,7 +395,7 @@ network:
 sudo netplan apply
 ```
 
-Disable swap on all nodes.
+Disable swap and firewall on all nodes.
 ```
 sudo swapoff -a
 sudo ufw disable
