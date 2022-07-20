@@ -16,7 +16,6 @@ Install `mkdocs` and extensions with below specified version.
 ```
 pip3 install mkdocs==1.3.0
 pip3 install mkdocs-material==7.3.6
-pip3 install mkdocs-material-extensions==1.0.3
 pip3 install mkdocs-mermaid2-plugin==0.6.0
 ```
 All makdown files are under folder /docs.
