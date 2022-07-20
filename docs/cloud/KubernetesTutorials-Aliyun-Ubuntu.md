@@ -634,19 +634,21 @@ kubectl config use-context cni@kubernetes --kubeconfig=cni.kubeconfig
 
 The context for CNI looks like below.
 ```
-kubectl config get-contexts --kubeconfig=/root/.kube/cni.kubeconfig
+kubectl config get-contexts --kubeconfig=cni.kubeconfig
 ```
 ```
 CURRENT   NAME             CLUSTER      AUTHINFO     NAMESPACE
 *         cni@kubernetes   kubernetes   calico-cni 
 ```
 
-Copy `/root/.kube/cni.kubeconfig` to directory `/root/.kube/` in nodes `cka002` and `cka003`.
-
-
 
 
 * Provision RBAC
+
+Change to home directory
+```
+cd ~
+```
 
 Define a cluster role the CNI plugin will use to access Kubernetes.
 
@@ -705,6 +707,8 @@ kubectl create clusterrolebinding calico-cni --clusterrole=calico-cni --user=cal
 
 Do these steps on **each node** in your cluster.
 
+Installation on `cka001`.
+
 Run these commands as **root**.
 ```
 sudo su
@@ -712,13 +716,17 @@ sudo su
 
 Install the CNI plugin Binaries. Get right release in the link `https://github.com/projectcalico/cni-plugin/releases`.
 ```
-curl -L -o /opt/cni/bin/calico https://github.com/projectcalico/cni-plugin/releases/download/v3.20.5/calico-amd64
+mkdir -p /opt/cni/bin
 
+curl -L -o /opt/cni/bin/calico https://github.com/projectcalico/cni-plugin/releases/download/v3.20.5/calico-amd64
 chmod 755 /opt/cni/bin/calico
 
 curl -L -o /opt/cni/bin/calico-ipam https://github.com/projectcalico/cni-plugin/releases/download/v3.20.5/calico-ipam-amd64
-
 chmod 755 /opt/cni/bin/calico-ipam
+```
+```
+wget https://github.com/containernetworking/plugins/releases/download/v1.1.1/cni-plugins-linux-amd64-v1.1.1.tgz
+tar xvf cni-plugins-linux-amd64-v1.1.1.tgz -C /opt/cni/bin
 ```
 
 Create the config directory
@@ -728,7 +736,7 @@ mkdir -p /etc/cni/net.d/
 
 Copy the kubeconfig from the previous section
 ```
-cp ~/.kube/cni.kubeconfig /etc/cni/net.d/calico-kubeconfig
+cp /etc/kubernetes/pki/cni.kubeconfig /etc/cni/net.d/calico-kubeconfig
 
 chmod 600 /etc/cni/net.d/calico-kubeconfig
 ```
@@ -764,16 +772,164 @@ cat > /etc/cni/net.d/10-calico.conflist <<EOF
 }
 EOF
 ```
+```
+cp /etc/cni/net.d/calico-kubeconfig ~
+```
 
 Exit from su and go back to the logged in user.
 ```
 exit
 ```
 
+
+Installation on `cka002`.
+
+```
+sftp -i cka-key-pair.pem cka002
+```
+```
+put calico-amd64
+put calicoctl-linux-amd64
+put calico-ipam-amd64
+put calico-kubeconfig
+put cni-plugins-linux-amd64-v1.1.1.tgz
+```
+```
+ssh -i cka-key-pair.pem cka002
+```
+```
+mkdir -p /opt/cni/bin
+
+cp calico-amd64 /opt/cni/bin/calico
+cp calico-ipam-amd64 /opt/cni/bin/calico-ipam
+
+tar xvf cni-plugins-linux-amd64-v1.1.1.tgz -C /opt/cni/bin
+
+mkdir -p /etc/cni/net.d/
+
+cp calico-kubeconfig /etc/cni/net.d/calico-kubeconfig
+
+chmod 600 /etc/cni/net.d/calico-kubeconfig
+```
+```
+cat > /etc/cni/net.d/10-calico.conflist <<EOF
+{
+  "name": "k8s-pod-network",
+  "cniVersion": "0.3.1",
+  "plugins": [
+    {
+      "type": "calico",
+      "log_level": "info",
+      "datastore_type": "kubernetes",
+      "mtu": 1500,
+      "ipam": {
+          "type": "calico-ipam"
+      },
+      "policy": {
+          "type": "k8s"
+      },
+      "kubernetes": {
+          "kubeconfig": "/etc/cni/net.d/calico-kubeconfig"
+      }
+    },
+    {
+      "type": "portmap",
+      "snat": true,
+      "capabilities": {"portMappings": true}
+    }
+  ]
+}
+EOF
+```
+
+Back to `cka001`.
+```
+exit
+```
+
+
+Installation on `cka003`.
+
+```
+sftp -i cka-key-pair.pem cka003
+```
+```
+put calico-amd64
+put calicoctl-linux-amd64
+put calico-ipam-amd64
+put calico-kubeconfig
+put cni-plugins-linux-amd64-v1.1.1.tgz
+```
+
+```
+ssh -i cka-key-pair.pem cka003
+```
+```
+mkdir -p /opt/cni/bin
+
+cp calico-amd64 /opt/cni/bin/calico
+cp calico-ipam-amd64 /opt/cni/bin/calico-ipam
+
+tar xvf cni-plugins-linux-amd64-v1.1.1.tgz -C /opt/cni/bin
+
+mkdir -p /etc/cni/net.d/
+
+cp calico-kubeconfig /etc/cni/net.d/calico-kubeconfig
+
+chmod 600 /etc/cni/net.d/calico-kubeconfig
+```
+```
+cat > /etc/cni/net.d/10-calico.conflist <<EOF
+{
+  "name": "k8s-pod-network",
+  "cniVersion": "0.3.1",
+  "plugins": [
+    {
+      "type": "calico",
+      "log_level": "info",
+      "datastore_type": "kubernetes",
+      "mtu": 1500,
+      "ipam": {
+          "type": "calico-ipam"
+      },
+      "policy": {
+          "type": "k8s"
+      },
+      "kubernetes": {
+          "kubeconfig": "/etc/cni/net.d/calico-kubeconfig"
+      }
+    },
+    {
+      "type": "portmap",
+      "snat": true,
+      "capabilities": {"portMappings": true}
+    }
+  ]
+}
+EOF
+```
+
+Back to `cka001`.
+```
+exit
+```
+
+Stay in home directory in node `cka001`.
+
 At this point Kubernetes nodes will become Ready because Kubernetes has a networking provider and configuration installed.
 ```
 kubectl get nodes
 ```
+Result
+```
+NAME     STATUS   ROLES                  AGE     VERSION
+cka001   Ready    control-plane,master   4h50m   v1.23.8
+cka002   Ready    <none>                 4h49m   v1.23.8
+cka003   Ready    <none>                 4h49m   v1.23.8
+```
+
+
+
 
 
 
@@ -788,7 +944,10 @@ This reduces the number of watches the Kubernetes API server needs to serve and 
 We will use mutually authenticated TLS to ensure that calico/node and Typha communicate securely. 
 We generate a certificate authority (CA) and use it to sign a certificate for Typha.
 
-Stay in directory `/etc/kubernetes/pki/`.
+Change to directory `/etc/kubernetes/pki/`.
+```
+cd /etc/kubernetes/pki/
+```
 
 Create the CA certificate and key
 ```
@@ -805,7 +964,7 @@ Store the CA certificate in a ConfigMap that Typha & calico/node will access.
 kubectl create configmap -n kube-system calico-typha-ca --from-file=typhaca.crt
 ```
 
-Create the Typha key and certificate signing request (CSR)
+Create the Typha key and certificate signing request (CSR).
 ```
 openssl req -newkey rsa:4096 \
   -keyout typha.key \
@@ -825,12 +984,24 @@ openssl x509 -req -in typha.csr \
   -out typha.crt \
   -days 365
 ```
+```
+Signature ok
+subject=CN = calico-typha
+Getting CA Private Key
+```
+
 Store the Typha key and certificate in a secret that Typha will access
 ```
 kubectl create secret generic -n kube-system calico-typha-certs --from-file=typha.key --from-file=typha.crt
 ```
 
+
 * Provision RBAC
+
+Change to home directory.
+```
+cd ~
+```
 
 Create a ServiceAccount that will be used to run Typha.
 ```
@@ -899,6 +1070,8 @@ Bind the cluster role to the calico-typha ServiceAccount.
 ```
 kubectl create clusterrolebinding calico-typha --clusterrole=calico-typha --serviceaccount=kube-system:calico-typha
 ```
+
+
 
 * Install Deployment
 
@@ -1005,9 +1178,9 @@ kubectl get pods -l k8s-app=calico-typha -n kube-system
 Result looks like below.
 ```
 NAME                           READY   STATUS    RESTARTS   AGE
-calico-typha-5b8669646-fsv48   1/1     Running   0          3m16s
-calico-typha-5b8669646-ppqtt   0/1     Pending   0          3m16s
-calico-typha-5b8669646-tj9r5   1/1     Running   0          3m16s
+calico-typha-5b8669646-b2xnq   1/1     Running   0          20s
+calico-typha-5b8669646-q5glk   0/1     Pending   0          20s
+calico-typha-5b8669646-rvv86   1/1     Running   0          20s
 ```
 
 Here is an error message received:
@@ -1044,18 +1217,19 @@ EOF
 Validate that Typha is using TLS.
 ```
 TYPHA_CLUSTERIP=$(kubectl get svc -n kube-system calico-typha -o jsonpath='{.spec.clusterIP}')
-curl https://$TYPHA_CLUSTERIP:5473 -v --cacert typhaca.crt
 ```
-
+```
+curl https://$TYPHA_CLUSTERIP:5473 -v --cacert /etc/kubernetes/pki/typhaca.crt
+```
 Result
 ```
-*   Trying 11.244.203.209:5473...
+*   Trying 11.244.91.165:5473...
 * TCP_NODELAY set
-* Connected to 11.244.203.209 (11.244.203.209) port 5473 (#0)
+* Connected to 11.244.91.165 (11.244.91.165) port 5473 (#0)
 * ALPN, offering h2
 * ALPN, offering http/1.1
 * successfully set certificate verify locations:
-*   CAfile: typhaca.crt
+*   CAfile: /etc/kubernetes/pki/typhaca.crt
   CApath: /etc/ssl/certs
 * TLSv1.3 (OUT), TLS handshake, Client hello (1):
 * TLSv1.3 (IN), TLS handshake, Server hello (2):
@@ -1091,6 +1265,11 @@ We will later deploy calico/node with a certificate Typha will accept.
 
 * Provision Certificates
 
+Change to directory `/etc/kubernetes/pki/`.
+```
+cd /etc/kubernetes/pki/
+```
+
 Create the key `calico/node` will use to authenticate with Typha and the certificate signing request (CSR)
 ```
 openssl req -newkey rsa:4096 \
@@ -1111,13 +1290,24 @@ openssl x509 -req -in calico-node.csr \
   -out calico-node.crt \
   -days 365
 ```
+```
+Signature ok
+subject=CN = calico-node
+Getting CA Private Key
+```
 
 Store the key and certificate in a Secret that calico/node will access.
 ```
 kubectl create secret generic -n kube-system calico-node-certs --from-file=calico-node.key --from-file=calico-node.crt
 ```
 
+
 * Provision RBAC
+
+Change to home directory.
+```
+cd ~
+```
 
 Create the ServiceAccount that calico/node will run as.
 ```
@@ -1274,6 +1464,11 @@ kubectl create clusterrolebinding calico-node --clusterrole=calico-node --servic
 
 
 * Install daemon set
+
+Change to home directory.
+```
+cd ~
+```
 
 `calico/node` runs as a daemon set so that it is installed on every node in the cluster.
 
@@ -1455,71 +1650,10 @@ kubectl get pod -l k8s-app=calico-node -n kube-system
 Result looks like below.
 ```
 NAME                READY   STATUS    RESTARTS   AGE
-calico-node-9577c   1/1     Running   0          3d
-calico-node-hpv4n   1/1     Running   0          3d
-calico-node-vhtjg   0/1     Running   0          17s
+calico-node-4c4sp   1/1     Running   0          40s
+calico-node-j2z6v   1/1     Running   0          40s
+calico-node-vgm9n   1/1     Running   0          40s
 ```
-
-
-
-
-
-
-
-
-Install Calico.
-```
-curl https://docs.projectcalico.org/manifests/calico.yaml -O
-
-kubectl apply -f calico.yaml
-```
-Output:
-```
-configmap/calico-config unchanged
-customresourcedefinition.apiextensions.k8s.io/bgpconfigurations.crd.projectcalico.org configured
-customresourcedefinition.apiextensions.k8s.io/bgppeers.crd.projectcalico.org configured
-customresourcedefinition.apiextensions.k8s.io/blockaffinities.crd.projectcalico.org configured
-customresourcedefinition.apiextensions.k8s.io/caliconodestatuses.crd.projectcalico.org configured
-customresourcedefinition.apiextensions.k8s.io/clusterinformations.crd.projectcalico.org configured
-customresourcedefinition.apiextensions.k8s.io/felixconfigurations.crd.projectcalico.org configured
-customresourcedefinition.apiextensions.k8s.io/globalnetworkpolicies.crd.projectcalico.org configured
-customresourcedefinition.apiextensions.k8s.io/globalnetworksets.crd.projectcalico.org configured
-customresourcedefinition.apiextensions.k8s.io/hostendpoints.crd.projectcalico.org configured
-customresourcedefinition.apiextensions.k8s.io/ipamblocks.crd.projectcalico.org configured
-customresourcedefinition.apiextensions.k8s.io/ipamconfigs.crd.projectcalico.org configured
-customresourcedefinition.apiextensions.k8s.io/ipamhandles.crd.projectcalico.org configured
-customresourcedefinition.apiextensions.k8s.io/ippools.crd.projectcalico.org configured
-customresourcedefinition.apiextensions.k8s.io/ipreservations.crd.projectcalico.org configured
-customresourcedefinition.apiextensions.k8s.io/kubecontrollersconfigurations.crd.projectcalico.org configured
-customresourcedefinition.apiextensions.k8s.io/networkpolicies.crd.projectcalico.org configured
-customresourcedefinition.apiextensions.k8s.io/networksets.crd.projectcalico.org configured
-clusterrole.rbac.authorization.k8s.io/calico-kube-controllers unchanged
-clusterrolebinding.rbac.authorization.k8s.io/calico-kube-controllers unchanged
-clusterrole.rbac.authorization.k8s.io/calico-node configured
-clusterrolebinding.rbac.authorization.k8s.io/calico-node unchanged
-daemonset.apps/calico-node configured
-serviceaccount/calico-node unchanged
-deployment.apps/calico-kube-controllers configured
-serviceaccount/calico-kube-controllers unchanged
-poddisruptionbudget.policy/calico-kube-controllers configured
-```
-
-Verify status of Calico. Make sure all Pods are running
-```
-kubectl get pod -n kube-system -o wide | grep calico
-```
-Output:
-```
-calico-kube-controllers-5c64b68895-2b96w   1/1     Running   2 (2m4s ago)   2m58s   10.244.102.1     cka003   <none>           <none>
-calico-node-l42kd                          1/1     Running   0              119s    172.16.18.160    cka002   <none>           <none>
-calico-node-ndrnw                          1/1     Running   0              3m      172.16.18.159    cka003   <none>           <none>
-calico-node-t64vq                          1/1     Running   0              69s     172.16.18.161    cka001   <none>           <none>
-calico-typha-5b8669646-fsv48               1/1     Running   0              17m     172.16.18.160    cka002   <none>           <none>
-calico-typha-5b8669646-ppqtt               0/1     Pending   0              17m     <none>           <none>   <none>           <none>
-calico-typha-5b8669646-tj9r5               1/1     Running   0              17m     172.16.18.159    cka003   <none>           <none>
-```
-
-
 
 
 ##### Test networking
@@ -1538,33 +1672,49 @@ kubectl get pods --selector=app=pingtest --output=wide
 Result
 ```
 NAME                        READY   STATUS    RESTARTS   AGE   IP             NODE     NOMINATED NODE   READINESS GATES
-pingtest-585b76c894-sfks2   1/1     Running   0          9s    10.244.112.2   cka002   <none>           <none>
-pingtest-585b76c894-xgskp   1/1     Running   0          9s    10.244.112.1   cka002   <none>           <none>
-pingtest-585b76c894-zjjgh   1/1     Running   0          9s    10.244.102.2   cka003   <none>           <none>
+pingtest-585b76c894-chwjq   1/1     Running   0          7s    10.244.31.1    cka002   <none>           <none>
+pingtest-585b76c894-s2tbs   1/1     Running   0          7s    10.244.31.0    cka002   <none>           <none>
+pingtest-585b76c894-vm9wn   1/1     Running   0          7s    10.244.28.64   cka003   <none>           <none>
 ```
 
-Note the IP addresses of the second two pods, then exec into the first one. For example
+Note the IP addresses of the second two pods, then exec into the first one. 
+From inside the pod, ping the other two pod IP addresses. 
+For example:
 ```
-kubectl exec -ti pingtest-585b76c894-sfks2 -- sh
+kubectl exec -ti pingtest-585b76c894-chwjq -- sh
+/ # ping 10.244.31.1 -c 4
+4 packets transmitted, 4 packets received, 0% packet loss
+
+/ # ping 10.244.31.0 -c 4
+4 packets transmitted, 4 packets received, 0% packet loss
+
+/ # ping 10.244.28.64 -c 4
+4 packets transmitted, 0 packets received, 100% packet loss
 ```
-From inside the pod, ping the other two pod IP addresses. For example
-```
-ping 10.244.112.1 -c 4
-```
+
 
 * Check routes
 
 From one of the nodes, verify that routes exist to each of the pingtest pods’ IP addresses. For example
 ```
-ip route get 10.244.102.2
+ip route get 10.244.31.1
+ip route get 10.244.31.0
+ip route get 10.244.28.64
 ```
 Result
 ```
-10.244.102.2 via 169.254.1.1 dev eth0  src 10.244.112.2 
+10.244.31.1 via 172.16.18.253 dev eth0 src 172.16.18.161 uid 0 
+    cache 
+
+10.244.31.0 via 172.16.18.253 dev eth0 src 172.16.18.161 uid 0 
+    cache 
+
+10.244.28.64 via 172.16.18.253 dev eth0 src 172.16.18.161 uid 0 
+    cache 
 ```
 
-The via `169.254.1.1` in this example indicates the next-hop for this pod IP, which matches the IP address of the node the pod is scheduled on, as expected.
-IPAM allocations from different pools
+The via `172.16.18.161`(it's control-plane) in this example indicates the next-hop for this pod IP, which matches the IP address of the node the pod is scheduled on, as expected.
+IPAM allocations from different pools.
 
 Recall that we created two IP pools, but left one disabled.
 ```
@@ -1572,20 +1722,20 @@ calicoctl get ippools -o wide
 ```
 Result
 ```
-NAME                  CIDR              NAT    IPIPMODE   VXLANMODE   DISABLED   DISABLEBGPEXPORT   SELECTOR   
-default-ipv4-ippool   10.244.0.0/16     true   Always     Never       false      false              all()      
-new-ipv4-ippool       10.245.192.0/24   true   Never      Never       true       false              all() 
+NAME            CIDR              NAT    IPIPMODE   VXLANMODE   DISABLED   DISABLEBGPEXPORT   SELECTOR   
+ipv4-ippool-1   10.244.0.0/18     true   Never      Never       false      false              all()      
+ipv4-ippool-2   10.244.192.0/19   true   Never      Never       true       false              all()   
 ```
 
 Enable the second pool.
 ```
-calicoctl apply -f - <<EOF
+calicoctl --allow-version-mismatch apply -f - <<EOF
 apiVersion: projectcalico.org/v3
 kind: IPPool
 metadata:
-  name: new-ipv4-ippool
+  name: ipv4-ippool-2
 spec:
-  cidr: 10.245.192.0/24
+  cidr: 10.244.192.0/19
   ipipMode: Never
   natOutgoing: true
   disabled: false
@@ -1593,15 +1743,26 @@ spec:
 EOF
 ```
 
+```
+calicoctl get ippools -o wide
+```
+Result
+```
+NAME            CIDR              NAT    IPIPMODE   VXLANMODE   DISABLED   DISABLEBGPEXPORT   SELECTOR   
+ipv4-ippool-1   10.244.0.0/18     true   Never      Never       false      false              all()      
+ipv4-ippool-2   10.244.192.0/19   true   Never      Never       false      false              all()      
+```
+
+
 Create a pod, explicitly requesting an address from pool2
 ```
 kubectl apply -f - <<EOF
 apiVersion: v1
 kind: Pod
 metadata:
-  name: pingtest-pool2
+  name: pingtest-ippool-2
   annotations:
-    cni.projectcalico.org/ipv4pools: "[\"pool2\"]"
+    cni.projectcalico.org/ipv4pools: "[\"ipv4-ippool-2\"]"
 spec:
   containers:
   - args:
@@ -1615,38 +1776,30 @@ EOF
 
 Verify it has an IP address from pool2
 ```
-kubectl get pod pingtest-pool2 -o wide
+kubectl get pod pingtest-ippool-2 -o wide
 ```
 Result
 ```
-NAME             READY   STATUS              RESTARTS   AGE   IP       NODE     NOMINATED NODE   READINESS GATES
-pingtest-pool2   0/1     ContainerCreating   0          9s    <none>   cka003   <none>           <none>
+NAME                READY   STATUS    RESTARTS   AGE   IP               NODE     NOMINATED NODE   READINESS GATES
+pingtest-ippool-2   1/1     Running   0          18s   10.244.203.192   cka003   <none>           <none>
 ```
 
-From one of the original pingtest pods, ping the IP address.
+Let's attach to the Pod `pingtest-585b76c894-chwjq` again.
 ```
-ping 192.168.219.0 -c 4
+kubectl exec -ti pingtest-585b76c894-chwjq -- sh
+/ # 10.244.203.192 -c 4
+4 packets transmitted, 0 packets received, 100% packet loss
 ```
+
+!! Mark here. it's failed. Need further check why the route does not work.
+
 
 
 Clean up
 ```
 kubectl delete deployments.apps pingtest
-kubectl delete pod pingtest-pool2
+kubectl delete pod pingtest-ippool-2
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1669,9 +1822,9 @@ Perform `kubectl cluster-info` command on master node we will get below informat
 * CoreDNS is running at https://<mster node ip>:6443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
 
 ```
-# kubectl cluster-info
-# kubectl get nodes -owide
-# kubectl get pod -A
+kubectl cluster-info
+kubectl get nodes -owide
+kubectl get pod -A
 ```
 
 
