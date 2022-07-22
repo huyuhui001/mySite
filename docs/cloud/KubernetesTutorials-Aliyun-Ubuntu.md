@@ -2629,7 +2629,7 @@ One one health Pod can provide normal service.
 
 
 
-## 8.Namespace
+## 7.Namespace
 
 Get list of Namespace
 ```
