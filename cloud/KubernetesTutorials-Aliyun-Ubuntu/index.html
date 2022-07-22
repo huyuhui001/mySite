@@ -725,11 +725,11 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#6label-and-annotation" class="md-nav__link">
-    6.Label and Annotation
+  <a href="#5label-and-annotation" class="md-nav__link">
+    5.Label and Annotation
   </a>
   
-    <nav class="md-nav" aria-label="6.Label and Annotation">
+    <nav class="md-nav" aria-label="5.Label and Annotation">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -765,11 +765,11 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#7health-check" class="md-nav__link">
-    7.Health Check
+  <a href="#6health-check" class="md-nav__link">
+    6.Health Check
   </a>
   
-    <nav class="md-nav" aria-label="7.Health Check">
+    <nav class="md-nav" aria-label="6.Health Check">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -794,9 +794,43 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#demo-of-health-check" class="md-nav__link">
-    Demo of Health Check
+  <a href="#demo-health-check" class="md-nav__link">
+    Demo: Health Check
   </a>
+  
+    <nav class="md-nav" aria-label="Demo: Health Check">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#create-deployment-and-service" class="md-nav__link">
+    Create Deployment and Service
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulate-error" class="md-nav__link">
+    Simulate Error
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fix-error-verify" class="md-nav__link">
+    Fix Error &amp; Verify
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    Conclusion
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -2117,6 +2151,9 @@ EOF
 <pre><code>sudo modprobe overlay
 sudo modprobe br_netfilter
 </code></pre>
+<p>Verify</p>
+<pre><code>lsmod | grep br_netfilter
+</code></pre>
 <p>Create file <code>99-kubernetes-cri.conf</code> to set up configure file for Kubernetes CRI.</p>
 <p>Set <code>net/bridge/bridge-nf-call-iptables=1</code> to ensure simple configurations (like Docker with a bridge) work correctly with the iptables proxy. <a href="https://cloud.tencent.com/developer/article/1828060">Why <code>net/bridge/bridge-nf-call-iptables=1</code> need to be enable by Kubernetes</a>.</p>
 <p>IP forwarding is also known as routing. When it comes to Linux, it may also be called Kernel IP forwarding because it uses the kernel variable <code>net.ipv4.ip_forward</code> to enable or disable the IP forwarding feature. The default preset value is <code>ip_forward=0</code>. Hence, the Linux IP forwarding feature is disabled by default.</p>
@@ -2127,8 +2164,12 @@ net.bridge.bridge-nf-call-ip6tables = 1
 EOF
 </code></pre>
 <p>The <code>sysctl</code> command reads the information from the <code>/proc/sys</code> directory. <code>/proc/sys</code> is a virtual directory that contains file objects that can be used to view and set the current kernel parameters.</p>
-<p>By commadn <code>sysctl -w net.ipv4.ip_forward=1</code>, the change takes effect immediately, but it is not persistent. After a system reboot, the default value is loaded. Write the settings to <code>/etc/sysctl.conf</code> is to set a parameter permanently, you’ll need to  or another configuration file in the /etc/sysctl.d directory:</p>
+<p>By commadn <code>sysctl -w net.ipv4.ip_forward=1</code>, the change takes effect immediately, but it is not persistent. After a system reboot, the default value is loaded. 
+Write the settings to <code>/etc/sysctl.conf</code> is to set a parameter permanently, you’ll need to  or another configuration file in the <code>/etc/sysctl.d</code> directory:</p>
 <pre><code>sudo sysctl --system
+</code></pre>
+<p>Verify.</p>
+<pre><code>sysctl net.ipv4.ip_forward
 </code></pre>
 <h3 id="install-containerd">Install Containerd</h3>
 <p>Install Containerd sevice for all VMs.</p>
@@ -3082,9 +3123,13 @@ Copy of StatefulSet Pod will not be created automatically in other node when it'
 <p>Scale StatefulSet <code>web</code> to <code>5</code> Replicas.</p>
 <pre><code>kubectl scale sts web --replicas=5
 </code></pre>
+<p>Clean up.</p>
+<pre><code>kubectl delete sts web
+kubectl delete service nginx
+</code></pre>
 <h3 id="daemonset">DaemonSet</h3>
-<p>Create DaemonSet with yaml file and apply it.</p>
-<pre><code>root@cka001:~# cat &gt; daemonset-busybox.yaml &lt;&lt;EOF
+<p>Create DaemonSet <code>daemonset-busybox</code>.</p>
+<pre><code>kubectl apply -f - &lt;&lt; EOF
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
@@ -3113,23 +3158,24 @@ spec:
         - &quot;10000&quot;
 EOF
 
-
-root@cka001:~# kubectl apply -f daemonset-busybox.yaml
 </code></pre>
-<p>Get status of DaemonSet Pod. Note, it's deployed on each node.</p>
-<pre><code>root@cka001:~# kubectl get daemonset
-NAME                DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
+<p>Get status of DaemonSet.</p>
+<pre><code>kubectl get daemonsets daemonset-busybox
+</code></pre>
+<pre><code>NAME                DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
 daemonset-busybox   3         3         3       3            3           &lt;none&gt;          5m33s
-
-root@cka001:~# kubectl get pod -o wide | grep daemonset-busybox
-NAME                                READY   STATUS    RESTARTS   AGE   IP            NODE     NOMINATED NODE   READINESS GATES
-daemonset-busybox-kb2kp             1/1     Running   0          75s   10.244.0.6    cka001   &lt;none&gt;           &lt;none&gt;
-daemonset-busybox-lnspq             1/1     Running   0          75s   10.244.2.16   cka003   &lt;none&gt;           &lt;none&gt;
-daemonset-busybox-r6sc7             1/1     Running   0          75s   10.244.1.17   cka002   &lt;none&gt;           &lt;none&gt;
+</code></pre>
+<p>Get DaemonSet Pod status. It's deployed on each node.</p>
+<pre><code>kubectl get pod -o wide | grep daemonset-busybox
+</code></pre>
+<pre><code>NAME                      READY   STATUS    RESTARTS   AGE    IP               NODE     NOMINATED NODE   READINESS GATES
+daemonset-busybox-cs95s   1/1     Running   0          102s   10.244.228.196   cka001   &lt;none&gt;           &lt;none&gt;
+daemonset-busybox-twhhl   1/1     Running   0          102s   10.244.112.26    cka002   &lt;none&gt;           &lt;none&gt;
+daemonset-busybox-vkp9c   1/1     Running   0          102s   10.244.102.18    cka003   &lt;none&gt;           &lt;none&gt;
 </code></pre>
 <h3 id="job">Job</h3>
-<p>Create Job with yaml file and apply it.</p>
-<pre><code>root@cka001:~# cat &gt; job-pi.yaml &lt;&lt;EOF
+<p>Create Job <code>pi</code>.</p>
+<pre><code>kubectl apply -f - &lt;&lt; EOF
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -3145,21 +3191,23 @@ spec:
   backoffLimit: 4
 EOF
 
-root@cka001:~# kubectl apply -f job-pi.yaml
 </code></pre>
 <p>Get details of Job.</p>
-<pre><code>root@cka001:~# kubectl get jobs
+<pre><code>kubectl get jobs
 </code></pre>
 <p>Get details of Job Pod. The status <code>Completed</code> means the job was done successfully.</p>
-<pre><code>root@cka001:~# kubectl get pod pi-s28pr
+<pre><code>kubectl get pod pi-572n5
 </code></pre>
 <p>Get log info of the Job Pod.</p>
-<pre><code>root@cka001:~# kubectl logs pi-s28pr
+<pre><code>kubectl logs pi-572n5
 3.141592653589793..............
 </code></pre>
+<p>Clean up</p>
+<pre><code>kubectl delete job pi
+</code></pre>
 <h3 id="cronjob">Cronjob</h3>
-<p>Create Cronjob with yaml file and apply it.</p>
-<pre><code>root@cka001:~# cat &gt; cronjob-hello.yaml &lt;&lt;EOF
+<p>Create Cronjob <code>hello</code>.</p>
+<pre><code>kubectl apply -f - &lt;&lt; EOF
 apiVersion: batch/v1
 kind: CronJob
 metadata:
@@ -3180,14 +3228,12 @@ spec:
       restartPolicy: OnFailure
 EOF
 
-
-root@cka001:~# kubectl apply -f cronjob-hello.yaml
 </code></pre>
 <p>Get detail of Cronjob</p>
-<pre><code>root@cka001:~# kubectl get cronjobs
+<pre><code>kubectl get cronjobs
 </code></pre>
 <p>Monitor Jobs. Every 1 minute a new job will be created. </p>
-<pre><code>root@cka001:~# kubectl get jobs -w
+<pre><code>kubectl get jobs -w
 </code></pre>
 <h3 id="demo-operations-on-resources">Demo: Operations on Resources</h3>
 <p>Summary:</p>
@@ -3336,7 +3382,6 @@ spec:
     imagePullPolicy: IfNotPresent
   restartPolicy: Always
 EOF
-
 
 kubectl exec --stdin --tty ubuntu -- /bin/bash
 kubectl attach ubuntu -c ubuntu -i -t
@@ -3542,59 +3587,69 @@ kubectl logs kube-proxy-qkvxh -n kube-system
 <pre><code>kubectl delete service myapp
 kubectl delete deployment myapp
 </code></pre>
-<h2 id="6label-and-annotation">6.Label and Annotation</h2>
+<h2 id="5label-and-annotation">5.Label and Annotation</h2>
 <h3 id="label-and-annotation">Label and Annotation</h3>
 <h4 id="label">Label</h4>
 <p>Set Label <code>disktype=ssd</code> for node <code>cka003</code>.</p>
-<pre><code>root@cka001:~# kubectl label node cka002 disktype=ssd
+<pre><code>kubectl label node cka003 disktype=ssd
 </code></pre>
 <p>Get Label info</p>
-<pre><code>root@cka001:~# kubectl get node --show-labels
-root@cka001:~# kubectl describe node cka003
-root@cka001:~# kubectl get node cka003 -oyaml
+<pre><code>kubectl get node --show-labels
+kubectl describe node cka003
+kubectl get node cka003 -oyaml
 </code></pre>
 <p>Overwrite Label with <code>disktype=hdd</code> for node <code>cka003</code>.</p>
-<pre><code>root@cka001:~# kubectl label node cka003 disktype=hdd --overwrite
+<pre><code>kubectl label node cka003 disktype=hdd --overwrite
 </code></pre>
 <p>Remove Label for node <code>cka003</code></p>
-<pre><code>root@cka001:~# kubectl label node cka003 disktype-
+<pre><code>kubectl label node cka003 disktype-
 </code></pre>
 <h4 id="annotation">Annotation</h4>
 <p>Create Nginx deployment</p>
-<pre><code>root@cka001:~# kubectl create deploy nginx --image=nginx:mainline
+<pre><code>kubectl create deploy nginx --image=nginx:mainline
 </code></pre>
 <p>Get Annotation info.</p>
-<pre><code>root@cka001:~# kubectl describe deployment/nginx
-
+<pre><code>kubectl describe deployment/nginx
+</code></pre>
+<p>Result</p>
+<pre><code>Name:                   nginx
+Namespace:              dev
+CreationTimestamp:      Fri, 22 Jul 2022 22:53:44 +0800
 Labels:                 app=nginx
 Annotations:            deployment.kubernetes.io/revision: 1
 Selector:               app=nginx
+Replicas:               1 desired | 1 updated | 1 total | 1 available | 0 unavailable
+StrategyType:           RollingUpdate
+......
 </code></pre>
 <p>Add new Annotation.</p>
-<pre><code>root@cka001:~# kubectl annotate deployment nginx owner=jh
-
+<pre><code>kubectl annotate deployment nginx owner=James.H
+</code></pre>
+<p>Now annotation looks like below.</p>
+<pre><code>Labels:                 app=nginx
 Annotations:            deployment.kubernetes.io/revision: 1
-                        owner: jh
+                        owner: James.H
 Selector:               app=nginx
 </code></pre>
 <p>Update/Overwrite Annotation.</p>
-<pre><code>root@cka001:~# kubectl annotate deployment/nginx owner=qwer --overwrite
-
-Annotations:            deployment.kubernetes.io/revision: 1
-                        owner: qwer
+<pre><code>kubectl annotate deployment/nginx owner=K8s --overwrite
+</code></pre>
+<p>Now annotation looks like below.</p>
+<pre><code>Annotations:            deployment.kubernetes.io/revision: 1
+                        owner: K8s
 Selector:               app=nginx
 </code></pre>
 <p>Remove Annotation</p>
-<pre><code>root@cka001:~# kubectl annotate deployment/nginx owner-
-
-Labels:                 app=nginx
+<pre><code>kubectl annotate deployment/nginx owner-
+</code></pre>
+<pre><code>Labels:                 app=nginx
 Annotations:            deployment.kubernetes.io/revision: 1
 Selector:               app=nginx
 </code></pre>
-<h2 id="7health-check">7.Health Check</h2>
+<h2 id="6health-check">6.Health Check</h2>
 <h3 id="status-of-pod-and-container">Status of Pod and Container</h3>
-<p>Create a yaml file <code>multi-pods.yaml</code>. </p>
-<pre><code>cat &gt; multi-pods.yaml  &lt;&lt;EOF
+<p>Create a Pod <code>multi-pods</code> with two containers <code>nginx</code> and <code>busybox</code>. </p>
+<pre><code>kubectl apply -f - &lt;&lt; EOF
 apiVersion: v1
 kind: Pod
 metadata:
@@ -3611,49 +3666,46 @@ spec:
   restartPolicy: Always
 EOF
 </code></pre>
-<p>Apply the yaml file to create a Pod <code>multi-pods</code> with two containers <code>nginx</code> and <code>busybox</code>. </p>
-<pre><code>kubectl apply -f multi-pods.yaml
-</code></pre>
 <p>Minotor the status with option <code>--watch</code>. The status of Pod was changed from <code>ContainerCreating</code> to <code>NotReady</code> to <code>CrashLoopBackOff</code>.</p>
-<pre><code>root@cka001:~# kubectl get pod multi-pods --watch
-NAME         READY   STATUS              RESTARTS   AGE
-multi-pods   0/2     ContainerCreating   0          49s
-multi-pods   1/2     NotReady            1          99s
-multi-pods   1/2     CrashLoopBackOff    2          110s
+<pre><code>kubectl get pod multi-pods --watch
 </code></pre>
 <p>Get details of the Pod <code>multi-pods</code>, focus on Container's state under segment <code>Containers</code> and Conditions of Pod under segment <code>Conditions</code>.</p>
-<pre><code>root@cka001:~# kubectl describe pod multi-pods
-......
+<pre><code>kubectl describe pod multi-pods
+</code></pre>
+<p>Result</p>
+<pre><code>......
 Containers:
   nginx:
     ......
     State:          Running
-      Started:      Sun, 03 Jul 2022 12:52:42 +0800
+      Started:      Fri, 22 Jul 2022 22:59:57 +0800
     Ready:          True
     Restart Count:  0
     ......
   busybox:
     ......
-    State:          Terminated
+    State:          Waiting
+      Reason:       CrashLoopBackOff
+    Last State:     Terminated
       Reason:       Completed
       Exit Code:    0
-      Started:      Sun, 03 Jul 2022 12:58:43 +0800
-      Finished:     Sun, 03 Jul 2022 12:58:43 +0800
+      Started:      Fri, 22 Jul 2022 23:01:37 +0800
+      Finished:     Fri, 22 Jul 2022 23:01:37 +0800
     Ready:          False
-    Restart Count:  6
-    ......
+    Restart Count:  4
+......
 Conditions:
   Type              Status
-  Initialized       True     # Set to True when initCounter completed successfully.
-  Ready             False    # Set to True when ContainersReady is True.
-  ContainersReady   False    # Set to True when all containers are ready.
-  PodScheduled      True     # Set to True when Pos schedule completed successfully.
+  Initialized       True 
+  Ready             False 
+  ContainersReady   False 
+  PodScheduled      True 
 ...... 
 </code></pre>
 <h3 id="livenessprobe">LivenessProbe</h3>
 <p>Detail description of the demo can be found on the <a href="https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/">Kubernetes document</a>.</p>
 <p>Create a yaml file <code>liveness.yaml</code> with <code>livenessProbe</code> setting and apply it.</p>
-<pre><code>root@cka001:~# cat &gt; liveness.yaml &lt;&lt;EOF
+<pre><code>kubectl apply -f - &lt;&lt;EOF
 apiVersion: v1
 kind: Pod
 metadata:
@@ -3677,7 +3729,6 @@ spec:
       periodSeconds: 5
 EOF
 
-root@cka001:~# kubectl apply -f liveness.yaml
 </code></pre>
 <p>Let's see what happened in the Pod <code>liveness-exec</code>.</p>
 <ul>
@@ -3686,7 +3737,8 @@ root@cka001:~# kubectl apply -f liveness.yaml
 <li>After <code>35</code> seconds, execute command <code>rm -rf /tmp/healthy</code> to delete the folder. The probe <code>livenessProbe</code> detects the failure and return error message.</li>
 <li>The kubelet kills the container and restarts it. The folder is created again <code>touch /tmp/healthy</code>.</li>
 </ul>
-<p>By command <code>kubectl describe pod liveness-exec</code>, wec can see below event message. Once failure detected, image will be pulled again and the folder <code>/tmp/healthy</code> is in place again.</p>
+<p>By command <code>kubectl describe pod liveness-exec</code>, wec can see below event message. 
+Once failure detected, image will be pulled again and the folder <code>/tmp/healthy</code> is in place again.</p>
 <pre><code>Events:
   Type     Reason     Age                   From               Message
   ----     ------     ----                  ----               -------
@@ -3701,9 +3753,10 @@ root@cka001:~# kubectl apply -f liveness.yaml
   Normal   Pulling    36s (x4 over 4m21s)   kubelet            Pulling image &quot;busybox&quot;
 </code></pre>
 <h3 id="readinessprobe">ReadinessProbe</h3>
-<p>Readiness probes are configured similarly to liveness probes. The only difference is that you use the readinessProbe field instead of the livenessProbe field.</p>
+<p>Readiness probes are configured similarly to liveness probes. 
+The only difference is that you use the readinessProbe field instead of the livenessProbe field.</p>
 <p>Create a yaml file <code>readiness.yaml</code> with <code>readinessProbe</code> setting and apply it.</p>
-<pre><code>cat &gt; readiness.yaml &lt;&lt;EOF
+<pre><code>kubectl apply -f - &lt;&lt;EOF
 apiVersion: v1
 kind: Pod
 metadata:
@@ -3725,14 +3778,16 @@ spec:
         periodSeconds: 5
 EOF
 
-kubectl apply -f readiness.yaml
 </code></pre>
 <p>The ready status of the Pod is 0/1, that is, the Pod is not up successfully.</p>
-<pre><code>root@cka001:~# kubectl get pod readiness --watch
-NAME        READY   STATUS    RESTARTS   AGE
+<pre><code>kubectl get pod readiness --watch
+</code></pre>
+<p>Result</p>
+<pre><code>NAME        READY   STATUS    RESTARTS   AGE
 readiness   0/1     Running   0          15s
 </code></pre>
-<p>Execute command <code>kubectl describe pod readiness</code> to check status of Pod. We will see failure message <code>Readiness probe failed</code>.</p>
+<p>Execute command <code>kubectl describe pod readiness</code> to check status of Pod. 
+We see failure message <code>Readiness probe failed</code>.</p>
 <pre><code>Events:
   Type     Reason     Age               From               Message
   ----     ------     ----              ----               -------
@@ -3743,10 +3798,16 @@ readiness   0/1     Running   0          15s
   Normal   Started    32s               kubelet            Started container readiness
   Warning  Unhealthy  5s (x4 over 20s)  kubelet            Readiness probe failed: cat: can't open '/tmp/healthy': No such file or directory
 </code></pre>
-<p>Liveness probes do not wait for readiness probes to succeed. If you want to wait before executing a liveness probe you should use initialDelaySeconds or a startupProbe.</p>
-<h3 id="demo-of-health-check">Demo of Health Check</h3>
-<p>Set up yaml file of health check for Nginx based Deployment + Service and apply it.</p>
-<pre><code>cat &gt; nginx-healthcheck.yaml &lt;&lt;EOF
+<p>Liveness probes do not wait for readiness probes to succeed. 
+If we want to wait before executing a liveness probe you should use initialDelaySeconds or a startupProbe.</p>
+<h3 id="demo-health-check">Demo: Health Check</h3>
+<p>Summary:</p>
+<ul>
+<li>Create Deployment and Service</li>
+</ul>
+<h4 id="create-deployment-and-service">Create Deployment and Service</h4>
+<p>Create Deployment <code>nginx-healthcheck</code> and Service <code>nginx-healthcheck</code>.</p>
+<pre><code>kubectl apply -f - &lt;&lt;EOF
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -3796,46 +3857,20 @@ spec:
     name: nginx-healthcheck
 EOF
 
-
-kubectl apply -f nginx-healthcheck.yaml
 </code></pre>
-<p>Check nginx-healthcheck Pod.</p>
+<p>Check Pod <code>nginx-healthcheck</code>.</p>
 <pre><code>kubectl get pod -owide
 </code></pre>
-<p>Get below result.</p>
-<pre><code>NAME                                 READY   STATUS    RESTARTS   AGE   IP            NODE     NOMINATED NODE   READINESS GATES
-nginx-healthcheck-79fc55d944-9jbvj   1/1     Running   0          50s   10.244.2.82   cka003   &lt;none&gt;           &lt;none&gt;
-nginx-healthcheck-79fc55d944-rwx7n   1/1     Running   0          50s   10.244.1.11   cka002   &lt;none&gt;           &lt;none&gt;
+<p>Result</p>
+<pre><code>NAME                                 READY   STATUS    RESTARTS   AGE   IP              NODE     NOMINATED NODE   READINESS GATES
+nginx-healthcheck-79fc55d944-6xv98   0/1     Running   0          6s    10.244.112.35   cka002   &lt;none&gt;           &lt;none&gt;
+nginx-healthcheck-79fc55d944-xqpsp   0/1     Running   0          6s    10.244.102.42   cka003   &lt;none&gt;           &lt;none&gt;
 </code></pre>
 <p>Access Pod IP via <code>curl</code> command, e.g., above example.</p>
-<pre><code>curl 10.244.2.82
-curl 10.244.1.11
+<pre><code>curl 10.244.112.35
+curl 10.244.102.42
 </code></pre>
-<p>We will see a successful <code>index.html</code> conten of Nginx below with above example.</p>
-<pre><code>&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-&lt;head&gt;
-&lt;title&gt;Welcome to nginx!&lt;/title&gt;
-&lt;style&gt;
-html { color-scheme: light dark; }
-body { width: 35em; margin: 0 auto;
-font-family: Tahoma, Verdana, Arial, sans-serif; }
-&lt;/style&gt;
-&lt;/head&gt;
-&lt;body&gt;
-&lt;h1&gt;Welcome to nginx!&lt;/h1&gt;
-&lt;p&gt;If you see this page, the nginx web server is successfully installed and
-working. Further configuration is required.&lt;/p&gt;
-
-&lt;p&gt;For online documentation and support please refer to
-&lt;a href=&quot;http://nginx.org/&quot;&gt;nginx.org&lt;/a&gt;.&lt;br/&gt;
-Commercial support is available at
-&lt;a href=&quot;http://nginx.com/&quot;&gt;nginx.com&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;&lt;em&gt;Thank you for using nginx.&lt;/em&gt;&lt;/p&gt;
-&lt;/body&gt;
-&lt;/html&gt;
-</code></pre>
+<p>We see a successful <code>index.html</code> content of Nginx below with above example.</p>
 <p>Check details of Service craeted in above example.</p>
 <pre><code>kubectl describe svc nginx-healthcheck
 </code></pre>
@@ -3848,12 +3883,12 @@ Selector:                 name=nginx-healthcheck
 Type:                     NodePort
 IP Family Policy:         SingleStack
 IP Families:              IPv4
-IP:                       10.98.196.231
-IPs:                      10.98.196.231
+IP:                       11.244.236.198
+IPs:                      11.244.236.198
 Port:                     &lt;unset&gt;  80/TCP
 TargetPort:               80/TCP
-NodePort:                 &lt;unset&gt;  31505/TCP
-Endpoints:                10.244.1.11:80,10.244.2.82:80
+NodePort:                 &lt;unset&gt;  32159/TCP
+Endpoints:                10.244.102.42:80,10.244.112.35:80
 Session Affinity:         None
 External Traffic Policy:  Cluster
 Events:                   &lt;none&gt;
@@ -3861,48 +3896,50 @@ Events:                   &lt;none&gt;
 <p>We can also get information of Endpoints.</p>
 <pre><code>kubectl get endpoints nginx-healthcheck
 </code></pre>
-<p>Get below result.</p>
-<pre><code>NAME                ENDPOINTS                       AGE
-nginx-healthcheck   10.244.1.11:80,10.244.2.82:80   8m35s
+<p>Result</p>
+<pre><code>NAME                ENDPOINTS                           AGE
+nginx-healthcheck   10.244.102.42:80,10.244.112.35:80   33m
 </code></pre>
 <p>Till now, two <code>nginx-healthcheck</code> Pods are working and providing service as expected. </p>
+<h4 id="simulate-error">Simulate Error</h4>
 <p>Let's simulate an error by deleting and <code>index.html</code> file in on of <code>nginx-healthcheck</code> Pod and see what's readinessProbe will do.</p>
 <p>First, execute <code>kubectl exec -it &lt;your_pod_name&gt; -- bash</code> to log into <code>nginx-healthcheck</code> Pod, and delete the <code>index.html</code> file.</p>
-<pre><code>kubectl exec -it nginx-healthcheck-79fc55d944-9jbvj -- bash
+<pre><code>kubectl exec -it nginx-healthcheck-79fc55d944-6xv98 -- bash
 cd /usr/share/nginx/html/
 rm -rf index.html
 exit
 </code></pre>
 <p>After that, let's check the status of above Pod that <code>index.html</code> file was deleted.</p>
-<pre><code>kubectl describe pod nginx-healthcheck-79fc55d944-9jbvj
+<pre><code>kubectl describe pod nginx-healthcheck-79fc55d944-6xv98
 </code></pre>
 <p>We can now see <code>Readiness probe failed</code> error event message.</p>
 <pre><code>Events:
-  Type     Reason     Age                From               Message
-  ----     ------     ----               ----               -------
-  Normal   Scheduled  29m                default-scheduler  Successfully assigned dev/nginx-healthcheck-79fc55d944-9jbvj to cka003
-  Normal   Pulled     29m                kubelet            Container image &quot;nginx:latest&quot; already present on machine
-  Normal   Created    29m                kubelet            Created container nginx-healthcheck
-  Normal   Started    29m                kubelet            Started container nginx-healthcheck
-  Warning  Unhealthy  1s (x16 over 71s)  kubelet            Readiness probe failed: HTTP probe failed with statuscode: 403
+  Type     Reason     Age               From               Message
+  ----     ------     ----              ----               -------
+  Normal   Scheduled  35m               default-scheduler  Successfully assigned dev/nginx-healthcheck-79fc55d944-6xv98 to cka002
+  Normal   Pulled     35m               kubelet            Container image &quot;nginx:latest&quot; already present on machine
+  Normal   Created    35m               kubelet            Created container nginx-healthcheck
+  Normal   Started    35m               kubelet            Started container nginx-healthcheck
+  Warning  Unhealthy  4s (x5 over 19s)  kubelet            Readiness probe failed: HTTP probe failed with statuscode: 403
 </code></pre>
 <p>Let's check another Pod. </p>
-<pre><code>kubectl describe pod nginx-healthcheck-79fc55d944-rwx7n
+<pre><code>kubectl describe pod nginx-healthcheck-79fc55d944-xqpsp
 </code></pre>
 <p>There is no error info.</p>
 <pre><code>Events:
   Type    Reason     Age   From               Message
   ----    ------     ----  ----               -------
-  Normal  Scheduled  31m   default-scheduler  Successfully assigned dev/nginx-healthcheck-79fc55d944-rwx7n to cka002
-  Normal  Pulled     31m   kubelet            Container image &quot;nginx:latest&quot; already present on machine
-  Normal  Created    31m   kubelet            Created container nginx-healthcheck
-  Normal  Started    31m   kubelet            Started container nginx-healthcheck
+  Normal  Scheduled  37m   default-scheduler  Successfully assigned dev/nginx-healthcheck-79fc55d944-xqpsp to cka003
+  Normal  Pulled     37m   kubelet            Container image &quot;nginx:latest&quot; already present on machine
+  Normal  Created    37m   kubelet            Created container nginx-healthcheck
+  Normal  Started    37m   kubelet            Started container nginx-healthcheck
 </code></pre>
 <p>Now, access Pod IP via <code>curl</code> command and see what the result of each Pod.</p>
-<pre><code>curl 10.244.2.82
-curl 10.244.1.11
+<pre><code>curl 10.244.102.42:80
+curl 10.244.112.35:80
 </code></pre>
-<p>We will receive error while access the first Pod <code>curl 10.244.2.82</code>. The second Pos works well <code>curl 10.244.1.11</code>. </p>
+<p><code>curl 10.244.102.42:80</code> works well.
+<code>curl 10.244.112.35:80</code> failed with <code>forbideen</code> error below. </p>
 <pre><code>&lt;html&gt;
 &lt;head&gt;&lt;title&gt;403 Forbidden&lt;/title&gt;&lt;/head&gt;
 &lt;body&gt;
@@ -3923,12 +3960,12 @@ Selector:                 name=nginx-healthcheck
 Type:                     NodePort
 IP Family Policy:         SingleStack
 IP Families:              IPv4
-IP:                       10.98.196.231
-IPs:                      10.98.196.231
+IP:                       11.244.236.198
+IPs:                      11.244.236.198
 Port:                     &lt;unset&gt;  80/TCP
 TargetPort:               80/TCP
-NodePort:                 &lt;unset&gt;  31505/TCP
-Endpoints:                10.244.1.11:80
+NodePort:                 &lt;unset&gt;  32159/TCP
+Endpoints:                10.244.102.42:80
 Session Affinity:         None
 External Traffic Policy:  Cluster
 Events:                   &lt;none&gt;
@@ -3937,14 +3974,12 @@ Events:                   &lt;none&gt;
 <pre><code>kubectl get endpoints nginx-healthcheck 
 </code></pre>
 <p>Output:</p>
-<pre><code>NAME                ENDPOINTS        AGE
-nginx-healthcheck   10.244.1.11:80   40m
+<pre><code>NAME                ENDPOINTS          AGE
+nginx-healthcheck   10.244.102.42:80   41m
 </code></pre>
-<p>Conclusion: 
-By delete the index.html file, the Pod is in unhealth status and is removed from endpoint list. 
-One one health Pod can provide normal service.</p>
+<h4 id="fix-error-verify">Fix Error &amp; Verify</h4>
 <p>Let's re-create the <code>index.html</code> file again in the Pod. </p>
-<pre><code>kubectl exec -it nginx-healthcheck-79fc55d944-9jbvj -- bash
+<pre><code>kubectl exec -it nginx-healthcheck-79fc55d944-6xv98 -- bash
 
 cd /usr/share/nginx/html/
 
@@ -3984,12 +4019,15 @@ exit
 kubectl get endpoints nginx-healthcheck
 </code></pre>
 <p>Re-access Pod IP via <code>curl</code> command and we can see both are back to normal status.</p>
-<pre><code>curl 10.244.2.82
-curl 10.244.1.11
+<pre><code>curl 10.244.102.42:80
+curl 10.244.112.35:80
 </code></pre>
 <p>Verify the Pod status again. </p>
-<pre><code>kubectl describe pod nginx-healthcheck-79fc55d944-9jbvj
+<pre><code>kubectl describe pod nginx-healthcheck-79fc55d944-6xv98
 </code></pre>
+<h4 id="conclusion">Conclusion</h4>
+<p>By delete the <code>index.html</code> file, the Pod is in unhealth status and is removed from endpoint list. 
+One one health Pod can provide normal service.</p>
 <h2 id="8namespace">8.Namespace</h2>
 <p>Get list of Namespace</p>
 <pre><code>kubectl get namespace
