@@ -1034,7 +1034,11 @@ dab890f44541    registry.aliyuncs.com/google_containers/pause:3.6             "/
 
 
 
-## 4.kubectl
+
+
+## 4.Kubernetes API and Resource
+
+### kubectl
 
 Three approach to operate Kubernetes cluster:
 
@@ -1062,207 +1066,151 @@ kubectl get nodes -o wide
 ```
 
 
-### Update Node Label
-
-Add/update/remove node Label.
-```
-# Update node label
-kubectl label node cka002 node=demonode
-
-# Get node info with label info
-kubectl get node --show-labels
-
-# Search node by label
-kubectl get node -l node=demonode
-
-# Remove a lable of node
-kubectl label node cka002 node-
-```
-
-### Operations on Pods
-
-Summary:
-
-* Create a Deployment.
-* Expose the Deployment.
-* Scale out the Deployment.
-* Rolling update.
-* Rolling back update.
-
-Create a busybox Pod for operation.
-```
-# Run a pod mybuxybox
-kubectl run mybusybox -it --image=busybox
-
-# Attach to the pod mybuxybox
-kubectl attach mybusybox -c mybusybox -i -t
-```
-
-Create a deployment, option `--image` specifies a image，option `--port` specifies port for external access. 
-A pod is also created when deployment is created.
-```
-kubectl create deployment myapp --image=nginx --replicas=1 --port=80
-kubectl get deployment myapp -o wide
-```
-
-Get detail information of Pod `kubectl describe pod <pod name>`.
-
-Get detail information of deployment `kubectl describe deployment <deployment>`.
-
-Get resources under a namespace or all namespace.
-```
-kubectl get namespace
-kubectl get pod -n <namespace name>
-kubectl get pod --all-namespaces
-kubectl get pod -A
-
-kubectl get deployment -n <namespace name>
-kubectl get deployment --all-namespaces
-kubectl get deployment -A
-```
-
-By default, Pod can only be internally accessed within cluster. 
-We can map pod port to node port for external access by exposing a pod, e.g., browser `http://<node_ip>:<port_number>`.
-```
-# Expose myapp as service to node port 80.
-kubectl expose deployment myapp --type=NodePort --port=80
-
-# Get service
-kubectl get service
-kubectl get svc -o wide
-```
-
-Scale out by replicaset. We set three replicasets to scale out deployment `myapp`. The number of deployment `myapp` is now three.
-```
-# Scale out deployment
-kubectl scale deployment myapp --replicas=3
-
-# Get status of deployment
-kubectl get deployment myapp
-
-# Get status of replicaset
-kubectl get replicaset
-```
-
-
-Rolling update.
-
-Command usage: `kubectl set image (-f FILENAME | TYPE NAME) CONTAINER_NAME_1=CONTAINER_IMAGE_1 ... CONTAINER_NAME_N=CONTAINER_IMAGE_N`.
-
-With the command `kubectl get deployment`, we will get deployment name `myapp` and related container name `nginx`.
-```
-kubectl get deployment myapp -o wide
-```
-
-With the command `kubectl set image` to update image nginx from `nginx` to many versions and log the change under deployment's annotations with option `--record`.
-```
-kubectl set image deployment myapp nginx=nginx:1.19 --record
-kubectl set image deployment myapp nginx=nginx:1.20 --record
-kubectl set image deployment myapp nginx=nginx:1.21 --record
-```
-
-By the command `kubectl set image`, all pods are running under new replicaset `myapp-b997fb85f` with new image version `nginx:1.19`.
-```
-kubectl get replicaset -o wide -l app=myapp
-```
-Result
-```
-NAME              DESIRED   CURRENT   READY   AGE     CONTAINERS   IMAGES       SELECTOR
-myapp-948688ff6   0         0         0       80m     nginx        nginx        app=myapp,pod-template-hash=948688ff6
-myapp-b997fb85f   3         3         3       6m29s   nginx        nginx:1.19   app=myapp,pod-template-hash=b997fb85f
-```
-
-We can get the change history under `metadata.annotations`.
-```
-kubectl get deployment myapp -o yaml
-```
-Result
-```
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  annotations:
-    deployment.kubernetes.io/revision: "4"
-    kubernetes.io/change-cause: kubectl set image deployment myapp nginx=nginx:1.21
-      --record=true
-  creationTimestamp: "2022-06-28T06:33:14Z"
-  ......
-```
-
-We can also get the change history by command `kubectl rollout history`, and show details with specific revision `--revision=<revision_number>`.
-```
-kubectl rollout history deployment/myapp
-```
-Result
-```
-deployment.apps/myapp 
-REVISION  CHANGE-CAUSE
-1         <none>
-2         kubectl set image deployment myapp nginx=nignx:1.19 --record=true
-3         kubectl set image deployment myapp nginx=nginx:1.20 --record=true
-4         kubectl set image deployment myapp nginx=nginx:1.21 --record=true
-```
-
-Get rollout history with specific revision.
-```
-kubectl rollout history deployment/myapp --revision=2
-```
-
-Roll back to previous revision with command `kubectl rollout undo `, or roll back to specific revision with option `--to-revision=<revision_number>`.
-```
-kubectl rollout undo deployment/myapp --to-revision=3
-```
-
-Now we se revision 3 was replaced by new revision 5. 
-```
-kubectl rollout history deployment/myapp
-```
-Result
-```
-deployment.apps/myapp 
-REVISION  CHANGE-CAUSE
-1         <none>
-2         kubectl set image deployment myapp nginx=nignx:1.19 --record=true
-4         kubectl set image deployment myapp nginx=nginx:1.21 --record=true
-5         kubectl set image deployment myapp nginx=nginx:1.20 --record=true
-```
-
-
-
-
-
-
-
-
-
-## 5.Kubernetes API and Resource
-
-
 ### Static Pod
 
-Create yaml file in directory `/etc/kubernetes/manifests/`.
 `kubectl` will automatically check yaml file in `/etc/kubernetes/manifests/` and create the static pod once it's detected.
-```
-root@cka001:~# kubectl run nginx --image=nginx:mainline --dry-run=client -n dev -oyaml > /etc/kubernetes/manifests/my-nginx.yaml
 
-root@cka001:~# kubectl get pod
-NAME           READY   STATUS    RESTARTS   AGE
-nginx-cka001   1/1     Running   0          6s
+Some system static Pods are already in place.
+```
+ll /etc/kubernetes/manifests/
+```
+Result
+```
+-rw------- 1 root root 2292 Jul 21 09:04 etcd.yaml
+-rw------- 1 root root 3889 Jul 21 09:04 kube-apiserver.yaml
+-rw------- 1 root root 3395 Jul 21 09:04 kube-controller-manager.yaml
+-rw------- 1 root root 1464 Jul 21 09:04 kube-scheduler.yaml
+```
+
+Create yaml file in directory `/etc/kubernetes/manifests/`.
+```
+kubectl run my-nginx --image=nginx:mainline --dry-run=client -n dev -oyaml > /etc/kubernetes/manifests/my-nginx.yaml
+```
+Check status of the Pod `my-nginx`.
+```
+kubectl get pod
+```
+The node name `cka001` is part of the Pod name, which means the Pod is running on node `cka001`.
+```
+NAME              READY   STATUS    RESTARTS   AGE
+my-nginx-cka001   1/1     Running   0          106s
 ```
 
 Delete the yaml file `/etc/kubernetes/manifests/my-nginx.yaml`, the static pod will be deleted automatically.
 ```
-root@cka001:~# rm /etc/kubernetes/manifests/my-nginx.yaml 
+rm /etc/kubernetes/manifests/my-nginx.yaml 
+```
+
+
+### Mutil-Container Pod
+
+Summary:
+
+
+
+Create a Pod `multi-container-pod` with multiple container `container-1-nginx` and `container-2-alpine`.
+```
+kubectl apply -f - << EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: multi-container-pod
+spec:
+  containers:
+  - name: container-1-nginx
+    image: nginx
+    ports:
+    - containerPort: 80  
+  - name: container-2-alpine
+    image: alpine
+    command: ["watch", "wget", "-qO-", "localhost"]
+
+EOF
+```
+
+Get the status.
+```
+kubectl get pod multi-container-pod
+```
+Result
+```
+NAME                  READY   STATUS    RESTARTS   AGE
+multi-container-pod   2/2     Running   0          81s
+```
+
+Get details of the pod we created via command `kubectl describe pod multi-container-pod` and we can see below events.
+```
+.......
+Events:
+  Type    Reason     Age   From               Message
+  ----    ------     ----  ----               -------
+  Normal  Scheduled  47s   default-scheduler  Successfully assigned dev/multi-container-pod to cka002
+  Normal  Pulling    46s   kubelet            Pulling image "nginx"
+  Normal  Pulled     44s   kubelet            Successfully pulled image "nginx" in 2.110312099s
+  Normal  Created    44s   kubelet            Created container container-1-nginx
+  Normal  Started    44s   kubelet            Started container container-1-nginx
+  Normal  Pulling    44s   kubelet            Pulling image "alpine"
+  Normal  Pulled     35s   kubelet            Successfully pulled image "alpine" in 8.754753417s
+  Normal  Created    35s   kubelet            Created container container-2-alpine
+  Normal  Started    35s   kubelet            Started container container-2-alpine
+```
+
+For multi-container pod, container name is needed if we want to get log of pod via command `kubectl logs <pod_name> <container_name>`.
+
+Without the container name, we receive error.
+```
+kubectl logs multi-container-pod
+```
+```
+error: a container name must be specified for pod multi-container-pod, choose one of: [container-1-nginx container-2-alpine]
+```
+
+With specified container name, we get the log info.
+```
+kubectl logs multi-container-pod container-1-nginx
+```
+Result
+```
+......
+::1 - - [02/Jul/2022:01:12:29 +0000] "GET / HTTP/1.1" 200 615 "-" "Wget" "-"
+```
+
+Same if we need specify container name to login into the pod via command `kubectl exec -it <pod_name> -c <container_name> -- <commands>`.
+```
+kubectl exec -it multi-container-pod -c container-1-nginx -- /bin/bash
+root@multi-container-pod:/# ls
+bin  boot  dev  docker-entrypoint.d  docker-entrypoint.sh  etc  home  lib  lib64  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var
 ```
 
 
 
+### initContainer Pod
 
-### Init containers
+Summary: 
 
-This example defines a simple Pod that has two init containers in `02-init-pod.yaml`. 
-The first waits for myservice, and the second waits for mydb. 
-Once both init containers complete, the Pod runs the app container from its spec section.
+* Create Pod `myapp-pod` that has two init containers. 
+    * `myapp-container`
+    * `init-mydb`
+* Create two Services.
+    * `myservice`
+    * `mydb`
+
+Conclusion:
+
+* `myapp-container` waits for Service `myservice` up in order to resolve the name `myservice.dev.svc.cluster.local`
+* `init-mydb` waits for Service `mydb` up in order to resolve the name `mydb.dev.svc.cluster.local`.
+
+Demo: 
+
+Create Pod `myapp-pod` with below yaml file.
+
+Create yaml file `myapp-pod.yaml`.
+```
+vi myapp-pod.yaml
+```
+
+Add below content. 
+Due to the command `$(cat /var/.....` will be treated as host variable, we can not use echo to generate the file. It's the variabel in container itself.
 ```
 apiVersion: v1
 kind: Pod
@@ -1284,14 +1232,14 @@ spec:
     command: ['sh', '-c', "until nslookup mydb.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for mydb; sleep 2; done"]
 ```
 
-Create the Pod `myapp-pod`.
+Apply the yaml file to create the Pod.
 ```
-kubectl apply -f 02-init-pod.yaml
+kubectl apply -f myapp-pod.yaml
 ```
 
 Check Pod status.
 ```
-# kubectl get pod myapp-pod
+kubectl get pod myapp-pod
 NAME        READY   STATUS     RESTARTS   AGE
 myapp-pod   0/1     Init:0/2   0          12m
 ```
@@ -1304,9 +1252,9 @@ kubectl logs myapp-pod -c init-mydb      # Inspect the second init container
 
 At this point, those init containers will be waiting to discover Services named mydb and myservice.
 
-Here's a configuration `04-myservice.yaml` we can use to make those Services appear :
+Create the `mydb` and `myservice` services:
 ```
----
+kubectl apply -f - << EOF
 apiVersion: v1
 kind: Service
 metadata:
@@ -1326,550 +1274,71 @@ spec:
   - protocol: TCP
     port: 80
     targetPort: 9377
-```
-
-To create the `mydb` and `myservice` services:
-```
-kubectl apply -f 04-myservice.yaml
-```
-
-We'll now see that those init containers complete, and that the myapp-pod Pod moves into the Running state:
-```
-root@cka001:~# kubectl get -f 04-myservice.yaml
-NAME        TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE
-myservice   ClusterIP   10.103.101.99   <none>        80/TCP    40s
-mydb        ClusterIP   10.96.79.220    <none>        80/TCP    40s
-
-root@cka001:~# kubectl get pod myapp-pod
-NAME        READY   STATUS    RESTARTS   AGE
-myapp-pod   1/1     Running   0          13m
-```
-
-
-### Mutil-Container Pod
-
-Create the sampel yaml file `multi-pod.yaml`.
-```
-apiVersion: v1
-kind: Pod
-metadata:
-  name: multi-container-pod
-spec:
-  containers:
-  - name: container-1-nginx
-    image: nginx
-    ports:
-    - containerPort: 80  
-  - name: container-2-alpine
-    image: alpine
-    command: ["watch", "wget", "-qO-", "localhost"]
-```
-
-Create the pod.
-```
-root@cka001:~# kubectl apply -f multi-pod.yaml
-
-root@cka001:~# kubectl get pod multi-container-pod
-NAME                  READY   STATUS    RESTARTS   AGE
-multi-container-pod   2/2     Running   0          81s
-```
-
-Get details of the pod we created via command `kubectl describe pod multi-container-pod` and we can see below events.
-```
-Events:
-  Type    Reason     Age    From               Message
-  ----    ------     ----   ----               -------
-  Normal  Scheduled  3m14s  default-scheduler  Successfully assigned dev/multi-container-pod to cka003
-  Normal  Pulling    3m14s  kubelet            Pulling image "nginx"
-  Normal  Pulled     3m12s  kubelet            Successfully pulled image "nginx" in 2.02130736s
-  Normal  Created    3m11s  kubelet            Created container container-1-nginx
-  Normal  Started    3m11s  kubelet            Started container container-1-nginx
-  Normal  Pulling    3m11s  kubelet            Pulling image "alpine"
-  Normal  Pulled     3m3s   kubelet            Successfully pulled image "alpine" in 8.317148653s
-  Normal  Created    3m3s   kubelet            Created container container-2-alpine
-  Normal  Started    3m3s   kubelet            Started container container-2-alpine
-```
-
-For multi-container pod, container name is needed if we want to get log of pod via command `kubectl logs <pod_name> <container_name>`.
-```
-root@cka001:~# kubectl logs multi-container-pod
-error: a container name must be specified for pod multi-container-pod, choose one of: [container-1-nginx container-2-alpine]
-
-root@cka001:~# kubectl logs multi-container-pod container-1-nginx
-......
-::1 - - [02/Jul/2022:01:12:29 +0000] "GET / HTTP/1.1" 200 615 "-" "Wget" "-"
-```
-
-Same if we need specify container name to login into the pod via command `kubectl exec -it <pod_name> -c <container_name> -- <commands>`.
-```
-root@cka001:~# kubectl exec -it multi-container-pod -c container-1-nginx -- /bin/bash
-root@multi-container-pod:/# ls
-bin  boot  dev  docker-entrypoint.d  docker-entrypoint.sh  etc  home  lib  lib64  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var
-```
-
-
-
-
-
-
-
-
-### Usage of kubectl
-
-#### Grant Authorization to ServiceAccount
-With Kubernetes 1.23 and lower version, when we create a new namespace, Kubernetes will automatically create a ServiceAccount `default` and a token `default-token-xxxxx`.
-
-We can say that the ServiceAccount `default` is an account under the namespace.
-
-Here is an example of new namespace `dev` I created.
-
-* ServiceAcccount: `default`
-* Token: `default-token-8vrsc`
-
-```
-root@cka001:~# kubectl get sa -n dev
-NAME      SECRETS   AGE
-default   1         26h
-
-root@cka001:~# kubectl get secrets -n dev
-NAME                  TYPE                                  DATA   AGE
-default-token-8vrsc   kubernetes.io/service-account-token   3      26h
-```
-
-There is a cluster rule `admin`, and no related rolebinding.
-```
-root@cka001:~# kubectl get clusterrole admin -n dev
-NAME    CREATED AT
-admin   2022-06-25T06:24:44Z
-
-root@cka001:~# kubectl get role -n dev
-No resources found in dev namespace.
-
-root@cka001:~# kubectl get rolebinding -n dev
-No resources found in dev namespace.
-```
-
-Get token of the service account `default`.
-```
-TOKEN=$(kubectl describe secret $(kubectl get secrets | grep default | cut -f1 -d ' ') | grep -E '^token' | cut -f2 -d':' | tr -d ' ')
-echo $TOKEN
-```
-
-Get API Service address.
-```
-APISERVER=$(kubectl config view | grep https | cut -f 2- -d ":" | tr -d " ")
-echo $APISERVER
-```
-
-Get pod resources in namespace `dev` via API server with JSON layout.
-```
-curl $APISERVER/api/v1/namespaces/dev/pods --header "Authorization: Bearer $TOKEN" --insecure
-```
-
-We will receive below error message. The serviceaccount `default` does not have authorization to access pod.
-```
-"message": "pods is forbidden: User \"system:serviceaccount:dev:default\" cannot list resource \"pods\" in API group \"\" in the namespace \"dev\"",
-```
-
-Let's create a rolebinding `rolebinding-admin` to bind cluster role `admin` to service account `default` in namespapce `dev`.
-Hence service account `default` is granted adminstrator authorization in namespace `dev`.
-```
-# Usage:
-kubectl create rolebinding <rule> --clusterrole=<clusterrule> --serviceaccount=<namespace>:<name> --namespace=<namespace>
-
-# Crate rolebinding:
-kubectl create rolebinding rolebinding-admin --clusterrole=admin --serviceaccount=dev:default --namespace=dev
-```
-
-Result looks like below.
-```
-root@cka001:~# kubectl get rolebinding -n dev
-NAME                ROLE                AGE
-rolebinding-admin   ClusterRole/admin   39s
-```
-
-Try again, get pod resources in namespace `dev` via API server with JSON layout.
-```
-curl $APISERVER/api/v1/namespaces/dev/pods --header "Authorization: Bearer $TOKEN" --insecure
-```
-
-
-#### Label Node
-
-Get current label of nodes.
-```
-root@cka001:~# kubectl get node --show-labels
-NAME     STATUS   ROLES                  AGE   VERSION   LABELS
-cka001   Ready    control-plane,master   4d    v1.23.8   beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/arch=amd64,kubernetes.io/hostname=cka001,kubernetes.io/os=linux,node-role.kubernetes.io/control-plane=,node-role.kubernetes.io/master=,node.kubernetes.io/exclude-from-external-load-balancers=
-cka002   Ready    <none>                 4d    v1.23.8   beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/arch=amd64,kubernetes.io/hostname=cka002,kubernetes.io/os=linux
-cka003   Ready    <none>                 4d    v1.23.8   beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/arch=amd64,kubernetes.io/hostname=cka003,kubernetes.io/os=linux
-```
-
-Label a node `cka003`.
-```
-root@cka001:~# kubectl label node cka003 node=demonode
-```
-
-
-#### Deployment
-
-Create a deployment `myapp`. `--port=8080` means the port that this container exposes.
-```
-kubectl create deployment myapp --image=docker.io/jocatalin/kubernetes-bootcamp:v1 --replicas=1 --port=8080
-```
-Get the status of the deployment.
-```
-root@cka001:~# kubectl get deployment -o wide
-NAME    READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS            IMAGES                                       SELECTOR
-myapp   0/1     1            0           19s   kubernetes-bootcamp   docker.io/jocatalin/kubernetes-bootcamp:v1   app=myapp
-```
-
-Get the details of deployment.
-```
-root@cka001:~# kubectl describe deployment myapp
-```
-
-Get the status of the Pod.
-```
-root@cka001:~# kubectl get pod -o wide
-NAME                    READY   STATUS    RESTARTS   AGE     IP            NODE     NOMINATED NODE   READINESS GATES
-myapp-b5d775f5d-6jtgs   1/1     Running   0          2m36s   10.244.2.12   cka003   <none>           <none>
-```
-
-Get the details of the Pod.
-```
-root@cka001:~# kubectl describe pod myapp-b5d775f5d-6jtgs
-```
-
-
-#### Namespace
-
-Get current available namespaces.
-```
-root@cka001:~# kubectl get namespace
-NAME              STATUS   AGE
-default           Active   4d1h
-dev      Active   2d19h
-kube-node-lease   Active   4d1h
-kube-public       Active   4d1h
-kube-system       Active   4d1h
-```
-
-Get Pod under a specific namespace.
-```
-root@cka001:~# kubectl get pod -n kube-system
-NAME                             READY   STATUS    RESTARTS   AGE
-coredns-6d8c4cb4d-9khd8          1/1     Running   0          4d1h
-coredns-6d8c4cb4d-qcp2l          1/1     Running   0          4d1h
-etcd-cka001                      1/1     Running   0          4d1h
-kube-apiserver-cka001            1/1     Running   0          4d1h
-kube-controller-manager-cka001   1/1     Running   0          4d1h
-kube-flannel-ds-hfvf7            1/1     Running   0          4d
-kube-flannel-ds-m5mdl            1/1     Running   0          4d
-kube-flannel-ds-rf54c            1/1     Running   0          4d
-kube-proxy-bj75j                 1/1     Running   0          4d
-kube-proxy-gxjj4                 1/1     Running   0          4d
-kube-proxy-v7rsr                 1/1     Running   0          4d1h
-kube-scheduler-cka001            1/1     Running   0          4d1h
-```
-
-Get Pods in all namespaces.
-```
-root@cka001:~# kubectl get pod --all-namespaces
-root@cka001:~# kubectl get pod -A
-```
-
-
-
-#### Expose Service
-
-Get current running Pod we created just now.
-```
-root@cka001:~# kubectl get deployment myapp -o wide
-NAME    READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS            IMAGES                                       SELECTOR
-myapp   1/1     1            1           44m   kubernetes-bootcamp   docker.io/jocatalin/kubernetes-bootcamp:v1   app=myapp
-
-root@cka001:~# kubectl get pod -o wide
-NAME                    READY   STATUS    RESTARTS   AGE   IP            NODE     NOMINATED NODE   READINESS GATES
-myapp-b5d775f5d-6jtgs   1/1     Running   0          25m   10.244.2.12   cka003   <none>           <none>
-```
-
-Send http request to the Pod.
-```
-root@cka001:~# curl 10.244.2.12:8080
-Hello Kubernetes bootcamp! | Running on: myapp-b5d775f5d-6jtgs | v=1
-```
-
-To make pod be accessed outside, we need expose port `8080` to a node port. A related service will be created. 
-```
-root@cka001:~# kubectl expose deployment myapp --type=NodePort --port=8080
-service/myapp exposed
-```
-
-Get details of service `myapp`.
-```
-root@cka001:~# kubectl get svc myapp -o wide
-NAME    TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE     SELECTOR
-myapp   NodePort   10.108.93.159   <none>        8080:30520/TCP   5h14m   app=myapp
-
-root@cka001:~# kubectl get svc myapp -o yaml
-root@cka001:~# kubectl describe svc myapp
-```
-
-Get details of related endpoint `myapp`.
-```
-root@cka001:~# kubectl get endpoints myapp -o wide
-NAME    ENDPOINTS          AGE
-myapp   10.244.2.12:8080   5h21m
-
-root@cka001:~# kubectl describe ep myapp
-Name:         myapp
-Namespace:    dev
-Labels:       app=myapp
-Annotations:  endpoints.kubernetes.io/last-change-trigger-time: 2022-06-29T08:03:17Z
-Subsets:
-  Addresses:          10.244.2.12
-  NotReadyAddresses:  <none>
-  Ports:
-    Name     Port  Protocol
-    ----     ----  --------
-    <unset>  8080  TCP
-
-Events:  <none>
-```
-
-Get details of Pod of `myapp`.
-```
-root@cka001:~# kubectl get pod -owide
-NAME                    READY   STATUS    RESTARTS   AGE   IP            NODE     NOMINATED NODE   READINESS GATES
-myapp-b5d775f5d-6jtgs   1/1     Running   0          70m   10.244.2.12   cka003   <none>           <none>
-
-root@cka001:~# kubectl get node -o wide
-NAME     STATUS   ROLES                  AGE    VERSION   INTERNAL-IP     EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION      CONTAINER-RUNTIME
-cka001   Ready    control-plane,master   4d2h   v1.23.8   172.16.18.161   <none>        Ubuntu 20.04.4 LTS   5.4.0-113-generic   containerd://1.5.9
-cka002   Ready    <none>                 4d1h   v1.23.8   172.16.18.160   <none>        Ubuntu 20.04.4 LTS   5.4.0-113-generic   containerd://1.5.9
-cka003   Ready    <none>                 4d1h   v1.23.8   172.16.18.159   <none>        Ubuntu 20.04.4 LTS   5.4.0-113-generic   containerd://1.5.9
-```
-
-Send http request to the service and node sucessfully. Pod port `8080` is mapped to node port `30520`.
-```
-root@cka001:~# curl http://10.108.93.159:8080
-Hello Kubernetes bootcamp! | Running on: myapp-b5d775f5d-6jtgs | v=1
-
-root@cka001:~# curl http://172.16.18.159:30520
-Hello Kubernetes bootcamp! | Running on: myapp-b5d775f5d-6jtgs | v=1
-```
-
-
-#### Scalling
-
-Deployment `myapp` is now having 1 replica.
-```
-root@cka001:~# kubectl get deployment myapp -o wide
-NAME    READY   UP-TO-DATE   AVAILABLE   AGE     CONTAINERS            IMAGES                                       SELECTOR
-myapp   1/1     1            1           6h12m   kubernetes-bootcamp   docker.io/jocatalin/kubernetes-bootcamp:v1   app=myapp
-```
-
-Scale to 2 replicas.
-```
-root@cka001:~# kubectl scale deployment myapp --replicas=2
-deployment.apps/myapp scaled
-
-root@cka001:~# kubectl get deployment myapp -o wide
-NAME    READY   UP-TO-DATE   AVAILABLE   AGE     CONTAINERS            IMAGES                                       SELECTOR
-myapp   2/2     2            2           6h14m   kubernetes-bootcamp   docker.io/jocatalin/kubernetes-bootcamp:v1   app=myapp
-```
-
-Scale to 1 replicas. We can see interim phase that one Pos is been terminating.
-```
-root@cka001:~# kubectl get deployment myapp -o wide
-NAME    READY   UP-TO-DATE   AVAILABLE   AGE     CONTAINERS            IMAGES                                       SELECTOR
-myapp   1/1     1            1           6h17m   kubernetes-bootcamp   docker.io/jocatalin/kubernetes-bootcamp:v1   app=myapp
-
-root@cka001:~# kubectl get pod
-NAME                    READY   STATUS        RESTARTS   AGE
-myapp-b5d775f5d-6jtgs   1/1     Running       0          6h17m
-myapp-b5d775f5d-mpshb   1/1     Terminating   0          3m28s
-```
-
-
-
-#### Rolling
-
-
-Get current deployment image version.
-```
-root@cka001:~# kubectl get deployment -o wide
-NAME    READY   UP-TO-DATE   AVAILABLE   AGE     CONTAINERS            IMAGES                                       SELECTOR
-myapp   1/1     1            1           6h21m   kubernetes-bootcamp   docker.io/jocatalin/kubernetes-bootcamp:v1   app=myapp
-```
-
-Update image to new versions.
-```
-kubectl set image deployment/myapp kubernetes-bootcamp=docker.io/jocatalin/kubernetes-bootcamp:v2 --record
-kubectl set image deployment/myapp kubernetes-bootcamp=docker.io/jocatalin/kubernetes-bootcamp:v3 --record
-kubectl set image deployment/myapp kubernetes-bootcamp=docker.io/jocatalin/kubernetes-bootcamp:v4 --record
-kubectl set image deployment/myapp kubernetes-bootcamp=docker.io/jocatalin/kubernetes-bootcamp:v5 --record
-```
-
-We can observe that Pod's IP is changed to new one, and running on another node.
-New Pod is in `ImagePullBackOff` status due to network issue to access `docker.io/jocatalin/kubernetes-bootcamp`.
-
-```
-root@cka001:~# kubectl get pod -o wide
-NAME                     READY   STATUS             RESTARTS   AGE     IP            NODE     NOMINATED NODE   READINESS GATES
-myapp-75ccb85dd6-hzc82   0/1     ImagePullBackOff   0          2m15s   10.244.1.13   cka002   <none>           <none>
-myapp-b5d775f5d-6jtgs    1/1     Running            0          6h24m   10.244.2.12   cka003   <none>           <none>
-```
-
-Let's verify if the service is still available after rolling update. Send http request to the node sucessfully.
-```
-root@cka001:~# curl http://172.16.18.160:30520
-Hello Kubernetes bootcamp! | Running on: myapp-b5d775f5d-6jtgs | v=1
-```
-
-Get rolling update history.
-```
-root@cka001:~# kubectl rollout history deployment/myapp
-deployment.apps/myapp 
-REVISION  CHANGE-CAUSE
-1         <none>
-2         kubectl set image deployment/myapp kubernetes-bootcamp=docker.io/jocatalin/kubernetes-bootcamp:v2 --record=true
-3         kubectl set image deployment/myapp kubernetes-bootcamp=docker.io/jocatalin/kubernetes-bootcamp:v3 --record=true
-4         kubectl set image deployment/myapp kubernetes-bootcamp=docker.io/jocatalin/kubernetes-bootcamp:v4 --record=true
-5         kubectl set image deployment/myapp kubernetes-bootcamp=docker.io/jocatalin/kubernetes-bootcamp:v5 --record=true
-```
-
-Reverse to revision 3. Copied revision `3` to `6` as current revision.
-
-```
-root@cka001:~# kubectl rollout undo deployment/myapp --to-revision=3
-deployment.apps/myapp rolled back
-
-root@cka001:~# kubectl rollout history deployment/myapp
-deployment.apps/myapp 
-REVISION  CHANGE-CAUSE
-1         <none>
-2         kubectl set image deployment/myapp kubernetes-bootcamp=docker.io/jocatalin/kubernetes-bootcamp:v2 --record=true
-4         kubectl set image deployment/myapp kubernetes-bootcamp=docker.io/jocatalin/kubernetes-bootcamp:v4 --record=true
-5         kubectl set image deployment/myapp kubernetes-bootcamp=docker.io/jocatalin/kubernetes-bootcamp:v5 --record=true
-6         kubectl set image deployment/myapp kubernetes-bootcamp=docker.io/jocatalin/kubernetes-bootcamp:v3 --record=true
-```
-
-
-#### Event
-
-Get detail event info of related Pod.
-```
-root@cka001:~# kubectl describe pod myapp-78bdb65cd8-bnjbj
-```
-
-Result looks like below.
-```
-Events:
-  Type     Reason     Age                 From               Message
-  ----     ------     ----                ----               -------
-  Normal   Scheduled  15m                 default-scheduler  Successfully assigned dev/myapp-78bdb65cd8-bnjbj to cka002
-  Normal   Pulling    14m (x4 over 15m)   kubelet            Pulling image "docker.io/jocatalin/kubernetes-bootcamp:v3"
-  Warning  Failed     14m (x4 over 15m)   kubelet            Failed to pull image "docker.io/jocatalin/kubernetes-bootcamp:v3": rpc error: code = NotFound desc = failed to pull and unpack image "docker.io/jocatalin/kubernetes-bootcamp:v3": failed to resolve reference "docker.io/jocatalin/kubernetes-bootcamp:v3": docker.io/jocatalin/kubernetes-bootcamp:v3: not found
-  Warning  Failed     14m (x4 over 15m)   kubelet            Error: ErrImagePull
-  Warning  Failed     14m (x6 over 15m)   kubelet            Error: ImagePullBackOff
-  Normal   BackOff    44s (x65 over 15m)  kubelet            Back-off pulling image "docker.io/jocatalin/kubernetes-bootcamp:v3"
-```
-
-Get detail event info of entire cluster.
-```
-root@cka001:~# kubectl get event
-```
-
-
-#### Logging
-
-Get log info of Pod.
-```
-kubectl logs -f <pod_name>
-kubectl logs -f <pod_name> -c <container_name> 
-```
-```
-root@cka001:~# kubectl logs -f myapp-78bdb65cd8-bnjbj
-Error from server (BadRequest): container "kubernetes-bootcamp" in pod "myapp-78bdb65cd8-bnjbj" is waiting to start: trying and failing to pull image
-```
-
-Get log info of K8s components. 
-```
-root@cka001:~# kubectl logs kube-apiserver-cka001 -n kube-system
-root@cka001:~# kubectl logs kube-controller-manager-cka001 -n kube-system
-root@cka001:~# kubectl logs kube-scheduler-cka001 -n kube-system
-root@cka001:~# kubectl logs etcd-cka001 -n kube-system
-root@cka001:~# systemctl status kubelet
-root@cka001:~# journalctl -fu kubelet
-root@cka001:~# kubectl logs kube-proxy-bj75j -n kube-system
-```
-
-
-
-### Demo: Workload Resources
-
-#### Deployment
-
-Create deployment via command `kubectl create`.
-```
-root@cka001:~# kubectl create deployment deploy-http-app1 --image=nginx:1.19
-```
-
-Create deployment via yaml file and apply it.
-```
-root@cka001:~# cat > deploy-http-app2.yaml <<EOF
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: deploy-http-app2
-  labels:
-    app: deploy-http-app2
-spec:
-  selector:
-    matchLabels:
-      app: deploy-http-app2
-  replicas: 1
-  template:
-    metadata:
-      labels:
-        app: deploy-http-app2
-    spec:
-      containers:
-      - name: nginx
-        image: nginx:1.19
 EOF
-
-
-root@cka001:~# kubectl apply -f deploy-http-app2.yaml
 ```
 
-Get Deployment Pod created just now.
-
+Get current status of Services.
 ```
-root@cka001:~# kubectl get pod
-NAME                                READY   STATUS    RESTARTS   AGE
-deploy-http-app1-7cbc9b645d-zztg9   1/1     Running   0          116s
-deploy-http-app2-5f5f7765c9-7hcmt   1/1     Running   0          46s
+kubectl get service
+```
+Both of Services are up.
+```
+NAME        TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)   AGE
+mydb        ClusterIP   11.244.233.190   <none>        80/TCP    11m
+myservice   ClusterIP   11.244.189.202   <none>        80/TCP    11m
+```
+Get current Pod status.
+```
+kubectl get pod myapp-pod -o wide
+```
+The Pod is up.
+```
+NAME        READY   STATUS    RESTARTS   AGE   IP              NODE     NOMINATED NODE   READINESS GATES
+myapp-pod   1/1     Running   0          13m   10.244.112.14   cka002   <none>           <none>
 ```
 
-Use below commands to check details of deployment pod we creatd just now.
+We now see that those init containers complete, and that the myapp-pod Pod moves into the Running state.
+
+
+
+Clean up.
 ```
-# kubectl describe deployment
-# kubectl get deployment -oyaml
-# kubectl describe pod
-# kubectl get pod -oyaml
+kubectl delete service mydb myservice 
+kubectl delete pod myapp-pod 
 ```
 
 
 
 
-#### StatefulSet
 
-Create StatefulSet with yaml file and apply it.
+### StatefulSet
+
+Summary: 
+
+* Create Headless Service and StatefulSet
+* Scale out StatefulSet
+
+
+#### Create Headless Service and StatefulSet
+
+Create Headless Service `nginx` and StatefulSet `web`.
 ```
-root@cka001:~# cat > stateufulset-web.yaml <<EOF
+kubectl apply -f - << EOF
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+  labels:
+    app: nginx
+spec:
+  ports:
+  - port: 80
+    name: web
+  clusterIP: None
+  selector:
+    app: nginx
+---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -1892,20 +1361,17 @@ spec:
         - containerPort: 80
           name: web
 EOF
-
-root@cka001:~# kubectl apply -f stateufulset-web.yaml
 ```
 
 Get details of StatefulSet Pod created just now.
 ```
-root@cka001:~# kubectl get pod | grep web
-NAME                                READY   STATUS    RESTARTS   AGE
-web-0                               1/1     Running   0          2m1s
-web-1                               1/1     Running   0          117s
-
-root@cka001:~# kubectl get sts -o wide
-NAME   READY   AGE   CONTAINERS   IMAGES
-web    2/2     88s   nginx        nginx
+kubectl get pod | grep web
+```
+Result
+```
+NAME     READY   STATUS    RESTARTS   AGE
+web-0    1/1     Running   0          28s
+web-1    1/1     Running   0          24s
 ```
 
 Use command `kubectl edit sts web` to update an existing StatefulSet.
@@ -1915,7 +1381,18 @@ Note:
 Copy of StatefulSet Pod will not be created automatically in other node when it's dead in current node.  
 
 
-#### DaemonSet
+
+#### Scale out StatefulSet
+
+Scale StatefulSet `web` to `5` Replicas.
+```
+kubectl scale sts web --replicas=5
+```
+
+
+
+
+### DaemonSet
 
 Create DaemonSet with yaml file and apply it.
 ```
@@ -1971,7 +1448,7 @@ daemonset-busybox-r6sc7             1/1     Running   0          75s   10.244.1.
 
 
 
-#### Job
+### Job
 
 Create Job with yaml file and apply it.
 ```
@@ -2012,7 +1489,7 @@ root@cka001:~# kubectl logs pi-s28pr
 
 
 
-#### Cronjob
+### Cronjob
 
 Create Cronjob with yaml file and apply it.
 ```
@@ -2051,6 +1528,503 @@ Monitor Jobs. Every 1 minute a new job will be created.
 ```
 root@cka001:~# kubectl get jobs -w
 ```
+
+
+
+### Demo: Operations on Resources
+
+Summary:
+
+* Node Label
+* Namespace
+* ServiceAccount Authorization
+    * Grant API access authorization to default ServiceAccount
+* Deployment
+* Expose Service
+* Scale out the Deployment
+* Rolling update
+* Rolling back update
+* Event
+* Logging
+
+
+#### Node Label
+
+Add/update/remove node Label.
+```
+# Update node label
+kubectl label node cka002 node=demonode
+
+# Get node info with label info
+kubectl get node --show-labels
+
+# Search node by label
+kubectl get node -l node=demonode
+
+# Remove a lable of node
+kubectl label node cka002 node-
+```
+
+
+
+#### Namespace
+
+Get current available namespaces.
+```
+kubectl get namespace
+```
+Result
+```
+NAME              STATUS   AGE
+default           Active   34h
+dev               Active   27h
+kube-node-lease   Active   34h
+kube-public       Active   34h
+kube-system       Active   34h
+```
+
+Get Pod under a specific namespace.
+```
+kubectl get pod -n kube-system
+```
+Result
+```
+NAME                                       READY   STATUS    RESTARTS   AGE
+calico-kube-controllers-5c64b68895-fqqsd   1/1     Running   0          34h
+calico-node-2pc7d                          1/1     Running   0          34h
+calico-node-nr8pd                          0/1     Running   0          34h
+calico-node-ssxn7                          1/1     Running   0          34h
+coredns-6d8c4cb4d-v7pvc                    1/1     Running   0          34h
+coredns-6d8c4cb4d-vlwnh                    1/1     Running   0          34h
+etcd-cka001                                1/1     Running   2          34h
+kube-apiserver-cka001                      1/1     Running   2          34h
+kube-controller-manager-cka001             1/1     Running   2          34h
+kube-proxy-55qkw                           1/1     Running   0          34h
+kube-proxy-5qllr                           1/1     Running   0          34h
+kube-proxy-qkvxh                           1/1     Running   0          34h
+kube-scheduler-cka001                      1/1     Running   2          34h
+```
+
+Get Pods in all namespaces.
+```
+kubectl get pod --all-namespaces
+kubectl get pod -A
+```
+
+
+
+#### ServiceAccount Authorization
+
+With Kubernetes 1.23 and lower version, when we create a new namespace, Kubernetes will automatically create a ServiceAccount `default` and a token `default-token-xxxxx`.
+
+We can say that the ServiceAccount `default` is an account under the namespace.
+
+Here is an example of new namespace `dev`.
+
+* ServiceAcccount: `default`
+* Token: `default-token-8vrsc`
+
+Get current ServiceAccount on Namespace `dev`.
+```
+kubectl get serviceaccount -n dev
+```
+Result
+```
+NAME      SECRETS   AGE
+default   1         26h
+```
+
+Get current Token for ServiceAccount `default` on Namespace `dev`.
+```
+kubectl get secrets -n dev
+```
+```
+NAME                  TYPE                                  DATA   AGE
+default-token-jgfcn   kubernetes.io/service-account-token   3      22h
+```
+
+There is a default cluster role `admin`.
+```
+kubectl get clusterrole admin
+```
+Result
+```
+NAME    CREATED AT
+admin   2022-07-21T01:04:59Z
+```
+
+But there is no clusterrole binding to the cluster role `admin`.
+```
+kubectl get clusterrolebinding | grep ClusterRole/admin
+```
+
+Role and rolebinding is namespaces based. On Namespace `dev`, there is no role and rolebinding after fresh installation.
+```
+kubectl get role -n dev
+kubectl get rolebinding -n dev
+```
+
+Get token of the service account `default`.
+```
+TOKEN=$(kubectl describe secret $(kubectl get secrets | grep default | cut -f1 -d ' ') | grep -E '^token' | cut -f2 -d':' | tr -d ' ')
+echo $TOKEN
+```
+
+Get API Service address.
+```
+APISERVER=$(kubectl config view | grep https | cut -f 2- -d ":" | tr -d " ")
+echo $APISERVER
+```
+
+Get Pod resources in namespace `dev` via API server with JSON layout.
+```
+curl $APISERVER/api/v1/namespaces/dev/pods --header "Authorization: Bearer $TOKEN" --insecure
+```
+
+We will receive below error message. The ServiceAccount `default` does not have authorization to access pod.
+```
+"message": "pods is forbidden: User \"system:serviceaccount:dev:default\" cannot list resource \"pods\" in API group \"\" in the namespace \"dev\"",
+```
+
+Let's create a rolebinding `rolebinding-admin` to bind cluster role `admin` to service account `default` in namespapce `dev`.
+Hence service account `default` is granted adminstrator authorization in namespace `dev`.
+```
+# Usage:
+kubectl create rolebinding <rule> --clusterrole=<clusterrule> --serviceaccount=<namespace>:<name> --namespace=<namespace>
+
+# Crate rolebinding:
+kubectl create rolebinding rolebinding-admin --clusterrole=admin --serviceaccount=dev:default --namespace=dev
+```
+
+Result looks like below by executing `kubectl get rolebinding -n dev`.
+```
+NAME                ROLE                AGE
+rolebinding-admin   ClusterRole/admin   39s
+```
+
+Try again, get pod resources in namespace `dev` via API server with JSON layout.
+```
+curl $APISERVER/api/v1/namespaces/dev/pods --header "Authorization: Bearer $TOKEN" --insecure
+```
+
+
+
+
+#### Deployment
+
+Create a Ubuntu Pod for operation. And attach to the running Pod. 
+```
+kubectl create -f - << EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ubuntu
+  labels:
+    app: ubuntu
+spec:
+  containers:
+  - name: ubuntu
+    image: ubuntu:latest
+    command: ["/bin/sleep", "3650d"]
+    imagePullPolicy: IfNotPresent
+  restartPolicy: Always
+EOF
+
+
+kubectl exec --stdin --tty ubuntu -- /bin/bash
+kubectl attach ubuntu -c ubuntu -i -t
+```
+
+Create a deployment, option `--image` specifies a image，option `--port` specifies port for external access. 
+A pod is also created when deployment is created.
+```
+kubectl create deployment myapp --image=docker.io/jocatalin/kubernetes-bootcamp:v1 --replicas=1 --port=8080
+```
+
+Get deployment status
+```
+kubectl get deployment myapp -o wide
+```
+Result
+```
+NAME    READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS            IMAGES                                       SELECTOR
+myapp   1/1     1            1           5s    kubernetes-bootcamp   docker.io/jocatalin/kubernetes-bootcamp:v1   app=myapp
+```
+
+Get detail information of deployment.
+```
+kubectl describe deployment myapp
+```
+Result
+```
+Name:                   myapp
+Namespace:              dev
+CreationTimestamp:      Fri, 22 Jul 2022 20:28:46 +0800
+Labels:                 app=myapp
+Annotations:            deployment.kubernetes.io/revision: 1
+Selector:               app=myapp
+Replicas:               1 desired | 1 updated | 1 total | 1 available | 0 unavailable
+StrategyType:           RollingUpdate
+MinReadySeconds:        0
+RollingUpdateStrategy:  25% max unavailable, 25% max surge
+Pod Template:
+  Labels:  app=myapp
+  Containers:
+   kubernetes-bootcamp:
+    Image:        docker.io/jocatalin/kubernetes-bootcamp:v1
+    Port:         8080/TCP
+    Host Port:    0/TCP
+    Environment:  <none>
+    Mounts:       <none>
+  Volumes:        <none>
+Conditions:
+  Type           Status  Reason
+  ----           ------  ------
+  Available      True    MinimumReplicasAvailable
+  Progressing    True    NewReplicaSetAvailable
+OldReplicaSets:  <none>
+NewReplicaSet:   myapp-b5d775f5d (1/1 replicas created)
+Events:
+  Type    Reason             Age    From                   Message
+  ----    ------             ----   ----                   -------
+  Normal  ScalingReplicaSet  2m15s  deployment-controller  Scaled up replica set myapp-b5d775f5d to 1
+```
+
+
+
+#### Expose Service
+
+Get the Pod and Deployment we created just now.
+```
+kubectl get deployment myapp -o wide
+kubectl get pod -o wide
+```
+Result
+```
+NAME                    READY   STATUS    RESTARTS      AGE     IP              NODE     NOMINATED NODE   READINESS GATES
+myapp-b5d775f5d-kss4t   1/1     Running   0             5m33s   10.244.102.10   cka003   <none>           <none>
+```
+
+Send http request to the Pod `curl 10.244.102.10:8080` with below result.
+```
+Hello Kubernetes bootcamp! | Running on: myapp-b5d775f5d-6jtgs | v=1
+```
+
+To make pod be accessed outside, we need expose port `8080` to a node port. A related service will be created. 
+```
+kubectl expose deployment myapp --type=NodePort --port=8080
+```
+
+Get details of service `myapp` by executing `kubectl get svc myapp -o wide`.
+```
+NAME    TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE   SELECTOR
+myapp   NodePort   11.244.141.12   <none>        8080:32566/TCP   15s   app=myapp
+```
+
+Get more details of the service.
+```
+kubectl get svc myapp -o yaml
+kubectl describe svc myapp
+```
+
+Get details of related endpoint `myapp` by executing `kubectl get endpoints myapp -o wide`.
+```
+NAME    ENDPOINTS            AGE
+myapp   10.244.102.10:8080   70s
+```
+
+Send http request to the service and node sucessfully. Pod port `8080` is mapped to node port `32566`.
+
+Send http request to node port on `cka003`.
+```
+curl 172.16.18.159:32566
+Hello Kubernetes bootcamp! | Running on: myapp-b5d775f5d-6jtgs | v=1
+```
+
+Attach to Ubuntu Pod we created and send http request to the Service and Pod of `myapp`.
+```
+kubectl attach ubuntu -c ubuntu -i -t
+curl 10.244.102.10:8080
+curl 11.244.141.12:8080
+Hello Kubernetes bootcamp! | Running on: myapp-b5d775f5d-6jtgs | v=1
+```
+
+
+
+
+#### Scale out Deployment
+
+Scale out by replicaset. We set three replicasets to scale out deployment `myapp`. The number of deployment `myapp` is now three.
+```
+kubectl scale deployment myapp --replicas=3
+```
+
+Get status of deployment
+```
+kubectl get deployment myapp
+```
+
+Get status of replicaset
+```
+kubectl get replicaset
+```
+
+
+#### Rolling update
+
+Command usage: `kubectl set image (-f FILENAME | TYPE NAME) CONTAINER_NAME_1=CONTAINER_IMAGE_1 ... CONTAINER_NAME_N=CONTAINER_IMAGE_N`.
+
+With the command `kubectl get deployment`, we will get deployment name `myapp` and related container name `kubernetes-bootcamp`.
+```
+kubectl get deployment myapp -o wide
+```
+
+With the command `kubectl set image` to update image to many versions and log the change under deployment's annotations with option `--record`.
+```
+kubectl set image deployment/myapp kubernetes-bootcamp=docker.io/jocatalin/kubernetes-bootcamp:v2 --record
+kubectl set image deployment/myapp kubernetes-bootcamp=docker.io/jocatalin/kubernetes-bootcamp:v3 --record
+kubectl set image deployment/myapp kubernetes-bootcamp=docker.io/jocatalin/kubernetes-bootcamp:v4 --record
+kubectl set image deployment/myapp kubernetes-bootcamp=docker.io/jocatalin/kubernetes-bootcamp:v5 --record
+```
+
+Current replicas status
+```
+kubectl get replicaset -o wide -l app=myapp
+```
+Result
+```
+NAME               DESIRED   CURRENT   READY   AGE     CONTAINERS            IMAGES                                       SELECTOR
+myapp-5dbd68cc99   0         0         0       6m40s   kubernetes-bootcamp   docker.io/jocatalin/kubernetes-bootcamp:v2   app=myapp,pod-template-hash=5dbd68cc99
+myapp-699dc8ccb9   0         0         0       6m40s   kubernetes-bootcamp   docker.io/jocatalin/kubernetes-bootcamp:v4   app=myapp,pod-template-hash=699dc8ccb9
+myapp-75ccb85dd6   1         1         0       6m38s   kubernetes-bootcamp   docker.io/jocatalin/kubernetes-bootcamp:v5   app=myapp,pod-template-hash=75ccb85dd6
+myapp-78bdb65cd8   0         0         0       6m40s   kubernetes-bootcamp   docker.io/jocatalin/kubernetes-bootcamp:v3   app=myapp,pod-template-hash=78bdb65cd8
+myapp-b5d775f5d    3         3         3       38m     kubernetes-bootcamp   docker.io/jocatalin/kubernetes-bootcamp:v1   app=myapp,pod-template-hash=b5d775f5d
+```
+
+We can get the change history under `metadata.annotations`.
+```
+kubectl get deployment myapp -o yaml
+```
+Result
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "5"
+    kubernetes.io/change-cause: kubectl set image deployment/myapp kubernetes-bootcamp=docker.io/jocatalin/kubernetes-bootcamp:v5
+      --record=true
+  creationTimestamp: "2022-07-22T12:28:46Z"
+  ......
+```
+
+We can also get the change history by command `kubectl rollout history`, and show details with specific revision `--revision=<revision_number>`.
+```
+kubectl rollout history deployment/myapp
+```
+Result
+```
+deployment.apps/myapp 
+REVISION  CHANGE-CAUSE
+1         <none>
+2         kubectl set image deployment/myapp kubernetes-bootcamp=docker.io/jocatalin/kubernetes-bootcamp:v2 --record=true
+3         kubectl set image deployment/myapp kubernetes-bootcamp=docker.io/jocatalin/kubernetes-bootcamp:v3 --record=true
+4         kubectl set image deployment/myapp kubernetes-bootcamp=docker.io/jocatalin/kubernetes-bootcamp:v4 --record=true
+5         kubectl set image deployment/myapp kubernetes-bootcamp=docker.io/jocatalin/kubernetes-bootcamp:v5 --record=true
+```
+
+Get rollout history with specific revision.
+```
+kubectl rollout history deployment/myapp --revision=2
+```
+
+Roll back to previous revision with command `kubectl rollout undo `, or roll back to specific revision with option `--to-revision=<revision_number>`.
+```
+kubectl rollout undo deployment/myapp --to-revision=3
+```
+
+Revision 3 was replaced by new revision 6 now.
+```
+kubectl rollout history deployment/myapp
+```
+Result
+```
+deployment.apps/myapp 
+REVISION  CHANGE-CAUSE
+1         <none>
+2         kubectl set image deployment/myapp kubernetes-bootcamp=docker.io/jocatalin/kubernetes-bootcamp:v2 --record=true
+4         kubectl set image deployment/myapp kubernetes-bootcamp=docker.io/jocatalin/kubernetes-bootcamp:v4 --record=true
+5         kubectl set image deployment/myapp kubernetes-bootcamp=docker.io/jocatalin/kubernetes-bootcamp:v5 --record=true
+6         kubectl set image deployment/myapp kubernetes-bootcamp=docker.io/jocatalin/kubernetes-bootcamp:v3 --record=true
+```
+
+
+#### Event
+
+Get detail event info of related Pod.
+```
+kubectl describe pod myapp-b5d775f5d-smcfv
+```
+
+Result looks like below.
+```
+......
+Events:
+  Type    Reason     Age   From               Message
+  ----    ------     ----  ----               -------
+  Normal  Scheduled  13m   default-scheduler  Successfully assigned dev/myapp-b5d775f5d-smcfv to cka002
+  Normal  Pulled     13m   kubelet            Container image "docker.io/jocatalin/kubernetes-bootcamp:v1" already present on machine
+  Normal  Created    13m   kubelet            Created container kubernetes-bootcamp
+  Normal  Started    13m   kubelet            Started container kubernetes-bootcamp
+```
+
+Get detail event info of entire cluster.
+```
+kubectl get event
+```
+
+
+
+
+#### Logging
+
+Get log info of Pod.
+```
+kubectl logs -f <pod_name>
+kubectl logs -f <pod_name> -c <container_name> 
+```
+
+Get a Pod logs
+```
+kubectl logs -f myapp-b5d775f5d-smcfv
+```
+```
+Kubernetes Bootcamp App Started At: 2022-07-22T12:57:52.828Z | Running On:  myapp-b5d775f5d-smcfv
+```
+
+Get log info of K8s components. 
+```
+kubectl logs kube-apiserver-cka001 -n kube-system
+kubectl logs kube-controller-manager-cka001 -n kube-system
+kubectl logs kube-scheduler-cka001 -n kube-system
+kubectl logs etcd-cka001 -n kube-system
+systemctl status kubelet
+journalctl -fu kubelet
+kubectl logs kube-proxy-qkvxh -n kube-system
+```
+
+
+Clean up.
+```
+kubectl delete service myapp
+kubectl delete deployment myapp
+```
+
+
+
+
+
+
 
 
 
