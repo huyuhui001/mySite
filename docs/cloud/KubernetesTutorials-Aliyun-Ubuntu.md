@@ -995,15 +995,27 @@ Three approach to operate Kubernetes cluster:
 
 
 Get cluster status.
+
+* Kubernetes control plane is running at https://172.16.18.170:6443
+* CoreDNS is running at https://172.16.18.170:6443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+
 ```
 kubectl cluster-info
 kubectl cluster-info dump
 ```
 
+
 Get health status of control plane.
 ```
 kubectl get componentstatuses
 kubectl get cs
+```
+Result
+```
+NAME                 STATUS    MESSAGE                         ERROR
+etcd-0               Healthy   {"health":"true","reason":""}   
+scheduler            Healthy   ok                              
+controller-manager   Healthy   ok 
 ```
 
 Get node status.
@@ -1011,6 +1023,14 @@ Get node status.
 kubectl get nodes
 kubectl get nodes -o wide
 ```
+Result
+```
+NAME     STATUS   ROLES                  AGE   VERSION   INTERNAL-IP     EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION      CONTAINER-RUNTIME
+cka001   Ready    control-plane,master   74m   v1.23.8   172.16.18.170   <none>        Ubuntu 20.04.4 LTS   5.4.0-122-generic   containerd://1.5.9
+cka002   Ready    <none>                 70m   v1.23.8   172.16.18.169   <none>        Ubuntu 20.04.4 LTS   5.4.0-122-generic   containerd://1.5.9
+cka003   Ready    <none>                 69m   v1.23.8   172.16.18.168   <none>        Ubuntu 20.04.4 LTS   5.4.0-122-generic   containerd://1.5.9
+```
+
 
 
 ### Static Pod
@@ -1023,24 +1043,26 @@ ll /etc/kubernetes/manifests/
 ```
 Result
 ```
--rw------- 1 root root 2292 Jul 21 09:04 etcd.yaml
--rw------- 1 root root 3889 Jul 21 09:04 kube-apiserver.yaml
--rw------- 1 root root 3395 Jul 21 09:04 kube-controller-manager.yaml
--rw------- 1 root root 1464 Jul 21 09:04 kube-scheduler.yaml
+-rw------- 1 root root 2292 Jul 23 10:45 etcd.yaml
+-rw------- 1 root root 3889 Jul 23 10:45 kube-apiserver.yaml
+-rw------- 1 root root 3395 Jul 23 10:45 kube-controller-manager.yaml
+-rw------- 1 root root 1464 Jul 23 10:45 kube-scheduler.yaml
 ```
 
 Create yaml file in directory `/etc/kubernetes/manifests/`.
 ```
 kubectl run my-nginx --image=nginx:mainline --dry-run=client -n dev -oyaml > /etc/kubernetes/manifests/my-nginx.yaml
 ```
+
 Check status of the Pod `my-nginx`.
 ```
-kubectl get pod
+kubectl get pod -o wide
 ```
+
 The node name `cka001` is part of the Pod name, which means the Pod is running on node `cka001`.
 ```
-NAME              READY   STATUS    RESTARTS   AGE
-my-nginx-cka001   1/1     Running   0          106s
+NAME              READY   STATUS    RESTARTS   AGE   IP               NODE     NOMINATED NODE   READINESS GATES
+my-nginx-cka001   1/1     Running   0          20s   10.244.228.196   cka001   <none>           <none>
 ```
 
 Delete the yaml file `/etc/kubernetes/manifests/my-nginx.yaml`, the static pod will be deleted automatically.
@@ -1049,10 +1071,17 @@ rm /etc/kubernetes/manifests/my-nginx.yaml
 ```
 
 
-### Mutil-Container Pod
+
+
+
+### Multi-Container Pod
 
 Summary:
 
+* Create Multi-Container Pod
+* Describe the Pod
+* Check the log of Pod
+* Check the log of Containers
 
 
 Create a Pod `multi-container-pod` with multiple container `container-1-nginx` and `container-2-alpine`.
@@ -1085,21 +1114,25 @@ NAME                  READY   STATUS    RESTARTS   AGE
 multi-container-pod   2/2     Running   0          81s
 ```
 
-Get details of the pod we created via command `kubectl describe pod multi-container-pod` and we can see below events.
+Get details of the pod.
+```
+kubectl describe pod multi-container-pod
+```
+Result
 ```
 .......
 Events:
   Type    Reason     Age   From               Message
   ----    ------     ----  ----               -------
-  Normal  Scheduled  47s   default-scheduler  Successfully assigned dev/multi-container-pod to cka002
-  Normal  Pulling    46s   kubelet            Pulling image "nginx"
-  Normal  Pulled     44s   kubelet            Successfully pulled image "nginx" in 2.110312099s
-  Normal  Created    44s   kubelet            Created container container-1-nginx
-  Normal  Started    44s   kubelet            Started container container-1-nginx
-  Normal  Pulling    44s   kubelet            Pulling image "alpine"
-  Normal  Pulled     35s   kubelet            Successfully pulled image "alpine" in 8.754753417s
-  Normal  Created    35s   kubelet            Created container container-2-alpine
-  Normal  Started    35s   kubelet            Started container container-2-alpine
+  Normal  Scheduled  41s   default-scheduler  Successfully assigned dev/multi-container-pod to cka002
+  Normal  Pulling    40s   kubelet            Pulling image "nginx"
+  Normal  Pulled     23s   kubelet            Successfully pulled image "nginx" in 16.767129903s
+  Normal  Created    22s   kubelet            Created container container-1-nginx
+  Normal  Started    22s   kubelet            Started container container-1-nginx
+  Normal  Pulling    22s   kubelet            Pulling image "alpine"
+  Normal  Pulled     14s   kubelet            Successfully pulled image "alpine" in 7.776104353s
+  Normal  Created    14s   kubelet            Created container container-2-alpine
+  Normal  Started    14s   kubelet            Started container container-2-alpine
 ```
 
 For multi-container pod, container name is needed if we want to get log of pod via command `kubectl logs <pod_name> <container_name>`.
@@ -1119,7 +1152,7 @@ kubectl logs multi-container-pod container-1-nginx
 Result
 ```
 ......
-::1 - - [02/Jul/2022:01:12:29 +0000] "GET / HTTP/1.1" 200 615 "-" "Wget" "-"
+::1 - - [23/Jul/2022:04:06:37 +0000] "GET / HTTP/1.1" 200 615 "-" "Wget" "-"
 ```
 
 Same if we need specify container name to login into the pod via command `kubectl exec -it <pod_name> -c <container_name> -- <commands>`.
