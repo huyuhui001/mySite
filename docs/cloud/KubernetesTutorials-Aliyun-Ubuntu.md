@@ -2348,6 +2348,10 @@ If we want to wait before executing a liveness probe you should use initialDelay
 Summary:
 
 * Create Deployment and Service
+* Simulate an error (delete index.html)
+* Pod is in unhealth status and is removed from endpoint list
+* Fix the error (revert the index.html)
+* Pod is back to normal and in endpoint list
 
 
 #### Create Deployment and Service
@@ -2678,10 +2682,17 @@ kubectl delete ns cka
 
 
 
-## 9.Horizontal Pod Autoscaling (HPA)
+## 8.Horizontal Pod Autoscaling (HPA)
+
+Summary:
+
+* Install Metrics Server component
 
 
-- Install Metrics Server component
+
+
+
+### Install Metrics Server component
 
 Download yaml file for Metrics Server component
 ```
@@ -2689,7 +2700,6 @@ wget https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/
 ```
 
 Replace Google image by Aliyun image `image: registry.aliyuncs.com/google_containers/metrics-server:v0.6.1`.
-
 ```
 sed -i 's/k8s\.gcr\.io\/metrics-server\/metrics-server\:v0\.6\.1/registry\.aliyuncs\.com\/google_containers\/metrics-server\:v0\.6\.1/g' components.yaml
 ```
@@ -2734,7 +2744,7 @@ deployment.apps/metrics-server created
 apiservice.apiregistration.k8s.io/v1beta1.metrics.k8s.io created
 ```
 
-Verify if `metrics-server` Pod is running as expected.
+Verify if `metrics-server` Pod is running as expected (`1/1` running)
 ```
 kubectl get pod -n kube-system -owide | grep metrics-server
 ```
