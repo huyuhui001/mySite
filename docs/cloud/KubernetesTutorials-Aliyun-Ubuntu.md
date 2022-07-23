@@ -1162,6 +1162,13 @@ root@multi-container-pod:/# ls
 bin  boot  dev  docker-entrypoint.d  docker-entrypoint.sh  etc  home  lib  lib64  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var
 ```
 
+Clean up
+```
+kubectl delete pod multi-container-pod
+```
+
+
+
 
 
 ### initContainer Pod
@@ -1210,6 +1217,7 @@ spec:
   - name: init-mydb
     image: busybox:1.28
     command: ['sh', '-c', "until nslookup mydb.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for mydb; sleep 2; done"]
+
 ```
 
 Apply the yaml file to create the Pod.
@@ -1220,11 +1228,18 @@ kubectl apply -f myapp-pod.yaml
 Check Pod status.
 ```
 kubectl get pod myapp-pod
+```
+Result
+```
 NAME        READY   STATUS     RESTARTS   AGE
 myapp-pod   0/1     Init:0/2   0          12m
 ```
 
-Inspect Pods.
+Inspect Pods. Get two errors:
+
+* nslookup: can't resolve 'myservice.dev.svc.cluster.local'
+* container "init-mydb" in pod "myapp-pod" is waiting to start: PodInitializing
+
 ```
 kubectl logs myapp-pod -c init-myservice # Inspect the first init container
 kubectl logs myapp-pod -c init-mydb      # Inspect the second init container
@@ -1264,17 +1279,18 @@ kubectl get service
 Both of Services are up.
 ```
 NAME        TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)   AGE
-mydb        ClusterIP   11.244.233.190   <none>        80/TCP    11m
-myservice   ClusterIP   11.244.189.202   <none>        80/TCP    11m
+mydb        ClusterIP   11.244.239.149   <none>        80/TCP    6s
+myservice   ClusterIP   11.244.116.126   <none>        80/TCP    6s
 ```
+
 Get current Pod status.
 ```
 kubectl get pod myapp-pod -o wide
 ```
 The Pod is up.
 ```
-NAME        READY   STATUS    RESTARTS   AGE   IP              NODE     NOMINATED NODE   READINESS GATES
-myapp-pod   1/1     Running   0          13m   10.244.112.14   cka002   <none>           <none>
+NAME        READY   STATUS     RESTARTS   AGE     IP             NODE     NOMINATED NODE   READINESS GATES
+myapp-pod   0/1     Init:0/2   0          2m40s   10.244.112.2   cka002   <none>           <none>
 ```
 
 We now see that those init containers complete, and that the myapp-pod Pod moves into the Running state.
@@ -1295,8 +1311,8 @@ kubectl delete pod myapp-pod
 
 Summary: 
 
-* Create Headless Service and StatefulSet
-* Scale out StatefulSet
+* Create Headless Service `nginx` and StatefulSet `web`
+* Scale out StatefulSet `web`
 
 
 #### Create Headless Service and StatefulSet
@@ -1349,9 +1365,9 @@ kubectl get pod | grep web
 ```
 Result
 ```
-NAME     READY   STATUS    RESTARTS   AGE
-web-0    1/1     Running   0          28s
-web-1    1/1     Running   0          24s
+NAME    READY   STATUS    RESTARTS   AGE
+web-0   1/1     Running   0          27s
+web-1   1/1     Running   0          10s
 ```
 
 Use command `kubectl edit sts web` to update an existing StatefulSet.
@@ -1359,6 +1375,7 @@ ONLY these fields can be updated: `replicas`、`image`、`rolling updates`、`la
 
 Note: 
 Copy of StatefulSet Pod will not be created automatically in other node when it's dead in current node.  
+
 
 
 
@@ -1425,17 +1442,21 @@ daemonset-busybox   3         3         3       3            3           <none> 
 
 Get DaemonSet Pod status. It's deployed on each node.
 ```
-kubectl get pod -o wide | grep daemonset-busybox
+kubectl get pod -o wide
 ```
+Result
 ```
-NAME                      READY   STATUS    RESTARTS   AGE    IP               NODE     NOMINATED NODE   READINESS GATES
-daemonset-busybox-cs95s   1/1     Running   0          102s   10.244.228.196   cka001   <none>           <none>
-daemonset-busybox-twhhl   1/1     Running   0          102s   10.244.112.26    cka002   <none>           <none>
-daemonset-busybox-vkp9c   1/1     Running   0          102s   10.244.102.18    cka003   <none>           <none>
+NAME                      READY   STATUS    RESTARTS   AGE   IP               NODE     NOMINATED NODE   READINESS GATES
+daemonset-busybox-54cj5   1/1     Running   0          44s   10.244.102.4     cka003   <none>           <none>
+daemonset-busybox-5tl55   1/1     Running   0          44s   10.244.228.197   cka001   <none>           <none>
+daemonset-busybox-wg225   1/1     Running   0          44s   10.244.112.5     cka002   <none>           <none>
 ```
 
 
-
+Clean up.
+```
+kubectl delete daemonset daemonset-busybox 
+```
 
 
 
@@ -1469,12 +1490,12 @@ kubectl get jobs
 
 Get details of Job Pod. The status `Completed` means the job was done successfully.
 ```
-kubectl get pod pi-572n5
+kubectl get pod
 ```
 
 Get log info of the Job Pod.
 ```
-kubectl logs pi-572n5
+kubectl pi-2s74d
 3.141592653589793..............
 ```
 
@@ -1516,7 +1537,11 @@ EOF
 
 Get detail of Cronjob
 ```
-kubectl get cronjobs
+kubectl get cronjobs -o wide
+```
+```
+NAME    SCHEDULE      SUSPEND   ACTIVE   LAST SCHEDULE   AGE   CONTAINERS   IMAGES    SELECTOR
+hello   */1 * * * *   False     0        <none>          25s   hello        busybox   <none>
 ```
 
 Monitor Jobs. Every 1 minute a new job will be created. 
@@ -1524,7 +1549,10 @@ Monitor Jobs. Every 1 minute a new job will be created.
 kubectl get jobs -w
 ```
 
-
+Clean up
+```
+kubectl delete cronjob hello
+```
 
 
 
@@ -1573,11 +1601,11 @@ kubectl get namespace
 Result
 ```
 NAME              STATUS   AGE
-default           Active   34h
-dev               Active   27h
-kube-node-lease   Active   34h
-kube-public       Active   34h
-kube-system       Active   34h
+default           Active   3h45m
+dev               Active   3h11m
+kube-node-lease   Active   3h45m
+kube-public       Active   3h45m
+kube-system       Active   3h45m
 ```
 
 Get Pod under a specific namespace.
@@ -1587,19 +1615,19 @@ kubectl get pod -n kube-system
 Result
 ```
 NAME                                       READY   STATUS    RESTARTS   AGE
-calico-kube-controllers-5c64b68895-fqqsd   1/1     Running   0          34h
-calico-node-2pc7d                          1/1     Running   0          34h
-calico-node-nr8pd                          0/1     Running   0          34h
-calico-node-ssxn7                          1/1     Running   0          34h
-coredns-6d8c4cb4d-v7pvc                    1/1     Running   0          34h
-coredns-6d8c4cb4d-vlwnh                    1/1     Running   0          34h
-etcd-cka001                                1/1     Running   2          34h
-kube-apiserver-cka001                      1/1     Running   2          34h
-kube-controller-manager-cka001             1/1     Running   2          34h
-kube-proxy-55qkw                           1/1     Running   0          34h
-kube-proxy-5qllr                           1/1     Running   0          34h
-kube-proxy-qkvxh                           1/1     Running   0          34h
-kube-scheduler-cka001                      1/1     Running   2          34h
+calico-kube-controllers-5c64b68895-jr4nl   1/1     Running   0          3h25m
+calico-node-dsx76                          1/1     Running   0          3h25m
+calico-node-p5rf2                          1/1     Running   0          3h25m
+calico-node-tr22l                          1/1     Running   0          3h25m
+coredns-6d8c4cb4d-g4jxc                    1/1     Running   0          3h45m
+coredns-6d8c4cb4d-sqcvj                    1/1     Running   0          3h45m
+etcd-cka001                                1/1     Running   0          3h45m
+kube-apiserver-cka001                      1/1     Running   0          3h45m
+kube-controller-manager-cka001             1/1     Running   0          3h45m
+kube-proxy-5cdbj                           1/1     Running   0          3h41m
+kube-proxy-cm4hc                           1/1     Running   0          3h45m
+kube-proxy-g4w52                           1/1     Running   0          3h41m
+kube-scheduler-cka001                      1/1     Running   0          3h45m
 ```
 
 Get Pods in all namespaces.
@@ -1628,16 +1656,17 @@ kubectl get serviceaccount -n dev
 Result
 ```
 NAME      SECRETS   AGE
-default   1         26h
+default   1         3h12m
 ```
 
 Get current Token for ServiceAccount `default` on Namespace `dev`.
 ```
 kubectl get secrets -n dev
 ```
+Result
 ```
 NAME                  TYPE                                  DATA   AGE
-default-token-jgfcn   kubernetes.io/service-account-token   3      22h
+default-token-qd68h   kubernetes.io/service-account-token   3      3h12m
 ```
 
 There is a default cluster role `admin`.
@@ -1647,7 +1676,7 @@ kubectl get clusterrole admin
 Result
 ```
 NAME    CREATED AT
-admin   2022-07-21T01:04:59Z
+admin   2022-07-23T02:45:51Z
 ```
 
 But there is no clusterrole binding to the cluster role `admin`.
@@ -1678,10 +1707,7 @@ Get Pod resources in namespace `dev` via API server with JSON layout.
 curl $APISERVER/api/v1/namespaces/dev/pods --header "Authorization: Bearer $TOKEN" --insecure
 ```
 
-We will receive below error message. The ServiceAccount `default` does not have authorization to access pod.
-```
-"message": "pods is forbidden: User \"system:serviceaccount:dev:default\" cannot list resource \"pods\" in API group \"\" in the namespace \"dev\"",
-```
+We will receive `430 forbidden` error message. The ServiceAccount `default` does not have authorization to access pod.
 
 Let's create a rolebinding `rolebinding-admin` to bind cluster role `admin` to service account `default` in namespapce `dev`.
 Hence service account `default` is granted adminstrator authorization in namespace `dev`.
@@ -1696,7 +1722,7 @@ kubectl create rolebinding rolebinding-admin --clusterrole=admin --serviceaccoun
 Result looks like below by executing `kubectl get rolebinding -n dev`.
 ```
 NAME                ROLE                AGE
-rolebinding-admin   ClusterRole/admin   39s
+rolebinding-admin   ClusterRole/admin   10s
 ```
 
 Try again, get pod resources in namespace `dev` via API server with JSON layout.
@@ -1728,7 +1754,6 @@ spec:
 EOF
 
 kubectl exec --stdin --tty ubuntu -- /bin/bash
-kubectl attach ubuntu -c ubuntu -i -t
 ```
 
 Create a deployment, option `--image` specifies a image，option `--port` specifies port for external access. 
@@ -1744,7 +1769,7 @@ kubectl get deployment myapp -o wide
 Result
 ```
 NAME    READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS            IMAGES                                       SELECTOR
-myapp   1/1     1            1           5s    kubernetes-bootcamp   docker.io/jocatalin/kubernetes-bootcamp:v1   app=myapp
+myapp   1/1     1            1           79s   kubernetes-bootcamp   docker.io/jocatalin/kubernetes-bootcamp:v1   app=myapp
 ```
 
 Get detail information of deployment.
@@ -1755,7 +1780,7 @@ Result
 ```
 Name:                   myapp
 Namespace:              dev
-CreationTimestamp:      Fri, 22 Jul 2022 20:28:46 +0800
+CreationTimestamp:      Sat, 23 Jul 2022 14:36:43 +0800
 Labels:                 app=myapp
 Annotations:            deployment.kubernetes.io/revision: 1
 Selector:               app=myapp
@@ -1781,10 +1806,11 @@ Conditions:
 OldReplicaSets:  <none>
 NewReplicaSet:   myapp-b5d775f5d (1/1 replicas created)
 Events:
-  Type    Reason             Age    From                   Message
-  ----    ------             ----   ----                   -------
-  Normal  ScalingReplicaSet  2m15s  deployment-controller  Scaled up replica set myapp-b5d775f5d to 1
+  Type    Reason             Age   From                   Message
+  ----    ------             ----  ----                   -------
+  Normal  ScalingReplicaSet  95s   deployment-controller  Scaled up replica set myapp-b5d775f5d to 1
 ```
+
 
 
 
@@ -1797,11 +1823,11 @@ kubectl get pod -o wide
 ```
 Result
 ```
-NAME                    READY   STATUS    RESTARTS      AGE     IP              NODE     NOMINATED NODE   READINESS GATES
-myapp-b5d775f5d-kss4t   1/1     Running   0             5m33s   10.244.102.10   cka003   <none>           <none>
+NAME                    READY   STATUS    RESTARTS   AGE     IP             NODE     NOMINATED NODE   READINESS GATES
+myapp-b5d775f5d-cx8dx   1/1     Running   0          2m34s   10.244.102.7   cka003   <none>           <none>
 ```
 
-Send http request to the Pod `curl 10.244.102.10:8080` with below result.
+Send http request to the Pod `curl 10.244.102.7:8080` with below result.
 ```
 Hello Kubernetes bootcamp! | Running on: myapp-b5d775f5d-6jtgs | v=1
 ```
@@ -1813,8 +1839,14 @@ kubectl expose deployment myapp --type=NodePort --port=8080
 
 Get details of service `myapp` by executing `kubectl get svc myapp -o wide`.
 ```
-NAME    TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE   SELECTOR
-myapp   NodePort   11.244.141.12   <none>        8080:32566/TCP   15s   app=myapp
+NAME    TYPE       CLUSTER-IP    EXTERNAL-IP   PORT(S)          AGE   SELECTOR
+myapp   NodePort   11.244.74.3   <none>        8080:30514/TCP   7s    app=myapp
+```
+
+Send http request to service port.
+```
+curl 11.244.74.3:8080
+Hello Kubernetes bootcamp! | Running on: myapp-b5d775f5d-cx8dx | v=1
 ```
 
 Get more details of the service.
@@ -1825,23 +1857,24 @@ kubectl describe svc myapp
 
 Get details of related endpoint `myapp` by executing `kubectl get endpoints myapp -o wide`.
 ```
-NAME    ENDPOINTS            AGE
-myapp   10.244.102.10:8080   70s
+NAME    ENDPOINTS           AGE
+myapp   10.244.102.7:8080   43s
 ```
 
 Send http request to the service and node sucessfully. Pod port `8080` is mapped to node port `32566`.
 
 Send http request to node port on `cka003`.
 ```
-curl 172.16.18.159:32566
+curl 172.16.18.168:30514
 Hello Kubernetes bootcamp! | Running on: myapp-b5d775f5d-6jtgs | v=1
 ```
 
-Attach to Ubuntu Pod we created and send http request to the Service and Pod of `myapp`.
+Attach to Ubuntu Pod we created and send http request to the Service and Pod and Node of `myapp`.
 ```
-kubectl attach ubuntu -c ubuntu -i -t
-curl 10.244.102.10:8080
-curl 11.244.141.12:8080
+kubectl exec --stdin --tty ubuntu -- /bin/bash
+curl 10.244.102.7:8080
+curl 11.244.74.3:8080
+curl 172.16.18.168:30514
 Hello Kubernetes bootcamp! | Running on: myapp-b5d775f5d-6jtgs | v=1
 ```
 
@@ -1878,23 +1911,17 @@ kubectl get deployment myapp -o wide
 With the command `kubectl set image` to update image to many versions and log the change under deployment's annotations with option `--record`.
 ```
 kubectl set image deployment/myapp kubernetes-bootcamp=docker.io/jocatalin/kubernetes-bootcamp:v2 --record
-kubectl set image deployment/myapp kubernetes-bootcamp=docker.io/jocatalin/kubernetes-bootcamp:v3 --record
-kubectl set image deployment/myapp kubernetes-bootcamp=docker.io/jocatalin/kubernetes-bootcamp:v4 --record
-kubectl set image deployment/myapp kubernetes-bootcamp=docker.io/jocatalin/kubernetes-bootcamp:v5 --record
 ```
 
 Current replicas status
 ```
 kubectl get replicaset -o wide -l app=myapp
 ```
-Result
+Result. Pods are running on new Replicas.
 ```
-NAME               DESIRED   CURRENT   READY   AGE     CONTAINERS            IMAGES                                       SELECTOR
-myapp-5dbd68cc99   0         0         0       6m40s   kubernetes-bootcamp   docker.io/jocatalin/kubernetes-bootcamp:v2   app=myapp,pod-template-hash=5dbd68cc99
-myapp-699dc8ccb9   0         0         0       6m40s   kubernetes-bootcamp   docker.io/jocatalin/kubernetes-bootcamp:v4   app=myapp,pod-template-hash=699dc8ccb9
-myapp-75ccb85dd6   1         1         0       6m38s   kubernetes-bootcamp   docker.io/jocatalin/kubernetes-bootcamp:v5   app=myapp,pod-template-hash=75ccb85dd6
-myapp-78bdb65cd8   0         0         0       6m40s   kubernetes-bootcamp   docker.io/jocatalin/kubernetes-bootcamp:v3   app=myapp,pod-template-hash=78bdb65cd8
-myapp-b5d775f5d    3         3         3       38m     kubernetes-bootcamp   docker.io/jocatalin/kubernetes-bootcamp:v1   app=myapp,pod-template-hash=b5d775f5d
+NAME               DESIRED   CURRENT   READY   AGE   CONTAINERS            IMAGES                                       SELECTOR
+myapp-5dbd68cc99   1         1         0       8s    kubernetes-bootcamp   docker.io/jocatalin/kubernetes-bootcamp:v2   app=myapp,pod-template-hash=5dbd68cc99
+myapp-b5d775f5d    3         3         3       14m   kubernetes-bootcamp   docker.io/jocatalin/kubernetes-bootcamp:v1   app=myapp,pod-template-hash=b5d775f5d
 ```
 
 We can get the change history under `metadata.annotations`.
@@ -1907,10 +1934,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
-    deployment.kubernetes.io/revision: "5"
-    kubernetes.io/change-cause: kubectl set image deployment/myapp kubernetes-bootcamp=docker.io/jocatalin/kubernetes-bootcamp:v5
+    deployment.kubernetes.io/revision: "2"
+    kubernetes.io/change-cause: kubectl set image deployment/myapp kubernetes-bootcamp=docker.io/jocatalin/kubernetes-bootcamp:v2
       --record=true
-  creationTimestamp: "2022-07-22T12:28:46Z"
   ......
 ```
 
@@ -1924,9 +1950,6 @@ deployment.apps/myapp
 REVISION  CHANGE-CAUSE
 1         <none>
 2         kubectl set image deployment/myapp kubernetes-bootcamp=docker.io/jocatalin/kubernetes-bootcamp:v2 --record=true
-3         kubectl set image deployment/myapp kubernetes-bootcamp=docker.io/jocatalin/kubernetes-bootcamp:v3 --record=true
-4         kubectl set image deployment/myapp kubernetes-bootcamp=docker.io/jocatalin/kubernetes-bootcamp:v4 --record=true
-5         kubectl set image deployment/myapp kubernetes-bootcamp=docker.io/jocatalin/kubernetes-bootcamp:v5 --record=true
 ```
 
 Get rollout history with specific revision.
@@ -1936,10 +1959,10 @@ kubectl rollout history deployment/myapp --revision=2
 
 Roll back to previous revision with command `kubectl rollout undo `, or roll back to specific revision with option `--to-revision=<revision_number>`.
 ```
-kubectl rollout undo deployment/myapp --to-revision=3
+kubectl rollout undo deployment/myapp --to-revision=1
 ```
 
-Revision 3 was replaced by new revision 6 now.
+Revision `1` was replaced by new revision `3` now.
 ```
 kubectl rollout history deployment/myapp
 ```
@@ -1947,19 +1970,17 @@ Result
 ```
 deployment.apps/myapp 
 REVISION  CHANGE-CAUSE
-1         <none>
 2         kubectl set image deployment/myapp kubernetes-bootcamp=docker.io/jocatalin/kubernetes-bootcamp:v2 --record=true
-4         kubectl set image deployment/myapp kubernetes-bootcamp=docker.io/jocatalin/kubernetes-bootcamp:v4 --record=true
-5         kubectl set image deployment/myapp kubernetes-bootcamp=docker.io/jocatalin/kubernetes-bootcamp:v5 --record=true
-6         kubectl set image deployment/myapp kubernetes-bootcamp=docker.io/jocatalin/kubernetes-bootcamp:v3 --record=true
+3         <none>
 ```
+
 
 
 #### Event
 
 Get detail event info of related Pod.
 ```
-kubectl describe pod myapp-b5d775f5d-smcfv
+kubectl describe pod myapp-b5d775f5d-jlx6g
 ```
 
 Result looks like below.
@@ -1968,10 +1989,10 @@ Result looks like below.
 Events:
   Type    Reason     Age   From               Message
   ----    ------     ----  ----               -------
-  Normal  Scheduled  13m   default-scheduler  Successfully assigned dev/myapp-b5d775f5d-smcfv to cka002
-  Normal  Pulled     13m   kubelet            Container image "docker.io/jocatalin/kubernetes-bootcamp:v1" already present on machine
-  Normal  Created    13m   kubelet            Created container kubernetes-bootcamp
-  Normal  Started    13m   kubelet            Started container kubernetes-bootcamp
+  Normal  Scheduled  54s   default-scheduler  Successfully assigned dev/myapp-b5d775f5d-jlx6g to cka003
+  Normal  Pulled     53s   kubelet            Container image "docker.io/jocatalin/kubernetes-bootcamp:v1" already present on machine
+  Normal  Created    53s   kubelet            Created container kubernetes-bootcamp
+  Normal  Started    53s   kubelet            Started container kubernetes-bootcamp
 ```
 
 Get detail event info of entire cluster.
@@ -1992,10 +2013,11 @@ kubectl logs -f <pod_name> -c <container_name>
 
 Get a Pod logs
 ```
-kubectl logs -f myapp-b5d775f5d-smcfv
+kubectl logs -f myapp-b5d775f5d-jlx6g
 ```
 ```
-Kubernetes Bootcamp App Started At: 2022-07-22T12:57:52.828Z | Running On:  myapp-b5d775f5d-smcfv
+Kubernetes Bootcamp App Started At: 2022-07-23T06:54:18.532Z | Running On:  myapp-b5d775f5d-jlx6g
+
 ```
 
 Get log info of K8s components. 
@@ -2006,7 +2028,7 @@ kubectl logs kube-scheduler-cka001 -n kube-system
 kubectl logs etcd-cka001 -n kube-system
 systemctl status kubelet
 journalctl -fu kubelet
-kubectl logs kube-proxy-qkvxh -n kube-system
+kubectl logs kube-proxy-5cdbj -n kube-system
 ```
 
 
@@ -2068,14 +2090,10 @@ kubectl describe deployment/nginx
 ```
 Result
 ```
-Name:                   nginx
-Namespace:              dev
-CreationTimestamp:      Fri, 22 Jul 2022 22:53:44 +0800
+......
 Labels:                 app=nginx
 Annotations:            deployment.kubernetes.io/revision: 1
 Selector:               app=nginx
-Replicas:               1 desired | 1 updated | 1 total | 1 available | 0 unavailable
-StrategyType:           RollingUpdate
 ......
 ```
 
@@ -2086,10 +2104,12 @@ kubectl annotate deployment nginx owner=James.H
 
 Now annotation looks like below.
 ```
+......
 Labels:                 app=nginx
 Annotations:            deployment.kubernetes.io/revision: 1
                         owner: James.H
 Selector:               app=nginx
+......
 ```
 
 Update/Overwrite Annotation.
@@ -2098,9 +2118,11 @@ kubectl annotate deployment/nginx owner=K8s --overwrite
 ```
 Now annotation looks like below.
 ```
+......
 Annotations:            deployment.kubernetes.io/revision: 1
                         owner: K8s
 Selector:               app=nginx
+......
 ```
 
 Remove Annotation
@@ -2108,10 +2130,18 @@ Remove Annotation
 kubectl annotate deployment/nginx owner-
 ```
 ```
+......
 Labels:                 app=nginx
 Annotations:            deployment.kubernetes.io/revision: 1
 Selector:               app=nginx
+......
 ```
+
+Clean up
+```
+kubectl delete deployment nginx
+```
+
 
 
 
@@ -2155,21 +2185,15 @@ Containers:
   nginx:
     ......
     State:          Running
-      Started:      Fri, 22 Jul 2022 22:59:57 +0800
+      Started:      Sat, 23 Jul 2022 15:06:56 +0800
     Ready:          True
     Restart Count:  0
     ......
   busybox:
     ......
-    State:          Waiting
-      Reason:       CrashLoopBackOff
-    Last State:     Terminated
+    State:          Terminated
       Reason:       Completed
       Exit Code:    0
-      Started:      Fri, 22 Jul 2022 23:01:37 +0800
-      Finished:     Fri, 22 Jul 2022 23:01:37 +0800
-    Ready:          False
-    Restart Count:  4
 ......
 Conditions:
   Type              Status
@@ -2223,23 +2247,20 @@ Let's see what happened in the Pod `liveness-exec`.
 * After `35` seconds, execute command `rm -rf /tmp/healthy` to delete the folder. The probe `livenessProbe` detects the failure and return error message.
 * The kubelet kills the container and restarts it. The folder is created again `touch /tmp/healthy`.
 
-
-
 By command `kubectl describe pod liveness-exec`, wec can see below event message. 
 Once failure detected, image will be pulled again and the folder `/tmp/healthy` is in place again.
 ```
+......
 Events:
-  Type     Reason     Age                   From               Message
-  ----     ------     ----                  ----               -------
-  Normal   Scheduled  4m21s                 default-scheduler  Successfully assigned dev/liveness-exec to cka002
-  Normal   Pulled     4m19s                 kubelet            Successfully pulled image "busybox" in 1.906981795s
-  Normal   Pulled     3m4s                  kubelet            Successfully pulled image "busybox" in 1.967545593s
-  Normal   Created    109s (x3 over 4m19s)  kubelet            Created container liveness
-  Normal   Started    109s (x3 over 4m19s)  kubelet            Started container liveness
-  Normal   Pulled     109s                  kubelet            Successfully pulled image "busybox" in 2.051565102s
-  Warning  Unhealthy  66s (x9 over 3m46s)   kubelet            Liveness probe failed: cat: can't open '/tmp/healthy': No such file or directory
-  Normal   Killing    66s (x3 over 3m36s)   kubelet            Container liveness failed liveness probe, will be restarted
-  Normal   Pulling    36s (x4 over 4m21s)   kubelet            Pulling image "busybox"
+  Type     Reason     Age                From               Message
+  ----     ------     ----               ----               -------
+  Normal   Scheduled  63s                default-scheduler  Successfully assigned dev/liveness-exec to cka002
+  Normal   Pulling    62s                kubelet            Pulling image "busybox"
+  Normal   Pulled     53s                kubelet            Successfully pulled image "busybox" in 9.153404392s
+  Normal   Created    53s                kubelet            Created container liveness
+  Normal   Started    53s                kubelet            Started container liveness
+  Warning  Unhealthy  12s (x3 over 22s)  kubelet            Liveness probe failed: cat: can't open '/tmp/healthy': No such file or directory
+  Normal   Killing    12s                kubelet            Container liveness failed liveness probe, will be restarted
 ```
 
 
@@ -2289,20 +2310,32 @@ readiness   0/1     Running   0          15s
 Execute command `kubectl describe pod readiness` to check status of Pod. 
 We see failure message `Readiness probe failed`.
 ```
+......
 Events:
   Type     Reason     Age               From               Message
   ----     ------     ----              ----               -------
-  Normal   Scheduled  35s               default-scheduler  Successfully assigned dev/readiness to cka003
-  Normal   Pulling    35s               kubelet            Pulling image "busybox"
-  Normal   Pulled     32s               kubelet            Successfully pulled image "busybox" in 2.420171698s
-  Normal   Created    32s               kubelet            Created container readiness
-  Normal   Started    32s               kubelet            Started container readiness
-  Warning  Unhealthy  5s (x4 over 20s)  kubelet            Readiness probe failed: cat: can't open '/tmp/healthy': No such file or directory
+  Normal   Scheduled  46s               default-scheduler  Successfully assigned dev/readiness to cka002
+  Normal   Pulling    45s               kubelet            Pulling image "busybox"
+  Normal   Pulled     43s               kubelet            Successfully pulled image "busybox" in 2.244369424s
+  Normal   Created    43s               kubelet            Created container readiness
+  Normal   Started    43s               kubelet            Started container readiness
+  Warning  Unhealthy  1s (x7 over 31s)  kubelet            Readiness probe failed: cat: can't open '/tmp/healthy': No such file or directory
 ```
 
 
 Liveness probes do not wait for readiness probes to succeed. 
 If we want to wait before executing a liveness probe you should use initialDelaySeconds or a startupProbe.
+
+
+Clean up.
+```
+kubectl delete pod liveness-exec
+kubectl delete pod multi-pods 
+kubectl delete pod readiness
+```
+
+
+
 
 
 
