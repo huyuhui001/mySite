@@ -518,6 +518,54 @@
     Container Layer
   </a>
   
+    <nav class="md-nav" aria-label="Container Layer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#namespace" class="md-nav__link">
+    namespace.
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#containers" class="md-nav__link">
+    containers.
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#images" class="md-nav__link">
+    images.
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#volumes" class="md-nav__link">
+    volumes.
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#overall-status" class="md-nav__link">
+    overall status.
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#network-status" class="md-nav__link">
+    network status.
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
@@ -545,13 +593,6 @@
           <li class="md-nav__item">
   <a href="#system-pods" class="md-nav__link">
     System Pods
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#contexts" class="md-nav__link">
-    Contexts
   </a>
   
 </li>
@@ -666,7 +707,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#namespace" class="md-nav__link">
+  <a href="#namespace_1" class="md-nav__link">
     Namespace
   </a>
   
@@ -2634,7 +2675,13 @@ echo 'complete -o default -F __start_kubectl k' &gt;&gt;~/.bashrc
 <p>Get current context.</p>
 <pre><code>kubectl config get-contexts 
 </code></pre>
-<p>Result</p>
+<p>In below result, we know:</p>
+<ul>
+<li>Contenxt name is <code>kubernetes-admin@kubernetes</code>.</li>
+<li>Cluster name is <code>kubernetes</code>.</li>
+<li>User is <code>kubernetes-admin</code>.</li>
+<li>No namespace explicitly defined.</li>
+</ul>
 <pre><code>CURRENT   NAME                          CLUSTER      AUTHINFO           NAMESPACE
 *         kubernetes-admin@kubernetes   kubernetes   kubernetes-admin 
 </code></pre>
@@ -2661,6 +2708,7 @@ echo 'complete -o default -F __start_kubectl k' &gt;&gt;~/.bashrc
 <li>Get overall status.</li>
 <li>Get network status.</li>
 </ul>
+<h4 id="namespace">namespace.</h4>
 <p>Get namespaces.</p>
 <pre><code>nerdctl namespace ls
 </code></pre>
@@ -2668,6 +2716,7 @@ echo 'complete -o default -F __start_kubectl k' &gt;&gt;~/.bashrc
 <pre><code>NAME      CONTAINERS    IMAGES    VOLUMES    LABELS
 k8s.io    21            30        0      
 </code></pre>
+<h4 id="containers">containers.</h4>
 <p>Get containers under specific namespace with <code>-n</code> option.</p>
 <pre><code>nerdctl -n k8s.io ps
 </code></pre>
@@ -2697,20 +2746,24 @@ f9ff812d8e07    registry.aliyuncs.com/google_containers/kube-scheduler:v1.23.8  
 <p>Result</p>
 <pre><code>CONTAINER ID    IMAGE    COMMAND    CREATED    STATUS    PORTS    NAMES
 </code></pre>
+<h4 id="images">images.</h4>
 <p>Get images.</p>
 <pre><code>nerdctl image ls -a
 nerdctl -n k8s.io image ls -a
 </code></pre>
+<h4 id="volumes">volumes.</h4>
 <p>Get volumes. After inintial installation, no volume within namespaces.</p>
 <pre><code>nerdctl -n default volume ls
 nerdctl -n k8s.io volume ls
 </code></pre>
+<h4 id="overall-status">overall status.</h4>
 <p>Get overall status</p>
 <pre><code>nerdctl stats
 </code></pre>
 <p>Result</p>
 <pre><code>CONTAINER ID   NAME      CPU %     MEM USAGE / LIMIT   MEM %     NET I/O           BLOCK I/O     PIDS
 </code></pre>
+<h4 id="network-status">network status.</h4>
 <p>Get network status.</p>
 <pre><code>nerdctl network ls
 nerdctl network inspect bridge
@@ -2739,7 +2792,6 @@ cali24f48a34a33@if4  :
 <li>Nodes</li>
 <li>Namespaces</li>
 <li>System Pods</li>
-<li>Contexts</li>
 </ul>
 <h4 id="node">Node</h4>
 <p>In Kubernetes layer, we have three nodes here, <code>cka001</code>, <code>cka002</code>, and <code>cka003</code>.</p>
@@ -2793,68 +2845,15 @@ kube-system   kube-scheduler-cka001                      1/1     Running   0    
 <li>apiserver: 1 Pod</li>
 <li>controller-manager: 1 Pod</li>
 <li>scheduler: 1 Pod</li>
+<li>Calico Controller: 1 Pod</li>
 </ul>
 </li>
 <li>All nodes:<ul>
-<li>Calico: <ul>
-<li>Controller: 1 Pod</li>
-<li>Node: 3 Pod</li>
-</ul>
-</li>
-<li>Proxy: 3 Pod</li>
+<li>Calico Node: 1 Pod each</li>
+<li>Proxy: 1 Pod each</li>
 </ul>
 </li>
 </ul>
-<h4 id="contexts">Contexts</h4>
-<p>Let's check current configuration context of Kubernetes we just initialized. </p>
-<pre><code>kubectl config get-contexts
-</code></pre>
-<ul>
-<li>Contenxt name is <code>kubernetes-admin@kubernetes</code>.</li>
-<li>Cluster name is <code>kubernetes</code>.</li>
-<li>User is <code>kubernetes-admin</code>.</li>
-<li>No namespace explicitly defined.</li>
-</ul>
-<pre><code>CURRENT   NAME                          CLUSTER      AUTHINFO           NAMESPACE
-*         kubernetes-admin@kubernetes   kubernetes   kubernetes-admin 
-</code></pre>
-<p>Create a new namespace <code>dev</code>.</p>
-<pre><code>kubectl create namespace dev
-</code></pre>
-<p>Update current context <code>kubernetes-admin@kubernetes</code> with new namespace <code>dev</code> as default namespace. </p>
-<pre><code>kubectl config set-context kubernetes-admin@kubernetes --cluster=kubernetes --namespace=dev --user=kubernetes-admin 
-</code></pre>
-<p>Now default namespace is shown in current configuration context. </p>
-<pre><code>kubectl config get-contexts
-</code></pre>
-<p>Result</p>
-<pre><code>CURRENT   NAME                          CLUSTER      AUTHINFO           NAMESPACE
-*         kubernetes-admin@kubernetes   kubernetes   kubernetes-admin   dev
-</code></pre>
-<p>With below command we create a pod <code>my-first-pod</code> on namespace <code>dev</code>.</p>
-<pre><code>kubectl apply -f - &lt;&lt; EOF
-apiVersion: v1
-kind: Pod
-metadata:
-  namespace: dev
-  name: my-first-pod
-spec:
-  containers:
-  - name: nginx
-    image: nginx:mainline
-    ports:
-    - containerPort: 80
-EOF
-</code></pre>
-<p>By command <code>kubectl get pod -o wide</code> we get the pod status. The Pod is running on node <code>cka002</code>. The pod's ip is allocated by <code>tunl0</code>. Node is assigned by <code>Scheduler</code>. </p>
-<pre><code>NAME           READY   STATUS    RESTARTS   AGE   IP             NODE     NOMINATED NODE   READINESS GATES
-my-first-pod   1/1     Running   0          52s   10.244.112.1   cka002   &lt;none&gt;           &lt;none&gt;
-</code></pre>
-<p>Log onto node <code>cka002</code>, we can find the containers of Pod <code>my-first-pod</code> via command <code>nerdctl -n k8s.io container ls | grep my-first-pod</code>.</p>
-<pre><code>CONTAINER ID    IMAGE                                                         COMMAND                   CREATED           STATUS    PORTS    NAMES
-3f9bdafde24f    docker.io/library/nginx:mainline                              &quot;/docker-entrypoint.…&quot;    11 minutes ago    Up                 k8s://dev/my-first-pod/nginx
-dab890f44541    registry.aliyuncs.com/google_containers/pause:3.6             &quot;/pause&quot;                  11 minutes ago    Up                 k8s://dev/my-first-pod
-</code></pre>
 <h2 id="4kubernetes-api-and-resource">4.Kubernetes API and Resource</h2>
 <h3 id="kubectl">kubectl</h3>
 <p>Three approach to operate Kubernetes cluster:</p>
@@ -3266,7 +3265,7 @@ kubectl get node -l node=demonode
 # Remove a lable of node
 kubectl label node cka002 node-
 </code></pre>
-<h4 id="namespace">Namespace</h4>
+<h4 id="namespace_1">Namespace</h4>
 <p>Get current available namespaces.</p>
 <pre><code>kubectl get namespace
 </code></pre>
