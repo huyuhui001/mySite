@@ -3249,39 +3249,63 @@ kubectl delete deployment httpd-app
 
 ## 10.Ingress
 
+Summary:
+
+* Deploy Ingress Controller.
+* Create two deployment `nginx-app-1` and `nginx-app-2`.
+    * Host directory `/root/html-1` and `/root/html-2` will be created and mounted to two Deployments on running host.
+* Create Service.
+    * Create Service `nginx-app-1` and `nginx-app-2` and map to related Deployment `nginx-app-1` and `nginx-app-2`.
+* Create Ingress.
+    * Create Ingress resource `nginx-app` and map to two Services `nginx-app-1` and `nginx-app-1`.
+* Test Accessibility.
+    * Send HTTP request to two hosts defined in Ingress
+
+
 ### Deploy Ingress Controller
 
-Get Ingress Controller yaml file.
+Get Ingress Controller yaml file. Choose one of below two files to deploy Ingress Controller.
 ```
 wget https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.2.1/deploy/static/provider/cloud/deploy.yaml
+wget https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.2.1/deploy/static/provider/cloud/1.23/deploy.yaml
 ```
 
-Replace grc.io to Aliyun.
-
-* `k8s.gcr.io/ingress-nginx/kube-webhook-certgen` to `registry.aliyuncs.com/google_containers/kube-webhook-certgen`.
-* `k8s.gcr.io/ingress-nginx/controller` to `registry.aliyuncs.com/google_containers/nginx-ingress-controller`.
-
+Replace two images's sources to Aliyun.
+```
+image: k8s.gcr.io/ingress-nginx/controller:v1.2.1@sha256:5516d103a9c2ecc4f026efbd4b40662ce22dc1f824fb129ed121460aaa5c47f8
+image: k8s.gcr.io/ingress-nginx/kube-webhook-certgen:v1.1.1@sha256:64d8c73dca984af206adf9d6d7e46aa550362b1d7a01f3a0a91b20cc67868660
+```
+From grc.io to Aliyun.
+```
+k8s.gcr.io/ingress-nginx/kube-webhook-certgen` to `registry.aliyuncs.com/google_containers/kube-webhook-certgen
+k8s.gcr.io/ingress-nginx/controller` to `registry.aliyuncs.com/google_containers/nginx-ingress-controller
+```
+Commands:
 ```
 sed -i 's/k8s.gcr.io\/ingress-nginx\/kube-webhook-certgen/registry.aliyuncs.com\/google\_containers\/kube-webhook-certgen/g' deploy.yaml
 sed -i 's/k8s.gcr.io\/ingress-nginx\/controller/registry.aliyuncs.com\/google\_containers\/nginx-ingress-controller/g' deploy.yaml
 ```
 
+
+
+
 Apply the yaml file `deploy.yaml` to create Ingress Nginx.
+
+A new namespace `ingress-nginx` was created and Ingress Nginx resources are running under the new namespace.
 ```
 kubectl apply -f deploy.yaml
 ```
 
 Check the status of Pod.
-Please be noted that a new namespace `ingress-nginx` was created and Ingress Nginx resources are running under the new namespace.
 ```
 kubectl get pod -n ingress-nginx
 ```
 The result is below.
 ```
 NAME                                        READY   STATUS      RESTARTS   AGE
-ingress-nginx-admission-create-dcsww        0/1     Completed   0          3m32s
-ingress-nginx-admission-patch-hslwf         0/1     Completed   0          3m32s
-ingress-nginx-controller-556fbd6d6f-trl9r   1/1     Running     0          3m32s
+ingress-nginx-admission-create-lgtdj        0/1     Completed   0          49s
+ingress-nginx-admission-patch-nk9fv         0/1     Completed   0          49s
+ingress-nginx-controller-556fbd6d6f-6jl4x   1/1     Running     0          49s
 ```
 
 
@@ -3291,7 +3315,7 @@ ingress-nginx-controller-556fbd6d6f-trl9r   1/1     Running     0          3m32s
 
 Create two deployment `nginx-app-1` and `nginx-app-2`.
 ```
-cat > nginx-app.yaml << EOF
+kubectl apply -f - << EOF
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -3346,40 +3370,41 @@ spec:
          hostPath:
            path: /root/html-2
 EOF
-
-
-kubectl apply -f nginx-app.yaml
 ```
 
-Get status of Pods by executing `kubectl get pod -o wide`. Two Pods are running on node `cka003` with two different Pod IPs.
+Get status of Pods by executing `kubectl get pod -o wide`. Two Pods are running on node `cka002` with two different Pod IPs.
 ```
-NAME                           READY   STATUS    RESTARTS   AGE   IP             NODE     NOMINATED NODE   READINESS GATES
-nginx-app-1-695b7b647d-l76bh   1/1     Running   0          34s   10.244.2.104   cka003   <none>           <none>
-nginx-app-2-7f6bf6f4d4-lvbz8   1/1     Running   0          34s   10.244.2.105   cka003   <none>           <none>
-```
-
-Access to two Pod via curl. We get `403` error.
-```
-curl 10.244.2.104
+NAME                           READY   STATUS    RESTARTS   AGE     IP              NODE     NOMINATED NODE   READINESS GATES
+nginx-app-1-695b7b647d-fp249   1/1     Running   0          68s     10.244.112.24   cka002   <none>           <none>
+nginx-app-2-7f6bf6f4d4-5jkp6   1/1     Running   0          68s     10.244.112.25   cka002   <none>           <none>
 ```
 
-Log onto node `cka003` and create `index.html` file in path `/root/html-1/`. The directory `/root/html-1/` is already in place after `nginx-app-1` and `nginx-app-2` created.
+Access to two Pod via curl. We get `403 Forbidden` error.
 ```
-echo 'This is test 1 !!' > /root/html-1/index.html
-echo 'This is test 2 !!' > /root/html-2/index.html
+curl 10.244.112.24
+curl 10.244.112.25
 ```
+
+Log onto node `cka002`. 
+
+* Directory `/root/html-1/` and `/root/html-2/` are in place on node `cka002`.
+* Create `index.html` file in path `/root/html-1/` and `/root/html-2/`, and add below content to each file.
+
+         echo 'This is test 1 !!' > /root/html-1/index.html
+         echo 'This is test 2 !!' > /root/html-2/index.html
+
 
 Check Pods status again by executing `kubectl get pod -o wide`.
 ```
-NAME                           READY   STATUS    RESTARTS   AGE     IP             NODE     NOMINATED NODE   READINESS GATES
-nginx-app-1-695b7b647d-l76bh   1/1     Running   0          6m11s   10.244.2.104   cka003   <none>           <none>
-nginx-app-2-7f6bf6f4d4-lvbz8   1/1     Running   0          6m11s   10.244.2.105   cka003   <none>           <none>
+NAME                           READY   STATUS    RESTARTS   AGE     IP              NODE     NOMINATED NODE   READINESS GATES
+nginx-app-1-695b7b647d-fp249   1/1     Running   0          62m     10.244.112.24   cka002   <none>           <none>
+nginx-app-2-7f6bf6f4d4-5jkp6   1/1     Running   0          62m     10.244.112.25   cka002   <none>           <none>
 ```
 
-Access to two Pod via curl. 
+Now access to two Pod via curl is reachable. 
 ```
-curl 10.244.2.104
-curl 10.244.2.105
+curl 10.244.112.24
+curl 10.244.112.25
 ```
 We get correct information now.
 ```
@@ -3388,11 +3413,12 @@ This is test 2 !!
 ```
 
 
+
 ### Create Service
 
 Create Service `nginx-app-1` and `nginx-app-2` and map to related deployment `nginx-app-1` and `nginx-app-2`.
 ```
-cat > nginx-svc.yaml << EOF
+kubectl apply -f - << EOF
 apiVersion: v1
 kind: Service
 metadata:
@@ -3417,22 +3443,19 @@ spec:
  selector:
    app: nginx-app-2
 EOF
-
-
-kubectl apply -f nginx-svc.yaml
 ```
 
 Check the status by executing `kubectl get svc -o wide`.
 ```
-NAME          TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)   AGE   SELECTOR
-nginx-app-1   ClusterIP   10.111.95.99   <none>        80/TCP    22s   app=nginx-app-1
-nginx-app-2   ClusterIP   10.96.15.218   <none>        80/TCP    22s   app=nginx-app-2
+NAME          TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)   AGE   SELECTOR
+nginx-app-1   ClusterIP   11.244.51.241    <none>        80/TCP    12s   app=nginx-app-1
+nginx-app-2   ClusterIP   11.244.123.249   <none>        80/TCP    12s   app=nginx-app-2
 ```
 
 Access to two Service via curl. 
 ```
-curl 10.111.95.99
-curl 10.96.15.218
+curl 11.244.51.241
+curl 11.244.123.249
 ```
 We get correct information.
 ```
@@ -3446,11 +3469,10 @@ This is test 2 !!
 
 ### Create Ingress
 
-Create Ingress resource via file `nginx-app-ingress.yaml`. 
-Map to two Services `nginx-app-1` and `nginx-app-1` we created..
-Change the namespace if needed.
+Create Ingress resource `nginx-app` and map to two Services `nginx-app-1` and `nginx-app-1` we created.
+Change the namespace to `dev`. 
 ```
-cat > nginx-app-ingress.yaml << EOF
+kubectl apply -f - << EOF
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -3480,9 +3502,6 @@ spec:
             port:
               number: 80
 EOF
-
-
-kubectl apply -f nginx-app-ingress.yaml
 ```
 
 Get Ingress status by executing command `kubectl get ingress`.
@@ -3495,54 +3514,96 @@ nginx-app   nginx   app1.com,app2.com             80      64s
 
 ### Test Accessiblity
 
-By executing `kubectl get pod -n ingress-nginx -o wide`, we know Ingress Controllers are running on node `cka002`.
+By executing `kubectl get pod -n ingress-nginx -o wide`, we know Ingress Controllers are running on node `cka003`.
 ```
-NAME                                        READY   STATUS      RESTARTS   AGE   IP             NODE     NOMINATED NODE   READINESS GATES
-ingress-nginx-admission-create-dcsww        0/1     Completed   0          33m   10.244.2.102   cka003   <none>           <none>
-ingress-nginx-admission-patch-hslwf         0/1     Completed   0          33m   10.244.2.103   cka003   <none>           <none>
-ingress-nginx-controller-556fbd6d6f-trl9r   1/1     Running     0          33m   10.244.1.22    cka002   <none>           <none>
-```
-
-By executing `kubectl get node -o wide`, we know node `cka002`'s IP is `172.16.18.159`.
-```
-NAME     STATUS   ROLES                  AGE   VERSION   INTERNAL-IP     EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION      CONTAINER-RUNTIME
-cka001   Ready    control-plane,master   13d   v1.23.8   172.16.18.161   <none>        Ubuntu 20.04.4 LTS   5.4.0-113-generic   containerd://1.5.9
-cka002   Ready    <none>                 13d   v1.23.8   172.16.18.160   <none>        Ubuntu 20.04.4 LTS   5.4.0-113-generic   containerd://1.5.9
-cka003   Ready    <none>                 13d   v1.23.8   172.16.18.159   <none>        Ubuntu 20.04.4 LTS   5.4.0-113-generic   containerd://1.5.9
+NAME                                        READY   STATUS      RESTARTS   AGE    IP              NODE     NOMINATED NODE   READINESS GATES
+ingress-nginx-admission-create-lgtdj        0/1     Completed   0          117m   10.244.112.22   cka002   <none>           <none>
+ingress-nginx-admission-patch-nk9fv         0/1     Completed   0          117m   10.244.112.23   cka002   <none>           <none>
+ingress-nginx-controller-556fbd6d6f-6jl4x   1/1     Running     0          117m   10.244.102.23   cka003   <none>           <none>
 ```
 
-Add below into `/etc/hosts file` in one of node. Put node IP below. In above example, IP of node `cka002` is `172.16.18.160`, which is running `ingress-nginx-controller`.
+cka001  172.16.18.170
+cka002  172.16.18.169
+cka003  172.16.18.168
+
+
+Update `/etc/hosts file` in current node. 
+Add mapping between node `cka003` IP and two host names `app1.com` and `app1.com` which present Services `nginx-app-1` and `nginx-app-2`. 
+Ingress Controllers are running on node `cka003`
 ```
 cat >> /etc/hosts << EOF
-172.16.18.160   app1.com
-172.16.18.160   app2.com
+172.16.18.168   app1.com
+172.16.18.168   app2.com
 EOF
 ```
 
 By executing `kubectl -n ingress-nginx get svc` to get NodePort of Ingress Controller. 
 ```
 NAME                                 TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)                      AGE
-ingress-nginx-controller             LoadBalancer   10.110.117.253   <pending>     80:31640/TCP,443:31338/TCP   40m
-ingress-nginx-controller-admission   ClusterIP      10.107.32.104    <none>        443/TCP                      40m
+ingress-nginx-controller             LoadBalancer   11.244.89.106    <pending>     80:31396/TCP,443:31464/TCP   123m
+ingress-nginx-controller-admission   ClusterIP      11.244.104.136   <none>        443/TCP                      123m
 ```
 
 Two files `index.html` are in two Pods, the web services are exposed to outside via node IP. 
-Hence we can see below result. The `ingress-nginx-controller` plays a central entry point for outside access, and provide two ports for different backend services from Pods.
+The `ingress-nginx-controller` plays a central entry point for outside access, and provide two ports for different backend services from Pods.
+
+Send HTTP request to two hosts defined in Ingress.
 ```
-curl app1.com:31640
+curl http://app1.com:31396
+curl http://app2.com:31396
+curl app1.com:31396
+curl app2.com:31396
+```
+Get below successful information.
+```
 This is test 1 !!
-```
-```
-curl app2.com:31338
 This is test 2 !!
 ```
 
 
-## 12.Storage
+
+
+
+
+
+
+## 11.Storage
+
+Summary: 
+
+* Creat Pod with `emptyDir` type Volume. Container in the Pod will mount default directory `/var/lib/kubelet/pods/` on running node.
+
+* Create Deployment `Deployment` with `hostPath` type volume. Container in the Deployment will mount directory defined in `hostPath:` on running node.
+
+* PV and PVC.
+    * Set up NFS Server and share folder `/nfsdata/`.
+    * Create PV `mysql-pv` to link to the share folder `/nfsdata/` and set StorageClassName `nfs`.
+    * Create PVC `mysql-pvc` mapped with StorageClassName `nfs`.
+    * Create Deployment `mysql` to consume PVC `mysql-pvc`.
+
+* StorageClass
+    * Create ServiceAccount `nfs-client-provisioner`.
+    * Create ClusterRole `nfs-client-provisioner-runner` and Role `leader-locking-nfs-client-provisioner` and bind them to the ServiceAccount so the ServiceAccount has authorization to operate the Deployment created in next step.
+    * Create Deployment `nfs-client-provisioner` to to add connection information for your NFS server, e.g, `PROVISIONER_NAME` is `k8s-sigs.io/nfs-subdir-external-provisioner`
+    * Create StorageClass `nfs-client` link to `provisioner: k8s-sigs.io/nfs-subdir-external-provisioner`. Releated PV is created automatically.
+    * Create PVC `nfs-pvc-from-sc` mapped to PV and StorageClass `nfs-client`.
+
+* Configuration
+    * Create a ConfigMap for content of a file, and mount this ConfigMap to a specific file in a Pod.
+    * Create a ConfigMap for username and password, and consume them within a Pod.
+    * Use ConfigMap as environment variables in Pod. 
+
+
+
+Tips:
+
+* Delete PVC first, then delete PV.
+* If facing `Terminating` status when delete a PVC, use `kubectl edit pvc <your_pvc_name>` and remove `finalize: <your_value>`.
+
 
 ### emptyDir
 
-Create a Pod with `emptyDir` type Volume.
+Create a Pod `hello-producer` with `emptyDir` type Volume.
 ```
 cat > pod-emptydir.yaml <<EOF
 apiVersion: v1
@@ -3569,14 +3630,14 @@ EOF
 kubectl apply -f pod-emptydir.yaml
 ```
 
-Check which node the Pod `hello-producer` is running. 
+The Pod `hello-producer` is running on node `cka003`. 
 ```
 kubectl get pod hello-producer -owide
 ```
 The Pod is running on node `cka003`.
 ```
-NAME             READY   STATUS    RESTARTS   AGE    IP             NODE     NOMINATED NODE   READINESS GATES
-hello-producer   1/1     Running   0          106s   10.244.2.106   cka003   <none>           <none>
+NAME             READY   STATUS    RESTARTS   AGE   IP              NODE     NOMINATED NODE   READINESS GATES
+hello-producer   1/1     Running   0          6s    10.244.102.24   cka003   <none>           <none>
 ```
 
 Log onto `cka003` because the Pod `hello-producer` is running on the node.
@@ -3585,48 +3646,47 @@ Set up the environment `CONTAINER_RUNTIME_ENDPOINT` for command `crictl`. Sugges
 ```
 export CONTAINER_RUNTIME_ENDPOINT=unix:///run/containerd/containerd.sock
 ```
+
 Run command `crictl ps` to get the container ID of Pod `hello-producer`.
 ```
 crictl ps |grep hello-producer
 ```
+
 The ID of container `producer` is `05f5e1bb6a1bb`.
 ```
 CONTAINER           IMAGE               CREATED             STATE               NAME                ATTEMPT             POD ID              POD
-05f5e1bb6a1bb       62aedd01bd852       15 minutes ago      Running             producer            0                   995cbc23eb763       hello-producer
+50058afb3cba5       62aedd01bd852       About an hour ago   Running             producer            0                   e6953bd4833a7       hello-producer
 ```
+
 Run command `crictl inspect` to get the path of mounted `shared-volume`, which is `emptyDir`.
 ```
-crictl inspect 05f5e1bb6a1bb | grep source | grep empty
+crictl inspect 50058afb3cba5 | grep source | grep empty
 ```
 The result is below.
 ```
-"source": "/var/lib/kubelet/pods/272ba5fa-e213-4c79-ab57-d4c91f4371ba/volumes/kubernetes.io~empty-dir/shared-volume",
+"source": "/var/lib/kubelet/pods/d7424f86-534a-48f9-9001-9d2a6e822b12/volumes/kubernetes.io~empty-dir/shared-volume",
 ```
-Change the path to the path of mounted `shared-volume` we get above.
+
+Change the path to the path of mounted `shared-volume` we get above. We will see the content `hello world` of file `hello`. 
 ```
-cd /var/lib/kubelet/pods/272ba5fa-e213-4c79-ab57-d4c91f4371ba/volumes/kubernetes.io~empty-dir/shared-volume
+cd /var/lib/kubelet/pods/d7424f86-534a-48f9-9001-9d2a6e822b12/volumes/kubernetes.io~empty-dir/shared-volume
 cat hello
 ```
-We will see the content of file `hello`. 
 
-The path `/producer_dir` inside the Pod is mounted to the local host path. 
+The path `/producer_dir` inside the Pod is mounted to the local host path `/var/lib/kubelet/pods/d7424f86-534a-48f9-9001-9d2a6e822b12/volumes/kubernetes.io~empty-dir/shared-volume`.
+
 The file `/producer_dir/hello` we created inside the Pod is actually in the host local path.
 
-
-
-Let's delete the container `producer`, the file `hello` is still there.
+Let's delete the container `producer`, the container `producer` will be started again with new container ID and the file `hello` is still there.
 ```
 crictl ps
 crictl stop <your_container_id>
 crictl rm <your_container_id>
-ls /var/lib/kubelet/pods/272ba5fa-e213-4c79-ab57-d4c91f4371ba/volumes/kubernetes.io~empty-dir/shared-volume
 ```
 
-
-Let's delete the Pod `hello-producer`, the file `hello` was gone with error `No such file or directory`.
+Let's delete the Pod `hello-producer`, the container `producer` is deleted, file `hello` is deleted.
 ```
-kubectl delete pod hello-producer
-ls /var/lib/kubelet/pods/272ba5fa-e213-4c79-ab57-d4c91f4371ba/volumes/kubernetes.io~empty-dir/shared-volume
+kubectl delete pod hello-producer 
 ```
 
 
@@ -3671,7 +3731,7 @@ spec:
          mountPath: /var/lib/mysql
      volumes:
      - hostPath:
-            path: /tmp/mysql
+         path: /tmp/mysql
        name: mysql-vol
 EOF
 
@@ -3679,11 +3739,16 @@ kubectl apply -f mysql-hostpath.yaml
 ```
 
 
-#### Verify MySQL Availability
+Verify MySQL Availability
 
 Check status of MySQL Pod. Need document the Pod name and node it's running on.
 ```
 kubectl get pod -l app=mysql -o wide
+```
+Result
+```
+NAME                     READY   STATUS              RESTARTS   AGE   IP       NODE     NOMINATED NODE   READINESS GATES
+mysql-749c8ddd67-h2rgs   0/1     ContainerCreating   0          28s   <none>   cka003   <none>           <none>
 ```
 
 Attach into the MySQL Pod on the running node.
@@ -3691,7 +3756,7 @@ Attach into the MySQL Pod on the running node.
 kubectl exec -it <your_pod_name> -- bash
 ```
 
-Within the Pod, go to directory `/var/lib/mysql`, all files in the directory are same with all files in host directory `/tmp/mysql`.
+Within the Pod, go to directory `/var/lib/mysql`, all files in the directory are same with all files in directory `/tmp/mysql` on node `cka003`.
 
 Connect to the database in the Pod.
 ```
@@ -3703,6 +3768,7 @@ Operate the database.
 mysql> show databases;
 mysql> connect mysql;
 mysql> show tables;
+mysql> exit
 ```
 
 
@@ -3711,9 +3777,9 @@ mysql> show tables;
 
 Here we will use NFS as backend storage to demo how to deploy PV and PVC.
 
-#### Set up NFS Server
+#### Set up NFS Share
 
-##### Install nfs-kernel-server
+1. Install nfs-kernel-server
 
 Log onto `cka002`.
 
@@ -3722,7 +3788,7 @@ Choose one Worker `cka002` to build NFS server.
 sudo apt-get install -y nfs-kernel-server
 ```
 
-##### Configure Share Folder
+2. Configure Share Folder
 
 Create share folder.  
 ```
@@ -3766,6 +3832,12 @@ Once `/etc/exports` is changed, we need run below command to make change effecte
 ```
 exportfs -ra
 ```
+Result
+```
+exportfs: /etc/exports [1]: Neither 'subtree_check' or 'no_subtree_check' specified for export "*:/nfsdata".
+  Assuming default behaviour ('no_subtree_check').
+  NOTE: this default has changed since nfs-utils version 1.0.x
+```
 
 Check whether sharefolder is configured. 
 ```
@@ -3779,7 +3851,7 @@ Export list for cka002:
 
 
 
-##### Install NFS Client
+3. Install NFS Client
 
 Install NFS client on all nodes.
 ```
@@ -3788,7 +3860,7 @@ sudo apt-get install -y nfs-common
 
 
 
-##### Verify NFS Server
+4. Verify NFS Server
 
 Log onto any nodes to verify NFS service and sharefolder list.
 
@@ -3804,7 +3876,7 @@ Export list for cka002:
 
 
 
-##### Mount NFS
+5. Mount NFS
 
 Execute below command to mount remote NFS folder on any other non-NFS-server node, e.g., `cka001` or `cka003`.
 ```
@@ -3815,14 +3887,17 @@ mount -t nfs cka002:/nfsdata /remote-nfs-dir/
 Use command `df -h` to verify mount point. Below is the sample output.
 ```
 Filesystem       Size  Used Avail Use% Mounted on
-cka002:/nfsdata   40G  6.8G   31G  18% /remote-nfs-dir
+cka002:/nfsdata   40G  5.8G   32G  16% /remote-nfs-dir
 ```
+
+
 
 #### Create PV
 
-Create a PV with below yaml file `mysql-pv.yaml`. Replace the NFS Server IP with actual IP that NFS server is running on.
+Create a PV `mysql-pv`. 
+Replace the NFS Server IP with actual IP (here is `172.16.18.169`) that NFS server `cka002` is running on.
 ```
-cat > mysql-pv.yaml <<EOF
+kubectl apply -f - <<EOF
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -3836,10 +3911,8 @@ spec:
  storageClassName: nfs
  nfs:
    path: /nfsdata/
-   server: 172.16.18.160
+   server: 172.16.18.169
 EOF
-
-kubectl apply -f mysql-pv.yaml
 ```
 
 Check the PV.
@@ -3849,16 +3922,16 @@ kubectl get pv
 The result:
 ```
 NAME       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS      CLAIM   STORAGECLASS   REASON   AGE
-mysql-pv   1Gi        RWO            Retain           Available           nfs                     9s
+mysql-pv   1Gi        RWO            Retain           Available           nfs                     19s
 ```
 
 
 #### Create PVC
 
-Create a PVC with below yaml file `mysql-pvc.yaml`, specify storage size, access mode, and storage class. 
-The PVC will be binded with PV automatically viw storage class name. 
+Create a PVC `mysql-pvc` and specify storage size, access mode, and storage class. 
+The PVC `mysql-pvc` will be binded with PV automatically via storage class name. 
 ```
-cat > mysql-pvc.yaml <<EOF
+kubectl apply -f - <<EOF
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -3871,17 +3944,15 @@ spec:
       storage: 1Gi
   storageClassName: nfs
 EOF
-
-kubectl apply -f mysql-pvc.yaml
 ```
 
 
 
 #### Consume PVC
 
-Create a Deployment to consume the PVC created.
+Update the Deployment `mysql` to consume the PVC created.
 ```
-cat > mysql.yaml <<EOF
+kubectl apply -f - <<EOF
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -3913,9 +3984,6 @@ spec:
        persistentVolumeClaim:
         claimName: mysql-pvc
 EOF
-
-
-kubectl apply -f mysql.yaml
 ```
 
 Now we can see MySQL files were moved to directory `/nfsdata` on `cka002`
@@ -3932,11 +4000,11 @@ RBAC authorization uses the rbac.authorization.k8s.io API group to drive authori
 * ServiceAccount: `nfs-client-provisioner`
 * namespace: `dev`
 
-* ClusterRole: `nfs-client-provisioner-runner`
-* ClusterRoleBinding: `run-nfs-client-provisioner`, roleRefer: above ClusterRole, link to above ServiceAccount.
+* ClusterRole: `nfs-client-provisioner-runner`. Grant authorization on node, pv, pvc, sc, event.
+* ClusterRoleBinding: `run-nfs-client-provisioner`, bind above ClusterRole to above ServiceAccount.
 
-* Role: `leader-locking-nfs-client-provisioner`
-* RoleBinding: `leader-locking-nfs-client-provisioner`, roleRefer: above Role, link to above ServiceAccount.
+* Role: `leader-locking-nfs-client-provisioner`. Grant authorization on endpoint.
+* RoleBinding: `leader-locking-nfs-client-provisioner`, bind above Role to above ServiceAccount.
 
 
 Create RBAC Authorization.
@@ -4017,9 +4085,10 @@ kubectl apply -f nfs-provisioner-rbac.yaml
 ```
 
 
-#### Install `nfs-provisioner`
+#### Create Provisioner's Deloyment
 
-Create NFS Provisioner with below yaml file. 
+Create Deloyment `nfs-client-provisioner` by consuming volume `nfs-client-root` mapped to `/nfsdata` on `172.16.18.169`(`cka002`). 
+Replace NFS server IP with actual IP (here is `172.16.18.169`)
 ```
 cat > nfs-provisioner-deployment.yaml <<EOF
 apiVersion: apps/v1
@@ -4049,13 +4118,13 @@ spec:
             - name: PROVISIONER_NAME
               value: k8s-sigs.io/nfs-subdir-external-provisioner
             - name: NFS_SERVER
-              value: 172.16.18.160
+              value: 172.16.18.169
             - name: NFS_PATH
               value: /nfsdata
       volumes:
         - name: nfs-client-root
           nfs:
-            server: 172.16.18.160
+            server: 172.16.18.169
             path: /nfsdata
 EOF
 
@@ -4065,8 +4134,7 @@ kubectl apply -f nfs-provisioner-deployment.yaml
 
 #### Create NFS StorageClass
 
-
-Create yaml file `nfs-storageclass.yaml`.
+Create StorageClass `nfs-client`. Define the NFS subdir external provisioner's Kubernetes Storage Class.
 ```
 vi nfs-storageclass.yaml
 ```
@@ -4083,20 +4151,18 @@ parameters:
   pathPattern: "${.PVC.namespace}/${.PVC.annotations.nfs.io/storage-path}"
   onDelete: delete
 ```
+
 Apply the yaml file.
 ```
 kubectl apply -f nfs-storageclass.yaml
 ```
 
 
+#### Create PVC
 
-#### Verify
-
-##### Create PVC
-
-Create PVC 
+Create PVC `nfs-pvc-from-sc`.
 ```
-cat > storageclass-pvc.yaml <<EOF
+kubectl apply -f - <<EOF
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
@@ -4109,27 +4175,38 @@ spec:
     requests:
       storage: 1Gi
 EOF
-
-kubectl apply -f storageclass-pvc.yaml
 ```
 
 Check the PVC status we ceated.
 ```
 kubectl get pvc nfs-pvc-from-sc
 ```
+The status is `Pending`.
 ```
-NAME              STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
-nfs-pvc-from-sc   Bound    pvc-25eaa043-911e-46c7-b17e-f65256f52725   1Gi        RWX            nfs-client     39h
+NAME              STATUS    VOLUME   CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+nfs-pvc-from-sc   Pending                                      nfs-client     112s
+```
+
+Check pending reason
+```
+kubectl describe pvc nfs-pvc-from-sc
+```
+It's pending on waiting for a volume to be created.
+```
+Events:
+  Type    Reason                Age               From                         Message
+  ----    ------                ----              ----                         -------
+  Normal  ExternalProvisioning  9s (x6 over 84s)  persistentvolume-controller  waiting for a volume to be created, either by external provisioner "k8s-sigs.io/nfs-subdir-external-provisioner" or manually created by system administrator
 ```
 
 
 
 
-##### Consume PVC
+#### Consume PVC
 
-Create Pod to consume the PVC>
+Create Deployment `mysql-with-sc-pvc` to consume the PVC `nfs-pvc-from-sc`.
 ```
-cat > mysql-with-sc-pvc.yaml <<EOF
+kubectl apply -f - <<EOF
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -4160,9 +4237,6 @@ spec:
         persistentVolumeClaim:
           claimName: nfs-pvc-from-sc
 EOF
-
-
-kubectl apply -f mysql-with-sc-pvc.yaml
 ```
 
 
@@ -4170,36 +4244,50 @@ Check the Deployment status.
 ```
 kubectl get deployment mysql-with-sc-pvc -o wide
 ```
+Result
 ```
 NAME                READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS   IMAGES      SELECTOR
-mysql-with-sc-pvc   1/1     1            1           39h   mysql        mysql:8.0   app=mysql
+mysql-with-sc-pvc   1/1     1            1           16s   mysql        mysql:8.0   app=mysql
+```
+
+With the comsumption from Deployment `mysql-with-sc-pvc`, the status of PVC `nfs-pvc-from-sc` is now status `Bound` from `Pending`.
+```
+kubectl get pvc nfs-pvc-from-sc
+```
+Result
+```
+NAME              STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+nfs-pvc-from-sc   Bound    pvc-edf70dff-7407-4b38-aac9-9c2dd6a84316   1Gi        RWX            nfs-client     52m
 ```
 
 Check related Pods status. Be noted that the Pod `mysql-with-sc-pvc-7c97d875f8-dwfkc` is running on `cka003`.
 ```
 kubectl get pod -o wide -l app=mysql
 ```
+Result
 ```
-NAME                                 READY   STATUS    RESTARTS   AGE   IP             NODE     NOMINATED NODE   READINESS GATES
-mysql-774db46945-sztrp               1/1     Running   0          40h   10.244.1.23    cka002   <none>           <none>
-mysql-with-sc-pvc-7c97d875f8-dwfkc   1/1     Running   0          38h   10.244.2.110   cka003   <none>           <none>
+NAME                                 READY   STATUS    RESTARTS   AGE     IP              NODE     NOMINATED NODE   READINESS GATES
+mysql-774db46945-h82kk               1/1     Running   0          69m     10.244.112.26   cka002   <none>           <none>
+mysql-with-sc-pvc-7c97d875f8-wkvr9   1/1     Running   0          3m37s   10.244.102.27   cka003   <none>           <none>
 ```
 
-Let's check directory `/nfsdata/` on NFS server. 
+Let's check directory `/nfsdata/` on NFS server `cka002`. 
 ```
 ll /nfsdata/
 ```
 Two folders were created. Same content of `/remote-nfs-dir/` on other nodes.
 ```
-drwxrwxrwx  6 systemd-coredump root 4096 Jul 10 23:08 dev/
-drwxr-xr-x  6 systemd-coredump root 4096 Jul 10 21:23 mysqldata/
+drwxrwxrwx  6 systemd-coredump root 4096 Jul 23 23:35 dev/
+drwxr-xr-x  6 systemd-coredump root 4096 Jul 23 22:29 mysqldata/
 ```
 
-One sub-folder's name is namespace under directory `/nfsdata/` and it is mounted to Pod.
+Namespace name is used as folder name under directory `/nfsdata/` and it is mounted to Pod.
 By default, namespace name will be used at mount point. 
-If we want to use customized folder for that purpose, we need claim an annotation `nfs.io/storage-path`, e.g., `test-path` in below example.
+If we want to use customized folder for that purpose, we need claim an annotation `nfs.io/storage-path`, e.g., below example.
+
+Create PVC test-claim on Namespace `kube-system` and consume volume `nfs-client`.
 ```
-cat > test-claim.yaml <<EOF
+kubectl apply -f - <<EOF
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
@@ -4215,25 +4303,19 @@ spec:
     requests:
       storage: 1Gi
 EOF
-
-kubectl apply -f test-claim.yaml
 ```
 
-In above case, the PVC was created in `kube-system` Namespace, hence we can see directory `test-path` is under directory`kube-system`. 
+In above case, the PVC was created in `kube-system` Namespace, hence we can see directory `test-path` is under directory`kube-system` on node `cka002`. 
+
 Overall directory structure of folder `/nfsdata/` looks like below.
 ```
-tree /nfsdata/
+tree -L 1 /nfsdata/ 
 ```
+Result
 ```
 /nfsdata/
 ├── dev
-│   ├── mysql.sock -> /var/run/mysqld/mysqld.sock
-│   ├── sys
-│   │   └── sys_config.ibd
-│   ├── undo_001
-│   └── undo_002
 ├── kube-system
-│   └── test-path
 └── mysqldata
 ```
 
@@ -4241,15 +4323,13 @@ Please be noted that above rule is following `nfs-subdir-external-provisioner` i
 
 Detail about `nfs-subdir-external-provisioner` project is [here](https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner)
 
----
-
 
 
 ### Configuration
 
 #### ConfigMap
 
-Create a yaml file `configmap.yaml` for ConfigMap.
+Create ConfigMap `cm-nginx` to define content of `nginx.conf`.
 ```
 vi configmap.yaml
 ```
@@ -4260,7 +4340,7 @@ kind: ConfigMap
 metadata:
   labels:
     cattle.io/creator: norman
-  name: nginx
+  name: cm-nginx
   namespace: dev
 data:
   nginx.conf: |-
@@ -4304,7 +4384,7 @@ kubectl apply -f configmap.yaml
 
 Create Pod `nginx-with-cm`.
 ```
-cat > nginx-with-cm.yaml <<EOF
+kubectl apply -f - <<EOF
 apiVersion: v1
 kind: Pod
 metadata:
@@ -4320,15 +4400,13 @@ spec:
  volumes:
  - name: foo
    configMap:
-     name: nginx
+     name: cm-nginx
 EOF
-
-kubectl apply -f nginx-with-cm.yaml
 ```
 
 Be noted:
 
-* By default to mount ConfigMap, Kubernetes will overwrite all content of the mount point. We can use `volumeMounts.subPath` to specify that only overwrite the file `nginx.conf`.
+* By default to mount ConfigMap, Kubernetes will overwrite all content of the mount point. We can use `volumeMounts.subPath` to specify that only overwrite the file `nginx.conf` defined in `mountPath`.
 * Is we use `volumeMounts.subPath` to mount a Container Volume, Kubernetes won't do hot update to reflect real-time update.
 
 
@@ -4352,9 +4430,9 @@ echo -n 123456 | base64
 MTIzNDU2
 ```
 
-Create Secret.
+Create Secret `mysecret`.
 ```
-cat > secret.yaml <<EOF
+kubectl apply -f - <<EOF
 apiVersion: v1
 kind: Secret
 metadata:
@@ -4363,13 +4441,11 @@ data:
   username: YWRtaW4=
   password: MTIzNDU2
 EOF
-
-kubectl apply -f secret.yaml
 ```
 
 Using Volume to mount (injection) Secret to a Pod.
 ```
-cat > busybox-with-secret.yaml <<EOF
+kubectl apply -f - <<EOF
 apiVersion: v1
 kind: Pod
 metadata:
@@ -4390,8 +4466,6 @@ spec:
    secret:
     secretName: mysecret
 EOF
-
-kubectl apply -f busybox-with-secret.yaml
 ```
 
 Let's attach to the Pod `busybox-with-secret` to verify if two data elements of `mysecret` are successfully mounted to the path `/tmp/secret` within the Pod.
@@ -4401,8 +4475,8 @@ kubectl exec -it busybox-with-secret -- sh
 By executing below command, we can see two data elements are in the directory `/tmp/secret` as file type. 
 ```
 / # ls -l /tmp/secret/
-lrwxrwxrwx    1 root     root            15 Jul 12 16:13 password -> ..data/password
-lrwxrwxrwx    1 root     root            15 Jul 12 16:13 username -> ..data/username
+lrwxrwxrwx    1 root     root            15 Jul 23 16:30 password -> ..data/password
+lrwxrwxrwx    1 root     root            15 Jul 23 16:30 username -> ..data/username
 ```
 And we can get the content of each element, which are predefined before.
 ```
@@ -4415,7 +4489,7 @@ admin
 
 
 
-#### Additional Keys
+#### Additional Cases
 
 ##### Various way to create ConfigMap
 
@@ -4492,7 +4566,7 @@ metadata:
 
 Here we will create a Pod `pod-configmap-env` and set the environment variable `ilike` and assign value of `favorite` from ConfigMap `colors`.
 ```
-cat > pod-configmap-env.yaml << EOF
+kubectl apply -f - << EOF
 apiVersion: v1
 kind: Pod
 metadata:
@@ -4508,8 +4582,6 @@ spec:
           name: colors
           key: favorite
 EOF
-
-kubectl apply -f pod-configmap-env.yaml
 ```
 
 Attach to the Pod `pod-configmap-env`.
@@ -4525,7 +4597,7 @@ blue
 
 We can also use all key-value of ConfigMap to set up environment variables of Pod.
 ```
-cat > pod-configmap-env-2.yaml << EOF
+kubectl apply -f - << EOF
 apiVersion: v1
 kind: Pod
 metadata:
@@ -4538,8 +4610,6 @@ spec:
     - configMapRef:
         name: colors
 EOF
-
-kubectl apply -f pod-configmap-env-2.yaml
 ```
 
 Attach to the Pod `pod-configmap-env-2`.
@@ -4562,7 +4632,20 @@ blue
 
 
 
-## 13.Scheduling
+## 12.Scheduling
+
+Summary:
+
+* Configure nodeSelector for Pod.
+* Configure nodeName for Node.
+* Use `podAffinity` to group Pods.
+
+* Taints & Tolerations
+    * Set Taints
+    * Set Tolerations
+    * Remove Taints
+
+
 
 ### nodeSelector
 
@@ -4577,10 +4660,9 @@ We can leverage Kubernetes attributes node `label` and `nodeSelector` to group r
 
 
 
-#### Label Node
+1. Label Node
 
-Here I will label `cka002` with `Configuration=hight`.
-
+Let's label `cka002` with `Configuration=hight`.
 ```
 kubectl label node cka002 configuration=hight
 ```
@@ -4591,11 +4673,11 @@ kubectl get node --show-labels
 ```
 
 
-#### Configure nodeSelector for Pod
+2. Configure nodeSelector for Pod
 
 Create a Pod and use `nodeSelector` to schedule the Pod running on specified node.
 ```
-cat > mysql-nodeselector.yaml <<EOF
+kubectl apply -f - <<EOF
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -4621,8 +4703,6 @@ spec:
      nodeSelector:
        configuration: hight
 EOF
-
-kubectl apply -f mysql-nodeselector.yaml
 ```
 
 Let's check with node the Pod `mysql-nodeselector` is running.
@@ -4633,7 +4713,7 @@ kubectl get pod -l app=mysql -o wide |  grep mysql-nodeselector
 With below result, Pod `mysql-nodeselector` is running on `cka002` node.
 ```
 NAME                                  READY   STATUS    RESTARTS   AGE     IP             NODE     NOMINATED NODE   READINESS GATES
-mysql-nodeselector-6b7d9c875d-227t6   1/1     Running   0          50s     10.244.1.26    cka002   <none>           <none>
+mysql-nodeselector-6b7d9c875d-vs8mk   1/1     Running   0          7s     10.244.112.29   cka002   <none>           <none>
 ```
 
 
@@ -4644,7 +4724,7 @@ Be noted, `nodeName` has hightest priority as it's not scheduled by `Scheduler`.
 
 Create a Pod `nginx-nodename` with `nodeName=cka003`.
 ```
-cat > nginx-nodename.yaml <<EOF
+kubectl apply -f - <<EOF
 apiVersion: v1
 kind: Pod
 metadata:
@@ -4655,17 +4735,16 @@ spec:
     image: nginx
   nodeName: cka003
 EOF
-
-kubectl apply -f nginx-nodename.yaml
 ```
 
 Verify if Pod `nginx-nodename` is running on `ckc003 node.
 ```
 kubectl get pod -owide |grep nginx-nodename
 ```
+Result
 ```
 NAME                                      READY   STATUS    RESTARTS   AGE     IP             NODE     NOMINATED NODE   READINESS GATES
-nginx-nodename                            1/1     Running   0          6s      10.244.2.113   cka003   <none>           <none>
+nginx-nodename                            1/1     Running   0          8s     10.244.102.29   cka003   <none>           <none>
 ```
 
 
@@ -4693,7 +4772,7 @@ We can set node Label to classify Name/Zone/Region of node, which can be used by
 
 Create a Pod Nginx.
 ```
-cat > pod_nginx.yaml <<EOF
+kubectl apply -f - <<EOF
 apiVersion: v1
 kind: Pod
 metadata:
@@ -4705,14 +4784,11 @@ spec:
   - name: nginx
     image: nginx
 EOF
-
-
-kubectl apply -f pod_nginx.yaml
 ```
 
 Create a Pod MySql.
 ```
-cat > pod_mysql.yaml <<EOF
+kubectl apply -f - <<EOF
 apiVersion: v1
 kind: Pod
 metadata:
@@ -4737,18 +4813,12 @@ spec:
             - nginx
         topologyKey: kubernetes.io/hostname
 EOF
-
-kubectl apply -f pod_mysql.yaml
 ```
 
 As we configured `podAffinity`, so Pod `mysql` will be scheduled to the same node with Pod `nginx` by Label `app:nginx`.
 
 Via the command `kubectl get pod -o wide` we can get two Pods are running on node `cka002`.
-```
-NAME                                      READY   STATUS    RESTARTS   AGE     IP             NODE     NOMINATED NODE   READINESS GATES
-mysql                                     1/1     Running   0          2m48s   10.244.1.28    cka002   <none>           <none>
-nginx                                     1/1     Running   0          9m53s   10.244.1.27    cka002   <none>           <none>
-```
+
 
 
 
@@ -4786,10 +4856,8 @@ kubectl taint nodes cka003 key=value:NoSchedule
 #### Set Tolerations
 
 We can use Tolerations to let Pods schedule to a taint node. 
-
-
 ```
-cat > mysql-tolerations.yaml <<EOF
+kubectl apply -f - <<EOF
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -4818,18 +4886,13 @@ spec:
         value: "value"
         effect: "NoSchedule"
 EOF
-
-kubectl apply -f mysql-tolerations.yaml
 ```
 
 The Pod of Deployment `mysql-tolerations` is scheduled and running on node `cka003` with `tolerations` setting, which is a taint node.
 ```
 kubectl get pod -o wide | grep mysql-tolerations
 ```
-```
-NAME                                      READY   STATUS    RESTARTS   AGE     IP             NODE     NOMINATED NODE   READINESS GATES
-mysql-tolerations-5c5986944b-cg9bs        1/1     Running   0          57s     10.244.2.114   cka003   <none>           <none>
-```
+
 
 
 
@@ -4842,21 +4905,28 @@ kubectl taint nodes cka003 key-
 
 
 
-## 14.ResourceQuota
+## 13.ResourceQuota
 
-### Create Namespace
+Summary:
+
+* Create ResourceQuota `object-quota-demo` for namespace `quota-object-example`.
+* Test ResourceQuota `object-quota-demo` for NodePort
+* Test ResourceQuota `object-quota-demo` for PVC
+
+
+1. Create Namespace
 
 Ceate a Namespace
 ```
 kubectl create ns quota-object-example
 ```
 
-### Create ResourceQuota
+2. Create ResourceQuota for Namespace
 
-Create a Namespace ResourceQuota and apply to namespace `quota-object-example`.
+Create ResourceQuota `object-quota-demo` for namespace `quota-object-example`.
 Within the namespace, we can only create 1 PVC, 1 LoadBalancer Service, can not create NodePort Service.
 ```
-cat > resourcequota.yaml <<EOF
+kubectl apply -f - <<EOF
 apiVersion: v1
 kind: ResourceQuota
 metadata:
@@ -4868,15 +4938,11 @@ spec:
     services.loadbalancers: "2"
     services.nodeports: "0"
 EOF
-
-
-kubectl apply -f resourcequota.yaml
 ```
 
 
-### Verify & Test
+3. Check Quota status
 
-Check Quota status
 ```
 kubectl get resourcequota object-quota-demo --namespace=quota-object-example --output=yaml
 ```
@@ -4898,7 +4964,7 @@ status:
     services.nodeports: "0"
 ```
 
-#### Test NodePort
+4. Test Quota for NodePort
 
 Create a Deployment `ns-quota-test` on namespace `quota-object-example`.
 ```
@@ -4909,17 +4975,18 @@ Expose the Deployment via NodePort
 ```
 kubectl expose deployment ns-quota-test --port=80 --type=NodePort --namespace=quota-object-example
 ```
+
 We receive below error, which is expected because we set Quota `services.nodeports: 0`.
-```shell
+```
 Error from server (Forbidden): services "ns-quota-test" is forbidden: exceeded quota: object-quota-demo, requested: services.nodeports=1, used: services.nodeports=0, limited: services.nodeports=0
 ```
   
 
-#### Test PVC
+5. Test Quota for PVC
 
 Create a PVC `pvc-quota-demo` on namespace `quota-object-example`.
 ```
-cat > test-pvc-quota.yaml << EOF
+kubectl applly -f - << EOF
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
@@ -4933,9 +5000,6 @@ spec:
     requests:
       storage: 3Gi
 EOF
-
-
-kubectl apply -f test-pvc-quota.yaml
 ```
 
 Check the Quota status.
@@ -4963,7 +5027,18 @@ status:
 
 
 
-## 15.LimitRange
+## 14.LimitRange
+
+Summary:
+
+* Create LimitRange `cpu-limit-range` to define range of CPU Request and CPU Limit for a Container. 
+* Test LimitRange `cpu-limit-range` via Pod.
+    * Scenario 1: Pod without specified limits
+    * Scenario 2: Pod with CPU limit, without CPU Request
+    * Scenario 3: Pod with CPU Request onlyl, without CPU Limits
+
+
+
 
 A *LimitRange* provides constraints that can:
 
@@ -4973,21 +5048,17 @@ A *LimitRange* provides constraints that can:
 * Set default request/limit for compute resources in a namespace and automatically inject them to Containers at runtime.
 
 
-
-
-### Create Namespace
+### Set LimitRange
 
 Create a Namespace `default-cpu-example` for demo.
 ```
 kubectl create namespace default-cpu-example
 ```
 
-### Set LimitRange
-
-Create LimitRange by below yaml file to define range of CPU Request and CPU Limit for a Container.
+Create LimitRange `cpu-limit-range` to define range of CPU Request and CPU Limit for a Container.
 After apply LimitRange resource, the CPU limitation will affect all new created Pods.
 ```
-cat > cpu-limitrange.yaml << EOF
+kubectl apply -f - << EOF
 apiVersion: v1
 kind: LimitRange
 metadata:
@@ -5001,9 +5072,6 @@ spec:
       cpu: 0.5
     type: Container
 EOF
-
-
-kubectl apply -f cpu-limitrange.yaml
 ```
 
 
@@ -5014,7 +5082,7 @@ kubectl apply -f cpu-limitrange.yaml
 
 Create a Pod without any specified limits.
 ```
-cat > default-cpu-demo-pod.yaml << EOF
+kubectl apply -f - << EOF
 apiVersion: v1
 kind: Pod
 metadata:
@@ -5025,9 +5093,6 @@ spec:
   - name: default-cpu-demo-ctr
     image: nginx
 EOF
-
-
-kubectl apply -f default-cpu-demo-pod.yaml
 ```
 
 Verify details of the Pod we created. The Pod inherits the both CPU Limits and CPU Requests from namespace as its default.
@@ -5053,7 +5118,7 @@ spec:
 
 Create Pod with specified CPU limits only.  
 ```
-cat > default-cpu-demo-limit.yaml <<EOF
+kubectl apply -f - <<EOF
 apiVersion: v1
 kind: Pod
 metadata:
@@ -5092,7 +5157,7 @@ spec:
 
 Create Pod with specified CPU Request only. 
 ```
-cat > default-cpu-demo-request.yaml <<EOF
+kubectl apply -f - <<EOF
 apiVersion: v1
 kind: Pod
 metadata:
@@ -5106,8 +5171,6 @@ spec:
       requests:
         cpu: "0.75"
 EOF
-
-kubectl apply -f default-cpu-demo-request.yaml
 ```
 
 Verify details of the Pod we created. The Pod inherits the CPU Limits from namespace as its default and specifies own CPU Requests.
@@ -5128,7 +5191,11 @@ spec:
 ```
 
 
-## 16.Troubleshooting
+
+
+
+
+## 15.Troubleshooting
 
 ### Event
 
@@ -5322,19 +5389,19 @@ kubectl drain <node_name> --ignore-daemonsets --delete-emptydir-data
 
 
 
-## 17.RBAC
+## 16.RBAC
 
-Role-based access control (RBAC) is a method of regulating access to computer or network resources based on the roles of individual users within the organization.
-
-
-When using client certificate authentication, we can generate certificates manually through `easyrsa`, `openssl` or `cfssl`.
-
-Tasks in this section:
+Summary:
 
 1. Create differnet profiles for one cluster.
 2. Use `cfssl` generate certificates for each profile.
 3. Create new kubeconfig file with all profiles and associated users.
 4. Merge old and new kubeconfig files into new kubeconfig file. We can switch different context for further demo.
+
+
+Role-based access control (RBAC) is a method of regulating access to computer or network resources based on the roles of individual users within the organization.
+
+When using client certificate authentication, we can generate certificates manually through `easyrsa`, `openssl` or `cfssl`.
 
 Best pracice: 
 
@@ -5368,7 +5435,7 @@ We get below key information of the cluster.
 * Current context name: kubernetes-admin@kubernetes (format: `<system_account>@<cluster_name>`)
 ```
 CURRENT   NAME                          CLUSTER      AUTHINFO           NAMESPACE
-*         kubernetes-admin@kubernetes   kubernetes   kubernetes-admin 
+*         kubernetes-admin@kubernetes   kubernetes   kubernetes-admin   dev
 ```
 
 
@@ -5512,20 +5579,20 @@ ll -tr | grep cka-dev
 
 #### Create file kubeconfig
 
-Get the IP of Control Plane (e.g., `172.16.18.161` here) to composite evn variable `KUBE_APISERVER` (`https://<control_plane_ip>:<port>`).
+Get the IP of Control Plane (e.g., `172.16.18.170` here) to composite evn variable `KUBE_APISERVER` (`https://<control_plane_ip>:<port>`).
 ```
 kubectl get node -owide
 ```
 ```
 NAME     STATUS   ROLES                  AGE   VERSION   INTERNAL-IP     EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION      CONTAINER-RUNTIME
-cka001   Ready    control-plane,master   18d   v1.23.8   172.16.18.161   <none>        Ubuntu 20.04.4 LTS   5.4.0-113-generic   containerd://1.5.9
-cka002   Ready    <none>                 18d   v1.23.8   172.16.18.160   <none>        Ubuntu 20.04.4 LTS   5.4.0-113-generic   containerd://1.5.9
-cka003   Ready    <none>                 18d   v1.23.8   172.16.18.159   <none>        Ubuntu 20.04.4 LTS   5.4.0-113-generic   containerd://1.5.9
+cka001   Ready    control-plane,master   14h   v1.23.8   172.16.18.170   <none>        Ubuntu 20.04.4 LTS   5.4.0-122-generic   containerd://1.5.9
+cka002   Ready    <none>                 14h   v1.23.8   172.16.18.169   <none>        Ubuntu 20.04.4 LTS   5.4.0-122-generic   containerd://1.5.9
+cka003   Ready    <none>                 14h   v1.23.8   172.16.18.168   <none>        Ubuntu 20.04.4 LTS   5.4.0-122-generic   containerd://1.5.9
 ```
 
 Export env `KUBE_APISERVER`.
 ```
-echo "export KUBE_APISERVER=\"https://172.16.18.161:6443\"" >> ~/.bashrc
+echo "export KUBE_APISERVER=\"https://172.16.18.170:6443\"" >> ~/.bashrc
 source ~/.bashrc
 ```
 
@@ -5535,7 +5602,7 @@ echo $KUBE_APISERVER
 ```
 Output:
 ```
-https://172.16.18.161:6443
+https://172.16.18.170:6443
 ```
 
 
@@ -5574,7 +5641,7 @@ apiVersion: v1
 clusters:
 - cluster:
     certificate-authority-data: <your_key>
-    server: https://172.16.18.161:6443
+    server: https://172.16.18.170:6443
   name: kubernetes
 contexts: null
 current-context: ""
@@ -5608,7 +5675,7 @@ apiVersion: v1
 clusters:
 - cluster:
     certificate-authority-data: <your_key>
-    server: https://172.16.18.161:6443
+    server: https://172.16.18.170:6443
   name: kubernetes
 contexts: null
 current-context: ""
@@ -5704,7 +5771,7 @@ apiVersion: v1
 clusters:
 - cluster:
     certificate-authority-data: <your_key>
-    server: https://172.16.18.161:6443
+    server: https://172.16.18.170:6443
   name: kubernetes
 contexts:
 - context:
@@ -5739,7 +5806,7 @@ Current context is the system default `kubernetes-admin@kubernetes`.
 ```
 CURRENT   NAME                          CLUSTER      AUTHINFO           NAMESPACE
           cka-dev@kubernetes            kubernetes   cka-dev            
-*         kubernetes-admin@kubernetes   kubernetes   kubernetes-admin   
+*         kubernetes-admin@kubernetes   kubernetes   kubernetes-admin   dev
 ```
 
 
@@ -5751,9 +5818,9 @@ Get list of Namespace with Label information.
 kubectl get ns --show-labels
 ```
 
-Create Namespace `dev`.
+Create Namespace `cka`.
 ```
-kubectl create namespace dev
+kubectl create namespace cka
 ```
 
 Use below command to set a context with new update, e.g, update default namespace, etc..
@@ -5764,7 +5831,7 @@ kubectl config set-context <context name> --cluster=<cluster name> --namespace=<
 Let's set default namespace to each context.
 ```
 kubectl config set-context kubernetes-admin@kubernetes --cluster=kubernetes --namespace=default --user=kubernetes-admin
-kubectl config set-context dev@kubernetes --cluster=kubernetes --namespace=dev --user=cka-dev
+kubectl config set-context dev@kubernetes --cluster=kubernetes --namespace=cka --user=cka-dev
 ```
 
 Let's check current context information.
@@ -5774,8 +5841,8 @@ kubectl config get-contexts
 Output:
 ```
 CURRENT   NAME                          CLUSTER      AUTHINFO           NAMESPACE
-          cka-dev@kubernetes            kubernetes   cka-dev            dev
-*         kubernetes-admin@kubernetes   kubernetes   kubernetes-admin   default
+          cka-dev@kubernetes            kubernetes   cka-dev            cka
+*         kubernetes-admin@kubernetes   kubernetes   kubernetes-admin   dev
 ```
 
 To switch to a new context, use below command.
@@ -5793,8 +5860,8 @@ kubectl config get-contexts
 ```
 ```
 CURRENT   NAME                          CLUSTER      AUTHINFO           NAMESPACE
-*         cka-dev@kubernetes            kubernetes   cka-dev            dev
-          kubernetes-admin@kubernetes   kubernetes   kubernetes-admin   default
+*         cka-dev@kubernetes            kubernetes   cka-dev            cka
+          kubernetes-admin@kubernetes   kubernetes   kubernetes-admin   dev
 ```
 
 Be noted, four users beginning with `cka-dev` created don't have any authorizations, e.g., access namespaces, get pods, etc..
@@ -6430,15 +6497,15 @@ etcdctl --endpoints=https://<CONTROL_PLANE_IP_ADDRESS>:2379 --cert=/etc/kubernet
 ```
 
 ```
-etcdctl --endpoints=https://172.16.18.161:2379 --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key --cacert=/etc/kubernetes/pki/etcd/ca.crt snapshot save snapshot-$(date +"%Y%m%d%H%M%S").db
+etcdctl --endpoints=https://172.16.18.170:2379 --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key --cacert=/etc/kubernetes/pki/etcd/ca.crt snapshot save snapshot-$(date +"%Y%m%d%H%M%S").db
 ```
 Output:
 ```
 {"level":"info","ts":"2022-07-14T14:37:39.232+0800","caller":"snapshot/v3_snapshot.go:65","msg":"created temporary db file","path":"snapshot-20220714143739.db.part"}
 {"level":"info","ts":"2022-07-14T14:37:39.239+0800","logger":"client","caller":"v3/maintenance.go:211","msg":"opened snapshot stream; downloading"}
-{"level":"info","ts":"2022-07-14T14:37:39.239+0800","caller":"snapshot/v3_snapshot.go:73","msg":"fetching snapshot","endpoint":"https://172.16.18.161:2379"}
+{"level":"info","ts":"2022-07-14T14:37:39.239+0800","caller":"snapshot/v3_snapshot.go:73","msg":"fetching snapshot","endpoint":"https://172.16.18.170:2379"}
 {"level":"info","ts":"2022-07-14T14:37:39.332+0800","logger":"client","caller":"v3/maintenance.go:219","msg":"completed snapshot read; closing"}
-{"level":"info","ts":"2022-07-14T14:37:39.359+0800","caller":"snapshot/v3_snapshot.go:88","msg":"fetched snapshot","endpoint":"https://172.16.18.161:2379","size":"5.6 MB","took":"now"}
+{"level":"info","ts":"2022-07-14T14:37:39.359+0800","caller":"snapshot/v3_snapshot.go:88","msg":"fetched snapshot","endpoint":"https://172.16.18.170:2379","size":"5.6 MB","took":"now"}
 {"level":"info","ts":"2022-07-14T14:37:39.359+0800","caller":"snapshot/v3_snapshot.go:97","msg":"saved","path":"snapshot-20220714143739.db"}
 ```
 
@@ -6556,7 +6623,7 @@ ff6626664c43    registry.aliyuncs.com/google_containers/etcd:3.5.1-0            
 Execute the restore operation on Control Plane node with actual backup file.
 ```
 etcdctl snapshot restore snapshot-20220714143739.db \
-    --endpoints=172.16.18.161:2379 \
+    --endpoints=172.16.18.170:2379 \
     --cert=/etc/kubernetes/pki/etcd/server.crt \
     --key=/etc/kubernetes/pki/etcd/server.key \
     --cacert=/etc/kubernetes/pki/etcd/ca.crt\
@@ -6837,7 +6904,7 @@ evicting pod kube-system/metrics-server-7fd564dc66-rjchn
 evicting pod dev/nginx-app-1-695b7b647d-z8chz
 pod/app-before-backup-66dc9d5cb-6sqcp evicted
 pod/ns-quota-test-84c6c557b9-hkbcl evicted
-I0714 17:19:55.890912  869782 request.go:601] Waited for 1.159970307s due to client-side throttling, not priority and fairness, request: GET:https://172.16.18.161:6443/api/v1/namespaces/dev/pods/nginx-app-1-695b7b647d-z8chz
+I0714 17:19:55.890912  869782 request.go:601] Waited for 1.159970307s due to client-side throttling, not priority and fairness, request: GET:https://172.16.18.170:6443/api/v1/namespaces/dev/pods/nginx-app-1-695b7b647d-z8chz
 pod/nginx-app-1-695b7b647d-z8chz evicted
 pod/metrics-server-7fd564dc66-rjchn evicted
 pod/mysql-nodeselector-6b7d9c875d-m862d evicted
@@ -7690,8 +7757,8 @@ kubectl get nodes -o wide
 ```
 ```
 NAME     STATUS     ROLES                  AGE   VERSION   INTERNAL-IP     EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION      CONTAINER-RUNTIME
-cka001   NotReady   control-plane,master   23m   v1.23.8   172.16.18.161   <none>        Ubuntu 20.04.4 LTS   5.4.0-113-generic   containerd://1.5.9
-cka002   NotReady   <none>                 22m   v1.23.8   172.16.18.160   <none>        Ubuntu 20.04.4 LTS   5.4.0-113-generic   containerd://1.5.9
+cka001   NotReady   control-plane,master   23m   v1.23.8   172.16.18.170   <none>        Ubuntu 20.04.4 LTS   5.4.0-113-generic   containerd://1.5.9
+cka002   NotReady   <none>                 22m   v1.23.8   172.16.18.169   <none>        Ubuntu 20.04.4 LTS   5.4.0-113-generic   containerd://1.5.9
 cka003   NotReady   <none>                 21m   v1.23.8   172.16.18.159   <none>        Ubuntu 20.04.4 LTS   5.4.0-113-generic   containerd://1.5.9
 ```
 
@@ -8905,17 +8972,17 @@ ip route get 10.244.28.64
 ```
 Result
 ```
-10.244.31.1 via 172.16.18.253 dev eth0 src 172.16.18.161 uid 0 
+10.244.31.1 via 172.16.18.253 dev eth0 src 172.16.18.170 uid 0 
     cache 
 
-10.244.31.0 via 172.16.18.253 dev eth0 src 172.16.18.161 uid 0 
+10.244.31.0 via 172.16.18.253 dev eth0 src 172.16.18.170 uid 0 
     cache 
 
-10.244.28.64 via 172.16.18.253 dev eth0 src 172.16.18.161 uid 0 
+10.244.28.64 via 172.16.18.253 dev eth0 src 172.16.18.170 uid 0 
     cache 
 ```
 
-The via `172.16.18.161`(it's control-plane) in this example indicates the next-hop for this pod IP, which matches the IP address of the node the pod is scheduled on, as expected.
+The via `172.16.18.170`(it's control-plane) in this example indicates the next-hop for this pod IP, which matches the IP address of the node the pod is scheduled on, as expected.
 IPAM allocations from different pools.
 
 Recall that we created two IP pools, but left one disabled.
