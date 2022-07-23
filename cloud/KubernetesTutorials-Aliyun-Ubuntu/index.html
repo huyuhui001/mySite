@@ -847,12 +847,19 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#9horizontal-pod-autoscaling-hpa" class="md-nav__link">
-    9.Horizontal Pod Autoscaling (HPA)
+  <a href="#8horizontal-pod-autoscaling-hpa" class="md-nav__link">
+    8.Horizontal Pod Autoscaling (HPA)
   </a>
   
-    <nav class="md-nav" aria-label="9.Horizontal Pod Autoscaling (HPA)">
+    <nav class="md-nav" aria-label="8.Horizontal Pod Autoscaling (HPA)">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#install-metrics-server-component" class="md-nav__link">
+    Install Metrics Server component
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#deploy-a-service-podinfo" class="md-nav__link">
@@ -3804,6 +3811,10 @@ If we want to wait before executing a liveness probe you should use initialDelay
 <p>Summary:</p>
 <ul>
 <li>Create Deployment and Service</li>
+<li>Simulate an error (delete index.html)</li>
+<li>Pod is in unhealth status and is removed from endpoint list</li>
+<li>Fix the error (revert the index.html)</li>
+<li>Pod is back to normal and in endpoint list</li>
 </ul>
 <h4 id="create-deployment-and-service">Create Deployment and Service</h4>
 <p>Create Deployment <code>nginx-healthcheck</code> and Service <code>nginx-healthcheck</code>.</p>
@@ -4057,10 +4068,12 @@ pod/nginx-85b98978db-bmkhf   1/1     Running   0          2m14s
 <p>Delete namespace <code>cka</code>. All resources in the namespaces will be gone.</p>
 <pre><code>kubectl delete ns cka
 </code></pre>
-<h2 id="9horizontal-pod-autoscaling-hpa">9.Horizontal Pod Autoscaling (HPA)</h2>
+<h2 id="8horizontal-pod-autoscaling-hpa">8.Horizontal Pod Autoscaling (HPA)</h2>
+<p>Summary:</p>
 <ul>
 <li>Install Metrics Server component</li>
 </ul>
+<h3 id="install-metrics-server-component">Install Metrics Server component</h3>
 <p>Download yaml file for Metrics Server component</p>
 <pre><code>wget https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
 </code></pre>
@@ -4101,7 +4114,7 @@ service/metrics-server created
 deployment.apps/metrics-server created
 apiservice.apiregistration.k8s.io/v1beta1.metrics.k8s.io created
 </code></pre>
-<p>Verify if <code>metrics-server</code> Pod is running as expected.</p>
+<p>Verify if <code>metrics-server</code> Pod is running as expected (<code>1/1</code> running)</p>
 <pre><code>kubectl get pod -n kube-system -owide | grep metrics-server
 </code></pre>
 <p>Get current usage of CPU, memory of each node.</p>
