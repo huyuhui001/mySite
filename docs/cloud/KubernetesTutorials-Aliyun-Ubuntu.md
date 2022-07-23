@@ -736,7 +736,14 @@ Get current context.
 ```
 kubectl config get-contexts 
 ```
-Result
+
+In below result, we know:
+
+* Contenxt name is `kubernetes-admin@kubernetes`.
+* Cluster name is `kubernetes`.
+* User is `kubernetes-admin`.
+* No namespace explicitly defined.
+
 ```
 CURRENT   NAME                          CLUSTER      AUTHINFO           NAMESPACE
 *         kubernetes-admin@kubernetes   kubernetes   kubernetes-admin 
@@ -764,7 +771,6 @@ Reference of [kubectl](https://kubernetes.io/docs/concepts/configuration/organiz
 
 
 
-
 ## 3.Cluster Overview
 
 ### Container Layer
@@ -780,7 +786,7 @@ Tasks:
 * Get overall status.
 * Get network status.
 
-
+#### namespace.
 
 Get namespaces.
 ```
@@ -788,10 +794,11 @@ nerdctl namespace ls
 ```
 Result
 ```
-NAME       CONTAINERS    IMAGES    VOLUMES    LABELS
-default    1             1         0              
-k8s.io     20            60        0      
+NAME      CONTAINERS    IMAGES    VOLUMES    LABELS
+k8s.io    21            30        0      
 ```
+
+#### containers.
 
 Get containers under specific namespace with `-n` option.
 ```
@@ -800,18 +807,24 @@ nerdctl -n k8s.io ps
 Result
 ```
 CONTAINER ID    IMAGE                                                                      COMMAND                   CREATED           STATUS    PORTS    NAMES
-027b1167f7d0    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  7 hours ago       Up                 k8s://kube-system/etcd-cka001
-2e6e2571bb4e    registry.aliyuncs.com/google_containers/kube-apiserver:v1.23.8             "kube-apiserver --ad…"    7 hours ago       Up                 k8s://kube-system/kube-apiserver-cka001/kube-apiserver
-381ee220fd2f    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  7 hours ago       Up                 k8s://kube-system/kube-scheduler-cka001
-596917cbbb26    registry.aliyuncs.com/google_containers/kube-controller-manager:v1.23.8    "kube-controller-man…"    7 hours ago       Up                 k8s://kube-system/kube-controller-manager-cka001/kube-controller-manager
-5fecb056a080    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  7 hours ago       Up                 k8s://kube-system/kube-controller-manager-cka001
-7d94a2daaa50    registry.aliyuncs.com/google_containers/kube-proxy:v1.23.8                 "/usr/local/bin/kube…"    7 hours ago       Up                 k8s://kube-system/kube-proxy-kwhwj/kube-proxy
-90ff5ef27b9d    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  7 hours ago       Up                 k8s://kube-system/kube-apiserver-cka001
-9a0a6f6b0aed    docker.io/calico/node:v3.23.3                                              "start_runit"             44 seconds ago    Up                 k8s://kube-system/calico-node-94fqj/calico-node
-bfbd0ba3c8e1    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  44 seconds ago    Up                 k8s://kube-system/calico-node-94fqj
-ca75c9280dfd    registry.aliyuncs.com/google_containers/kube-scheduler:v1.23.8             "kube-scheduler --au…"    7 hours ago       Up                 k8s://kube-system/kube-scheduler-cka001/kube-scheduler
-dc177e25c7de    registry.aliyuncs.com/google_containers/etcd:3.5.1-0                       "etcd --advertise-cl…"    7 hours ago       Up                 k8s://kube-system/etcd-cka001/etcd
-e79a3f675a6e    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  7 hours ago       Up                 k8s://kube-system/kube-proxy-kwhwj
+0965b195f41a    registry.aliyuncs.com/google_containers/etcd:3.5.1-0                       "etcd --advertise-cl…"    44 minutes ago    Up                 k8s://kube-system/etcd-cka001/etcd
+0c5e69118f1b    registry.aliyuncs.com/google_containers/kube-apiserver:v1.23.8             "kube-apiserver --ad…"    44 minutes ago    Up                 k8s://kube-system/kube-apiserver-cka001/kube-apiserver
+1285b6814c3b    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  44 minutes ago    Up                 k8s://kube-system/kube-scheduler-cka001
+29a1ef016b43    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  24 minutes ago    Up                 k8s://kube-system/calico-kube-controllers-5c64b68895-jr4nl
+2aab1a388a4a    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  25 minutes ago    Up                 k8s://kube-system/calico-node-dsx76
+2f09aa56c83a    registry.aliyuncs.com/google_containers/coredns:v1.8.6                     "/coredns -conf /etc…"    24 minutes ago    Up                 k8s://kube-system/coredns-6d8c4cb4d-g4jxc/coredns
+49ca8fcbee2d    docker.io/calico/node:v3.23.3                                              "start_runit"             24 minutes ago    Up                 k8s://kube-system/calico-node-dsx76/calico-node
+4ed8183581b5    registry.aliyuncs.com/google_containers/coredns:v1.8.6                     "/coredns -conf /etc…"    24 minutes ago    Up                 k8s://kube-system/coredns-6d8c4cb4d-sqcvj/coredns
+545b4ad4e448    docker.io/calico/kube-controllers:v3.23.3                                  "/usr/bin/kube-contr…"    24 minutes ago    Up                 k8s://kube-system/calico-kube-controllers-5c64b68895-jr4nl/calico-kube-controllers
+638bb602c310    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  44 minutes ago    Up                 k8s://kube-system/kube-apiserver-cka001
+9e1bea9f25d1    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  44 minutes ago    Up                 k8s://kube-system/etcd-cka001
+ad6f45ec7cd8    registry.aliyuncs.com/google_containers/kube-controller-manager:v1.23.8    "kube-controller-man…"    44 minutes ago    Up                 k8s://kube-system/kube-controller-manager-cka001/kube-controller-manager
+b95c81350937    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  24 minutes ago    Up                 k8s://kube-system/coredns-6d8c4cb4d-g4jxc
+d655d2b02af3    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  44 minutes ago    Up                 k8s://kube-system/kube-proxy-cm4hc
+df5e4d68acae    registry.aliyuncs.com/google_containers/kube-proxy:v1.23.8                 "/usr/local/bin/kube…"    44 minutes ago    Up                 k8s://kube-system/kube-proxy-cm4hc/kube-proxy
+edb274666e48    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  44 minutes ago    Up                 k8s://kube-system/kube-controller-manager-cka001
+ee2a0b3713f5    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  24 minutes ago    Up                 k8s://kube-system/coredns-6d8c4cb4d-sqcvj
+f9ff812d8e07    registry.aliyuncs.com/google_containers/kube-scheduler:v1.23.8             "kube-scheduler --au…"    44 minutes ago    Up                 k8s://kube-system/kube-scheduler-cka001/kube-scheduler
 ```
 
 ```
@@ -819,9 +832,10 @@ nerdctl -n default ps
 ```
 Result
 ```
-CONTAINER ID    IMAGE                             COMMAND                   CREATED        STATUS    PORTS                 NAMES
-96e5f2ac531a    docker.io/library/nginx:alpine    "/docker-entrypoint.…"    2 weeks ago    Up        0.0.0.0:80->80/tcp    nginx
+CONTAINER ID    IMAGE    COMMAND    CREATED    STATUS    PORTS    NAMES
 ```
+
+#### images.
 
 Get images.
 ```
@@ -829,11 +843,15 @@ nerdctl image ls -a
 nerdctl -n k8s.io image ls -a
 ```
 
-Get volumes
+#### volumes.
+
+Get volumes. After inintial installation, no volume within namespaces.
 ```
 nerdctl -n default volume ls
 nerdctl -n k8s.io volume ls
 ```
+
+#### overall status.
 
 Get overall status
 ```
@@ -842,8 +860,9 @@ nerdctl stats
 Result
 ```
 CONTAINER ID   NAME      CPU %     MEM USAGE / LIMIT   MEM %     NET I/O           BLOCK I/O     PIDS
-96e5f2ac531a   nginx     0.00%     4.684MiB / 8EiB     0.00%     30.3kB / 36.5kB   6.21MB / 0B   3
 ```
+
+#### network status.
 
 Get network status.
 ```
@@ -865,12 +884,11 @@ Get network interface in host `cka001` with command `ip addr list`.
 IP pool of `10.4.0.1/24` is `ipam` and defined in `/etc/cni/net.d/nerdctl-bridge.conflist`.
 ```
 lo                   : inet 127.0.0.1/8 qlen 1000
-eth0                 : inet 172.16.18.161/24 brd 172.16.18.255 qlen 1000
+eth0                 : inet 172.16.18.170/24 brd 172.16.18.255 scope global dynamic eth0
 tunl0@NONE           : inet 10.244.228.192/32 scope global tunl0
-caliba807c85a4d@if4  :
-caliddefc8c6f4a@if4  :
-nerdctl0             : inet 10.4.0.1/24 brd 10.4.0.255 scope global nerdctl0
-vethf06612f5@if3     :
+calid100479d885@if4  :
+cali01418e9b2c2@if4  :
+cali24f48a34a33@if4  :
 ```
 
 
@@ -886,7 +904,6 @@ Summary:
 * Nodes
 * Namespaces
 * System Pods
-* Contexts
 
 #### Node
 
@@ -894,14 +911,14 @@ In Kubernetes layer, we have three nodes here, `cka001`, `cka002`, and `cka003`.
 
 Get nodes status.
 ```
-kubectl get node
+kubectl get node -o wide
 ```
 Result
 ```
-NAME     STATUS   ROLES                  AGE     VERSION   INTERNAL-IP     EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION      CONTAINER-RUNTIME
-cka001   Ready    control-plane,master   6h59m   v1.23.8   172.16.18.161   <none>        Ubuntu 20.04.4 LTS   5.4.0-113-generic   containerd://1.5.9
-cka002   Ready    <none>                 6h57m   v1.23.8   172.16.18.160   <none>        Ubuntu 20.04.4 LTS   5.4.0-113-generic   containerd://1.5.9
-cka003   Ready    <none>                 6h57m   v1.23.8   172.16.18.159   <none>        Ubuntu 20.04.4 LTS   5.4.0-113-generic   containerd://1.5.9
+NAME     STATUS   ROLES                  AGE   VERSION   INTERNAL-IP     EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION      CONTAINER-RUNTIME
+cka001   Ready    control-plane,master   56m   v1.23.8   172.16.18.170   <none>        Ubuntu 20.04.4 LTS   5.4.0-122-generic   containerd://1.5.9
+cka002   Ready    <none>                 52m   v1.23.8   172.16.18.169   <none>        Ubuntu 20.04.4 LTS   5.4.0-122-generic   containerd://1.5.9
+cka003   Ready    <none>                 52m   v1.23.8   172.16.18.168   <none>        Ubuntu 20.04.4 LTS   5.4.0-122-generic   containerd://1.5.9
 ```
 
 #### Namespaces
@@ -913,10 +930,11 @@ kubectl get namespace -A
 Result
 ```
 NAME              STATUS   AGE
-default           Active   27h
-kube-node-lease   Active   27h
-kube-public       Active   27h
-kube-system       Active   27h
+default           Active   56m
+dev               Active   22m
+kube-node-lease   Active   56m
+kube-public       Active   56m
+kube-system       Active   56m
 ```
 
 #### System Pods
@@ -927,20 +945,20 @@ kubectl get pod -A -o wide
 ```
 Result
 ```
-NAMESPACE     NAME                                       READY   STATUS    RESTARTS   AGE     IP               NODE     NOMINATED NODE   READINESS GATES
-kube-system   calico-kube-controllers-5c64b68895-fqqsd   1/1     Running   0          4h40m   10.244.228.194   cka001   <none>           <none>
-kube-system   calico-node-2pc7d                          1/1     Running   0          4h40m   172.16.18.159    cka003   <none>           <none>
-kube-system   calico-node-nr8pd                          0/1     Running   0          4h40m   172.16.18.161    cka001   <none>           <none>
-kube-system   calico-node-ssxn7                          1/1     Running   0          4h40m   172.16.18.160    cka002   <none>           <none>
-kube-system   coredns-6d8c4cb4d-v7pvc                    1/1     Running   0          4h48m   10.244.228.193   cka001   <none>           <none>
-kube-system   coredns-6d8c4cb4d-vlwnh                    1/1     Running   0          4h48m   10.244.102.1     cka003   <none>           <none>
-kube-system   etcd-cka001                                1/1     Running   2          4h48m   172.16.18.161    cka001   <none>           <none>
-kube-system   kube-apiserver-cka001                      1/1     Running   2          4h48m   172.16.18.161    cka001   <none>           <none>
-kube-system   kube-controller-manager-cka001             1/1     Running   2          4h48m   172.16.18.161    cka001   <none>           <none>
-kube-system   kube-proxy-55qkw                           1/1     Running   0          4h47m   172.16.18.159    cka003   <none>           <none>
-kube-system   kube-proxy-5qllr                           1/1     Running   0          4h48m   172.16.18.161    cka001   <none>           <none>
-kube-system   kube-proxy-qkvxh                           1/1     Running   0          4h47m   172.16.18.160    cka002   <none>           <none>
-kube-system   kube-scheduler-cka001                      1/1     Running   2          4h48m   172.16.18.161    cka001   <none>           <none>
+NAMESPACE     NAME                                       READY   STATUS    RESTARTS   AGE   IP               NODE     NOMINATED NODE   READINESS GATES
+kube-system   calico-kube-controllers-5c64b68895-jr4nl   1/1     Running   0          37m   10.244.228.194   cka001   <none>           <none>
+kube-system   calico-node-dsx76                          1/1     Running   0          37m   172.16.18.170    cka001   <none>           <none>
+kube-system   calico-node-p5rf2                          1/1     Running   0          37m   172.16.18.169    cka002   <none>           <none>
+kube-system   calico-node-tr22l                          1/1     Running   0          37m   172.16.18.168    cka003   <none>           <none>
+kube-system   coredns-6d8c4cb4d-g4jxc                    1/1     Running   0          56m   10.244.228.195   cka001   <none>           <none>
+kube-system   coredns-6d8c4cb4d-sqcvj                    1/1     Running   0          56m   10.244.228.193   cka001   <none>           <none>
+kube-system   etcd-cka001                                1/1     Running   0          56m   172.16.18.170    cka001   <none>           <none>
+kube-system   kube-apiserver-cka001                      1/1     Running   0          56m   172.16.18.170    cka001   <none>           <none>
+kube-system   kube-controller-manager-cka001             1/1     Running   0          56m   172.16.18.170    cka001   <none>           <none>
+kube-system   kube-proxy-5cdbj                           1/1     Running   0          52m   172.16.18.169    cka002   <none>           <none>
+kube-system   kube-proxy-cm4hc                           1/1     Running   0          56m   172.16.18.170    cka001   <none>           <none>
+kube-system   kube-proxy-g4w52                           1/1     Running   0          52m   172.16.18.168    cka003   <none>           <none>
+kube-system   kube-scheduler-cka001                      1/1     Running   0          56m   172.16.18.170    cka001   <none>           <none>
 ```
 
 Summary below shows the relationship between containers and pods. 
@@ -948,86 +966,16 @@ Summary below shows the relationship between containers and pods.
 Good references about container pause: [article](https://zhuanlan.zhihu.com/p/464712164) and [artical](https://cloud.tencent.com/developer/article/1583919).
 
 * Master node:
-    * CoreDNS: 1 Pod
+    * CoreDNS: 2 Pod
     * etcd: 1 Pod
     * apiserver: 1 Pod
     * controller-manager: 1 Pod
     * scheduler: 1 Pod
+    * Calico Controller: 1 Pod
 * All nodes:
-    * Calico: 
-        * Controller: 1 Pod
-        * Node: 1 Pod
-    * Proxy: 1 Pod
+    * Calico Node: 1 Pod each
+    * Proxy: 1 Pod each
 
-
-
-#### Contexts
-
-Let's check current configuration context of Kubernetes we just initialized. 
-
-```
-kubectl config get-contexts
-```
-
-* Contenxt name is `kubernetes-admin@kubernetes`.
-* Cluster name is `kubernetes`.
-* User is `kubernetes-admin`.
-* No namespace explicitly defined.
-
-```
-CURRENT   NAME                          CLUSTER      AUTHINFO           NAMESPACE
-*         kubernetes-admin@kubernetes   kubernetes   kubernetes-admin 
-```
-
-Create a new namespace `dev`.
-```
-kubectl create namespace dev
-```
-
-Update current context `kubernetes-admin@kubernetes` with new namespace `dev` as default namespace. 
-```
-kubectl config set-context kubernetes-admin@kubernetes --cluster=kubernetes --namespace=dev --user=kubernetes-admin 
-```
-
-Now default namespace is shown in current configuration context. 
-```
-kubectl config get-contexts
-```
-Result
-```
-CURRENT   NAME                          CLUSTER      AUTHINFO           NAMESPACE
-*         kubernetes-admin@kubernetes   kubernetes   kubernetes-admin   dev
-```
-
-With below command we create a pod `my-first-pod` on namespace `dev`.
-```
-kubectl apply -f - << EOF
-apiVersion: v1
-kind: Pod
-metadata:
-  namespace: dev
-  name: my-first-pod
-spec:
-  containers:
-  - name: nginx
-    image: nginx:mainline
-    ports:
-    - containerPort: 80
-EOF
-```
-
-By command `kubectl get pod -o wide` we get the pod status. The Pod is running on node `cka002`. The pod's ip is allocated by `tunl0`. Node is assigned by `Scheduler`. 
-```
-NAME           READY   STATUS    RESTARTS   AGE   IP             NODE     NOMINATED NODE   READINESS GATES
-my-first-pod   1/1     Running   0          52s   10.244.112.1   cka002   <none>           <none>
-```
-
-Log onto node `cka002`, we can find the containers of Pod `my-first-pod` via command `nerdctl -n k8s.io container ls | grep my-first-pod`.
-```
-CONTAINER ID    IMAGE                                                         COMMAND                   CREATED           STATUS    PORTS    NAMES
-3f9bdafde24f    docker.io/library/nginx:mainline                              "/docker-entrypoint.…"    11 minutes ago    Up                 k8s://dev/my-first-pod/nginx
-dab890f44541    registry.aliyuncs.com/google_containers/pause:3.6             "/pause"                  11 minutes ago    Up                 k8s://dev/my-first-pod
-```
 
 
 
