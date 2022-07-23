@@ -238,21 +238,11 @@ apt-get update && sudo apt-get install -y apt-transport-https ca-certificates cu
 
 Install gpg certificate. Just choose one of below command and execute.
 ```
-# For Ubuntu 20.04 release.
-curl https://mirrors.aliyun.com/kubernetes/apt/doc/apt-key.gpg | apt-key add -
-
-# For Ubuntu 22.04 release
 sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://mirrors.aliyun.com/kubernetes/apt/doc/apt-key.gpg
 ```
 
 Add Kubernetes repo. Just choose one of below command and execute.
 ```
-# For Ubuntu20.04 release
-cat <<EOF >/etc/apt/sources.list.d/kubernetes.list
-deb https://mirrors.aliyun.com/kubernetes/apt/ kubernetes-xenial main
-EOF
-
-# For Ubuntu 22.04 release
 echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://mirrors.aliyun.com/kubernetes/apt/ \
   kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
 ```
@@ -416,24 +406,13 @@ users:
 
 To get the current context:
 ```
-root@cka001:~# kubectl config get-contexts
+kubectl config get-contexts
+```
+Result
+```
 CURRENT   NAME                          CLUSTER      AUTHINFO           NAMESPACE
-*         kubernetes-admin@kubernetes   kubernetes   kubernetes-admin   dev
+*         kubernetes-admin@kubernetes   kubernetes   kubernetes-admin   
 ```
-
-To set a context with new update, e.g, update default namespace, etc..
-```
-kubectl config set-context <context name> --cluster=<cluster name> --namespace=<namespace name> --user=<user name> 
-```
-
-To switch to a new context.
-```
-kubectl config use-contexts <context name>
-```
-
-Reference of [kubectl](https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/) and [commandline](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands). 
-
-
 
 
 
@@ -447,14 +426,19 @@ Use `kubeadm token` to generate the join token and hash value.
 ```
 kubeadm token create --print-join-command
 ```
+Execute the command generated above on each node that we want to join the cluster as Worker node.
 
-Verify status on master node.
+
+Verify status on master node. 
 ```
-root@cka001:~# kubectl get node
-NAME     STATUS   ROLES                  AGE     VERSION
-cka001   Ready    control-plane,master   24m     v1.23.8
-cka002   Ready    <none>                 9m39s   v1.23.8
-cka003   Ready    <none>                 9m27s   v1.23.8
+kubectl get node -o wide
+```
+Result looks like below. All nodes' status is `NotReady`. Leave it at the moment and continue to install network plugin. 
+```
+NAME     STATUS     ROLES                  AGE   VERSION   INTERNAL-IP     EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION      CONTAINER-RUNTIME
+cka001   NotReady   control-plane,master   16m   v1.23.8   172.16.18.170   <none>        Ubuntu 20.04.4 LTS   5.4.0-122-generic   containerd://1.5.9
+cka002   NotReady   <none>                 12m   v1.23.8   172.16.18.169   <none>        Ubuntu 20.04.4 LTS   5.4.0-122-generic   containerd://1.5.9
+cka003   NotReady   <none>                 12m   v1.23.8   172.16.18.168   <none>        Ubuntu 20.04.4 LTS   5.4.0-122-generic   containerd://1.5.9
 ```
 
 
@@ -508,6 +492,7 @@ Install Calico
 curl https://docs.projectcalico.org/manifests/calico.yaml -O
 kubectl apply -f calico.yaml
 ```
+Result
 ```
 configmap/calico-config created
 customresourcedefinition.apiextensions.k8s.io/bgpconfigurations.crd.projectcalico.org created
@@ -539,58 +524,16 @@ poddisruptionbudget.policy/calico-kube-controllers created
 ```
 
 
-Install `calicoctl`.
-
-Download the calicoctl binary to a Linux host with access to Kubernetes. 
-The latest release of calicoctl can be found in the [git page](https://github.com/projectcalico/calico/releases) and replace below `v3.23.2` by actual release number.
-```
-wget https://github.com/projectcalico/calico/releases/download/v3.23.3/calicoctl-linux-amd64
-chmod +x calicoctl-linux-amd64
-sudo cp calicoctl-linux-amd64 /usr/local/bin/calicoctl
-```
-
-Configure calicoctl to access Kubernetes
-```
-echo "export KUBECONFIG=/root/.kube/config" >> ~/.bashrc
-echo "export DATASTORE_TYPE=kubernetes" >> ~/.bashrc
-
-echo $KUBECONFIG
-echo $DATASTORE_TYPE
-```
-
-Verify `calicoctl` can reach the datastore by running：
-```
-calicoctl get nodes -o wide
-```
-Output similar to below:
-```
-NAME     ASN       IPV4               IPV6   
-cka001   (64512)   10.4.0.1/24               
-cka002   (64512)   172.16.18.160/24          
-cka003   (64512)   172.16.18.159/24 
-```
-
-Install the CNI plugin Binaries.
-
-Get right release in the link `https://github.com/projectcalico/cni-plugin/releases`, and link `https://github.com/containernetworking/plugins/releases`.
-```
-mkdir -p /opt/cni/bin
-
-curl -L -o /opt/cni/bin/calico https://github.com/projectcalico/cni-plugin/releases/download/v3.20.5/calico-amd64
-chmod 755 /opt/cni/bin/calico
-
-curl -L -o /opt/cni/bin/calico-ipam https://github.com/projectcalico/cni-plugin/releases/download/v3.20.5/calico-ipam-amd64
-chmod 755 /opt/cni/bin/calico-ipam
-```
-```
-wget https://github.com/containernetworking/plugins/releases/download/v1.1.1/cni-plugins-linux-amd64-v1.1.1.tgz
-tar xvf cni-plugins-linux-amd64-v1.1.1.tgz -C /opt/cni/bin
-```
-
-
 Verify status of Calico.
 ```
 kubectl get pod -n kube-system | grep calico
+```
+Result
+```
+calico-kube-controllers-5c64b68895-jr4nl   1/1     Running   0          7m26s
+calico-node-dsx76                          1/1     Running   0          7m26s
+calico-node-p5rf2                          1/1     Running   0          7m26s
+calico-node-tr22l                          1/1     Running   0          7m26s
 ```
 
 Verify network status.
@@ -604,7 +547,6 @@ NETWORK ID    NAME               FILE
               host               
               none
 ```
-
 
 
 
@@ -622,11 +564,12 @@ kubectl cluster-info
 ```
 kubectl get nodes -owide
 ```
+All nodes are up with normal status.
 ```
 NAME     STATUS   ROLES                  AGE   VERSION   INTERNAL-IP     EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION      CONTAINER-RUNTIME
-cka001   Ready    control-plane,master   29m   v1.23.8   172.16.18.161   <none>        Ubuntu 20.04.4 LTS   5.4.0-113-generic   containerd://1.5.9
-cka002   Ready    <none>                 27m   v1.23.8   172.16.18.160   <none>        Ubuntu 20.04.4 LTS   5.4.0-113-generic   containerd://1.5.9
-cka003   Ready    <none>                 27m   v1.23.8   172.16.18.159   <none>        Ubuntu 20.04.4 LTS   5.4.0-113-generic   containerd://1.5.9
+cka001   Ready    control-plane,master   27m   v1.23.8   172.16.18.170   <none>        Ubuntu 20.04.4 LTS   5.4.0-122-generic   containerd://1.5.9
+cka002   Ready    <none>                 23m   v1.23.8   172.16.18.169   <none>        Ubuntu 20.04.4 LTS   5.4.0-122-generic   containerd://1.5.9
+cka003   Ready    <none>                 23m   v1.23.8   172.16.18.168   <none>        Ubuntu 20.04.4 LTS   5.4.0-122-generic   containerd://1.5.9
 ```
 
 ```
@@ -634,19 +577,19 @@ kubectl get pod -A
 ```
 ```
 NAMESPACE     NAME                                       READY   STATUS    RESTARTS   AGE
-kube-system   calico-kube-controllers-5c64b68895-fqqsd   1/1     Running   0          19m
-kube-system   calico-node-2pc7d                          1/1     Running   0          19m
-kube-system   calico-node-nr8pd                          0/1     Running   0          19m
-kube-system   calico-node-ssxn7                          1/1     Running   0          19m
-kube-system   coredns-6d8c4cb4d-v7pvc                    1/1     Running   0          28m
-kube-system   coredns-6d8c4cb4d-vlwnh                    1/1     Running   0          28m
-kube-system   etcd-cka001                                1/1     Running   2          28m
-kube-system   kube-apiserver-cka001                      1/1     Running   2          28m
-kube-system   kube-controller-manager-cka001             1/1     Running   2          28m
-kube-system   kube-proxy-55qkw                           1/1     Running   0          26m
-kube-system   kube-proxy-5qllr                           1/1     Running   0          28m
-kube-system   kube-proxy-qkvxh                           1/1     Running   0          27m
-kube-system   kube-scheduler-cka001                      1/1     Running   2          28m
+kube-system   calico-kube-controllers-5c64b68895-jr4nl   1/1     Running   0          9m50s
+kube-system   calico-node-dsx76                          1/1     Running   0          9m50s
+kube-system   calico-node-p5rf2                          1/1     Running   0          9m50s
+kube-system   calico-node-tr22l                          1/1     Running   0          9m50s
+kube-system   coredns-6d8c4cb4d-g4jxc                    1/1     Running   0          28m
+kube-system   coredns-6d8c4cb4d-sqcvj                    1/1     Running   0          28m
+kube-system   etcd-cka001                                1/1     Running   0          29m
+kube-system   kube-apiserver-cka001                      1/1     Running   0          29m
+kube-system   kube-controller-manager-cka001             1/1     Running   0          29m
+kube-system   kube-proxy-5cdbj                           1/1     Running   0          25m
+kube-system   kube-proxy-cm4hc                           1/1     Running   0          28m
+kube-system   kube-proxy-g4w52                           1/1     Running   0          25m
+kube-system   kube-scheduler-cka001                      1/1     Running   0          29m
 ```
 
 
@@ -758,9 +701,13 @@ Till now, the initial deployment is completed sucessfully.
 
 
 
+
+
 ## 2.Post Installation
 
 ### Bash Autocomplete
+
+On each node.
 
 Set `kubectl` [auto-completion](https://github.com/scop/bash-completion) following the [guideline](https://kubernetes.io/docs/tasks/tools/included/optional-kubectl-configs-bash-linux/).
 ```
@@ -777,6 +724,41 @@ If we set an alias for kubectl, we can extend shell completion to work with that
 echo 'alias k=kubectl' >>~/.bashrc
 echo 'complete -o default -F __start_kubectl k' >>~/.bashrc
 ```
+
+### Update Default Context
+
+Create Namespace `dev` in cluster.
+```
+kubectl create namespace dev
+```
+
+Get current context.
+```
+kubectl config get-contexts 
+```
+Result
+```
+CURRENT   NAME                          CLUSTER      AUTHINFO           NAMESPACE
+*         kubernetes-admin@kubernetes   kubernetes   kubernetes-admin 
+```
+
+To set a context with new update, e.g, update default namespace, etc.. 
+```
+kubectl config set-context <context name> --cluster=<cluster name> --namespace=<namespace name> --user=<user name> 
+```
+```
+kubectl config set-context kubernetes-admin@kubernetes --cluster=kubernetes --namespace=dev --user=kubernetes-admin
+```
+
+To switch to a new context.
+```
+kubectl config use-context <context name>
+```
+```
+kubectl config use-context kubernetes-admin@kubernetes
+```
+
+Reference of [kubectl](https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/) and [commandline](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands). 
 
 
 
