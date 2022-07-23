@@ -928,26 +928,6 @@
     Stress Testing
   </a>
   
-    <nav class="md-nav" aria-label="Stress Testing">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#install-ab" class="md-nav__link">
-    Install ab
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#concurrency-stres-test" class="md-nav__link">
-    Concurrency Stres Test
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
         
       </ul>
@@ -956,11 +936,11 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#10service" class="md-nav__link">
-    10.Service
+  <a href="#9service" class="md-nav__link">
+    9.Service
   </a>
   
-    <nav class="md-nav" aria-label="10.Service">
+    <nav class="md-nav" aria-label="9.Service">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1023,11 +1003,11 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#11ingress" class="md-nav__link">
-    11.Ingress
+  <a href="#10ingress" class="md-nav__link">
+    10.Ingress
   </a>
   
-    <nav class="md-nav" aria-label="11.Ingress">
+    <nav class="md-nav" aria-label="10.Ingress">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3906,12 +3886,12 @@ EOF
 </code></pre>
 <p>Result</p>
 <pre><code>NAME                                 READY   STATUS    RESTARTS   AGE   IP              NODE     NOMINATED NODE   READINESS GATES
-nginx-healthcheck-79fc55d944-6xv98   0/1     Running   0          6s    10.244.112.35   cka002   &lt;none&gt;           &lt;none&gt;
-nginx-healthcheck-79fc55d944-xqpsp   0/1     Running   0          6s    10.244.102.42   cka003   &lt;none&gt;           &lt;none&gt;
+nginx-healthcheck-79fc55d944-jw887   1/1     Running   0          9s    10.244.102.14   cka003   &lt;none&gt;           &lt;none&gt;
+nginx-healthcheck-79fc55d944-nwwjc   1/1     Running   0          9s    10.244.112.13   cka002   &lt;none&gt;           &lt;none&gt;
 </code></pre>
 <p>Access Pod IP via <code>curl</code> command, e.g., above example.</p>
-<pre><code>curl 10.244.112.35
-curl 10.244.102.42
+<pre><code>curl 10.244.102.14
+curl 10.244.112.13
 </code></pre>
 <p>We see a successful <code>index.html</code> content of Nginx below with above example.</p>
 <p>Check details of Service craeted in above example.</p>
@@ -3926,12 +3906,12 @@ Selector:                 name=nginx-healthcheck
 Type:                     NodePort
 IP Family Policy:         SingleStack
 IP Families:              IPv4
-IP:                       11.244.236.198
-IPs:                      11.244.236.198
+IP:                       11.244.238.20
+IPs:                      11.244.238.20
 Port:                     &lt;unset&gt;  80/TCP
 TargetPort:               80/TCP
-NodePort:                 &lt;unset&gt;  32159/TCP
-Endpoints:                10.244.102.42:80,10.244.112.35:80
+NodePort:                 &lt;unset&gt;  31795/TCP
+Endpoints:                10.244.102.14:80,10.244.112.13:80
 Session Affinity:         None
 External Traffic Policy:  Cluster
 Events:                   &lt;none&gt;
@@ -3941,56 +3921,50 @@ Events:                   &lt;none&gt;
 </code></pre>
 <p>Result</p>
 <pre><code>NAME                ENDPOINTS                           AGE
-nginx-healthcheck   10.244.102.42:80,10.244.112.35:80   33m
+nginx-healthcheck   10.244.102.14:80,10.244.112.13:80   72s
 </code></pre>
 <p>Till now, two <code>nginx-healthcheck</code> Pods are working and providing service as expected. </p>
 <h4 id="simulate-error">Simulate Error</h4>
 <p>Let's simulate an error by deleting and <code>index.html</code> file in on of <code>nginx-healthcheck</code> Pod and see what's readinessProbe will do.</p>
 <p>First, execute <code>kubectl exec -it &lt;your_pod_name&gt; -- bash</code> to log into <code>nginx-healthcheck</code> Pod, and delete the <code>index.html</code> file.</p>
-<pre><code>kubectl exec -it nginx-healthcheck-79fc55d944-6xv98 -- bash
+<pre><code>kubectl exec -it nginx-healthcheck-79fc55d944-jw887 -- bash
 cd /usr/share/nginx/html/
 rm -rf index.html
 exit
 </code></pre>
 <p>After that, let's check the status of above Pod that <code>index.html</code> file was deleted.</p>
-<pre><code>kubectl describe pod nginx-healthcheck-79fc55d944-6xv98
+<pre><code>kubectl describe pod nginx-healthcheck-79fc55d944-jw887
 </code></pre>
 <p>We can now see <code>Readiness probe failed</code> error event message.</p>
-<pre><code>Events:
-  Type     Reason     Age               From               Message
-  ----     ------     ----              ----               -------
-  Normal   Scheduled  35m               default-scheduler  Successfully assigned dev/nginx-healthcheck-79fc55d944-6xv98 to cka002
-  Normal   Pulled     35m               kubelet            Container image &quot;nginx:latest&quot; already present on machine
-  Normal   Created    35m               kubelet            Created container nginx-healthcheck
-  Normal   Started    35m               kubelet            Started container nginx-healthcheck
-  Warning  Unhealthy  4s (x5 over 19s)  kubelet            Readiness probe failed: HTTP probe failed with statuscode: 403
+<pre><code>......
+Events:
+  Type     Reason     Age              From               Message
+  ----     ------     ----             ----               -------
+  Normal   Scheduled  2m8s             default-scheduler  Successfully assigned dev/nginx-healthcheck-79fc55d944-jw887 to cka003
+  Normal   Pulled     2m7s             kubelet            Container image &quot;nginx:latest&quot; already present on machine
+  Normal   Created    2m7s             kubelet            Created container nginx-healthcheck
+  Normal   Started    2m7s             kubelet            Started container nginx-healthcheck
+  Warning  Unhealthy  2s (x2 over 7s)  kubelet            Readiness probe failed: HTTP probe failed with statuscode: 403
 </code></pre>
 <p>Let's check another Pod. </p>
-<pre><code>kubectl describe pod nginx-healthcheck-79fc55d944-xqpsp
+<pre><code>kubectl describe pod nginx-healthcheck-79fc55d944-nwwjc
 </code></pre>
 <p>There is no error info.</p>
-<pre><code>Events:
-  Type    Reason     Age   From               Message
-  ----    ------     ----  ----               -------
-  Normal  Scheduled  37m   default-scheduler  Successfully assigned dev/nginx-healthcheck-79fc55d944-xqpsp to cka003
-  Normal  Pulled     37m   kubelet            Container image &quot;nginx:latest&quot; already present on machine
-  Normal  Created    37m   kubelet            Created container nginx-healthcheck
-  Normal  Started    37m   kubelet            Started container nginx-healthcheck
+<pre><code>......
+Events:
+  Type    Reason     Age    From               Message
+  ----    ------     ----   ----               -------
+  Normal  Scheduled  3m46s  default-scheduler  Successfully assigned dev/nginx-healthcheck-79fc55d944-nwwjc to cka002
+  Normal  Pulled     3m45s  kubelet            Container image &quot;nginx:latest&quot; already present on machine
+  Normal  Created    3m45s  kubelet            Created container nginx-healthcheck
+  Normal  Started    3m45s  kubelet            Started container nginx-healthcheck
 </code></pre>
 <p>Now, access Pod IP via <code>curl</code> command and see what the result of each Pod.</p>
-<pre><code>curl 10.244.102.42:80
-curl 10.244.112.35:80
+<pre><code>curl 10.244.102.14
+curl 10.244.112.13
 </code></pre>
-<p><code>curl 10.244.102.42:80</code> works well.
-<code>curl 10.244.112.35:80</code> failed with <code>forbideen</code> error below. </p>
-<pre><code>&lt;html&gt;
-&lt;head&gt;&lt;title&gt;403 Forbidden&lt;/title&gt;&lt;/head&gt;
-&lt;body&gt;
-&lt;center&gt;&lt;h1&gt;403 Forbidden&lt;/h1&gt;&lt;/center&gt;
-&lt;hr&gt;&lt;center&gt;nginx/1.23.0&lt;/center&gt;
-&lt;/body&gt;
-&lt;/html&gt;
-</code></pre>
+<p><code>curl 10.244.102.14</code> failed with <code>403 Forbidden</code> error below. 
+<code>curl 10.244.112.13</code> works well.</p>
 <p>Let's check current status of Nginx Service after one of Pods runs into failure. </p>
 <pre><code>kubectl describe svc nginx-healthcheck
 </code></pre>
@@ -4003,12 +3977,12 @@ Selector:                 name=nginx-healthcheck
 Type:                     NodePort
 IP Family Policy:         SingleStack
 IP Families:              IPv4
-IP:                       11.244.236.198
-IPs:                      11.244.236.198
+IP:                       11.244.238.20
+IPs:                      11.244.238.20
 Port:                     &lt;unset&gt;  80/TCP
 TargetPort:               80/TCP
-NodePort:                 &lt;unset&gt;  32159/TCP
-Endpoints:                10.244.102.42:80
+NodePort:                 &lt;unset&gt;  31795/TCP
+Endpoints:                10.244.112.13:80
 Session Affinity:         None
 External Traffic Policy:  Cluster
 Events:                   &lt;none&gt;
@@ -4018,11 +3992,11 @@ Events:                   &lt;none&gt;
 </code></pre>
 <p>Output:</p>
 <pre><code>NAME                ENDPOINTS          AGE
-nginx-healthcheck   10.244.102.42:80   41m
+nginx-healthcheck   10.244.112.13:80   6m5s
 </code></pre>
 <h4 id="fix-error-verify">Fix Error &amp; Verify</h4>
 <p>Let's re-create the <code>index.html</code> file again in the Pod. </p>
-<pre><code>kubectl exec -it nginx-healthcheck-79fc55d944-6xv98 -- bash
+<pre><code>kubectl exec -it nginx-healthcheck-79fc55d944-jw887 -- bash
 
 cd /usr/share/nginx/html/
 
@@ -4062,15 +4036,19 @@ exit
 kubectl get endpoints nginx-healthcheck
 </code></pre>
 <p>Re-access Pod IP via <code>curl</code> command and we can see both are back to normal status.</p>
-<pre><code>curl 10.244.102.42:80
-curl 10.244.112.35:80
+<pre><code>curl 10.244.102.14
+curl 10.244.112.13
 </code></pre>
 <p>Verify the Pod status again. </p>
-<pre><code>kubectl describe pod nginx-healthcheck-79fc55d944-6xv98
+<pre><code>kubectl describe pod nginx-healthcheck-79fc55d944-jw887
 </code></pre>
 <h4 id="conclusion">Conclusion</h4>
 <p>By delete the <code>index.html</code> file, the Pod is in unhealth status and is removed from endpoint list. 
 One one health Pod can provide normal service.</p>
+<p>Clean up</p>
+<pre><code>kubectl delete service nginx-healthcheck
+kubectl delete deployment nginx-healthcheck
+</code></pre>
 <h2 id="7namespace">7.Namespace</h2>
 <p>Get list of Namespace</p>
 <pre><code>kubectl get namespace
@@ -4104,6 +4082,9 @@ pod/nginx-85b98978db-bmkhf   1/1     Running   0          2m14s
 <p>Summary:</p>
 <ul>
 <li>Install Metrics Server component</li>
+<li>Create Deployment <code>podinfo</code> and Service <code>podinfo</code> for stress testing</li>
+<li>Create HPA <code>nginx</code></li>
+<li>Stress Testing</li>
 </ul>
 <h3 id="install-metrics-server-component">Install Metrics Server component</h3>
 <p>Download yaml file for Metrics Server component</p>
@@ -4116,7 +4097,8 @@ pod/nginx-85b98978db-bmkhf   1/1     Running   0          2m14s
 <pre><code>vi components.yaml
 </code></pre>
 <p>Updated <code>arg</code> of <code>metrics-server</code> is below.</p>
-<pre><code>  template:
+<pre><code>......
+  template:
     metadata:
       labels:
         k8s-app: metrics-server
@@ -4130,7 +4112,7 @@ pod/nginx-85b98978db-bmkhf   1/1     Running   0          2m14s
         - --metric-resolution=15s
         - --kubelet-insecure-tls
         image: registry.aliyuncs.com/google_containers/metrics-server:v0.6.1
-
+......
 </code></pre>
 <p>Appy the yaml file <code>components.yaml</code> to deploy <code>metrics-server</code>.</p>
 <pre><code>kubectl apply -f components.yaml
@@ -4149,18 +4131,22 @@ apiservice.apiregistration.k8s.io/v1beta1.metrics.k8s.io created
 <p>Verify if <code>metrics-server</code> Pod is running as expected (<code>1/1</code> running)</p>
 <pre><code>kubectl get pod -n kube-system -owide | grep metrics-server
 </code></pre>
+<p>Result</p>
+<pre><code>NAME                                       READY   STATUS    RESTARTS   AGE     IP               NODE     NOMINATED NODE   READINESS GATES
+metrics-server-7fd564dc66-sdhdc            1/1     Running   0          61s     10.244.102.15    cka003   &lt;none&gt;           &lt;none&gt;
+</code></pre>
 <p>Get current usage of CPU, memory of each node.</p>
 <pre><code>kubectl top node
 </code></pre>
 <p>Result:</p>
 <pre><code>NAME     CPU(cores)   CPU%   MEMORY(bytes)   MEMORY%   
-cka001   148m         7%     1746Mi          45%
-cka002   41m          2%     1326Mi          34%       
-cka003   39m          1%     1383Mi          36%
+cka001   595m         29%    1937Mi          50%       
+cka002   75m          3%     1081Mi          28%       
+cka003   79m          3%     1026Mi          26% 
 </code></pre>
 <h3 id="deploy-a-service-podinfo">Deploy a Service <code>podinfo</code></h3>
-<p>Create and apply the yaml file <code>podinfo.yaml</code> to deploy Deployment and Service <code>podinfo</code> for further stress testing.</p>
-<pre><code>cat &gt; podinfo.yaml &lt;&lt; EOF
+<p>Create Deployment <code>podinfo</code> and Service <code>podinfo</code> for further stress testing.</p>
+<pre><code>kubectl apply -f - &lt;&lt; EOF
 apiVersion: v1
 kind: Service
 metadata:
@@ -4214,12 +4200,10 @@ spec:
             cpu: &quot;100m&quot;
 EOF
 
-
-kubectl apply -f podinfo.yaml
 </code></pre>
 <h3 id="config-hpa">Config HPA</h3>
-<p>Create and apply yaml file <code>hpa.yaml</code> for HPA by setting CPU threshold <code>50%</code> to trigger auto-scalling with minimal <code>2</code> and maximal <code>10</code> Replicas.</p>
-<pre><code>cat &gt; hpa.yaml &lt;&lt;EOF
+<p>Create HPA <code>nginx</code> by setting CPU threshold <code>50%</code> to trigger auto-scalling with minimal <code>2</code> and maximal <code>10</code> Replicas.</p>
+<pre><code>kubectl apply -f - &lt;&lt;EOF
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
@@ -4234,21 +4218,19 @@ spec:
   targetCPUUtilizationPercentage: 50
 EOF
 
-
-kubectl apply -f hpa.yaml
 </code></pre>
 <p>Get status of HPA.</p>
 <pre><code>kubectl get hpa
 </code></pre>
 <p>Result:</p>
 <pre><code>NAME    REFERENCE            TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
-nginx   Deployment/podinfo   10%/50%   2         10        2          26s
+nginx   Deployment/podinfo   5%/50%    2         10        2          21s
 </code></pre>
 <h3 id="stress-testing">Stress Testing</h3>
+<p>Install ab</p>
 <p>Here we will use <code>ab</code> tool to simulate 1000 concurrency.</p>
 <p>The <code>ab</code> command is a command line load testing and benchmarking tool for web servers that allows you to simulate high traffic to a website. </p>
 <p>The short definition form apache.org is: The acronym <code>ab</code> stands for Apache Bench where bench is short for benchmarking.</p>
-<h4 id="install-ab">Install ab</h4>
 <p>Execute below command to install <code>ab</code> tool.</p>
 <pre><code>apt install apache2-utils -y
 </code></pre>
@@ -4263,28 +4245,24 @@ nginx   Deployment/podinfo   10%/50%   2         10        2          26s
 <p>Example: </p>
 <pre><code>ab -n 1000 -c 100 http://www.baidu.com/
 </code></pre>
-<h4 id="concurrency-stres-test">Concurrency Stres Test</h4>
-<p>Simulate 1000 concurrency request to current node running command <code>ab</code>.</p>
+<p>Concurrency Stres Test </p>
+<p>Simulate 1000 concurrency request to current node running command <code>ab</code>. Node port <code>31198</code> is the for the service <code>podinfo</code>.</p>
 <pre><code>ab -c 1000 -t 60 http://127.0.0.1:31198/
 </code></pre>
 <p>By command <code>kubectl get hpa -w</code> we can see that CPU workload has been increasing.</p>
-<pre><code>NAME    REFERENCE            TARGETS    MINPODS   MAXPODS   REPLICAS   AGE
-nginx   Deployment/podinfo   388%/50%   2         10        10         32m
+<pre><code>NAME    REFERENCE            TARGETS     MINPODS   MAXPODS   REPLICAS   AGE
+......
+nginx   Deployment/podinfo   199%/50%    2         10        10         14m
+nginx   Deployment/podinfo   934%/50%    2         10        10         14m
+nginx   Deployment/podinfo   964%/50%    2         10        10         14m
+nginx   Deployment/podinfo   992%/50%    2         10        10         15m
+nginx   Deployment/podinfo   728%/50%    2         10        10         15m
+nginx   Deployment/podinfo   119%/50%    2         10        10         15m
+......
 </code></pre>
-<p>And see auto-scalling automically triggered via commands <code>kubectl get pod</code> and <code>kubectl get deployment</code>.</p>
-<pre><code>NAME                                 READY   STATUS    RESTARTS   AGE
-nginx-healthcheck-79fc55d944-9jbvj   1/1     Running   0          153m
-nginx-healthcheck-79fc55d944-rwx7n   1/1     Running   0          153m
-podinfo-668b5b9b5b-4rxwr             1/1     Running   0          51m
-podinfo-668b5b9b5b-6vm5k             1/1     Running   0          6m
-podinfo-668b5b9b5b-7p74p             1/1     Running   0          5m45s
-podinfo-668b5b9b5b-8929m             1/1     Running   0          5m45s
-podinfo-668b5b9b5b-9fr28             1/1     Running   0          51m
-podinfo-668b5b9b5b-dz74z             1/1     Running   0          6m
-podinfo-668b5b9b5b-fzszt             1/1     Running   0          5m30s
-podinfo-668b5b9b5b-gb2qq             1/1     Running   0          5m45s
-podinfo-668b5b9b5b-tbdvj             1/1     Running   0          5m30s
-podinfo-668b5b9b5b-z6dlh             1/1     Running   0          5m45s
+<p>And see auto-scalling automically triggered for Deployment <code>podinfo</code>.</p>
+<pre><code>kubectl get pod
+kubectl get deployment
 </code></pre>
 <p>Please be noted the scale up is a phased process rather than a sudden event to scale to max. 
 And it'll be scaled down to a balanced status when CPU workload is down.</p>
@@ -4294,14 +4272,26 @@ And it'll be scaled down to a balanced status when CPU workload is down.</p>
 <pre><code>NAME    REFERENCE            TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
 nginx   Deployment/podinfo   0%/50%    2         10        2          8h 
 </code></pre>
-<h2 id="10service">10.Service</h2>
+<p>Clean up.</p>
+<pre><code>kubectl delete service podinfo
+kubectl delete deployment podinfo
+</code></pre>
+<h2 id="9service">9.Service</h2>
+<p>Summary:</p>
+<ul>
+<li>Create Deployment <code>httpd-app</code>.</li>
+<li>Create Service <code>httpd-app</code> with type <code>ClusterIP</code>, which is default type and accessable internally.</li>
+<li>Verify the access to Pod IP and Service ClusterIP.</li>
+<li>Update Service <code>httpd-app</code> with type <code>NodePort</code>. No change to the Deployment <code>httpd-app</code>.</li>
+<li>Verify the access to Node. The access will route to Pod. The service is now accesable from outside.</li>
+<li>Create Headless Service <code>web</code> and StatefulSet <code>web</code>.</li>
+</ul>
 <h3 id="clusterip">ClusterIP</h3>
 <h4 id="create-service">Create Service</h4>
 <p>Create a Deployment <code>http-app</code>.
-Create a Service with same name and link with Development by Label Selector. 
-Service type is <code>ClusterIP</code>, which is default type and accessable internally. </p>
-<p>Create yaml file <code>svc-clusterip.yaml</code> and apply it to create Deployment and Service <code>http-app</code>.</p>
-<pre><code>cat &gt; svc-clusterip.yaml &lt;&lt;EOF
+Create a Service <code>httpd-app</code> link to Development <code>http-app</code> by Label Selector. </p>
+<p>Service type is <code>ClusterIP</code>, which is default type and accessable internally. </p>
+<pre><code>kubectl apply -f - &lt;&lt;EOF
 apiVersion: v1
 kind: Service
 metadata:
@@ -4335,53 +4325,54 @@ spec:
         ports:
         - containerPort: 80
 EOF
-
-kubectl apply -f svc-clusterip.yaml
 </code></pre>
 <p>Execute command <code>kubectl get deployment,service,pod -o wide</code> to check resources we created. </p>
-<pre><code>NAME                        READY   UP-TO-DATE   AVAILABLE   AGE    CONTAINERS   IMAGES   SELECTOR
-deployment.apps/httpd-app   2/2     2            2           3m1s   httpd        httpd    app=httpd
+<pre><code>NAME                        READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS   IMAGES   SELECTOR
+deployment.apps/httpd-app   0/2     2            0           14s   httpd        httpd    app=httpd
 
-NAME                TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE    SELECTOR
-service/httpd-app   ClusterIP   10.100.67.181   &lt;none&gt;        80/TCP    3m1s   app=httpd
+NAME                TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)   AGE   SELECTOR
+service/httpd-app   ClusterIP   11.244.247.7   &lt;none&gt;        80/TCP    14s   app=httpd
 
-NAME                             READY   STATUS    RESTARTS   AGE    IP            NODE     NOMINATED NODE   READINESS GATES
-pod/httpd-app-6496d888c9-mg2jt   1/1     Running   0          3m1s   10.244.2.97   cka003   &lt;none&gt;           &lt;none&gt;
-pod/httpd-app-6496d888c9-pdgq8   1/1     Running   0          3m1s   10.244.1.19   cka002   &lt;none&gt;           &lt;none&gt;
+NAME                             READY   STATUS    RESTARTS   AGE    IP              NODE     NOMINATED NODE   READINESS GATES
+pod/httpd-app-6496d888c9-4nb6z   1/1     Running   0          77s    10.244.102.21   cka003   &lt;none&gt;           &lt;none&gt;
+pod/httpd-app-6496d888c9-b7xht   1/1     Running   0          77s    10.244.112.19   cka002   &lt;none&gt;           &lt;none&gt;
 </code></pre>
-<p>Verify the access from node <code>cka001</code> to Pod IPs.</p>
-<pre><code>curl 10.244.2.97
-curl 10.244.1.19
+<p>Verify the access to Pod IPs.</p>
+<pre><code>curl 10.244.102.21
+curl 10.244.112.19
 </code></pre>
 <p>And receive below successful information.</p>
 <pre><code>&lt;html&gt;&lt;body&gt;&lt;h1&gt;It works!&lt;/h1&gt;&lt;/body&gt;&lt;/html&gt;
 </code></pre>
 <p>Verify the access via ClusterIP with Port.</p>
-<pre><code>curl 10.100.67.181:80
+<pre><code>curl 11.244.247.7:80
 </code></pre>
 <p>And receive below successful information.</p>
 <pre><code>&lt;html&gt;&lt;body&gt;&lt;h1&gt;It works!&lt;/h1&gt;&lt;/body&gt;&lt;/html&gt;
 </code></pre>
 <h4 id="expose-service_1">Expose Service</h4>
-<p>Create and attach to a temporary Pod <code>Busybox</code> and use <code>nslookup</code> to verify DNS resolution. The option <code>--rm</code> means delete the Pod after exit.</p>
+<p>Create and attach to a temporary Pod <code>nslookup</code> and to verify DNS resolution. The option <code>--rm</code> means delete the Pod after exit.</p>
 <pre><code>kubectl run -it nslookup --rm --image=busybox:1.28
 </code></pre>
-<p>After attach to the Pod, run command <code>nslookup httpd-app</code>. The IP address <code>10.100.67.181</code> of name <code>httpd-app</code> we received is the ClusterIP of Service <code>httpd-app</code>.</p>
+<p>After attach to the Pod, run command <code>nslookup httpd-app</code>. We receive the ClusterIP of Service <code>httpd-app</code> and full domain name.</p>
 <pre><code>/ # nslookup httpd-app
-Server:    10.96.0.10
-Address 1: 10.96.0.10 kube-dns.kube-system.svc.cluster.local
+Server:    11.244.0.10
+Address 1: 11.244.0.10 kube-dns.kube-system.svc.cluster.local
 
 Name:      httpd-app
-Address 1: 10.100.67.181 httpd-app.dev.svc.cluster.local
+Address 1: 11.244.247.7 httpd-app.dev.svc.cluster.local
 </code></pre>
-<p>We can check the IP of temporary Pod <code>Busybox</code> in a new terminal by executing command <code>kubectl get pod -o wide</code>. The Pod <code>Busybox</code> has different IP <code>10.244.2.98</code>.</p>
-<pre><code>root@cka001:~# kubectl get pod nslookup
-NAME                         READY   STATUS    RESTARTS   AGE   IP            NODE     NOMINATED NODE   READINESS GATES
-nslookup                     1/1     Running   0          12m   10.244.2.98   cka003   &lt;none&gt;           &lt;none&gt;
+<p>We can check the IP of temporary Pod <code>nslookup</code> in a new terminal by executing command <code>kubectl get pod -o wide</code>. 
+The Pod <code>nslookup</code> has Pod IP <code>10.244.112.20</code>.</p>
+<pre><code>kubectl get pod nslookup
+</code></pre>
+<p>Result</p>
+<pre><code>NAME       READY   STATUS    RESTARTS   AGE     IP              NODE     NOMINATED NODE   READINESS GATES
+nslookup   1/1     Running   0          2m44s   10.244.112.20   cka002   &lt;none&gt;           &lt;none&gt;
 </code></pre>
 <h3 id="nodeport">NodePort</h3>
 <p>Create and apply yaml file <code>svc-nodeport.yaml</code> to create a Service <code>httpd-app</code>.</p>
-<pre><code>cat &gt; svc-nodeport.yaml &lt;&lt;EOF
+<pre><code>kubectl apply -f - &lt;&lt;EOF
 apiVersion: v1
 kind: Service
 metadata:
@@ -4415,9 +4406,6 @@ spec:
         ports:
         - containerPort: 80
 EOF
-
-
-kubectl apply -f svc-nodeport.yaml
 </code></pre>
 <p>We will receive below output. The command <code>kubectl apply -f &lt;yaml_file&gt;</code> will update configuration to existing resources.
 Here the Service <code>httpd-app</code> is changed from <code>ClusterIP</code> to <code>NodePort</code> type. No change to the Deployment <code>httpd-app</code>.</p>
@@ -4428,17 +4416,21 @@ deployment.apps/httpd-app unchanged
 IP is the same.
 Type is changed to NodePort.
 Port numbers is changed from <code>80/TCP</code> to <code>80:30080/TCP</code>.</p>
-<pre><code>NAME        TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
-httpd-app   NodePort   10.100.67.181   &lt;none&gt;        80:30080/TCP   78m
+<pre><code>NAME        TYPE       CLUSTER-IP     EXTERNAL-IP   PORT(S)        AGE
+httpd-app   NodePort   11.244.247.7   &lt;none&gt;        80:30080/TCP   18m
 </code></pre>
-<p>Test the connection to the Service <code>httpd-app</code> via command <code>curl &lt;your_node_ip&gt;:30080</code>. It's node IP, not cluster IP, nor Pod IP.
-We will receive below successful information.</p>
+<p>Test the connection to the Service <code>httpd-app</code> via command <code>curl &lt;your_node_ip&gt;:30080</code> to each node.</p>
+<pre><code>curl 172.16.18.170:30080
+curl 172.16.18.169:30080
+curl 172.16.18.168:30080
+</code></pre>
+<p>We will receive below successful information.</p>
 <pre><code>&lt;html&gt;&lt;body&gt;&lt;h1&gt;It works!&lt;/h1&gt;&lt;/body&gt;&lt;/html&gt;
 </code></pre>
 <h3 id="special-service">Special Service</h3>
 <h4 id="headless-service">Headless Service</h4>
-<p>Create and apply yaml file <code>svc-headless.yaml</code> to create a <code>Headless Service</code>.</p>
-<pre><code>cat &gt; svc-headless.yaml &lt;&lt;EOF
+<p>Create Headless Service <code>web</code> and StatefulSet <code>web</code>.</p>
+<pre><code>kubectl apply -f - &lt;&lt;EOF
 apiVersion: v1
 kind: Service
 metadata:
@@ -4475,13 +4467,11 @@ spec:
         - containerPort: 80
           name: web
 EOF
-
-kubectl apply -f svc-headless.yaml
 </code></pre>
 <p>Check Pos by command <code>kubectl get pod -owide -l app=web</code>.</p>
-<pre><code>NAME    READY   STATUS    RESTARTS   AGE   IP            NODE     NOMINATED NODE   READINESS GATES
-web-0   1/1     Running   0          85s   10.244.2.99   cka003   &lt;none&gt;           &lt;none&gt;
-web-1   1/1     Running   0          82s   10.244.1.20   cka002   &lt;none&gt;           &lt;none&gt;
+<pre><code>NAME    READY   STATUS    RESTARTS   AGE   IP              NODE     NOMINATED NODE   READINESS GATES
+web-0   1/1     Running   0          9s    10.244.102.22   cka003   &lt;none&gt;           &lt;none&gt;
+web-1   1/1     Running   0          6s    10.244.112.21   cka002   &lt;none&gt;           &lt;none&gt;
 </code></pre>
 <p>Get details of the Service by command <code>kubectl describe svc -l app=web</code>.</p>
 <pre><code>Name:              web
@@ -4496,33 +4486,43 @@ IP:                None
 IPs:               None
 Port:              web  80/TCP
 TargetPort:        80/TCP
-Endpoints:         10.244.1.20:80,10.244.2.99:80
+Endpoints:         10.244.102.22:80,10.244.112.21:80
 Session Affinity:  None
 Events:            &lt;none&gt;
 </code></pre>
-<p>启动一个Busybox Pod，使用 nslookup 来 测试 DNS 解析</p>
-<p>Attach to the temporary Pod <code>Busybox</code> and use <code>nslookup</code> to verify DNS resolution.</p>
+<p>Attach to the temporary Pod <code>nslookup</code> and use <code>nslookup</code> to verify DNS resolution.</p>
 <pre><code>kubectl run -it nslookup --rm --image=busybox:1.28
 </code></pre>
-<p>With <code>nslookup</code> command for Headless Service <code>web</code>, we received two IP of Pods, not ClusterIP due to Headless Service. </p>
+<p>With <code>nslookup</code> command for Headless Service <code>web</code>, we received two Pod IPs, not ClusterIP due to Headless Service. </p>
 <pre><code>/ # nslookup web
-Server:    10.96.0.10
-Address 1: 10.96.0.10 kube-dns.kube-system.svc.cluster.local
+Server:    11.244.0.10
+Address 1: 11.244.0.10 kube-dns.kube-system.svc.cluster.local
 
 Name:      web
-Address 1: 10.244.2.99 web-0.web.dev.svc.cluster.local
-Address 2: 10.244.1.20 web-1.web.dev.svc.cluster.local
+Address 1: 10.244.112.21 web-1.web.dev.svc.cluster.local
+Address 2: 10.244.102.22 web-0.web.dev.svc.cluster.local
 </code></pre>
-<p>We can also use <code>nslookup</code> for <code>web-0.web</code> and <code>web-0.web</code>. Every Pod of Headless Service has own Service Name for DNS lookup.</p>
+<p>We can also use <code>nslookup</code> for <code>web-0.web</code> and <code>web-1.web</code>. Every Pod of Headless Service has own Service Name for DNS lookup.</p>
 <pre><code>/ # nslookup web-0.web
-Server:    10.96.0.10
-Address 1: 10.96.0.10 kube-dns.kube-system.svc.cluster.local
+Server:    11.244.0.10
+Address 1: 11.244.0.10 kube-dns.kube-system.svc.cluster.local
 
 Name:      web-0.web
-Address 1: 10.244.2.99 web-0.web.dev.svc.cluster.local
+Address 1: 10.244.102.22 web-0.web.dev.svc.cluster.local
+
+/ # nslookup web-1.web
+Server:    11.244.0.10
+Address 1: 11.244.0.10 kube-dns.kube-system.svc.cluster.local
+
+Name:      web-1.web
+Address 1: 10.244.112.21 web-1.web.dev.svc.cluster.local
 </code></pre>
-<p>Clean up all resources created before.</p>
-<h2 id="11ingress">11.Ingress</h2>
+<p>Clean up.</p>
+<pre><code>kubectl delete sts web
+kubectl delete service httpd-app web
+kubectl delete deployment httpd-app 
+</code></pre>
+<h2 id="10ingress">10.Ingress</h2>
 <h3 id="deploy-ingress-controller">Deploy Ingress Controller</h3>
 <p>Get Ingress Controller yaml file.</p>
 <pre><code>wget https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.2.1/deploy/static/provider/cloud/deploy.yaml
