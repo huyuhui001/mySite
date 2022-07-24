@@ -260,7 +260,7 @@ Check available versions of kubeadm.
 apt policy kubeadm
 ```
 
-Install `1.23.8-00` version of kubeadm and will upgrade to `1.24.2` later.
+Install `1.23.8-00` version of kubeadm and will upgrade to `1.23.9` later.
 ```
 sudo apt-get -y install kubelet=1.23.8-00 kubeadm=1.23.8-00 kubectl=1.23.8-00 --allow-downgrades
 ```
@@ -5446,6 +5446,7 @@ Get overview of directory `/etc/kubernetes/pki`.
 ```
 tree /etc/kubernetes/pki
 ```
+Result
 ```
 /etc/kubernetes/pki
 ├── apiserver.crt
@@ -5565,10 +5566,10 @@ Get below files.
 ll -tr | grep cka-dev
 ```
 ```
--rw-r--r-- 1 root root  222 Jul 18 20:36 cka-dev-csr.json
--rw-r--r-- 1 root root 1281 Jul 18 20:49 cka-dev.pem
--rw------- 1 root root 1679 Jul 18 20:49 cka-dev-key.pem
--rw-r--r-- 1 root root 1001 Jul 18 20:49 cka-dev.csr
+-rw-r--r-- 1 root root  222 Jul 24 08:49 cka-dev-csr.json
+-rw-r--r-- 1 root root 1281 Jul 24 09:14 cka-dev.pem
+-rw------- 1 root root 1675 Jul 24 09:14 cka-dev-key.pem
+-rw-r--r-- 1 root root 1001 Jul 24 09:14 cka-dev.csr
 ```
 
 
@@ -5579,7 +5580,7 @@ ll -tr | grep cka-dev
 
 #### Create file kubeconfig
 
-Get the IP of Control Plane (e.g., `172.16.18.170` here) to composite evn variable `KUBE_APISERVER` (`https://<control_plane_ip>:<port>`).
+Get the IP of Control Plane (e.g., `172.16.18.170` here) to composite evn variable `APISERVER` (`https://<control_plane_ip>:<port>`).
 ```
 kubectl get node -owide
 ```
@@ -5590,15 +5591,15 @@ cka002   Ready    <none>                 14h   v1.23.8   172.16.18.169   <none> 
 cka003   Ready    <none>                 14h   v1.23.8   172.16.18.168   <none>        Ubuntu 20.04.4 LTS   5.4.0-122-generic   containerd://1.5.9
 ```
 
-Export env `KUBE_APISERVER`.
+Export env `APISERVER`.
 ```
-echo "export KUBE_APISERVER=\"https://172.16.18.170:6443\"" >> ~/.bashrc
+echo "export APISERVER=\"https://172.16.18.170:6443\"" >> ~/.bashrc
 source ~/.bashrc
 ```
 
 Verify the setting.
 ```
-echo $KUBE_APISERVER
+echo $APISERVER
 ```
 Output:
 ```
@@ -5606,7 +5607,7 @@ https://172.16.18.170:6443
 ```
 
 
-##### Set up cluster
+1. Set up cluster
 
 Stay in the directory `/etc/kubernetes/pki`.
 
@@ -5615,7 +5616,7 @@ Generate kubeconfig file.
 kubectl config set-cluster kubernetes \
   --certificate-authority=/etc/kubernetes/pki/ca.crt \
   --embed-certs=true \
-  --server=${KUBE_APISERVER} \
+  --server=${APISERVER} \
   --kubeconfig=cka-dev.kubeconfig
 ```
 
@@ -5625,11 +5626,11 @@ ll -tr | grep cka-dev
 ```
 Output:
 ```
--rw-r--r-- 1 root root  222 Jul 18 20:36 cka-dev-csr.json
--rw-r--r-- 1 root root 1281 Jul 18 20:49 cka-dev.pem
--rw------- 1 root root 1679 Jul 18 20:49 cka-dev-key.pem
--rw-r--r-- 1 root root 1001 Jul 18 20:49 cka-dev.csr
--rw------- 1 root root 1671 Jul 18 20:50 cka-dev.kubeconfig
+-rw-r--r-- 1 root root  222 Jul 24 08:49 cka-dev-csr.json
+-rw-r--r-- 1 root root 1281 Jul 24 09:14 cka-dev.pem
+-rw------- 1 root root 1675 Jul 24 09:14 cka-dev-key.pem
+-rw-r--r-- 1 root root 1001 Jul 24 09:14 cka-dev.csr
+-rw------- 1 root root 1671 Jul 24 09:16 cka-dev.kubeconfig
 ```
 
 Get content of file `cka-dev.kubeconfig`.
@@ -5653,7 +5654,7 @@ users: null
 
 
 
-##### Set up user
+2. Set up user
 
 In file `cka-dev.kubeconfig`, user info is null. 
 
@@ -5707,7 +5708,7 @@ CURRENT   NAME   CLUSTER   AUTHINFO   NAMESPACE
 
 
 
-##### Set up Context
+3. Set up Context
 
 Set up context. 
 ```
@@ -5730,7 +5731,7 @@ kubectl --kubeconfig=cka-dev.kubeconfig config use-context dev
 ```
 
 
-##### Verify
+4. Verify
 
 Now `CURRENT` is marked with `*`, that is, current-context is set up.
 ```
@@ -5777,7 +5778,7 @@ contexts:
 - context:
     cluster: kubernetes
     user: cka-dev
-  name: cka-dev@kubernetes
+  name: dev
 - context:
     cluster: kubernetes
     user: kubernetes-admin
@@ -5805,7 +5806,7 @@ kubectl config get-contexts
 Current context is the system default `kubernetes-admin@kubernetes`.
 ```
 CURRENT   NAME                          CLUSTER      AUTHINFO           NAMESPACE
-          cka-dev@kubernetes            kubernetes   cka-dev            
+          dev                           kubernetes   cka-dev            
 *         kubernetes-admin@kubernetes   kubernetes   kubernetes-admin   dev
 ```
 
@@ -5831,7 +5832,7 @@ kubectl config set-context <context name> --cluster=<cluster name> --namespace=<
 Let's set default namespace to each context.
 ```
 kubectl config set-context kubernetes-admin@kubernetes --cluster=kubernetes --namespace=default --user=kubernetes-admin
-kubectl config set-context dev@kubernetes --cluster=kubernetes --namespace=cka --user=cka-dev
+kubectl config set-context dev --cluster=kubernetes --namespace=cka --user=cka-dev
 ```
 
 Let's check current context information.
@@ -5841,7 +5842,7 @@ kubectl config get-contexts
 Output:
 ```
 CURRENT   NAME                          CLUSTER      AUTHINFO           NAMESPACE
-          cka-dev@kubernetes            kubernetes   cka-dev            cka
+          dev                           kubernetes   cka-dev            cka
 *         kubernetes-admin@kubernetes   kubernetes   kubernetes-admin   dev
 ```
 
@@ -5860,7 +5861,7 @@ kubectl config get-contexts
 ```
 ```
 CURRENT   NAME                          CLUSTER      AUTHINFO           NAMESPACE
-*         cka-dev@kubernetes            kubernetes   cka-dev            cka
+*         dev            kubernetes   cka-dev            cka
           kubernetes-admin@kubernetes   kubernetes   kubernetes-admin   dev
 ```
 
@@ -5886,13 +5887,13 @@ Use `kubectl create role` command  with option `--dry-run=client` and `-o yaml` 
 kubectl create role admin-dev --resource=pods --verb=get --verb=list --verb=watch --dry-run=client -o yaml
 ```
 
-Create role with yaml file.
+Create role `admin-dev` on namespace `cka`.
 ```
-cat > role-cka-dev.yaml << EOF
+kubectl apply -f - << EOF
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  namespace: dev
+  namespace: cka
   name: admin-dev
 rules:
 - apiGroups:
@@ -5904,8 +5905,6 @@ rules:
   - watch
   - list
 EOF
-
-kubectl apply -f role-cka-dev.yaml
 ```
 
 Use `kubectl create rolebinding` command  with option `--dry-run=client` and `-o yaml` to generate yaml template for customizing.
@@ -5913,14 +5912,14 @@ Use `kubectl create rolebinding` command  with option `--dry-run=client` and `-o
 kubectl create rolebinding admin --role=admin-dev --user=cka-dev --dry-run=client -o yaml
 ```
 
-Create rolebinding with yaml file.
+Create rolebinding `admin` on namespace `cka`.
 ```
-cat > role-binding-cka-dev.yaml << EOF
+kubectl apply -f - << EOF
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: admin
-  namespace: dev
+  namespace: cka
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -5930,25 +5929,23 @@ subjects:
   kind: User
   name: cka-dev
 EOF
-
-kubectl apply -f role-binding-cka-dev.yaml
 ```
 
-Verify authorzation of user `cka-dev` on Namespace `dev`.
+Verify authorzation of user `cka-dev` on Namespace `cka`.
 
-Switch to context `cka-dev@kubernetes`.
+Switch to context `dev`.
 ```
-kubectl config use-context cka-dev@kubernetes
-```
-
-
-
-Get Pods status in Namespace `dev`. Success!
-```
-kubectl get pod -n dev
+kubectl config use-context dev
 ```
 
-Get Pods status in Namespace `kube-system`. Failed, because the authorzation is only for Namespace `dev`.
+
+
+Get Pods status in Namespace `cka`. Success!
+```
+kubectl get pod -n cka
+```
+
+Get Pods status in Namespace `kube-system`. Failed, because the authorzation is only for Namespace `cka`.
 ```
 kubectl get pod -n kube-system
 ```
@@ -5960,7 +5957,7 @@ kubectl get node
 
 Create a Pod in Namespace `dev`. Failed because we only have `get`,`watch`,`list` for Pod, no `create` authorization.
 ```
-kubectl run nginx --image=nginx -n dev
+kubectl run nginx --image=nginx -n cka
 ```
 
 
@@ -5974,9 +5971,9 @@ Switch to context `kubernetes-admin@kubernetes`.
 kubectl config use-context kubernetes-admin@kubernetes
 ```
 
-Create a ClusterRole with authorization `get`,`watch`,`list` for `nodes` resource.
+Create a ClusterRole `nodes-admin` with authorization `get`,`watch`,`list` for `nodes` resource.
 ```
-cat > clusterrole-cka-dev.yaml <<EOF
+kubectl apply -f - <<EOF
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -5991,15 +5988,12 @@ rules:
   - watch
   - list
 EOF
-
-
-kubectl apply -f clusterrole-cka-dev.yaml
 ```
 
 Bind ClusterRole `nodes-admin` to user `cka-dev`.
 
 ```
-cat > clusterrolebinding-cka-dev.yaml << EOF
+kubectl apply -f - << EOF
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -6013,16 +6007,13 @@ roleRef:
   name: nodes-admin
   apiGroup: rbac.authorization.k8s.io
 EOF
-
-
-kubectl apply -f clusterrolebinding-cka-dev.yaml
 ```
 
 Verify Authorization
 
-Switch to context `cka-dev@kubernetes`.
+Switch to context `dev`.
 ```
-kubectl config use-context cka-dev@kubernetes
+kubectl config use-context dev
 ```
 
 Get node information. Success!
@@ -6030,13 +6021,18 @@ Get node information. Success!
 kubectl get node
 ```
 
+Switch to system context.
+```
+kubectl config use-context kubernetes-admin@kubernetes 
+```
 
 
 
-
-## 18.Network Policy
+## 17.Network Policy
 
 ### Replace Flannel by Calico
+
+If Calico was installed at the installation phase, ignore this section.
 
 Delete Flannel
 ```
@@ -6142,12 +6138,11 @@ kubectl get pod -A
 
 ### Inbound Rules
 
-#### Create workload for test.
+1. Create workload for test.
 
-Create three Deployments `pod-netpol-1`,`pod-netpol-2`,`pod-netpol-3`.
-
+Create three Deployments `pod-netpol-1`,`pod-netpol-2`,`pod-netpol-3` based on image `busybox`.
 ```
-cat > pod-netpol.yaml << EOF
+kubectl apply -f - << EOF
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -6168,7 +6163,6 @@ spec:
       - image: busybox
         name: busybox
         command: ["sh", "-c", "sleep 1h"]
-
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -6190,7 +6184,6 @@ spec:
       - image: busybox
         name: busybox
         command: ["sh", "-c", "sleep 1h"]
-        
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -6213,8 +6206,6 @@ spec:
         name: busybox
         command: ["sh", "-c", "sleep 1h"]       
 EOF
-
-kubectl apply -f pod-netpol.yaml
 ```
 
 Check Pods IP.
@@ -6223,33 +6214,33 @@ kubectl get pod -owide
 ```
 Output:
 ```
-NAME                                      READY   STATUS    RESTARTS   AGE   IP             NODE     NOMINATED NODE   READINESS GATES
-pod-netpol-1-6494f6bf8b-6nwwf             1/1     Running   0          19s   10.244.102.9   cka003   <none>           <none>
-pod-netpol-2-77478d77ff-96hgd             1/1     Running   0          19s   10.244.112.9   cka002   <none>           <none>
-pod-netpol-3-68977dcb48-j9fkb             1/1     Running   0          19s   10.244.102.8   cka003   <none>           <none>
+NAME                                      READY   STATUS    RESTARTS   AGE   IP              NODE     NOMINATED NODE   READINESS GATES
+pod-netpol-1-6494f6bf8b-n58r9             1/1     Running   0          29s   10.244.102.30   cka003   <none>           <none>
+pod-netpol-2-77478d77ff-l6rzm             1/1     Running   0          29s   10.244.112.30   cka002   <none>           <none>
+pod-netpol-3-68977dcb48-ql5s6             1/1     Running   0          29s   10.244.102.31   cka003   <none>           <none>
 ```
 
 Attach to Pod `pod-netpol-1`
 ```
-kubectl exec -it pod-netpol-1-6494f6bf8b-6nwwf -- sh
+kubectl exec -it pod-netpol-1-6494f6bf8b-n58r9 -- sh
 ```
 
-Execute command `ping` to check if pod-netpol-2 and pod-netpol-3 are pingable. 
+Execute command `ping` that `pod-netpol-2` and `pod-netpol-3` are both reachable. 
 ```
-/ # ping 10.244.112.9
+/ # ping 10.244.112.30 
 3 packets transmitted, 3 packets received, 0% packet loss
 
-/ # ping 10.244.102.8
+/ # ping 10.244.102.31
 3 packets transmitted, 3 packets received, 0% packet loss
 ```
 
 
 
-#### Deny For All Ingress
+2. Deny For All Ingress
 
 Create deny policy for all ingress.
 ```
-cat > networkpolicy-default-deny-ingress.yaml << EOF
+kubectl apply -f - << EOF
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -6259,32 +6250,29 @@ spec:
   policyTypes:
   - Ingress
 EOF
-
-
-kubectl apply -f networkpolicy-default-deny-ingress.yaml
 ```
 
 Attach to Pod `pod-netpol-1` again
 ```
-kubectl exec -it pod-netpol-1-6494f6bf8b-6nwwf -- sh
+kubectl exec -it pod-netpol-1-6494f6bf8b-n58r9 -- sh
 ```
 
-Execute command `ping` to check if pod-netpol-2 and pod-netpol-3 are pingable. Both ping are denied as expected.
+Execute command `ping` that `pod-netpol-2` and `pod-netpol-3` are both unreachable as expected.
 ```
-/ # ping 10.244.112.9
+/ # ping 10.244.112.30
 3 packets transmitted, 0 packets received, 100% packet loss
 
-/ # ping 10.244.102.8
+/ # ping 10.244.102.31
 3 packets transmitted, 0 packets received, 100% packet loss
 ```
 
 
 
-#### Allow For Specific Ingress
+3. Allow For Specific Ingress
 
-Create NetworkPlicy to allow ingress from pod-netpol-1 to pod-netpol-2.
+Create NetworkPlicy to allow ingress from `pod-netpol-1` to `pod-netpol-2`.
 ```
-cat > allow-pod-netpol-1-to-pod-netpol-2.yaml <<EOF
+kubectl apply -f - <<EOF
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -6301,21 +6289,19 @@ spec:
         matchLabels:
           app: pod-netpol-1
 EOF
-
-kubectl apply -f allow-pod-netpol-1-to-pod-netpol-2.yaml
 ```
 
-#### Verify NetworkPolicy
+4. Verify NetworkPolicy
 
-Attach to Pod `pod-netpol-1` again.
+Attach to Pod `pod-netpol-1` again
 ```
-kubectl exec -it pod-netpol-1-6494f6bf8b-6nwwf -- sh
+kubectl exec -it pod-netpol-1-6494f6bf8b-n58r9 -- sh
 ```
 
-Execute command `ping` to check if pod-netpol-2 and pod-netpol-3 are pingable. 
-As expected, pod-netpol-2 is reachable and pod-netpol-3 is still unreachable. 
+Execute command `ping` to check if `pod-netpol-2` and `pod-netpol-3` are reachable. 
+As expected, `pod-netpol-2` is reachable and `pod-netpol-3` is still unreachable. 
 ```
-/ # ping 10.244.112.9
+/ # ping 10.244.112.30
 3 packets transmitted, 3 packets received, 0% packet loss
 
 / # ping 10.244.102.8
@@ -6326,15 +6312,16 @@ As expected, pod-netpol-2 is reachable and pod-netpol-3 is still unreachable.
 
 ### Inbound Across Namespace
 
-#### Create workload and namespace for test
+1. Create workload and namespace for test
 
 Create Namespace `ns-netpol`.
-Create Deployment `pod-netpol`.
-
 ```
 kubectl create ns ns-netpol
+```
 
-cat > pod-netpol.yaml << EOF
+Create Deployment `pod-netpol`.
+```
+kubectl apply -f - << EOF
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -6357,9 +6344,6 @@ spec:
         name: busybox
         command: ["sh", "-c", "sleep 1h"]
 EOF
-
-
-kubectl apply -f pod-netpol.yaml
 ```
 
 Check Pod status on new namespace.
@@ -6369,27 +6353,27 @@ kubectl get pod -n ns-netpol
 Output:
 ```
 NAME                          READY   STATUS    RESTARTS   AGE
-pod-netpol-5b67b6b496-zxppp   1/1     Running   0          10s
+pod-netpol-5b67b6b496-2cgnw   1/1     Running   0          9s
 ```
 
 Attach into `pod-netpol` Pod.
 ```
-kubectl exec -it pod-netpol-5b67b6b496-zxppp -n ns-netpol -- sh
+kubectl exec -it pod-netpol-5b67b6b496-2cgnw -n ns-netpol -- sh
 ```
 
-Try to ping pod-netpol-2 (`10.244.112.9`) in Namespace `dev`. It's unreachable. 
+Try to ping pod-netpol-2 (`10.244.112.30`) in Namespace `dev`. It's unreachable. 
 ```
-ping 10.244.112.9
+ping 10.244.112.30
 3 packets transmitted, 0 packets received, 100% packet loss
 ```
 
 
 
-#### Create Allow Ingress
+2. Create Allow Ingress
 
 Create NetworkPolicy to allow access to pod-netpol-2 in namespace `dev` from all Pods in namespace `pod-netpol`.
 ```
-cat > allow-ns-netpol-to-pod-netpol-2.yaml <<EOF
+kubectl apply -f - <<EOF
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -6406,22 +6390,20 @@ spec:
         matchLabels:
           allow: to-pod-netpol-2
 EOF
-
-kubectl apply -f allow-ns-netpol-to-pod-netpol-2.yaml
 ```
 
 
 
-#### Verify Policy
+3. Verify Policy
 
 Attach into `pod-netpol` Pod.
 ```
-kubectl exec -it pod-netpol-5b67b6b496-zxppp -n ns-netpol -- sh
+kubectl exec -it pod-netpol-5b67b6b496-2cgnw -n ns-netpol -- sh
 ```
 
-Try to ping pod-netpol-2 (`10.244.112.9`) in Namespace `dev`. It's still unreachable. 
+Try to ping pod-netpol-2 (`10.244.112.30`) in Namespace `dev`. It's still unreachable. 
 ```
-ping 10.244.112.9
+ping 10.244.112.30
 3 packets transmitted, 0 packets received, 100% packet loss
 ```
 
@@ -6432,12 +6414,12 @@ kubectl label ns ns-netpol allow=to-pod-netpol-2
 
 Attach into `pod-netpol` Pod.
 ```
-kubectl exec -it pod-netpol-5b67b6b496-zxppp -n ns-netpol -- sh
+kubectl exec -it pod-netpol-5b67b6b496-2cgnw -n ns-netpol -- sh
 ```
 
-Try to ping pod-netpol-2 (`10.244.112.9`) in Namespace `dev`. It's now reachable. 
+Try to ping pod-netpol-2 (`10.244.112.30`) in Namespace `dev`. It's now reachable. 
 ```
-ping 10.244.112.9
+ping 10.244.112.30
 3 packets transmitted, 3 packets received, 0% packet loss
 ```
 
@@ -6450,12 +6432,11 @@ Be noted that we can use namespace default label as well.
 
 
 
-## 19.Cluster Management
+## 18.Cluster Management
 
 ### `etcd` Backup and Restore
 
-#### Install `etcdctl`
-
+1. Install `etcdctl`
 
 Download `etcd` package from Github.
 ```
@@ -6474,7 +6455,7 @@ Verify
 etcdctl --help
 ```
 
-#### Create Deployment Before Backup
+2. Create Deployment Before Backup
 
 Create Deployment before backup.
 ```
@@ -6482,7 +6463,7 @@ kubectl create deployment app-before-backup --image=nginx
 ```
 
 
-#### Backup `etcd`
+3. Backup `etcd`
 
 Command usage: 
 
@@ -6493,30 +6474,41 @@ Command usage:
 * `--cacert`: specify etcd certificate CA, which was generated by `kubeadm` and saved in `/etc/kubernetes/pki/etcd/`.
 
 ```
-etcdctl --endpoints=https://<CONTROL_PLANE_IP_ADDRESS>:2379 --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key --cacert=/etc/kubernetes/pki/etcd/ca.crt snapshot save snapshot-$(date +"%Y%m%d%H%M%S").db
+etcdctl \
+  --endpoints=https://<CONTROL_PLANE_IP_ADDRESS>:2379 \
+  --cert=/etc/kubernetes/pki/etcd/server.crt \
+  --key=/etc/kubernetes/pki/etcd/server.key \
+  --cacert=/etc/kubernetes/pki/etcd/ca.crt \
+  snapshot save snapshot-$(date +"%Y%m%d%H%M%S").db
 ```
 
 ```
-etcdctl --endpoints=https://172.16.18.170:2379 --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key --cacert=/etc/kubernetes/pki/etcd/ca.crt snapshot save snapshot-$(date +"%Y%m%d%H%M%S").db
+etcdctl \
+  --endpoints=https://172.16.18.170:2379 \
+  --cert=/etc/kubernetes/pki/etcd/server.crt \
+  --key=/etc/kubernetes/pki/etcd/server.key \
+  --cacert=/etc/kubernetes/pki/etcd/ca.crt \
+  snapshot save snapshot-$(date +"%Y%m%d%H%M%S").db
 ```
 Output:
 ```
-{"level":"info","ts":"2022-07-14T14:37:39.232+0800","caller":"snapshot/v3_snapshot.go:65","msg":"created temporary db file","path":"snapshot-20220714143739.db.part"}
-{"level":"info","ts":"2022-07-14T14:37:39.239+0800","logger":"client","caller":"v3/maintenance.go:211","msg":"opened snapshot stream; downloading"}
-{"level":"info","ts":"2022-07-14T14:37:39.239+0800","caller":"snapshot/v3_snapshot.go:73","msg":"fetching snapshot","endpoint":"https://172.16.18.170:2379"}
-{"level":"info","ts":"2022-07-14T14:37:39.332+0800","logger":"client","caller":"v3/maintenance.go:219","msg":"completed snapshot read; closing"}
-{"level":"info","ts":"2022-07-14T14:37:39.359+0800","caller":"snapshot/v3_snapshot.go:88","msg":"fetched snapshot","endpoint":"https://172.16.18.170:2379","size":"5.6 MB","took":"now"}
-{"level":"info","ts":"2022-07-14T14:37:39.359+0800","caller":"snapshot/v3_snapshot.go:97","msg":"saved","path":"snapshot-20220714143739.db"}
+{"level":"info","ts":"2022-07-24T18:51:21.328+0800","caller":"snapshot/v3_snapshot.go:65","msg":"created temporary db file","path":"snapshot-20220724185121.db.part"}
+{"level":"info","ts":"2022-07-24T18:51:21.337+0800","logger":"client","caller":"v3/maintenance.go:211","msg":"opened snapshot stream; downloading"}
+{"level":"info","ts":"2022-07-24T18:51:21.337+0800","caller":"snapshot/v3_snapshot.go:73","msg":"fetching snapshot","endpoint":"https://172.16.18.170:2379"}
+{"level":"info","ts":"2022-07-24T18:51:21.415+0800","logger":"client","caller":"v3/maintenance.go:219","msg":"completed snapshot read; closing"}
+{"level":"info","ts":"2022-07-24T18:51:21.477+0800","caller":"snapshot/v3_snapshot.go:88","msg":"fetched snapshot","endpoint":"https://172.16.18.170:2379","size":"3.6 MB","took":"now"}
+{"level":"info","ts":"2022-07-24T18:51:21.477+0800","caller":"snapshot/v3_snapshot.go:97","msg":"saved","path":"snapshot-20220724185121.db"}
+Snapshot saved at snapshot-20220724185121.db
 ```
 
 We can get the backup file in current directory with `ls -al` command.
 ```
--rw------- 1 root root 5632032 Jul 14 14:37 snapshot-20220714143739.db
+-rw-------  1 root root 3616800 Jul 24 18:51 snapshot-20220724185121.db
 ```
 
 
 
-#### Create Deployment After Backup
+4. Create Deployment After Backup
 
 Create Deployment after backup.
 ```
@@ -6539,10 +6531,8 @@ app-after-backup         1/1     1            1           108s
 
 
 
-#### Restore `etcd`
 
-##### Stop Services
-
+5. Stop Services
 
 Delete `etcd` directory.
 ```
@@ -6559,70 +6549,60 @@ Stop kube-apiserver
 nerdctl -n k8s.io ps -a | grep apiserver
 ```
 ```
-1eb9a51e0406    registry.aliyuncs.com/google_containers/kube-apiserver:v1.23.8             "kube-apiserver --ad…"    2 weeks ago     Created             k8s://kube-system/kube-apiserver-cka001/kube-apiserver
-2c5e1d183fc7    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  2 weeks ago     Created             k8s://kube-system/kube-apiserver-cka001
-73d0fdef9c16    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  16 hours ago    Up                  k8s://kube-system/kube-apiserver-cka001
-c7e67d4cf78c    registry.aliyuncs.com/google_containers/kube-apiserver:v1.23.8             "kube-apiserver --ad…"    16 hours ago    Up                  k8s://kube-system/kube-apiserver-cka001/kube-apiserver
+0c5e69118f1b    registry.aliyuncs.com/google_containers/kube-apiserver:v1.23.8             "kube-apiserver --ad…"    32 hours ago    Up                  k8s://kube-system/kube-apiserver-cka001/kube-apiserver
+638bb602c310    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  32 hours ago    Up                  k8s://kube-system/kube-apiserver-cka001
 ```
+
 Stop those `up` status containers.
 ```
 nerdctl -n k8s.io stop <container_id>
 
-nerdctl -n k8s.io stop 73d0fdef9c16
-nerdctl -n k8s.io stop c7e67d4cf78c
+nerdctl -n k8s.io stop 0c5e69118f1b
+nerdctl -n k8s.io stop 638bb602c310
 ```
 No `up` status `kube-apiserver` now.
 ```
 nerdctl -n k8s.io ps -a | grep apiserver
 ```
 ```
-1eb9a51e0406    registry.aliyuncs.com/google_containers/kube-apiserver:v1.23.8             "kube-apiserver --ad…"    2 weeks ago     Created             k8s://kube-system/kube-apiserver-cka001/kube-apiserver
-2c5e1d183fc7    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  2 weeks ago     Created             k8s://kube-system/kube-apiserver-cka001
-73d0fdef9c16    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  16 hours ago    Created             k8s://kube-system/kube-apiserver-cka001
-c7e67d4cf78c    registry.aliyuncs.com/google_containers/kube-apiserver:v1.23.8             "kube-apiserver --ad…"    16 hours ago    Created             k8s://kube-system/kube-apiserver-cka001/kube-apiserver
+0c5e69118f1b    registry.aliyuncs.com/google_containers/kube-apiserver:v1.23.8             "kube-apiserver --ad…"    32 hours ago    Created             k8s://kube-system/kube-apiserver-cka001/kube-apiserver
+638bb602c310    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  32 hours ago    Created             k8s://kube-system/kube-apiserver-cka001
 ```
 
 
 
-Stop etcd
+6. Stop etcd
 ```
 nerdctl -n k8s.io ps -a | grep etcd
 ```
 ```
-5812c42bf572    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  2 weeks ago     Created             k8s://kube-system/etcd-cka001
-7f4da4416356    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  16 hours ago    Up                  k8s://kube-system/etcd-cka001
-897a3e83a512    registry.aliyuncs.com/google_containers/etcd:3.5.1-0                       "etcd --advertise-cl…"    16 hours ago    Up                  k8s://kube-system/etcd-cka001/etcd
-ff6626664c43    registry.aliyuncs.com/google_containers/etcd:3.5.1-0                       "etcd --advertise-cl…"    2 weeks ago     Created             k8s://kube-system/etcd-cka001/etcd
+0965b195f41a    registry.aliyuncs.com/google_containers/etcd:3.5.1-0                       "etcd --advertise-cl…"    32 hours ago    Up                  k8s://kube-system/etcd-cka001/etcd
+9e1bea9f25d1    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  32 hours ago    Up                  k8s://kube-system/etcd-cka001
 ```
+
 Stop those `up` status containers.
 ```
 nerdctl -n k8s.io stop <container_id>
 ```
 ```
-nerdctl -n k8s.io stop 7f4da4416356
-nerdctl -n k8s.io stop 897a3e83a512
+nerdctl -n k8s.io stop 0965b195f41a
+nerdctl -n k8s.io stop 9e1bea9f25d1
 ```
 No `up` status `etcd` now.
 ```
 nerdctl -n k8s.io ps -a | grep etcd
 ```
 ```
-5812c42bf572    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  2 weeks ago     Created             k8s://kube-system/etcd-cka001
-7f4da4416356    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  16 hours ago    Created             k8s://kube-system/etcd-cka001
-897a3e83a512    registry.aliyuncs.com/google_containers/etcd:3.5.1-0                       "etcd --advertise-cl…"    16 hours ago    Created             k8s://kube-system/etcd-cka001/etcd
-ff6626664c43    registry.aliyuncs.com/google_containers/etcd:3.5.1-0                       "etcd --advertise-cl…"    2 weeks ago     Created             k8s://kube-system/etcd-cka001/etcd
+0965b195f41a    registry.aliyuncs.com/google_containers/etcd:3.5.1-0                       "etcd --advertise-cl…"    32 hours ago    Created             k8s://kube-system/etcd-cka001/etcd
+9e1bea9f25d1    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  32 hours ago    Created             k8s://kube-system/etcd-cka001
 ```
 
 
+7. Restore `etcd`
 
-
-
-
-##### Restore `etcd`
-
-Execute the restore operation on Control Plane node with actual backup file.
+Execute the restore operation on Control Plane node with actual backup file, here it's file `snapshot-20220724185121.db`.
 ```
-etcdctl snapshot restore snapshot-20220714143739.db \
+etcdctl snapshot restore snapshot-20220724185121.db \
     --endpoints=172.16.18.170:2379 \
     --cert=/etc/kubernetes/pki/etcd/server.crt \
     --key=/etc/kubernetes/pki/etcd/server.key \
@@ -6633,10 +6613,10 @@ Output:
 ```
 Deprecated: Use `etcdutl snapshot restore` instead.
 
-2022-07-14T15:19:53+08:00       info    snapshot/v3_snapshot.go:248     restoring snapshot      {"path": "snapshot-20220714143739.db", "wal-dir": "/var/lib/etcd/member/wal", "data-dir": "/var/lib/etcd", "snap-dir": "/var/lib/etcd/member/snap", "stack": "go.etcd.io/etcd/etcdutl/v3/snapshot.(*v3Manager).Restore\n\t/go/src/go.etcd.io/etcd/release/etcd/etcdutl/snapshot/v3_snapshot.go:254\ngo.etcd.io/etcd/etcdutl/v3/etcdutl.SnapshotRestoreCommandFunc\n\t/go/src/go.etcd.io/etcd/release/etcd/etcdutl/etcdutl/snapshot_command.go:147\ngo.etcd.io/etcd/etcdctl/v3/ctlv3/command.snapshotRestoreCommandFunc\n\t/go/src/go.etcd.io/etcd/release/etcd/etcdctl/ctlv3/command/snapshot_command.go:129\ngithub.com/spf13/cobra.(*Command).execute\n\t/go/pkg/mod/github.com/spf13/cobra@v1.1.3/command.go:856\ngithub.com/spf13/cobra.(*Command).ExecuteC\n\t/go/pkg/mod/github.com/spf13/cobra@v1.1.3/command.go:960\ngithub.com/spf13/cobra.(*Command).Execute\n\t/go/pkg/mod/github.com/spf13/cobra@v1.1.3/command.go:897\ngo.etcd.io/etcd/etcdctl/v3/ctlv3.Start\n\t/go/src/go.etcd.io/etcd/release/etcd/etcdctl/ctlv3/ctl.go:107\ngo.etcd.io/etcd/etcdctl/v3/ctlv3.MustStart\n\t/go/src/go.etcd.io/etcd/release/etcd/etcdctl/ctlv3/ctl.go:111\nmain.main\n\t/go/src/go.etcd.io/etcd/release/etcd/etcdctl/main.go:59\nruntime.main\n\t/go/gos/go1.16.15/src/runtime/proc.go:225"}
-2022-07-14T15:19:53+08:00       info    membership/store.go:141 Trimming membership information from the backend...
-2022-07-14T15:19:53+08:00       info    membership/cluster.go:421       added member    {"cluster-id": "cdf818194e3a8c32", "local-member-id": "0", "added-peer-id": "8e9e05c52164694d", "added-peer-peer-urls": ["http://localhost:2380"]}
-2022-07-14T15:19:53+08:00       info    snapshot/v3_snapshot.go:269     restored snapshot       {"path": "snapshot-20220714143739.db", "wal-dir": "/var/lib/etcd/member/wal", "data-dir": "/var/lib/etcd", "snap-dir": "/var/lib/etcd/member/snap"}
+2022-07-24T18:57:49+08:00       info    snapshot/v3_snapshot.go:248     restoring snapshot      {"path": "snapshot-20220724185121.db", "wal-dir": "/var/lib/etcd/member/wal", "data-dir": "/var/lib/etcd", "snap-dir": "/var/lib/etcd/member/snap", "stack": "go.etcd.io/etcd/etcdutl/v3/snapshot.(*v3Manager).Restore\n\t/go/src/go.etcd.io/etcd/release/etcd/etcdutl/snapshot/v3_snapshot.go:254\ngo.etcd.io/etcd/etcdutl/v3/etcdutl.SnapshotRestoreCommandFunc\n\t/go/src/go.etcd.io/etcd/release/etcd/etcdutl/etcdutl/snapshot_command.go:147\ngo.etcd.io/etcd/etcdctl/v3/ctlv3/command.snapshotRestoreCommandFunc\n\t/go/src/go.etcd.io/etcd/release/etcd/etcdctl/ctlv3/command/snapshot_command.go:129\ngithub.com/spf13/cobra.(*Command).execute\n\t/go/pkg/mod/github.com/spf13/cobra@v1.1.3/command.go:856\ngithub.com/spf13/cobra.(*Command).ExecuteC\n\t/go/pkg/mod/github.com/spf13/cobra@v1.1.3/command.go:960\ngithub.com/spf13/cobra.(*Command).Execute\n\t/go/pkg/mod/github.com/spf13/cobra@v1.1.3/command.go:897\ngo.etcd.io/etcd/etcdctl/v3/ctlv3.Start\n\t/go/src/go.etcd.io/etcd/release/etcd/etcdctl/ctlv3/ctl.go:107\ngo.etcd.io/etcd/etcdctl/v3/ctlv3.MustStart\n\t/go/src/go.etcd.io/etcd/release/etcd/etcdctl/ctlv3/ctl.go:111\nmain.main\n\t/go/src/go.etcd.io/etcd/release/etcd/etcdctl/main.go:59\nruntime.main\n\t/go/gos/go1.16.15/src/runtime/proc.go:225"}
+2022-07-24T18:57:49+08:00       info    membership/store.go:141 Trimming membership information from the backend...
+2022-07-24T18:57:49+08:00       info    membership/cluster.go:421       added member    {"cluster-id": "cdf818194e3a8c32", "local-member-id": "0", "added-peer-id": "8e9e05c52164694d", "added-peer-peer-urls": ["http://localhost:2380"]}
+2022-07-24T18:57:49+08:00       info    snapshot/v3_snapshot.go:269     restored snapshot       {"path": "snapshot-20220724185121.db", "wal-dir": "/var/lib/etcd/member/wal", "data-dir": "/var/lib/etcd", "snap-dir": "/var/lib/etcd/member/snap"}
 ```
 
 Check if `etcd` folder is back from restore. 
@@ -6655,7 +6635,7 @@ tree /var/lib/etcd
 
 
 
-##### Start Services
+8. Start Services
 
 Start `kubelet`. The `kube-apiserver` and `etcd` will be started automatically by `kubelet`.
 ```
@@ -6669,18 +6649,33 @@ nerdctl -n k8s.io ps -a | grep etcd
 nerdctl -n k8s.io ps -a | grep apiserver
 ```
 
+The current status of `etcd`.
+```
+0965b195f41a    registry.aliyuncs.com/google_containers/etcd:3.5.1-0                       "etcd --advertise-cl…"    32 hours ago     Created             k8s://kube-system/etcd-cka001/etcd
+3b8f37c87782    registry.aliyuncs.com/google_containers/etcd:3.5.1-0                       "etcd --advertise-cl…"    6 seconds ago    Up                  k8s://kube-system/etcd-cka001/etcd
+9e1bea9f25d1    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  32 hours ago     Created             k8s://kube-system/etcd-cka001
+fbbbb628a945    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  6 seconds ago    Up                  k8s://kube-system/etcd-cka001
+```
+
+The current status of `apiserver`.
+```
+0c5e69118f1b    registry.aliyuncs.com/google_containers/kube-apiserver:v1.23.8             "kube-apiserver --ad…"    32 hours ago      Created             k8s://kube-system/kube-apiserver-cka001/kube-apiserver
+281cf4c6670d    registry.aliyuncs.com/google_containers/kube-apiserver:v1.23.8             "kube-apiserver --ad…"    14 seconds ago    Up                  k8s://kube-system/kube-apiserver-cka001/kube-apiserver
+5ed8295d92da    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  15 seconds ago    Up                  k8s://kube-system/kube-apiserver-cka001
+638bb602c310    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  32 hours ago      Created             k8s://kube-system/kube-apiserver-cka001
+```
 
 
-#### Verify
-
+9. Verify
 
 Check cluster status, if the Pod `app-before-backup` is there.
 ```
 kubectl get deploy
 ```
+Result
 ```
 NAME                     READY   UP-TO-DATE   AVAILABLE   AGE
-app-before-backup        1/1     1            1           4h39m
+app-before-backup        1/1     1            1           11m
 ```
 
 
@@ -6690,9 +6685,7 @@ app-before-backup        1/1     1            1           4h39m
 
 #### Upgrade `Control Plane`
 
-##### Preparation
-
-首先驱逐节点
+1. Preparation
 
 Evict Control Plane node.
 ```
@@ -6703,16 +6696,26 @@ kubectl drain cka001 --ignore-daemonsets
 ```
 ```
 node/cka001 cordoned
-WARNING: ignoring DaemonSet-managed Pods: kube-system/calico-node-v7xdm, kube-system/kube-proxy-msw2z
+WARNING: ignoring DaemonSet-managed Pods: kube-system/calico-node-dsx76, kube-system/kube-proxy-cm4hc
+evicting pod kube-system/calico-kube-controllers-5c64b68895-jr4nl
+evicting pod kube-system/coredns-6d8c4cb4d-g4jxc
+evicting pod kube-system/coredns-6d8c4cb4d-sqcvj
+pod/calico-kube-controllers-5c64b68895-jr4nl evicted
+pod/coredns-6d8c4cb4d-g4jxc evicted
+pod/coredns-6d8c4cb4d-sqcvj evicted
 node/cka001 drained
 ```
 
 The Control Plane node is now in `SchedulingDisabled` status.
 ```
-NAME     STATUS                     ROLES                  AGE   VERSION
-cka001   Ready,SchedulingDisabled   control-plane,master   19d   v1.23.8
-cka002   Ready                      <none>                 19d   v1.23.8
-cka003   Ready                      <none>                 19d   v1.23.8
+kubectl get node -owide
+```
+Result
+```
+NAME     STATUS                     ROLES                  AGE   VERSION   INTERNAL-IP     EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION      CONTAINER-RUNTIME
+cka001   Ready,SchedulingDisabled   control-plane,master   32h   v1.23.8   172.16.18.170   <none>        Ubuntu 20.04.4 LTS   5.4.0-122-generic   containerd://1.5.9
+cka002   Ready                      <none>                 32h   v1.23.8   172.16.18.169   <none>        Ubuntu 20.04.4 LTS   5.4.0-122-generic   containerd://1.5.9
+cka003   Ready                      <none>                 32h   v1.23.8   172.16.18.168   <none>        Ubuntu 20.04.4 LTS   5.4.0-122-generic   containerd://1.5.9
 ```
 
 Check current available version of `kubeadm`.
@@ -6722,27 +6725,29 @@ apt policy kubeadm
 ```
 kubeadm:
   Installed: 1.23.8-00
-  Candidate: 1.24.2-00
+  Candidate: 1.24.3-00
   Version table:
-     1.24.2-00 500
+     1.24.3-00 500
+        500 https://mirrors.aliyun.com/kubernetes/apt kubernetes-xenial/main amd64 Packages
+     1.23.9-00 500
         500 https://mirrors.aliyun.com/kubernetes/apt kubernetes-xenial/main amd64 Packages
      1.24.1-00 500
         500 https://mirrors.aliyun.com/kubernetes/apt kubernetes-xenial/main amd64 Packages
      1.24.0-00 500
+        500 https://mirrors.aliyun.com/kubernetes/apt kubernetes-xenial/main amd64 Packages
+     1.23.9-00 500
         500 https://mirrors.aliyun.com/kubernetes/apt kubernetes-xenial/main amd64 Packages
  *** 1.23.8-00 500
         500 https://mirrors.aliyun.com/kubernetes/apt kubernetes-xenial/main amd64 Packages
         100 /var/lib/dpkg/status
      1.23.7-00 500
         500 https://mirrors.aliyun.com/kubernetes/apt kubernetes-xenial/main amd64 Packages
-     1.23.6-00 500
-        500 https://mirrors.aliyun.com/kubernetes/apt kubernetes-xenial/main amd64 Packages
 ......
 ```
 
-Upgrade `kubeadm` to `Candidate: 1.24.2-00` version.
+Upgrade `kubeadm` to `Candidate: 1.23.9-00` version.
 ```
-sudo apt-get -y install kubeadm=1.24.2-00 --allow-downgrades
+sudo apt-get -y install kubeadm=1.23.9-00 --allow-downgrades
 ```
 
 Check upgrade plan.
@@ -6752,6 +6757,18 @@ kubeadm upgrade plan
 
 Get below guideline of upgrade.
 ```
+[upgrade/config] Making sure the configuration is correct:
+[upgrade/config] Reading configuration from the cluster...
+[upgrade/config] FYI: You can look at this config file with 'kubectl -n kube-system get cm kubeadm-config -o yaml'
+[preflight] Running pre-flight checks.
+[upgrade] Running cluster health checks
+[upgrade] Fetching available versions to upgrade to
+[upgrade/versions] Cluster version: v1.23.8
+[upgrade/versions] kubeadm version: v1.23.9
+I0724 19:05:00.111855 1142460 version.go:255] remote version is much newer: v1.24.3; falling back to: stable-1.23
+[upgrade/versions] Target version: v1.23.9
+[upgrade/versions] Latest version in the v1.23 series: v1.23.9
+
 Components that must be upgraded manually after you have upgraded the control plane with 'kubeadm upgrade apply':
 COMPONENT   CURRENT       TARGET
 kubelet     3 x v1.23.8   v1.23.9
@@ -6764,33 +6781,11 @@ kube-controller-manager   v1.23.8   v1.23.9
 kube-scheduler            v1.23.8   v1.23.9
 kube-proxy                v1.23.8   v1.23.9
 CoreDNS                   v1.8.6    v1.8.6
-etcd                      3.5.1-0   3.5.3-0
+etcd                      3.5.1-0   3.5.1-0
 
 You can now apply the upgrade by executing the following command:
 
         kubeadm upgrade apply v1.23.9
-
-_____________________________________________________________________
-
-Components that must be upgraded manually after you have upgraded the control plane with 'kubeadm upgrade apply':
-COMPONENT   CURRENT       TARGET
-kubelet     3 x v1.23.8   v1.24.3
-
-Upgrade to the latest stable version:
-
-COMPONENT                 CURRENT   TARGET
-kube-apiserver            v1.23.8   v1.24.3
-kube-controller-manager   v1.23.8   v1.24.3
-kube-scheduler            v1.23.8   v1.24.3
-kube-proxy                v1.23.8   v1.24.3
-CoreDNS                   v1.8.6    v1.8.6
-etcd                      3.5.1-0   3.5.3-0
-
-You can now apply the upgrade by executing the following command:
-
-        kubeadm upgrade apply v1.24.3
-
-Note: Before you can perform this upgrade, you have to update kubeadm to v1.24.3.
 
 _____________________________________________________________________
 
@@ -6804,35 +6799,34 @@ API GROUP                 CURRENT VERSION   PREFERRED VERSION   MANUAL UPGRADE R
 kubeproxy.config.k8s.io   v1alpha1          v1alpha1            no
 kubelet.config.k8s.io     v1beta1           v1beta1             no
 _____________________________________________________________________
-
 ```
 
 
 
 
 
-##### Upgrade
+2. Upgrade
 
-Refer to upgrade plan, let's upgrade to v1.24.2 version.
+Refer to upgrade plan, let's upgrade to v1.23.9 version.
 ```
-kubeadm upgrade apply v1.24.2
+kubeadm upgrade apply v1.23.9
 ```
 
 With option `--etcd-upgrade=false`, the `etcd` can be excluded from the upgrade.
 ```
-kubeadm upgrade apply v1.24.2 --etcd-upgrade=false
+kubeadm upgrade apply v1.23.9 --etcd-upgrade=false
 ```
 
 It's successful when receiving below message.
 ```
-[upgrade/successful] SUCCESS! Your cluster was upgraded to "v1.24.2". Enjoy!
+[upgrade/successful] SUCCESS! Your cluster was upgraded to "v1.23.9". Enjoy!
 
 [upgrade/kubelet] Now that your control plane is upgraded, please proceed with upgrading your kubelets if you haven't already done so.
 ```
 
 Upgrade `kubelet` and `kubectl`.
 ```
-sudo apt-get -y install kubelet=1.24.2-00 kubectl=1.24.2-00 --allow-downgrades
+sudo apt-get -y install kubelet=1.23.9-00 kubectl=1.23.9-00 --allow-downgrades
 sudo systemctl daemon-reload
 sudo systemctl restart kubelet
 ```
@@ -6842,13 +6836,12 @@ Get current node status.
 kubectl get node
 ```
 ```
-NAME     STATUS                     ROLES           AGE   VERSION
-cka001   Ready,SchedulingDisabled   control-plane   19d   v1.24.2
-cka002   Ready                      <none>          19d   v1.23.8
-cka003   Ready                      <none>          19d   v1.23.8
+NAME     STATUS                     ROLES                  AGE   VERSION
+cka001   Ready,SchedulingDisabled   control-plane,master   32h   v1.23.9
+cka002   Ready                      <none>                 32h   v1.23.8
+cka003   Ready                      <none>                 32h   v1.23.8
 ```
 
-等待片刻，升级完成确认节点 Ready 后，取消禁止调度
 After verify that each node is in Ready status, enable node scheduling.
 ```
 kubectl uncordon <control_plane_node_name>
@@ -6867,10 +6860,10 @@ kubectl get node
 ```
 Output:
 ```
-NAME     STATUS   ROLES           AGE   VERSION
-cka001   Ready    control-plane   19d   v1.24.2
-cka002   Ready    <none>          19d   v1.23.8
-cka003   Ready    <none>          19d   v1.23.8
+NAME     STATUS   ROLES                  AGE   VERSION
+cka001   Ready    control-plane,master   32h   v1.23.9
+cka002   Ready    <none>                 32h   v1.23.8
+cka003   Ready    <none>                 32h   v1.23.8
 ```
 
 
@@ -6879,74 +6872,61 @@ cka003   Ready    <none>          19d   v1.23.8
 
 #### Upgrade Worker
 
-##### Preparation
+1. Preparation
+
+Log on to `cka001`
 
 Evict Worker nodes, explicitly specify to remove local storage if needed.
 ```
 kubectl drain <worker_node_name> --ignore-daemonsets --force
 kubectl drain <worker_node_name> --ignore-daemonsets --delete-emptydir-data --force
 ```
-
+If have error on dependency of `emptydir`, use the 2nd command.
 ```
+kubectl drain cka002 --ignore-daemonsets --ignore-daemonsets --force
 kubectl drain cka002 --ignore-daemonsets --ignore-daemonsets --delete-emptydir-data --force
 ```
 ```
-node/cka002 already cordoned
-WARNING: ignoring DaemonSet-managed Pods: kube-system/calico-node-4qm45, kube-system/kube-proxy-9rrpv
-evicting pod dev/mysql-nodeselector-6b7d9c875d-m862d
-evicting pod quota-object-example/ns-quota-test-84c6c557b9-hkbcl
-evicting pod ingress-nginx/ingress-nginx-controller-556fbd6d6f-h455s
-evicting pod dev/app-before-backup-66dc9d5cb-6sqcp
-evicting pod dev/pod-netpol-2-77478d77ff-96hgd
-evicting pod dev/mysql-with-sc-pvc-7c97d875f8-xp42f
-evicting pod kube-system/coredns-6d8c4cb4d-zdmm5
-evicting pod kube-system/metrics-server-7fd564dc66-rjchn
-evicting pod dev/nginx-app-1-695b7b647d-z8chz
-pod/app-before-backup-66dc9d5cb-6sqcp evicted
-pod/ns-quota-test-84c6c557b9-hkbcl evicted
-I0714 17:19:55.890912  869782 request.go:601] Waited for 1.159970307s due to client-side throttling, not priority and fairness, request: GET:https://172.16.18.170:6443/api/v1/namespaces/dev/pods/nginx-app-1-695b7b647d-z8chz
-pod/nginx-app-1-695b7b647d-z8chz evicted
-pod/metrics-server-7fd564dc66-rjchn evicted
-pod/mysql-nodeselector-6b7d9c875d-m862d evicted
-pod/mysql-with-sc-pvc-7c97d875f8-xp42f evicted
-pod/coredns-6d8c4cb4d-zdmm5 evicted
-pod/ingress-nginx-controller-556fbd6d6f-h455s evicted
-pod/pod-netpol-2-77478d77ff-96hgd evicted
+node/cka002 cordoned
+WARNING: deleting Pods not managed by ReplicationController, ReplicaSet, Job, DaemonSet or StatefulSet: dev/ubuntu; ignoring DaemonSet-managed Pods: kube-system/calico-node-p5rf2, kube-system/kube-proxy-zvs68
+evicting pod ns-netpol/pod-netpol-5b67b6b496-2cgnw
+evicting pod dev/ubuntu
+evicting pod dev/app-before-backup-66dc9d5cb-6xc8c
+evicting pod dev/nfs-client-provisioner-86d7fb78b6-2f5dx
+evicting pod dev/pod-netpol-2-77478d77ff-l6rzm
+evicting pod ingress-nginx/ingress-nginx-admission-patch-nk9fv
+evicting pod ingress-nginx/ingress-nginx-admission-create-lgtdj
+evicting pod kube-system/coredns-6d8c4cb4d-l4kx4
+pod/ingress-nginx-admission-create-lgtdj evicted
+pod/ingress-nginx-admission-patch-nk9fv evicted
+pod/nfs-client-provisioner-86d7fb78b6-2f5dx evicted
+pod/app-before-backup-66dc9d5cb-6xc8c evicted
+pod/coredns-6d8c4cb4d-l4kx4 evicted
+pod/pod-netpol-5b67b6b496-2cgnw evicted
+pod/pod-netpol-2-77478d77ff-l6rzm evicted
+pod/ubuntu evicted
 node/cka002 drained
 ```
 
-Upgrade kubeadm on **Worker node**.
+2. Upgrade
 
-Log on to `cka002` and download `kubeadm` with version `v1.24.2`.
+Log on to `cka002`.
+
+Download `kubeadm` with version `v1.23.9`.
 ```
-sudo apt-get -y install kubeadm=1.24.2-00 --allow-downgrades
+sudo apt-get -y install kubeadm=1.23.9-00 --allow-downgrades
 ```
 
-##### Upgrade 
-
-Perform upgrade on **Worker node**.
-
-Log onto `cka002`.
+Upgrade `kubeadm`.
 ```
 sudo kubeadm upgrade node
 ```
 
 Upgrade `kubelet`.
 ```
-sudo apt-get -y install kubelet=1.24.2-00 --allow-downgrades
+sudo apt-get -y install kubelet=1.23.9-00 --allow-downgrades
 sudo systemctl daemon-reload
 sudo systemctl restart kubelet
-```
-
-Check node status. 
-```
-kubectl get node
-```
-```
-NAME     STATUS                     ROLES           AGE   VERSION
-cka001   Ready                      control-plane   19d   v1.24.2
-cka002   Ready,SchedulingDisabled   <none>          19d   v1.24.2
-cka003   Ready                      <none>          19d   v1.23.8
 ```
 
 Make sure all nodes are in Ready status, then, enable node scheduling.
@@ -6957,34 +6937,38 @@ kubectl uncordon <worker_node_name>
 kubectl uncordon cka002
 ```
 
+3. Verify
 
-
-#### Verify
-
+Check node status. 
 ```
 kubectl get node
 ```
+Result
 ```
-NAME     STATUS   ROLES           AGE   VERSION
-cka001   Ready    control-plane   19d   v1.24.2
-cka002   Ready    <none>          19d   v1.24.2
-cka003   Ready    <none>          19d   v1.23.8
+NAME     STATUS   ROLES                  AGE   VERSION
+cka001   Ready    control-plane,master   32h   v1.23.9
+cka002   Ready    <none>                 32h   v1.23.9
+cka003   Ready    <none>                 32h   v1.23.8
 ```
+
+
+
 
 Repeat the same on node `cka003`.
 
-Log onto `cka001` to evict node `cka003`.
+Log onto `cka001`. If have error on dependency of `emptydir`, use the 2nd command.
 ```
+kubectl drain cka003 --ignore-daemonsets --ignore-daemonsets --force
 kubectl drain cka003 --ignore-daemonsets --ignore-daemonsets --delete-emptydir-data --force
 ```
 
 Log onto `cka003` and perform below commands.
 ```
-sudo apt-get -y install kubeadm=1.24.2-00 --allow-downgrades
+sudo apt-get -y install kubeadm=1.23.9-00 --allow-downgrades
 
 sudo kubeadm upgrade node
 
-sudo apt-get -y install kubelet=1.24.2-00 --allow-downgrades
+sudo apt-get -y install kubelet=1.23.9-00 --allow-downgrades
 sudo systemctl daemon-reload
 sudo systemctl restart kubelet
 
@@ -6997,10 +6981,10 @@ Get final status of all nodes.
 kubectl get node
 ```
 ```
-NAME     STATUS   ROLES           AGE   VERSION
-cka001   Ready    control-plane   19d   v1.24.2
-cka002   Ready    <none>          19d   v1.24.2
-cka003   Ready    <none>          19d   v1.24.2
+NAME     STATUS   ROLES                  AGE   VERSION
+cka001   Ready    control-plane,master   32h   v1.23.9
+cka002   Ready    <none>                 32h   v1.23.9
+cka003   Ready    <none>                 32h   v1.23.9
 ```
 
 
@@ -7024,7 +7008,7 @@ rm -rf linux-amd64 helm-v3.8.2-linux-amd64.tar.gz
 
 Or manually download the file via link `https://get.helm.sh/helm-v3.8.2-linux-amd64.tar.gz`, and remote copy to `cka001`.
 ```
-scp -i cka-key-pair.pem helm-v3.8.2-linux-amd64.tar.gz root@cka001:/root/
+scp -i cka-key-pair.pem ./Package/helm-v3.8.2-linux-amd64.tar.gz root@cka001:/root/
 ```
 ```
 ssh -i cka-key-pair.pem root@cka001
@@ -7058,7 +7042,7 @@ source <(helm completion bash)
 
 
 
-#### Install MySQL from Helm
+### Install MySQL from Helm
 
 Add bitnami Chartes Repository.
 ```
@@ -7090,20 +7074,20 @@ helm search repo bitnami/mysql
 ```
 
 Install MySQL Chart on namespace `dev`：
-
 ```
 helm install mysql bitnami/mysql -n dev
 ```
+Output
 ```
 NAME: mysql
-LAST DEPLOYED: Thu Jul 14 18:18:16 2022
+LAST DEPLOYED: Sun Jul 24 19:37:20 2022
 NAMESPACE: dev
 STATUS: deployed
 REVISION: 1
 TEST SUITE: None
 NOTES:
 CHART NAME: mysql
-CHART VERSION: 9.2.0
+CHART VERSION: 9.2.1
 APP VERSION: 8.0.29
 
 ** Please be patient while the chart is being deployed **
@@ -7136,9 +7120,10 @@ Check installed release：
 ```
 helm list
 ```
+Result
 ```
 NAME    NAMESPACE       REVISION        UPDATED                                 STATUS          CHART           APP VERSION
-mysql   dev    1               2022-07-14 18:18:16.252140606 +0800 CST deployed        mysql-9.2.0     8.0.29
+mysql   dev             1               2022-07-24 19:37:20.710988009 +0800 CST deployed        mysql-9.2.1     8.0.29 
 ```
 
 Check installed mysql release information.
@@ -7150,35 +7135,18 @@ Check mysql Pod status.
 ```
 kubectl get pod
 ```
+Result
 ```
 NAME                                      READY   STATUS    RESTARTS   AGE
-mysql-0                                   1/1     Running   0          76s
+mysql-0                                   1/1     Running   0          72s
 ```
-
-
-**思考题**
-
-1. 查看 MySQL Pod 运行情况，目前 Pod 状态是什么？
-2. 为什么当前处于 Pending 状态？
-3. 如何排查？( `kubectl describe pod` )
-4. 为什么无法绑定 PVC？
-5. PVC的状态是什么？( `kubectl get pvc`, `kubectl describe pvc data-mysql-0` )
-6. 为什么在 `11 存储`实验中部署的 StorageClass 无法满足要求？( `accessMode` )
-7. 如何手动创建满足要求的 PV？
-
-
-
-
-
-
-
 
 
 ### Develop a Chart
 
 Below is a demo on how to develop a Chart.
 
-1. Execute `helm create` to initiate a Chart：
+Execute `helm create` to initiate a Chart：
 
 ```
 # Naming conventions of Chart: lowercase a~z and -(minus sign)
@@ -7186,12 +7154,12 @@ helm create cka-demo
 ```
 
 A folder `cka-demo` was created. Check the folder structure.
-
 ```
-cd cka-demo/
-tree
+tree cka-demo/
 ```
+Output
 ```
+cka-demo/
 ├── charts
 ├── Chart.yaml
 ├── templates
@@ -7209,16 +7177,23 @@ tree
 
 Delete or empty some files, which will be re-created later.
 ```
+cd cka-demo
 rm -rf charts
 rm -rf templates/tests 
 rm -rf templates/*.yaml
 echo "" > values.yaml
 echo "" > templates/NOTES.txt
 echo "" > templates/_helpers.tpl
+cd ..
 ```
 
 Now new structure looks like below.
 ```
+tree cka-demo/
+```
+Output
+```
+cka-demo/
 ├── Chart.yaml
 ├── templates
 │   ├── _helpers.tpl
@@ -7227,11 +7202,7 @@ Now new structure looks like below.
 ```
 
 
-
-
-
-
-#### NOTES.txt
+### NOTES.txt
 
 NOTES.txt is used to provide summary information to Chart users. 
 In the demo, we will use NOTES.txt to privide summary info about whether the user passed CKA certificate or not.
@@ -7258,7 +7229,7 @@ Come on! you can do it next time!
 
 
 
-#### Deployment Template
+### Deployment Template
 
 Let's use Busybox service to generate information. 
 We use `kubectl create deployment --dry-run=client -oyaml` to generate Deployment yaml file and write it the yaml file content into file `templates/deployment.yaml`.
@@ -7271,13 +7242,13 @@ Check content of deployment yaml file `templates/deployment.yaml`.
 cat templates/deployment.yaml
 ```
 ```
-apiVersion: apps/v1      
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   creationTimestamp: null
   labels:
     app: cka-demo-busybox
-  name: cka-demo-busybox 
+  name: cka-demo-busybox
 spec:
   replicas: 1
   selector:
@@ -7297,6 +7268,10 @@ spec:
 status: {}
 ```
 
+Edit file `templates/deployment.yaml`.
+```
+vi templates/deployment.yaml
+```
 Let's replace value of `.spec.replicas` from `1` to a variable `{{ .Values.replicaCount }}`, so we can dynamicly assign replicas number for other Deployment.
 ```
 apiVersion: apps/v1
@@ -7445,7 +7420,7 @@ passExam: true
 
 
 
-#### ConfigMap Template
+### ConfigMap Template
 
 ConfigMap is referred in the Deployment, hence we need define the ConfigMap template.
 We will combine name of ConfigMap and `cka_score` as a variable, like `name-cka-score`.
@@ -7475,7 +7450,7 @@ ckaScore: 100
 
 
 
-#### _helpers.tpl
+### _helpers.tpl
 
 Define a common template `_helpers.tpl` to add labels and labels of Selector for labels of Deployment and ConfigMap.
 ```
@@ -7505,7 +7480,7 @@ release: {{ .Release.Name }}
 
 
 
-#### Chart.yaml
+### Chart.yaml
 
 We use CKA logo as the icon of Chart
 ```
@@ -7527,17 +7502,17 @@ vi Chart.yaml
 ```
 ```
 maintainers:
-  - name: Yinlin.Li
+  - name: James.H
 ```
 
-Final `Chart.yaml` looks like below.
+Final `Chart.yaml` looks like below. Don't forget to update `appVersion: "v1.23"` to current Kubernetes API version.
 ```
 apiVersion: v2
 name: cka-demo
 description: A Helm chart for CKA demo.
 type: application
 version: 0.1.0
-appVersion: "v1.24"
+appVersion: "v1.23"
 maintainers:
   - name: James.H
 icon: file://./kubernetes-cka-color.svg
@@ -7545,7 +7520,7 @@ icon: file://./kubernetes-cka-color.svg
 
 
 
-#### Chart Debug
+### Chart Debug
 
 Use `helm lint` to verify above change.
 ```
@@ -7594,9 +7569,10 @@ helm install cka-demo cka-demo-0.1.0.tgz --create-namespace \
   --set ckaScore=0 \
   --set passExam=false
 ```
+Result
 ```
 NAME: cka-demo
-LAST DEPLOYED: Fri Jul 15 20:54:52 2022
+LAST DEPLOYED: Sun Jul 24 19:58:36 2022
 NAMESPACE: cka
 STATUS: deployed
 REVISION: 1
@@ -7605,22 +7581,30 @@ NOTES:
 Come on! you can do it next time!
 ```
 
+Check the deployment
+```
+helm list --all-namespaces
+```
+Result
+```
+NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART           APP VERSION
+cka-demo        cka             1               2022-07-24 19:58:36.272093383 +0800 CST deployed        cka-demo-0.1.0  v1.23      
+mysql           dev             1               2022-07-24 19:37:20.710988009 +0800 CST deployed        mysql-9.2.1     8.0.29  
+```
+
 If any error, need to unstall `cka-demo` and reinstall it.
 ```
-helm list --all-namespace
 helm uninstall cka-demo -n <your_namespace>
 ```
 
-
-
-Check container log of `busybox`.
+Check log of `cka-demo `.
 ```
 kubectl logs -n cka -l app=cka-demo
 ```
+Result
 ```
 Your CKA score is 0, Come on! you can do it next time!
 ```
-
 
 Install `cka-demo` with different options.
 ```
@@ -7634,7 +7618,7 @@ helm install cka-demo cka-demo-0.1.0.tgz --create-namespace \
 ```
 ```
 NAME: cka-demo
-LAST DEPLOYED: Fri Jul 15 20:58:01 2022
+LAST DEPLOYED: Sun Jul 24 20:01:34 2022
 NAMESPACE: cka
 STATUS: deployed
 REVISION: 1
@@ -7651,12 +7635,12 @@ Click the link below to view and download your certificate.
 https://trainingportal.linuxfoundation.org/learn/dashboard
 ```
 
-Check container log of `busybox`.
+Check log of `cka-demo `.
 ```
 kubectl logs -n cka -l app=cka-demo
 ```
 ```
-Your CKA score is 100 and your CKA certificate ID number is fwauD8TJW1OzD
+Your CKA score is 100 and your CKA certificate ID number is BQKoVYVhjzl3G
 ```
 
 
@@ -7699,9 +7683,7 @@ Template.BasePath            # 当前模板目录路径
 
 
 
-## A1.Discussion
-
-### Install Calico
+## Demo-1: Install Calico
 
 [End-to-end Calico installation](https://projectcalico.docs.tigera.io/getting-started/kubernetes/hardway/)
 
@@ -9077,7 +9059,7 @@ kubectl delete pod pingtest-ippool-2
 
 
 
-### Scenario: One Node Down
+## Demo-2: One Node Down
 
 Scenario: 
 > When we stop `kubelet` service on worker node `cka002`,
@@ -9117,6 +9099,7 @@ After we stop kubelet service on `cka003`, the two running on `cka003` are termi
 
 
 
+## Demo-3: 
 
 **6/30**
 
@@ -9170,7 +9153,15 @@ https://howtoforge.com/multi-container-pods-in-kubernetes/
 4. kubectl命令行方式创建RoleBinding把上面创建的ClusterRole和ServiceAccount绑定起来
 
 
+**7/12**
 
+1. 查看 MySQL Pod 运行情况，目前 Pod 状态是什么？
+2. 为什么当前处于 Pending 状态？
+3. 如何排查？( `kubectl describe pod` )
+4. 为什么无法绑定 PVC？
+5. PVC的状态是什么？( `kubectl get pvc`, `kubectl describe pvc data-mysql-0` )
+6. 为什么在 `11 存储`实验中部署的 StorageClass 无法满足要求？( `accessMode` )
+7. 如何手动创建满足要求的 PV？
 
 
 
