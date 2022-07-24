@@ -2462,7 +2462,7 @@ nginx-healthcheck   10.244.102.14:80,10.244.112.13:80   72s
 Till now, two `nginx-healthcheck` Pods are working and providing service as expected. 
 
 
-#### Simulate Error
+#### Simulate readinessProbe Failure
 
 Let's simulate an error by deleting and `index.html` file in on of `nginx-healthcheck` Pod and see what's readinessProbe will do.
 
@@ -2554,7 +2554,7 @@ nginx-healthcheck   10.244.112.13:80   6m5s
 ```
 
 
-#### Fix Error & Verify
+#### Fix readinessProbe Failure
 
 Let's re-create the `index.html` file again in the Pod. 
 ```
@@ -2617,14 +2617,59 @@ By delete the `index.html` file, the Pod is in unhealth status and is removed fr
 One one health Pod can provide normal service.
 
 
-
-
 Clean up
 ```
 kubectl delete service nginx-healthcheck
 kubectl delete deployment nginx-healthcheck
 ```
 
+
+#### Simulate livenessProbe Failure
+
+Re-create Deployment `nginx-healthcheck` and Service `nginx-healthcheck`.
+
+Deployment:
+```
+NAME                     READY   UP-TO-DATE   AVAILABLE   AGE
+nginx-healthcheck        0/2     2            0           7s
+```
+
+Pods:
+```
+NAME                                      READY   STATUS    RESTARTS   AGE
+nginx-healthcheck-79fc55d944-lknp9        1/1     Running   0          96s
+nginx-healthcheck-79fc55d944-wntmg        1/1     Running   0          96s
+```
+
+Change nginx default listening port from `80` to `90` to simulate livenessProbe Failure. livenessProbe check the live status via port `80`. 
+```
+kubectl exec -it nginx-healthcheck-79fc55d944-lknp9 -- bash
+root@nginx-healthcheck-79fc55d944-lknp9:/# cd /etc/nginx/conf.d
+root@nginx-healthcheck-79fc55d944-lknp9:/etc/nginx/conf.d# sed -i 's/80/90/g' default.conf
+root@nginx-healthcheck-79fc55d944-lknp9:/etc/nginx/conf.d# nginx -s reload
+2022/07/24 12:59:45 [notice] 79#79: signal process started
+```
+
+The Pod runs into failure.
+```
+kubectl describe pod nginx-healthcheck-79fc55d944-lknp9
+```
+We can see `livenessProbe` failed error event message.
+```
+Events:
+  Type     Reason     Age                    From               Message
+  ----     ------     ----                   ----               -------
+  Normal   Scheduled  17m                    default-scheduler  Successfully assigned dev/nginx-healthcheck-79fc55d944-lknp9 to cka003
+  Normal   Pulled     2m47s (x2 over 17m)    kubelet            Container image "nginx:latest" already present on machine
+  Normal   Created    2m47s (x2 over 17m)    kubelet            Created container nginx-healthcheck
+  Normal   Started    2m47s (x2 over 17m)    kubelet            Started container nginx-healthcheck
+  Warning  Unhealthy  2m47s (x4 over 2m57s)  kubelet            Readiness probe failed: Get "http://10.244.102.46:80/": dial tcp 10.244.102.46:80: connect: connection refused
+  Warning  Unhealthy  2m47s (x3 over 2m57s)  kubelet            Liveness probe failed: dial tcp 10.244.102.46:80: connect: connection refused
+  Normal   Killing    2m47s                  kubelet            Container nginx-healthcheck failed liveness probe, will be restarted
+```
+
+Once failure detected by `livenessProbe`, the container will restarted again automatically. 
+The `default.conf` we modified will be replaced by default file and the container status is up and normal.
 
 
 
@@ -2846,8 +2891,52 @@ spec:
   maxReplicas: 10
   targetCPUUtilizationPercentage: 50
 EOF
-
 ```
+
+For `autoscaling/v2` version, we can either use below template to create HPA. 
+And add memory resource in the matrics.
+```
+kubectl apply -f - <<EOF
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: nginx
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: podinfo
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: AverageValue
+        averageValue: 100Mi
+EOF
+```
+
+Memo: 
+
+> `metrics.resource` The values will be averaged together before being compared to the target. 在与目标值比较之前，这些指标值将被平均。
+> 
+> `metrics.resource.target.type` represents whether the metric type is Utilization, Value, or AverageValue
+> 
+> `metrics.resource.target.averageUtilization` is the target value of the average of the resource metric across all relevant pods, represented as a percentage of the requested value of the resource for the pods. Currently only valid for Resource metric source type. 是跨所有相关 Pod 得出的资源指标均值的目标值。
+> 
+> `metrics.resource.target.averageValue` (Quantity) is the target value of the average of the metric across all relevant pods (as a quantity). 跨所有 Pod 得出的指标均值的目标值（以数量形式给出）。
+> 
+> `metrics.resource.target.value` (Quantity) is the target value of the metric (as a quantity). 是指标的目标值（以数量形式给出）。
+
+
 
 Get status of HPA.
 ```
@@ -9099,44 +9188,280 @@ After we stop kubelet service on `cka003`, the two running on `cka003` are termi
 
 
 
-## Demo-3: 
+## Demo-3: Edit Deployment
 
-**6/30**
+Scenario: 
+> Update existing Deployment, e.g., add port number
 
-1. 创建一个具有两个容器的Pod（镜像可以随意选择）
-2. DaemonSet可以设置replicas参数吗？为什么？
-3. kubectl查看Pod日志时如何按关键字过滤
+Demo:
 
-https://howtoforge.com/multi-container-pods-in-kubernetes/
+Create Deployment `nginx`.
+```
+kubectl create deployment nginx --image=nginx
+```
+
+Execute command below to get yaml template with port number.
+```
+kubectl create deployment nginx --image=nginx --port=8080 --dry-run=client -o yaml
+```
+
+Then we get to know the path to add port number, like below.
+```
+kubectl explain deployment.spec.template.spec.containers.ports.containerPort
+```
+
+Execute command below to edit the Deployemnt.
+```
+kubectl edit deployment nginx
+```
+Add below two lines to specify port number with `80` and protocol is `TCP`.
+```
+    spec:
+      containers:
+      - image: nginx
+        imagePullPolicy: Always
+        name: nginx
+        ports:
+        - containerPort: 80
+          protocol: TCP
+```
 
 
-**7/3**
+Use command `kubectl describe deployment <deployment_name>`, we can see the port number was added.
+```
+Pod Template:
+  Labels:  app=nginx
+  Containers:
+   nginx:
+    Image:        nginx
+    Port:         80/TCP
+    Host Port:    0/TCP
+    Environment:  <none>
+    Mounts:       <none>
+  Volumes:        <none>
+```
 
-1. 如何基于健康检查实操中的nginx-healthcheck模拟livenessProbe存活探针检查失败的场景？
-    * 提示1：nginx-healthcheck的livenessProbe探测的是80端口的存活
-    * 提示2：容器中可以执行sed
-    * 提示3：nginx-healthcheck的默认配置文件位于/etc/nginx/conf.d/下
-    * 提示4：Nginx的重新加载配置的命令是nginx -s reload
+With command `kubectl describe pod <pod_name>`, we can see the port number was added.
+```
+Containers:
+  nginx:
+    Container ID:   containerd://af4a1243f981497074b5c006ac55fcf795688399871d1dfe91a095321f5c91aa
+    Image:          nginx
+    Image ID:       docker.io/library/nginx@sha256:1761fb5661e4d77e107427d8012ad3a5955007d997e0f4a3d41acc9ff20467c7
+    Port:           80/TCP
+    Host Port:      0/TCP
+    State:          Running
+      Started:      Sun, 24 Jul 2022 22:50:12 +0800
+    Ready:          True
+    Restart Count:  0
+    Environment:    <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-hftdt (ro)
+```
 
-2. HPA计算CPU/内存扩缩容的百分比是如何计算出来的？分子和分母分别是取什么值
 
 
 
-**7/5**
+## Demo-4: Service Internal Traffic Policy
 
-1. 通过kubectl create deploy nginx --image=nginx命令创建的Deployment，忘记加容器端口了，如何修改Deployment加上端口
-2. 验证Service的internalTrafficPolicy参数
+Scenario: 
+> Simulate how Service Internal Traffic Policy works.
+
+Backgroud:
+
+Service Internal Traffic Policy enables internal traffic restrictions to only route internal traffic to endpoints within the node the traffic originated from. 
+
+The "internal" traffic here refers to traffic originated from Pods in the current cluster.
+
+By setting its `.spec.internalTrafficPolicy` to Local. This tells kube-proxy to only use node local endpoints for cluster internal traffic.
+
+For pods on nodes with no endpoints for a given Service, the Service behaves as if it has zero endpoints (for Pods on this node) even if the service does have endpoints on other nodes.
+
+Demo:
+
+Create Deployment `my-nginx` and Service `my-nginx`.
+```
+kubectl apply -f - << EOF
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-nginx
+spec:
+  selector:
+    matchLabels:
+      run: my-nginx
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: my-nginx
+    spec:
+      containers:
+      - name: my-nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-nginx
+  labels:
+    run: my-nginx
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    run: my-nginx
+  internalTrafficPolicy: Local
+EOF
+```
+
+```
+curl 10.244.112.62:80
+curl 10.244.102.2:80
+```
+
+
+kubectl get pod -o wide
+```
+NAME                                      READY   STATUS    RESTARTS   AGE   IP             NODE     NOMINATED NODE   READINESS GATES
+my-nginx-cf54cdbf7-8knh8                  1/1     Running   0          45s   10.244.102.1   cka003   <none>           <none>
+```
 
 
 
-**7/7**
 
-提示，用官网的YAML示例修改：
+## Demo-5: 
 
-1. 创建一个hostPath类型的PV，目录自定义
-2. 按照这个PV，创建一个PVC跟这个PV绑定
-3. 创建一个Pod，挂载这个PVC，挂载目录自定义
-4. 修改这个Pod，添加一个emptyDir类型的Volume挂载，挂载目录自定义
+Scenario: 
+
+Refer to sample codes from [Kubernetes Documentation](https://kubernetes.io/docs/home/) to complete below tasks:
+> Create PV with hostPath type. 
+> Create PVC and bind it to the PV.
+> Create Pod to mount the PVC.
+> Modify the Pod by mounting new volume with emptyDir type.
+
+Demo: 
+
+Search `Create a PersistentVolume` in [Kubernetes Documentation](https://kubernetes.io/docs/home/).
+
+Choose [Configure a Pod to Use a PersistentVolume for Storage](https://kubernetes.io/docs/tasks/configure-pod-container/configure-persistent-volume-storage/)
+
+With sample codes we get from above link, let's complete these demo tasks.
+
+Task 1: create a PV `task-pv-volume` and set `hostPath` is `/cka-data`.
+
+```
+kubectl apply -f - << EOF
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: task-pv-volume
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/cka-data"
+EOF
+```
+
+Task 2: create PVC `task-pv-claim` and bind it to the PV `task-pv-volume` by StorageClass `manual`.
+
+```
+kubectl apply -f - << EOF
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: task-pv-claim
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 3Gi
+EOF
+```
+
+
+Task 3: create Pod `task-pv-pod` to mount the PVC `task-pv-claim`.
+
+```
+kubectl apply -f - << EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: task-pv-pod
+spec:
+  volumes:
+    - name: task-pv-storage
+      persistentVolumeClaim:
+        claimName: task-pv-claim
+  containers:
+    - name: task-pv-container
+      image: nginx
+      ports:
+        - containerPort: 80
+          name: "http-server"
+      volumeMounts:
+        - mountPath: "/usr/share/nginx/html"
+          name: task-pv-storage
+EOF
+```
+
+Attach to the Pod and create `index.html` file in directory `/usr/share/nginx/html/`.
+```
+kubectl exec -it task-pv-pod -- bash
+root@task-pv-pod:/usr/share/nginx/html# echo "Hello Nginx" > index.html
+```
+
+We can see the file `index.html` in directory `/cka-data/` on node `cka003`, which the Pod is running on.
+
+
+Task 4: modify the Pod by mounting new volume with emptyDir type.
+
+Search `Create a PersistentVolume` in [Kubernetes Documentation](https://kubernetes.io/docs/home/).
+
+Get sampe code of [emptydir](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir).
+
+Update the Pod `task-pv-pod` and mount new volume `mnt-volume` with emptyDir type.
+```
+kubectl apply -f - << EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: task-pv-pod
+spec:
+  volumes:
+    - name: task-pv-storage
+      persistentVolumeClaim:
+        claimName: task-pv-claim
+    - name: mnt-volume
+      emptyDir: {}
+  containers:
+    - name: task-pv-container
+      image: nginx
+      ports:
+        - containerPort: 80
+          name: "http-server"
+      volumeMounts:
+        - mountPath: "/usr/share/nginx/html"
+          name: task-pv-storage
+        - mountPath: "/mnt"
+          name: mnt-volume
+EOF
+```
+
+
+
+
 
 
 **7/10**
