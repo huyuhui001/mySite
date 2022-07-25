@@ -1754,8 +1754,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#demo-5" class="md-nav__link">
-    Demo-5:
+  <a href="#demo-5-pod-and-pvc" class="md-nav__link">
+    Demo-5: Pod and PVC
   </a>
   
 </li>
@@ -2487,14 +2487,28 @@ kube-system   kube-scheduler-cka001                      1/1     Running   0    
 <li>via kubectl</li>
 <li>via Dashboard</li>
 </ul>
-<p>Get cluster status.</p>
-<ul>
-<li>Kubernetes control plane is running at https://172.16.18.170:6443</li>
-<li>CoreDNS is running at https://172.16.18.170:6443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy</li>
-</ul>
+<p>Remember the link of <code>kubectl</code>: https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands</p>
+<ol>
+<li>Get a complete list of supported resources</li>
+</ol>
+<pre><code>kubectl api-resources
+</code></pre>
+<ol>
+<li>Get cluster status.</li>
+</ol>
 <pre><code>kubectl cluster-info
 kubectl cluster-info dump
 </code></pre>
+<ul>
+<li>Kubernetes control plane is running at <code>https://&lt;control_plane_ip&gt;:6443</code></li>
+<li>
+<p>CoreDNS is running at <code>https://&lt;control_plane_ip&gt;:6443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy</code></p>
+</li>
+<li>
+<p>Display resources</p>
+</li>
+</ul>
+<p>Use <code>kubectl get --help</code> to get examples of displaying one or many resources.</p>
 <p>Get health status of control plane.</p>
 <pre><code>kubectl get componentstatuses
 kubectl get cs
@@ -2514,6 +2528,31 @@ kubectl get nodes -o wide
 cka001   Ready    control-plane,master   74m   v1.23.8   172.16.18.170   &lt;none&gt;        Ubuntu 20.04.4 LTS   5.4.0-122-generic   containerd://1.5.9
 cka002   Ready    &lt;none&gt;                 70m   v1.23.8   172.16.18.169   &lt;none&gt;        Ubuntu 20.04.4 LTS   5.4.0-122-generic   containerd://1.5.9
 cka003   Ready    &lt;none&gt;                 69m   v1.23.8   172.16.18.168   &lt;none&gt;        Ubuntu 20.04.4 LTS   5.4.0-122-generic   containerd://1.5.9
+</code></pre>
+<ol>
+<li>Create resources</li>
+</ol>
+<p>Use command <code>kubectl create --help</code> to get examples of creating resources.</p>
+<p>Create namespace.</p>
+<pre><code>kubectl create namespace --help
+kubectl create namespace my-namespace
+</code></pre>
+<p>Create Deployment on the namespace.</p>
+<pre><code>kubectl -n my-namespace create deployment my-busybox --image=busybox --replicas=3 --port=5701
+</code></pre>
+<p>Create ClusterRole.</p>
+<pre><code>kubectl create clusterrole --help
+kubectl -n my-namespace create clusterrole pod-creater --verb=create --resource=deployment --resource-name=my-busybox
+</code></pre>
+<p>Create ServiceAccount</p>
+<pre><code>kubectl create serviceaccount --help
+kubectl -n my-namespace create serviceaccount my-service-account
+</code></pre>
+<p>Create RoleBinding
+Note: <code>RoleBinding</code> can reference a Role in the same namespace or a ClusterRole in the global namespace.</p>
+<pre><code>kubectl create rolebinding --help
+kubectl create rolebinding NAME --clusterrole=NAME|--role=NAME [--user=username] [--group=groupname] [--serviceaccount=namespace:serviceaccountname] [--dry-run=server|client|none]
+kubectl create rolebinding my-admin --clusterrole=pod-creater --serviceaccount=my-namespace:my-service-account
 </code></pre>
 <h3 id="static-pod">Static Pod</h3>
 <p><code>kubectl</code> will automatically check yaml file in <code>/etc/kubernetes/manifests/</code> and create the static pod once it's detected.</p>
@@ -5879,8 +5918,9 @@ pod-configmap-env                         0m           3Mi
 pod-configmap-env-2                       0m           3Mi
 tomcat                                    1m           58Mi
 </code></pre>
-<p>Sort output by CPU or Memory using option <code>--sort-by</code>.</p>
+<p>Sort output by CPU or Memory using option <code>--sort-by</code>, the field can be either 'cpu' or 'memory'.</p>
 <pre><code>kubectl top pod --sort-by=cpu
+kubectl top pod --sort-by=memory
 </code></pre>
 <p>Output:</p>
 <pre><code>NAME                                      CPU(cores)   MEMORY(bytes)   
@@ -8940,17 +8980,44 @@ spec:
     protocol: TCP
   selector:
     run: my-nginx
+EOF
+</code></pre>
+<p>With command <code>kubectl get pod -o wide</code>, we know the Pod of Deployment <code>my-nginx</code> is running on node <code>cka003</code>.</p>
+<pre><code>NAME                                      READY   STATUS    RESTARTS   AGE     IP              NODE     NOMINATED NODE   READINESS GATES
+my-nginx-cf54cdbf7-bscf8                  1/1     Running   0          9h      10.244.112.63   cka002   &lt;none&gt;           &lt;none&gt;
+</code></pre>
+<p>Let's send http request from <code>cka001</code> to the Pod on <code>cka002</code>. 
+We will receive <code>Welcome to nginx!</code> information, which means the Pod is accessable from other nodes.</p>
+<pre><code>curl 11.244.163.60
+</code></pre>
+<p>Let's modify the Serivce <code>my-nginx</code> and specify <code>internalTrafficPolicy: Local</code>. </p>
+<pre><code>kubectl apply -f - &lt;&lt; EOF
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-nginx
+  labels:
+    run: my-nginx
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    run: my-nginx
   internalTrafficPolicy: Local
 EOF
 </code></pre>
-<pre><code>curl 10.244.112.62:80
-curl 10.244.102.2:80
+<p>Let's send http request from <code>cka001</code> to the http request to the Pod again. 
+We will receive <code>curl: (7) Failed to connect to 11.244.163.60 port 80: Connection refused</code> error information.</p>
+<pre><code>curl 11.244.163.60
 </code></pre>
-<p>kubectl get pod -o wide</p>
-<pre><code>NAME                                      READY   STATUS    RESTARTS   AGE   IP             NODE     NOMINATED NODE   READINESS GATES
-my-nginx-cf54cdbf7-8knh8                  1/1     Running   0          45s   10.244.102.1   cka003   &lt;none&gt;           &lt;none&gt;
+<p>Let's log onto <code>cka002</code> and the http request to the Pod again. 
+We will receive <code>Welcome to nginx!</code> information, </p>
+<pre><code>curl 11.244.163.60
 </code></pre>
-<h2 id="demo-5">Demo-5:</h2>
+<p>Conclution:</p>
+<p>With setting Service <code>internalTrafficPolicy: Local</code>, the Service only route internal traffic within the nodes that Pods are running. </p>
+<h2 id="demo-5-pod-and-pvc">Demo-5: Pod and PVC</h2>
 <p>Scenario: </p>
 <p>Refer to sample codes from <a href="https://kubernetes.io/docs/home/">Kubernetes Documentation</a> to complete below tasks:</p>
 <blockquote>
@@ -9052,27 +9119,6 @@ spec:
           name: mnt-volume
 EOF
 </code></pre>
-<p><strong>7/10</strong></p>
-<ol>
-<li>kubectl top命令查看Pod和Node的资源利用率如何按照利用率排序？</li>
-</ol>
-<p><strong>7/12</strong></p>
-<ol>
-<li>kubectl命令行方式创建ClusterRole，定义对Deployment的create权限</li>
-<li>kubectl命令行方式创建一个Namespace</li>
-<li>kubectl命令行方式在Namespace下创建一个ServiceAccount</li>
-<li>kubectl命令行方式创建RoleBinding把上面创建的ClusterRole和ServiceAccount绑定起来</li>
-</ol>
-<p><strong>7/12</strong></p>
-<ol>
-<li>查看 MySQL Pod 运行情况，目前 Pod 状态是什么？</li>
-<li>为什么当前处于 Pending 状态？</li>
-<li>如何排查？( <code>kubectl describe pod</code> )</li>
-<li>为什么无法绑定 PVC？</li>
-<li>PVC的状态是什么？( <code>kubectl get pvc</code>, <code>kubectl describe pvc data-mysql-0</code> )</li>
-<li>为什么在 <code>11 存储</code>实验中部署的 StorageClass 无法满足要求？( <code>accessMode</code> )</li>
-<li>如何手动创建满足要求的 PV？</li>
-</ol>
                 
               
               
