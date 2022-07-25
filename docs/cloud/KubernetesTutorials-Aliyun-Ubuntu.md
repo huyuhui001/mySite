@@ -9239,7 +9239,7 @@ After we stop kubelet service on `cka003`, the two running on `cka003` are termi
 
 
 
-## Demo-3: Edit Deployment
+## Demo-3: Modify Existing Deployment
 
 Scenario: 
 > Update existing Deployment, e.g., add port number
@@ -9317,6 +9317,8 @@ Containers:
 
 Scenario: 
 > Simulate how Service Internal Traffic Policy works.
+> Expected result: 
+    > With setting Service `internalTrafficPolicy: Local`, the Service only route internal traffic within the nodes that Pods are running. 
 
 Backgroud:
 
@@ -9428,7 +9430,7 @@ Refer to sample codes from [Kubernetes Documentation](https://kubernetes.io/docs
 > Create PV with hostPath type. 
 > Create PVC and bind it to the PV.
 > Create Pod to mount the PVC.
-> Modify the Pod by mounting new volume with emptyDir type.
+> Mount new volume with emptyDir type to the Pod.
 
 Demo: 
 
@@ -9512,7 +9514,7 @@ root@task-pv-pod:/usr/share/nginx/html# echo "Hello Nginx" > index.html
 We can see the file `index.html` in directory `/cka-data/` on node `cka003`, which the Pod is running on.
 
 
-Task 4: modify the Pod by mounting new volume with emptyDir type.
+Task 4: mount new volume with emptyDir type to the Pod.
 
 Search `Create a PersistentVolume` in [Kubernetes Documentation](https://kubernetes.io/docs/home/).
 
@@ -9549,10 +9551,54 @@ EOF
 
 
 
+## Demo-6: ClusterRole and ServiceAccount
+
+Scenario: 
+> Create a ClusterRole, which is authorized to create Deployment, StatefulSet, DaemonSet.
+> Bind the ClusterRole to a ServiceAccount.
+
+```
+kubectl create namespace my-namespace
+
+kubectl -n my-namespace create serviceaccount my-sa
+
+kubectl create clusterrole my-clusterrole --verb=create --resource=deployments,statefulsets,daemonsets
+
+kubectl -n my-namespace create rolebinding my-clusterrolebinding --clusterrole=my-clusterrole --serviceaccount=my-namespace:my-sa
+```
+
+Hints:
+
+    1. A RoleBinding may reference any Role in the same namespace. 
+    2. A RoleBinding can reference a ClusterRole and bind that ClusterRole to the namespace of the RoleBinding. 
+    3. If you want to bind a ClusterRole to all the namespaces in your cluster, you use a ClusterRoleBinding.
+    4. Use RoleBinding to bind ClusterRole is to reuse the ClusterRole for namespaced resources, avoid duplicated namespaced roles for same authorization.
+    
+
+Clean up.
+```
+kubectl delete namespace my-namespace 
+kubectl delete clusterrole my-clusterrole
+```
 
 
+## Demo-7: Drain a Node
 
+Scenario:
+> Drain the node `cka003`
 
+Demo:
+
+Get list of Pods running.
+```
+kubectl get pod -o wide
+```
+
+We know that a Pod is running on `cka003`.
+```
+NAME                                      READY   STATUS    RESTARTS   AGE   IP             NODE     NOMINATED NODE   READINESS GATES
+nfs-client-provisioner-86d7fb78b6-xk8nw   1/1     Running   0          22h   10.244.102.3   cka003   <none>           <none>
+```
 
 
 
