@@ -994,16 +994,29 @@ Three approach to operate Kubernetes cluster:
 * via Dashboard
 
 
-Get cluster status.
+Remember the link of `kubectl`: https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands
 
-* Kubernetes control plane is running at https://172.16.18.170:6443
-* CoreDNS is running at https://172.16.18.170:6443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+
+1. Get a complete list of supported resources
+
+```
+kubectl api-resources
+```
+
+2. Get cluster status.
 
 ```
 kubectl cluster-info
 kubectl cluster-info dump
 ```
 
+* Kubernetes control plane is running at `https://<control_plane_ip>:6443`
+* CoreDNS is running at `https://<control_plane_ip>:6443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy`
+
+
+3. Display resources
+
+Use `kubectl get --help` to get examples of displaying one or many resources.
 
 Get health status of control plane.
 ```
@@ -1029,6 +1042,43 @@ NAME     STATUS   ROLES                  AGE   VERSION   INTERNAL-IP     EXTERNA
 cka001   Ready    control-plane,master   74m   v1.23.8   172.16.18.170   <none>        Ubuntu 20.04.4 LTS   5.4.0-122-generic   containerd://1.5.9
 cka002   Ready    <none>                 70m   v1.23.8   172.16.18.169   <none>        Ubuntu 20.04.4 LTS   5.4.0-122-generic   containerd://1.5.9
 cka003   Ready    <none>                 69m   v1.23.8   172.16.18.168   <none>        Ubuntu 20.04.4 LTS   5.4.0-122-generic   containerd://1.5.9
+```
+
+
+4. Create resources
+
+Use command `kubectl create --help` to get examples of creating resources.
+
+
+Create namespace.
+```
+kubectl create namespace --help
+kubectl create namespace my-namespace
+```
+
+Create Deployment on the namespace.
+```
+kubectl -n my-namespace create deployment my-busybox --image=busybox --replicas=3 --port=5701
+```
+
+Create ClusterRole.
+```
+kubectl create clusterrole --help
+kubectl -n my-namespace create clusterrole pod-creater --verb=create --resource=deployment --resource-name=my-busybox
+```
+
+Create ServiceAccount
+```
+kubectl create serviceaccount --help
+kubectl -n my-namespace create serviceaccount my-service-account
+```
+
+Create RoleBinding
+Note: `RoleBinding` can reference a Role in the same namespace or a ClusterRole in the global namespace.
+```
+kubectl create rolebinding --help
+kubectl create rolebinding NAME --clusterrole=NAME|--role=NAME [--user=username] [--group=groupname] [--serviceaccount=namespace:serviceaccountname] [--dry-run=server|client|none]
+kubectl create rolebinding my-admin --clusterrole=pod-creater --serviceaccount=my-namespace:my-service-account
 ```
 
 
@@ -5405,9 +5455,10 @@ pod-configmap-env-2                       0m           3Mi
 tomcat                                    1m           58Mi
 ```
 
-Sort output by CPU or Memory using option `--sort-by`.
+Sort output by CPU or Memory using option `--sort-by`, the field can be either 'cpu' or 'memory'.
 ```
 kubectl top pod --sort-by=cpu
+kubectl top pod --sort-by=memory
 ```
 Output:
 ```
@@ -9314,26 +9365,62 @@ spec:
     protocol: TCP
   selector:
     run: my-nginx
+EOF
+```
+
+With command `kubectl get pod -o wide`, we know the Pod of Deployment `my-nginx` is running on node `cka003`.
+```
+NAME                                      READY   STATUS    RESTARTS   AGE     IP              NODE     NOMINATED NODE   READINESS GATES
+my-nginx-cf54cdbf7-bscf8                  1/1     Running   0          9h      10.244.112.63   cka002   <none>           <none>
+```
+
+Let's send http request from `cka001` to the Pod on `cka002`. 
+We will receive `Welcome to nginx!` information, which means the Pod is accessable from other nodes.
+```
+curl 11.244.163.60
+```
+
+Let's modify the Serivce `my-nginx` and specify `internalTrafficPolicy: Local`. 
+```
+kubectl apply -f - << EOF
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-nginx
+  labels:
+    run: my-nginx
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    run: my-nginx
   internalTrafficPolicy: Local
 EOF
 ```
 
+Let's send http request from `cka001` to the http request to the Pod again. 
+We will receive `curl: (7) Failed to connect to 11.244.163.60 port 80: Connection refused` error information.
 ```
-curl 10.244.112.62:80
-curl 10.244.102.2:80
-```
-
-
-kubectl get pod -o wide
-```
-NAME                                      READY   STATUS    RESTARTS   AGE   IP             NODE     NOMINATED NODE   READINESS GATES
-my-nginx-cf54cdbf7-8knh8                  1/1     Running   0          45s   10.244.102.1   cka003   <none>           <none>
+curl 11.244.163.60
 ```
 
+Let's log onto `cka002` and the http request to the Pod again. 
+We will receive `Welcome to nginx!` information, 
+```
+curl 11.244.163.60
+```
+
+Conclution:
+
+With setting Service `internalTrafficPolicy: Local`, the Service only route internal traffic within the nodes that Pods are running. 
 
 
 
-## Demo-5: 
+
+
+
+## Demo-5: Pod and PVC
 
 Scenario: 
 
@@ -9461,32 +9548,6 @@ EOF
 
 
 
-
-
-
-**7/10**
-
-1. kubectl top命令查看Pod和Node的资源利用率如何按照利用率排序？
-
-
-
-**7/12**
-
-1. kubectl命令行方式创建ClusterRole，定义对Deployment的create权限
-2. kubectl命令行方式创建一个Namespace
-3. kubectl命令行方式在Namespace下创建一个ServiceAccount
-4. kubectl命令行方式创建RoleBinding把上面创建的ClusterRole和ServiceAccount绑定起来
-
-
-**7/12**
-
-1. 查看 MySQL Pod 运行情况，目前 Pod 状态是什么？
-2. 为什么当前处于 Pending 状态？
-3. 如何排查？( `kubectl describe pod` )
-4. 为什么无法绑定 PVC？
-5. PVC的状态是什么？( `kubectl get pvc`, `kubectl describe pvc data-mysql-0` )
-6. 为什么在 `11 存储`实验中部署的 StorageClass 无法满足要求？( `accessMode` )
-7. 如何手动创建满足要求的 PV？
 
 
 
