@@ -1390,19 +1390,6 @@
     Monitoring Indicators
   </a>
   
-    <nav class="md-nav" aria-label="Monitoring Indicators">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#nodes" class="md-nav__link">
-    Nodes
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
         
           <li class="md-nav__item">
@@ -1556,11 +1543,11 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#upgrade-kubeadm" class="md-nav__link">
-    Upgrade kubeadm
+  <a href="#upgrade" class="md-nav__link">
+    Upgrade
   </a>
   
-    <nav class="md-nav" aria-label="Upgrade kubeadm">
+    <nav class="md-nav" aria-label="Upgrade">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1588,11 +1575,11 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#20helm-chart" class="md-nav__link">
-    20.Helm Chart
+  <a href="#19helm-chart" class="md-nav__link">
+    19.Helm Chart
   </a>
   
-    <nav class="md-nav" aria-label="20.Helm Chart">
+    <nav class="md-nav" aria-label="19.Helm Chart">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1678,11 +1665,19 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#demo-1-install-calico" class="md-nav__link">
-    Demo-1: Install Calico
+  <a href="#case-study" class="md-nav__link">
+    Case Study
   </a>
   
-    <nav class="md-nav" aria-label="Demo-1: Install Calico">
+    <nav class="md-nav" aria-label="Case Study">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#install-calico_1" class="md-nav__link">
+    Install Calico
+  </a>
+  
+    <nav class="md-nav" aria-label="Install Calico">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1731,46 +1726,120 @@
     </nav>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#demo-2-one-node-down" class="md-nav__link">
-    Demo-2: One Node Down
-  </a>
+        
+      </ul>
+    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#demo-3-modify-existing-deployment" class="md-nav__link">
-    Demo-3: Modify Existing Deployment
+  <a href="#mini-practice" class="md-nav__link">
+    Mini-practice
+  </a>
+  
+    <nav class="md-nav" aria-label="Mini-practice">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#one-node-down" class="md-nav__link">
+    One Node Down
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#demo-4-service-internal-traffic-policy" class="md-nav__link">
-    Demo-4: Service Internal Traffic Policy
+        
+          <li class="md-nav__item">
+  <a href="#modify-existing-deployment" class="md-nav__link">
+    Modify Existing Deployment
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#demo-5-pod-and-pvc" class="md-nav__link">
-    Demo-5: Pod and PVC
+        
+          <li class="md-nav__item">
+  <a href="#service-internal-traffic-policy" class="md-nav__link">
+    Service Internal Traffic Policy
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#demo-6-clusterrole-and-serviceaccount" class="md-nav__link">
-    Demo-6: ClusterRole and ServiceAccount
+        
+          <li class="md-nav__item">
+  <a href="#pod-and-pvc" class="md-nav__link">
+    Pod and PVC
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#demo-7-drain-a-node" class="md-nav__link">
-    Demo-7: Drain a Node
+        
+          <li class="md-nav__item">
+  <a href="#clusterrole-and-serviceaccount" class="md-nav__link">
+    ClusterRole and ServiceAccount
   </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#drain-a-node" class="md-nav__link">
+    Drain a Node
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#upgrade_1" class="md-nav__link">
+    Upgrade
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#etcd-snapshot" class="md-nav__link">
+    etcd Snapshot
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#networkpolicy" class="md-nav__link">
+    NetworkPolicy
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#expose-service_2" class="md-nav__link">
+    Expose Service
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ingress" class="md-nav__link">
+    Ingress
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#schedule-pod-to-node" class="md-nav__link">
+    Schedule Pod to Node
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#check-available-node" class="md-nav__link">
+    Check Available Node
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#multiple-containers" class="md-nav__link">
+    Multiple Containers
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -5900,7 +5969,6 @@ EOF
 <pre><code>kubectl logs -f tomcat --tail 100 -c tomcat
 </code></pre>
 <h3 id="monitoring-indicators">Monitoring Indicators</h3>
-<h4 id="nodes">Nodes</h4>
 <p>Get node monitoring information</p>
 <pre><code>kubectl top node
 </code></pre>
@@ -6943,7 +7011,7 @@ fbbbb628a945    registry.aliyuncs.com/google_containers/pause:3.6               
 <pre><code>NAME                     READY   UP-TO-DATE   AVAILABLE   AGE
 app-before-backup        1/1     1            1           11m
 </code></pre>
-<h3 id="upgrade-kubeadm">Upgrade <code>kubeadm</code></h3>
+<h3 id="upgrade">Upgrade</h3>
 <h4 id="upgrade-control-plane">Upgrade <code>Control Plane</code></h4>
 <ol>
 <li>Preparation</li>
@@ -7100,8 +7168,8 @@ cka003   Ready    &lt;none&gt;                 32h   v1.23.8
 kubectl drain &lt;worker_node_name&gt; --ignore-daemonsets --delete-emptydir-data --force
 </code></pre>
 <p>If have error on dependency of <code>emptydir</code>, use the 2nd command.</p>
-<pre><code>kubectl drain cka002 --ignore-daemonsets --ignore-daemonsets --force
-kubectl drain cka002 --ignore-daemonsets --ignore-daemonsets --delete-emptydir-data --force
+<pre><code>kubectl drain cka002 --ignore-daemonsets --force
+kubectl drain cka002 --ignore-daemonsets --delete-emptydir-data --force
 </code></pre>
 <pre><code>node/cka002 cordoned
 WARNING: deleting Pods not managed by ReplicationController, ReplicaSet, Job, DaemonSet or StatefulSet: dev/ubuntu; ignoring DaemonSet-managed Pods: kube-system/calico-node-p5rf2, kube-system/kube-proxy-zvs68
@@ -7180,7 +7248,7 @@ cka001   Ready    control-plane,master   32h   v1.23.9
 cka002   Ready    &lt;none&gt;                 32h   v1.23.9
 cka003   Ready    &lt;none&gt;                 32h   v1.23.9
 </code></pre>
-<h2 id="20helm-chart">20.Helm Chart</h2>
+<h2 id="19helm-chart">19.Helm Chart</h2>
 <h3 id="install-helm">Install Helm</h3>
 <p>Install Helm on <code>cka001</code>. </p>
 <pre><code># https://github.com/helm/helm/releases
@@ -7706,7 +7774,8 @@ Template.BasePath            # 当前模板目录路径
 <p><a href="https://helm.sh/">Helm 官网</a></p>
 <p><a href="https://helm.sh/zh/docs/topics/version_skew/">Helm 版本支持策略</a></p>
 <p><a href="https://github.com/helm/helm/blob/484d43913f97292648c867b56768775a55e4bba6/pkg/releaseutil/kind_sorter.go">Helm Chart 资源对象安装顺序</a></p>
-<h2 id="demo-1-install-calico">Demo-1: Install Calico</h2>
+<h2 id="case-study">Case Study</h2>
+<h3 id="install-calico_1">Install Calico</h3>
 <p><a href="https://projectcalico.docs.tigera.io/getting-started/kubernetes/hardway/">End-to-end Calico installation</a></p>
 <h4 id="the-calico-datastore">The Calico Datastore</h4>
 <p>In order to use Kubernetes as the Calico datastore, we need to define the custom resources Calico uses.</p>
@@ -8862,7 +8931,8 @@ pingtest-ippool-2   1/1     Running   0          18s   10.244.203.192   cka003  
 <pre><code>kubectl delete deployments.apps pingtest
 kubectl delete pod pingtest-ippool-2
 </code></pre>
-<h2 id="demo-2-one-node-down">Demo-2: One Node Down</h2>
+<h2 id="mini-practice">Mini-practice</h2>
+<h3 id="one-node-down">One Node Down</h3>
 <p>Scenario: </p>
 <blockquote>
 <p>When we stop <code>kubelet</code> service on worker node <code>cka002</code>,</p>
@@ -8893,7 +8963,7 @@ nginx-deployment-9d745469b-4gvmr   1/1     Running   0          2m8s   10.244.2.
 nginx-deployment-9d745469b-5j927   1/1     Running   0          2m8s   10.244.1.3   cka002   &lt;none&gt;           &lt;none&gt;
 </code></pre>
 <p>After we stop kubelet service on <code>cka003</code>, the two running on <code>cka003</code> are terminated and another two are created and running on <code>cka002</code> automatically. </p>
-<h2 id="demo-3-modify-existing-deployment">Demo-3: Modify Existing Deployment</h2>
+<h3 id="modify-existing-deployment">Modify Existing Deployment</h3>
 <p>Scenario: </p>
 <blockquote>
 <p>Update existing Deployment, e.g., add port number</p>
@@ -8949,12 +9019,16 @@ nginx-deployment-9d745469b-5j927   1/1     Running   0          2m8s   10.244.1.
     Mounts:
       /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-hftdt (ro)
 </code></pre>
-<h2 id="demo-4-service-internal-traffic-policy">Demo-4: Service Internal Traffic Policy</h2>
+<h3 id="service-internal-traffic-policy">Service Internal Traffic Policy</h3>
 <p>Scenario: </p>
 <blockquote>
-<p>Simulate how Service Internal Traffic Policy works.
-Expected result: 
-    &gt; With setting Service <code>internalTrafficPolicy: Local</code>, the Service only route internal traffic within the nodes that Pods are running. </p>
+<ul>
+<li>Simulate how Service Internal Traffic Policy works.</li>
+<li>Expected result:<ul>
+<li>With setting Service <code>internalTrafficPolicy: Local</code>, the Service only route internal traffic within the nodes that Pods are running. </li>
+</ul>
+</li>
+</ul>
 </blockquote>
 <p>Backgroud:</p>
 <p>Service Internal Traffic Policy enables internal traffic restrictions to only route internal traffic to endpoints within the node the traffic originated from. </p>
@@ -9033,14 +9107,16 @@ We will receive <code>Welcome to nginx!</code> information, </p>
 </code></pre>
 <p>Conclution:</p>
 <p>With setting Service <code>internalTrafficPolicy: Local</code>, the Service only route internal traffic within the nodes that Pods are running. </p>
-<h2 id="demo-5-pod-and-pvc">Demo-5: Pod and PVC</h2>
+<h3 id="pod-and-pvc">Pod and PVC</h3>
 <p>Scenario: </p>
-<p>Refer to sample codes from <a href="https://kubernetes.io/docs/home/">Kubernetes Documentation</a> to complete below tasks:</p>
 <blockquote>
-<p>Create PV with hostPath type. 
-Create PVC and bind it to the PV.
-Create Pod to mount the PVC.
-Mount new volume with emptyDir type to the Pod.</p>
+<p>Refer to sample codes from <a href="https://kubernetes.io/docs/home/">Kubernetes Documentation</a> to complete below tasks:</p>
+<ul>
+<li>Create PV with hostPath type. </li>
+<li>Create PVC and bind it to the PV.</li>
+<li>Create Pod to mount the PVC.</li>
+<li>Mount new volume with emptyDir type to the Pod.</li>
+</ul>
 </blockquote>
 <p>Demo: </p>
 <p>Search <code>Create a PersistentVolume</code> in <a href="https://kubernetes.io/docs/home/">Kubernetes Documentation</a>.</p>
@@ -9135,12 +9211,15 @@ spec:
           name: mnt-volume
 EOF
 </code></pre>
-<h2 id="demo-6-clusterrole-and-serviceaccount">Demo-6: ClusterRole and ServiceAccount</h2>
+<h3 id="clusterrole-and-serviceaccount">ClusterRole and ServiceAccount</h3>
 <p>Scenario: </p>
 <blockquote>
-<p>Create a ClusterRole, which is authorized to create Deployment, StatefulSet, DaemonSet.
-Bind the ClusterRole to a ServiceAccount.</p>
+<ul>
+<li>Create a ClusterRole, which is authorized to create Deployment, StatefulSet, DaemonSet.</li>
+<li>Bind the ClusterRole to a ServiceAccount.</li>
+</ul>
 </blockquote>
+<p>Demo:</p>
 <pre><code>kubectl create namespace my-namespace
 
 kubectl -n my-namespace create serviceaccount my-sa
@@ -9159,7 +9238,7 @@ kubectl -n my-namespace create rolebinding my-clusterrolebinding --clusterrole=m
 <pre><code>kubectl delete namespace my-namespace 
 kubectl delete clusterrole my-clusterrole
 </code></pre>
-<h2 id="demo-7-drain-a-node">Demo-7: Drain a Node</h2>
+<h3 id="drain-a-node">Drain a Node</h3>
 <p>Scenario:</p>
 <blockquote>
 <p>Drain the node <code>cka003</code></p>
@@ -9171,6 +9250,347 @@ kubectl delete clusterrole my-clusterrole
 <p>We know that a Pod is running on <code>cka003</code>.</p>
 <pre><code>NAME                                      READY   STATUS    RESTARTS   AGE   IP             NODE     NOMINATED NODE   READINESS GATES
 nfs-client-provisioner-86d7fb78b6-xk8nw   1/1     Running   0          22h   10.244.102.3   cka003   &lt;none&gt;           &lt;none&gt;
+</code></pre>
+<p>Evict node <code>cka003</code>.</p>
+<pre><code>kubectl drain cka003 --ignore-daemonsets --delete-emptydir-data --force
+</code></pre>
+<p>Output looks like below.</p>
+<pre><code>node/cka003 cordoned
+WARNING: ignoring DaemonSet-managed Pods: kube-system/calico-node-tr22l, kube-system/kube-proxy-g76kg
+evicting pod dev/nfs-client-provisioner-86d7fb78b6-xk8nw
+evicting pod cka/cka-demo-64f88f7f46-dkxmk
+pod/nfs-client-provisioner-86d7fb78b6-xk8nw evicted
+pod/cka-demo-64f88f7f46-dkxmk evicted
+node/cka003 drained
+</code></pre>
+<p>Check pod status again.</p>
+<pre><code>kubectl get pod -o wide
+</code></pre>
+<p>The pod is running on <code>cka002</code> now.</p>
+<pre><code>NAME                                      READY   STATUS    RESTARTS   AGE     IP             NODE     NOMINATED NODE   READINESS GATES
+nfs-client-provisioner-86d7fb78b6-k8xnl   1/1     Running   0          2m20s   10.244.112.4   cka002   &lt;none&gt;           &lt;none&gt;
+</code></pre>
+<p>Notes:</p>
+<blockquote>
+<ul>
+<li><code>cordon</code> is included in <code>drain</code>, no need additional step to <code>cordon</code> node before <code>drain</code> node. </li>
+</ul>
+</blockquote>
+<h3 id="upgrade_1">Upgrade</h3>
+<p>Scenario:</p>
+<blockquote>
+<p>Upgrade <code>kubeadm</code>, <code>kubectl</code>, <code>kubelet</code>.</p>
+</blockquote>
+<p>Demo:</p>
+<p>Reference link: <code>https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/</code>.</p>
+<p>Control Plane</p>
+<pre><code>kubectl get node -owide
+kubectl drain cka001 --ignore-daemonsets 
+kubectl get node -owide
+apt policy kubeadm
+apt-get -y install kubeadm=1.24.0-00 --allow-downgrades
+kubeadm upgrade plan
+kubeadm upgrade apply v1.24.0
+# kubeadm upgrade apply v1.24.0 --etcd-upgrade=false
+apt-get -y install kubelet=1.24.0-00 kubectl=1.24.0-00 --allow-downgrades
+systemctl daemon-reload
+systemctl restart kubelet
+kubectl get node
+kubectl uncordon cka001
+</code></pre>
+<p>Worker Node</p>
+<pre><code># On Control Plane
+kubectl drain cka002 --ignore-daemonsets
+
+$ On Workder Node
+apt-get -y install kubeadm=1.24.1-00 --allow-downgrades
+kubeadm upgrade node
+apt-get -y install kubelet=1.24.1-00 --allow-downgrades
+systemctl daemon-reload
+systemctl restart kubelet
+kubectl uncordon cka002
+</code></pre>
+<p>Worker Node</p>
+<pre><code># On Control Plane
+kubectl drain cka003 --ignore-daemonsets
+
+$ On Workder Node
+apt-get -y install kubeadm=1.24.1-00 --allow-downgrades
+kubeadm upgrade node
+apt-get -y install kubelet=1.24.1-00 --allow-downgrades
+systemctl daemon-reload
+systemctl restart kubelet
+kubectl uncordon cka003
+</code></pre>
+<h3 id="etcd-snapshot">etcd Snapshot</h3>
+<p>Scenario:</p>
+<blockquote>
+<ul>
+<li>Backup etcd to <code>/opt/backup/snapshot-backup.db</code>.</li>
+<li>Restore etcd from <code>/opt/backup/snapshot-backup.db</code>.</li>
+</ul>
+</blockquote>
+<p>Demo:</p>
+<p>Get Control Plan Node information.</p>
+<pre><code>kubectl get node -o wide
+</code></pre>
+<p>Backup</p>
+<pre><code>etcdctl \
+--endpoints=172.16.18.170:2379 \
+--cert=/etc/kubernetes/pki/etcd/server.crt \
+--key=/etc/kubernetes/pki/etcd/server.key \
+--cacert=/etc/kubernetes/pki/etcd/ca.crt \
+snapshot save /opt/backup/snapshot-backup.db
+</code></pre>
+<p>Restore</p>
+<pre><code>etcdctl  \
+--endpoints=172.16.18.170:2379 \
+--cert=/etc/kubernetes/pki/etcd/server.crt \
+--key=/etc/kubernetes/pki/etcd/server.key \
+--cacert=/etc/kubernetes/pki/etcd/ca.crt \
+snapshot restore /opt/backup/snapshot-backup.db
+</code></pre>
+<h3 id="networkpolicy">NetworkPolicy</h3>
+<p>Scenario: Ingress:</p>
+<blockquote>
+<ul>
+<li>Create two namespaces <code>my-ns-1</code>, <code>my-ns-2</code>.</li>
+<li>Create two deployments on <code>my-ns-1</code>, <code>nginx</code> listens to port <code>80</code> and <code>tomcat</code> listens to port <code>8080</code>.</li>
+<li>Create NetworkPolicy <code>my-networkpolicy-1</code> on namespace <code>my-ns-1</code> to allow access to port 8080 from namespace <code>my-ns-1</code>.</li>
+<li>Verify the access to <code>nginx</code> port <code>80</code> and <code>tomcat</code> port <code>8080</code>.</li>
+<li>Edit the NetworkPolicy to allow access to port 8080 from namespace <code>my-ns-2</code>.</li>
+<li>Verify the access to <code>nginx</code> port <code>80</code> and <code>tomcat</code> port <code>8080</code>.</li>
+</ul>
+</blockquote>
+<p>Demo:</p>
+<p>Create namespaces</p>
+<pre><code>kubectl create namespace my-ns-1
+kubectl create namespace my-ns-2
+</code></pre>
+<p>Create deployment on <code>my-ns-1</code></p>
+<pre><code>kubectl create deployment my-nginx --image=nginx --namespace=my-ns-1 --port=80
+kubectl create deployment my-tomcat --image=tomcat --namespace=my-ns-1 --port=8080
+</code></pre>
+<p>Get the label: e.g., <code>kubernetes.io/metadata.name=my-ns-1</code>, <code>kubernetes.io/metadata.name=my-ns-2</code>.</p>
+<pre><code>kubectl get namespace my-ns-1 --show-labels  
+kubectl get namespace my-ns-2 --show-labels   
+</code></pre>
+<p>Create NetworkPolicy to allow access from my-ns-2 to Pod with port 8080 on my-ns-1.
+Refer to yaml template from the link https://kubernetes.io/docs/concepts/services-networking/network-policies/.</p>
+<pre><code>kubectl apply -f - &lt;&lt; EOF
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: my-networkpolicy-1
+  namespace: my-ns-1
+spec:
+  podSelector:
+    matchLabels: {}
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: my-ns-1
+      ports:
+        - protocol: TCP
+          port: 8080
+EOF
+</code></pre>
+<p>Check Deployment and Pod status</p>
+<pre><code>kubectl get deployment,pod -n my-ns-1 -o wide
+</code></pre>
+<p>Create temp pod on namespace <code>my-ns-1</code>.
+Attach to the pod and verify the access. 
+Command <code>curl &lt;nginx_ip&gt;:80</code> failed. 
+Command <code>curl &lt;tomcat_ip&gt;:80</code> succeed. </p>
+<pre><code>kubectl run centos --image=centos -n my-ns-1 -- &quot;/bin/sh&quot; &quot;-c&quot; &quot;sleep 3600&quot;
+kubectl exec -it mycentos -n my-ns-1 -- bash
+</code></pre>
+<p>Create temp pod on namespace <code>my-ns-2</code>.
+Attach to the pod and verify the access. 
+Command <code>curl &lt;nginx_ip&gt;:80</code> failed. 
+Command <code>curl &lt;tomcat_ip&gt;:80</code> failed. </p>
+<pre><code>kubectl run centos --image=centos -n my-ns-2 -- &quot;/bin/sh&quot; &quot;-c&quot; &quot;sleep 3600&quot;
+kubectl exec -it mycentos -n my-ns-2 -- bash
+</code></pre>
+<p>Edit <code>my-networkpolicy-1</code> to change <code>ingress.from.namespaceSelector.matchLabels</code> to <code>my-ns-2</code>.</p>
+<p>Attach to temp pod on namespace <code>my-ns-2</code>.
+Verify the access. 
+Command <code>curl &lt;nginx_ip&gt;:80</code> failed. 
+Command <code>curl &lt;tomcat_ip&gt;:80</code> succeed. </p>
+<pre><code>kubectl exec -it mycentos -n my-ns-2 -- bash
+</code></pre>
+<p>Clean up:</p>
+<pre><code>kubectl delete namespace my-ns-1
+kubectl delete namespace my-ns-2
+</code></pre>
+<h3 id="expose-service_2">Expose Service</h3>
+<p>Scenario:</p>
+<blockquote>
+<ul>
+<li>Create a <code>nginx</code> deployment</li>
+<li>Add port number and alias name of the <code>nginx</code> Pod.</li>
+<li>Expose the deployment with internal traffic to local only.</li>
+</ul>
+</blockquote>
+<p>Demo:</p>
+<p>Create deployment <code>my-nginx</code> with port number <code>80</code>.</p>
+<pre><code>kubectl create deployment my-nginx --image=nginx --port=80
+</code></pre>
+<p>Edit deployment.</p>
+<pre><code>kubectl edit deployment my-nginx
+</code></pre>
+<p>Add port alias name <code>http</code>.
+Refer to the link for deployment yaml template https://kubernetes.io/docs/concepts/workloads/controllers/deployment/</p>
+<pre><code>    spec:
+      containers:
+      - image: nginx
+        imagePullPolicy: Always
+        name: nginx
+        ports:
+        - containerPort: 80
+          protocol: TCP
+          name: http
+</code></pre>
+<p>Expose the deployment with <code>NodePort</code> type.</p>
+<pre><code>kubectl expose deployment my-nginx --port=80 --target-port=http --name=my-nginx-svc --type=NodePort
+</code></pre>
+<p>Edit the service. Change <code>internalTrafficPolicy</code> from <code>Cluster</code> to <code>Local</code>.</p>
+<pre><code>kubectl edit svc my-nginx-svc 
+</code></pre>
+<p>Verify the access. Note, the pod is running on node <code>cka003</code>. We will see below expected results.</p>
+<pre><code>curl &lt;deployment_pod_ip&gt;:80    # succeed on node cka003. internalTrafficPolicy is effective.
+curl &lt;service_cluster_ip&gt;:80   # succeed on all nodes.
+curl &lt;node_ip&gt;:&lt;ext_port&gt;      # succeed on all nodes.
+</code></pre>
+<h3 id="ingress">Ingress</h3>
+<p>Scenario:</p>
+<blockquote>
+<ul>
+<li>Create Deployment <code>nginx</code> on new namespace <code>my-ns</code>.</li>
+<li>Expose the deployment with Service name <code>my-nginx-svc</code> and service port <code>3456</code></li>
+<li>Create Ingress with to expose the service on path <code>/test</code>.</li>
+<li>Verify the http access to <code>&lt;ingress_ip&gt;&lt;your_path&gt;</code> instead of <code>&lt;ip&gt;&lt;port&gt;</code>.</li>
+</ul>
+</blockquote>
+<p>Demo:</p>
+<p>Create namespace, deployment, and service.</p>
+<pre><code>kubectl create namespace my-ns
+kubectl create deployment my-nginx --image=nginx --port=80 --namespace=my-ns
+kubectl expose deployment my-nginx --name=my-nginx-svc --port=3456 --target-port=80 --namespace=my-ns
+</code></pre>
+<p>Create Ingress on new namespace.
+Refer to the Ingress yaml template via link https://kubernetes.io/zh-cn/docs/concepts/services-networking/ingress/</p>
+<pre><code>kubectl apply -f - &lt;&lt; EOF
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: my-ingress
+  namespace: my-ns
+  annotations:
+    kubernetes.io/ingress.class: &quot;nginx&quot;
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  # ingressClassName: nginx
+  rules:
+  - http:
+      paths:
+      - path: /test
+        pathType: Prefix
+        backend:
+          service:
+            name: my-nginx-svc
+            port:
+              number: 3456
+EOF
+</code></pre>
+<p>Get the IP address via and test the access.</p>
+<pre><code>kubectl get ingress -n my-ns
+curl 10.110.175.39/test
+</code></pre>
+<p>Clean up.</p>
+<pre><code>kubectl delete namespace my-ns
+</code></pre>
+<h3 id="schedule-pod-to-node">Schedule Pod to Node</h3>
+<p>Scenario:</p>
+<blockquote>
+<ul>
+<li>Label a node</li>
+<li>Create a Pod and assign it to the node by nodeSelector</li>
+</ul>
+</blockquote>
+<p>Demo:</p>
+<p>Label node.</p>
+<pre><code>kubectl label node cka003 disk=ssd
+</code></pre>
+<p>Create Pod with name <code>my-nginx</code> and set <code>nodeSelector</code> as <code>disk=ssd</code> and set container name <code>my-nginx</code>.
+Get Pod template via the link https://kubernetes.io/docs/tasks/configure-pod-container/assign-pods-nodes/</p>
+<pre><code>kubectl apply -f - &lt;&lt; EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-nginx
+  labels:
+    env: demo
+spec:
+  containers:
+  - name: my-nginx
+    image: nginx
+    imagePullPolicy: IfNotPresent
+  nodeSelector:
+    disk: ssd
+EOF
+</code></pre>
+<p>Clean up</p>
+<pre><code>kubectl label node cka003 disk-
+kubectl delete pod my-nginx
+</code></pre>
+<h3 id="check-available-node">Check Available Node</h3>
+<p>Scenario:</p>
+<blockquote>
+<ul>
+<li>Check available Node</li>
+</ul>
+</blockquote>
+<p>Option 1:</p>
+<pre><code>kubectl describe node | grep -i taint
+</code></pre>
+<p>Manual check the result, here it's <code>2</code> nodes are available</p>
+<pre><code>Taints:             node-role.kubernetes.io/control-plane:NoSchedule
+Taints:             &lt;none&gt;
+Taints:             &lt;none&gt;
+</code></pre>
+<p>Option 2:</p>
+<pre><code>kubectl describe node | grep -i taint |grep -vc NoSchedule
+</code></pre>
+<p>We will get same result <code>2</code>. Here <code>-v</code> means exclude, <code>-c</code> count numbers.</p>
+<h3 id="multiple-containers">Multiple Containers</h3>
+<p>Scenario:</p>
+<blockquote>
+<ul>
+<li>Create multiple container Pod.</li>
+</ul>
+</blockquote>
+<p>Get yaml template with below command.</p>
+<pre><code>kubectl run my-pod --image=nginx --dry-run=client -o yaml
+</code></pre>
+<p>Add more containers in the template we get from above command.</p>
+<pre><code>kubectl apply -f - &lt;&lt; EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-multi-pod
+spec:
+  containers:
+  - image: nginx
+    name: nginx
+  - image: memcached
+    name: memcached
+  - image: redis
+    name: redis
+EOF
 </code></pre>
                 
               
