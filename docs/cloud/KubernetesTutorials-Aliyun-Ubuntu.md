@@ -5416,8 +5416,6 @@ kubectl logs -f tomcat --tail 100 -c tomcat
 
 ### Monitoring Indicators
 
-#### Nodes
-
 Get node monitoring information
 ```
 kubectl top node
@@ -6821,7 +6819,7 @@ app-before-backup        1/1     1            1           11m
 
 
 
-### Upgrade `kubeadm`
+### Upgrade
 
 #### Upgrade `Control Plane`
 
@@ -7023,8 +7021,8 @@ kubectl drain <worker_node_name> --ignore-daemonsets --delete-emptydir-data --fo
 ```
 If have error on dependency of `emptydir`, use the 2nd command.
 ```
-kubectl drain cka002 --ignore-daemonsets --ignore-daemonsets --force
-kubectl drain cka002 --ignore-daemonsets --ignore-daemonsets --delete-emptydir-data --force
+kubectl drain cka002 --ignore-daemonsets --force
+kubectl drain cka002 --ignore-daemonsets --delete-emptydir-data --force
 ```
 ```
 node/cka002 cordoned
@@ -7133,7 +7131,7 @@ cka003   Ready    <none>                 32h   v1.23.9
 
 
 
-## 20.Helm Chart
+## 19.Helm Chart
 
 ### Install Helm
 
@@ -7821,9 +7819,9 @@ Template.BasePath            # 当前模板目录路径
 
 
 
+## Case Study
 
-
-## Demo-1: Install Calico
+### Install Calico
 
 [End-to-end Calico installation](https://projectcalico.docs.tigera.io/getting-started/kubernetes/hardway/)
 
@@ -9196,10 +9194,10 @@ kubectl delete pod pingtest-ippool-2
 
 
 
+## Mini-practice
 
 
-
-## Demo-2: One Node Down
+### One Node Down
 
 Scenario: 
 > When we stop `kubelet` service on worker node `cka002`,
@@ -9239,7 +9237,7 @@ After we stop kubelet service on `cka003`, the two running on `cka003` are termi
 
 
 
-## Demo-3: Modify Existing Deployment
+### Modify Existing Deployment
 
 Scenario: 
 > Update existing Deployment, e.g., add port number
@@ -9313,12 +9311,12 @@ Containers:
 
 
 
-## Demo-4: Service Internal Traffic Policy
+### Service Internal Traffic Policy
 
 Scenario: 
-> Simulate how Service Internal Traffic Policy works.
-> Expected result: 
-    > With setting Service `internalTrafficPolicy: Local`, the Service only route internal traffic within the nodes that Pods are running. 
+> * Simulate how Service Internal Traffic Policy works.
+> * Expected result:
+>     * With setting Service `internalTrafficPolicy: Local`, the Service only route internal traffic within the nodes that Pods are running. 
 
 Backgroud:
 
@@ -9422,15 +9420,16 @@ With setting Service `internalTrafficPolicy: Local`, the Service only route inte
 
 
 
-## Demo-5: Pod and PVC
+### Pod and PVC
 
 Scenario: 
 
-Refer to sample codes from [Kubernetes Documentation](https://kubernetes.io/docs/home/) to complete below tasks:
-> Create PV with hostPath type. 
-> Create PVC and bind it to the PV.
-> Create Pod to mount the PVC.
-> Mount new volume with emptyDir type to the Pod.
+> Refer to sample codes from [Kubernetes Documentation](https://kubernetes.io/docs/home/) to complete below tasks:
+>   
+> * Create PV with hostPath type. 
+> * Create PVC and bind it to the PV.
+> * Create Pod to mount the PVC.
+> * Mount new volume with emptyDir type to the Pod.
 
 Demo: 
 
@@ -9551,11 +9550,13 @@ EOF
 
 
 
-## Demo-6: ClusterRole and ServiceAccount
+### ClusterRole and ServiceAccount
 
 Scenario: 
-> Create a ClusterRole, which is authorized to create Deployment, StatefulSet, DaemonSet.
-> Bind the ClusterRole to a ServiceAccount.
+> * Create a ClusterRole, which is authorized to create Deployment, StatefulSet, DaemonSet.
+> * Bind the ClusterRole to a ServiceAccount.
+
+Demo:
 
 ```
 kubectl create namespace my-namespace
@@ -9582,7 +9583,7 @@ kubectl delete clusterrole my-clusterrole
 ```
 
 
-## Demo-7: Drain a Node
+### Drain a Node
 
 Scenario:
 > Drain the node `cka003`
@@ -9599,6 +9600,480 @@ We know that a Pod is running on `cka003`.
 NAME                                      READY   STATUS    RESTARTS   AGE   IP             NODE     NOMINATED NODE   READINESS GATES
 nfs-client-provisioner-86d7fb78b6-xk8nw   1/1     Running   0          22h   10.244.102.3   cka003   <none>           <none>
 ```
+
+Evict node `cka003`.
+```
+kubectl drain cka003 --ignore-daemonsets --delete-emptydir-data --force
+```
+Output looks like below.
+```
+node/cka003 cordoned
+WARNING: ignoring DaemonSet-managed Pods: kube-system/calico-node-tr22l, kube-system/kube-proxy-g76kg
+evicting pod dev/nfs-client-provisioner-86d7fb78b6-xk8nw
+evicting pod cka/cka-demo-64f88f7f46-dkxmk
+pod/nfs-client-provisioner-86d7fb78b6-xk8nw evicted
+pod/cka-demo-64f88f7f46-dkxmk evicted
+node/cka003 drained
+```
+
+Check pod status again.
+```
+kubectl get pod -o wide
+```
+The pod is running on `cka002` now.
+```
+NAME                                      READY   STATUS    RESTARTS   AGE     IP             NODE     NOMINATED NODE   READINESS GATES
+nfs-client-provisioner-86d7fb78b6-k8xnl   1/1     Running   0          2m20s   10.244.112.4   cka002   <none>           <none>
+```
+
+
+Notes:
+> * `cordon` is included in `drain`, no need additional step to `cordon` node before `drain` node. 
+
+
+
+
+### Upgrade
+
+Scenario:
+> Upgrade `kubeadm`, `kubectl`, `kubelet`.
+
+Demo:
+
+Reference link: `https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/`.
+
+Control Plane
+```
+kubectl get node -owide
+kubectl drain cka001 --ignore-daemonsets 
+kubectl get node -owide
+apt policy kubeadm
+apt-get -y install kubeadm=1.24.0-00 --allow-downgrades
+kubeadm upgrade plan
+kubeadm upgrade apply v1.24.0
+# kubeadm upgrade apply v1.24.0 --etcd-upgrade=false
+apt-get -y install kubelet=1.24.0-00 kubectl=1.24.0-00 --allow-downgrades
+systemctl daemon-reload
+systemctl restart kubelet
+kubectl get node
+kubectl uncordon cka001
+```
+
+Worker Node
+```
+# On Control Plane
+kubectl drain cka002 --ignore-daemonsets
+
+$ On Workder Node
+apt-get -y install kubeadm=1.24.1-00 --allow-downgrades
+kubeadm upgrade node
+apt-get -y install kubelet=1.24.1-00 --allow-downgrades
+systemctl daemon-reload
+systemctl restart kubelet
+kubectl uncordon cka002
+```
+
+Worker Node
+```
+# On Control Plane
+kubectl drain cka003 --ignore-daemonsets
+
+$ On Workder Node
+apt-get -y install kubeadm=1.24.1-00 --allow-downgrades
+kubeadm upgrade node
+apt-get -y install kubelet=1.24.1-00 --allow-downgrades
+systemctl daemon-reload
+systemctl restart kubelet
+kubectl uncordon cka003
+```
+
+
+### etcd Snapshot
+
+Scenario:
+> * Backup etcd to `/opt/backup/snapshot-backup.db`.
+> * Restore etcd from `/opt/backup/snapshot-backup.db`.
+
+Demo:
+
+Get Control Plan Node information.
+```
+kubectl get node -o wide
+```
+
+Backup
+```
+etcdctl \
+--endpoints=172.16.18.170:2379 \
+--cert=/etc/kubernetes/pki/etcd/server.crt \
+--key=/etc/kubernetes/pki/etcd/server.key \
+--cacert=/etc/kubernetes/pki/etcd/ca.crt \
+snapshot save /opt/backup/snapshot-backup.db
+```
+
+Restore
+```
+etcdctl  \
+--endpoints=172.16.18.170:2379 \
+--cert=/etc/kubernetes/pki/etcd/server.crt \
+--key=/etc/kubernetes/pki/etcd/server.key \
+--cacert=/etc/kubernetes/pki/etcd/ca.crt \
+snapshot restore /opt/backup/snapshot-backup.db
+```
+
+
+
+
+
+### NetworkPolicy
+
+Scenario: Ingress:
+> * Create two namespaces `my-ns-1`, `my-ns-2`.
+> * Create two deployments on `my-ns-1`, `nginx` listens to port `80` and `tomcat` listens to port `8080`.
+> * Create NetworkPolicy `my-networkpolicy-1` on namespace `my-ns-1` to allow access to port 8080 from namespace `my-ns-1`.
+> * Verify the access to `nginx` port `80` and `tomcat` port `8080`.
+> * Edit the NetworkPolicy to allow access to port 8080 from namespace `my-ns-2`.
+> * Verify the access to `nginx` port `80` and `tomcat` port `8080`.
+
+Demo:
+
+Create namespaces
+```
+kubectl create namespace my-ns-1
+kubectl create namespace my-ns-2
+```
+
+Create deployment on `my-ns-1`
+```
+kubectl create deployment my-nginx --image=nginx --namespace=my-ns-1 --port=80
+kubectl create deployment my-tomcat --image=tomcat --namespace=my-ns-1 --port=8080
+```
+
+Get the label: e.g., `kubernetes.io/metadata.name=my-ns-1`, `kubernetes.io/metadata.name=my-ns-2`.
+```
+kubectl get namespace my-ns-1 --show-labels  
+kubectl get namespace my-ns-2 --show-labels   
+```
+
+Create NetworkPolicy to allow access from my-ns-2 to Pod with port 8080 on my-ns-1.
+Refer to yaml template from the link https://kubernetes.io/docs/concepts/services-networking/network-policies/.
+```
+kubectl apply -f - << EOF
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: my-networkpolicy-1
+  namespace: my-ns-1
+spec:
+  podSelector:
+    matchLabels: {}
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: my-ns-1
+      ports:
+        - protocol: TCP
+          port: 8080
+EOF
+```
+
+Check Deployment and Pod status
+```
+kubectl get deployment,pod -n my-ns-1 -o wide
+```
+
+Create temp pod on namespace `my-ns-1`.
+Attach to the pod and verify the access. 
+Command `curl <nginx_ip>:80` failed. 
+Command `curl <tomcat_ip>:80` succeed. 
+```
+kubectl run centos --image=centos -n my-ns-1 -- "/bin/sh" "-c" "sleep 3600"
+kubectl exec -it mycentos -n my-ns-1 -- bash
+```
+
+Create temp pod on namespace `my-ns-2`.
+Attach to the pod and verify the access. 
+Command `curl <nginx_ip>:80` failed. 
+Command `curl <tomcat_ip>:80` failed. 
+```
+kubectl run centos --image=centos -n my-ns-2 -- "/bin/sh" "-c" "sleep 3600"
+kubectl exec -it mycentos -n my-ns-2 -- bash
+```
+
+Edit `my-networkpolicy-1` to change `ingress.from.namespaceSelector.matchLabels` to `my-ns-2`.
+
+Attach to temp pod on namespace `my-ns-2`.
+Verify the access. 
+Command `curl <nginx_ip>:80` failed. 
+Command `curl <tomcat_ip>:80` succeed. 
+```
+kubectl exec -it mycentos -n my-ns-2 -- bash
+```
+
+
+Clean up:
+```
+kubectl delete namespace my-ns-1
+kubectl delete namespace my-ns-2
+```
+
+
+
+
+
+### Expose Service
+
+Scenario:
+> * Create a `nginx` deployment
+> * Add port number and alias name of the `nginx` Pod.
+> * Expose the deployment with internal traffic to local only.
+
+
+Demo:
+
+Create deployment `my-nginx` with port number `80`.
+```
+kubectl create deployment my-nginx --image=nginx --port=80
+```
+
+Edit deployment.
+```
+kubectl edit deployment my-nginx
+```
+Add port alias name `http`.
+Refer to the link for deployment yaml template https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+```
+    spec:
+      containers:
+      - image: nginx
+        imagePullPolicy: Always
+        name: nginx
+        ports:
+        - containerPort: 80
+          protocol: TCP
+          name: http
+```
+
+Expose the deployment with `NodePort` type.
+```
+kubectl expose deployment my-nginx --port=80 --target-port=http --name=my-nginx-svc --type=NodePort
+```
+
+Edit the service. Change `internalTrafficPolicy` from `Cluster` to `Local`.
+```
+kubectl edit svc my-nginx-svc 
+```
+
+Verify the access. Note, the pod is running on node `cka003`. We will see below expected results.
+```
+curl <deployment_pod_ip>:80    # succeed on node cka003. internalTrafficPolicy is effective.
+curl <service_cluster_ip>:80   # succeed on all nodes.
+curl <node_ip>:<ext_port>      # succeed on all nodes.
+```
+
+
+
+
+### Ingress
+
+Scenario:
+> * Create Deployment `nginx` on new namespace `my-ns`.
+> * Expose the deployment with Service name `my-nginx-svc` and service port `3456`
+> * Create Ingress with to expose the service on path `/test`.
+> * Verify the http access to `<ingress_ip><your_path>` instead of `<ip><port>`.
+
+
+Demo:
+
+Create namespace, deployment, and service.
+```
+kubectl create namespace my-ns
+kubectl create deployment my-nginx --image=nginx --port=80 --namespace=my-ns
+kubectl expose deployment my-nginx --name=my-nginx-svc --port=3456 --target-port=80 --namespace=my-ns
+```
+
+Create Ingress on new namespace.
+Refer to the Ingress yaml template via link https://kubernetes.io/zh-cn/docs/concepts/services-networking/ingress/
+```
+kubectl apply -f - << EOF
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: my-ingress
+  namespace: my-ns
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  # ingressClassName: nginx
+  rules:
+  - http:
+      paths:
+      - path: /test
+        pathType: Prefix
+        backend:
+          service:
+            name: my-nginx-svc
+            port:
+              number: 3456
+EOF
+```
+
+Get the IP address via and test the access.
+```
+kubectl get ingress -n my-ns
+curl 10.110.175.39/test
+```
+
+
+
+Clean up.
+```
+kubectl delete namespace my-ns
+```
+
+
+
+### Schedule Pod to Node
+
+Scenario:
+> * Label a node
+> * Create a Pod and assign it to the node by nodeSelector
+
+
+Demo:
+
+Label node.
+```
+kubectl label node cka003 disk=ssd
+```
+
+Create Pod with name `my-nginx` and set `nodeSelector` as `disk=ssd` and set container name `my-nginx`.
+Get Pod template via the link https://kubernetes.io/docs/tasks/configure-pod-container/assign-pods-nodes/
+```
+kubectl apply -f - << EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-nginx
+  labels:
+    env: demo
+spec:
+  containers:
+  - name: my-nginx
+    image: nginx
+    imagePullPolicy: IfNotPresent
+  nodeSelector:
+    disk: ssd
+EOF
+```
+
+
+Clean up
+```
+kubectl label node cka003 disk-
+kubectl delete pod my-nginx
+```
+
+
+
+
+
+
+
+### Check Available Node
+
+Scenario:
+> * Check available Node
+
+Option 1:
+```
+kubectl describe node | grep -i taint
+```
+Manual check the result, here it's `2` nodes are available
+```
+Taints:             node-role.kubernetes.io/control-plane:NoSchedule
+Taints:             <none>
+Taints:             <none>
+```
+
+Option 2:
+```
+kubectl describe node | grep -i taint |grep -vc NoSchedule
+```
+We will get same result `2`. Here `-v` means exclude, `-c` count numbers.
+
+
+
+
+
+### Multiple Containers
+
+Scenario:
+> * Create multiple container Pod.
+
+
+Get yaml template with below command.
+```
+kubectl run my-pod --image=nginx --dry-run=client -o yaml
+```
+
+Add more containers in the template we get from above command.
+```
+kubectl apply -f - << EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-multi-pod
+spec:
+  containers:
+  - image: nginx
+    name: nginx
+  - image: memcached
+    name: memcached
+  - image: redis
+    name: redis
+EOF
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
