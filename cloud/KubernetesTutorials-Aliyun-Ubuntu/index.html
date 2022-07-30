@@ -1741,13 +1741,6 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#one-node-down" class="md-nav__link">
-    One Node Down
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#modify-existing-deployment" class="md-nav__link">
     Modify Existing Deployment
   </a>
@@ -1757,13 +1750,6 @@
           <li class="md-nav__item">
   <a href="#service-internal-traffic-policy" class="md-nav__link">
     Service Internal Traffic Policy
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#pod-and-pvc" class="md-nav__link">
-    Pod and PVC
   </a>
   
 </li>
@@ -1834,6 +1820,34 @@
           <li class="md-nav__item">
   <a href="#multiple-containers" class="md-nav__link">
     Multiple Containers
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pvscpvcpod" class="md-nav__link">
+    PV+SC+PVC+Pod
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sidecar" class="md-nav__link">
+    Sidecar
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#monitoring" class="md-nav__link">
+    Monitoring
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#node-notready" class="md-nav__link">
+    Node NotReady
   </a>
   
 </li>
@@ -2684,7 +2698,6 @@ spec:
   - name: container-2-alpine
     image: alpine
     command: [&quot;watch&quot;, &quot;wget&quot;, &quot;-qO-&quot;, &quot;localhost&quot;]
-
 EOF
 </code></pre>
 <p>Get the status.</p>
@@ -8932,37 +8945,6 @@ pingtest-ippool-2   1/1     Running   0          18s   10.244.203.192   cka003  
 kubectl delete pod pingtest-ippool-2
 </code></pre>
 <h2 id="mini-practice">Mini-practice</h2>
-<h3 id="one-node-down">One Node Down</h3>
-<p>Scenario: </p>
-<blockquote>
-<p>When we stop <code>kubelet</code> service on worker node <code>cka002</code>,</p>
-<ul>
-<li>What's the status of each node?</li>
-<li>What's containers changed via command <code>nerdctl</code>?</li>
-<li>What's pods status via command <code>kubectl get pod -owide -A</code>? </li>
-</ul>
-</blockquote>
-<p>Demo:</p>
-<p>Execute command <code>systemctl stop kubelet.service</code> on <code>cka002</code>.</p>
-<p>Execute command <code>kubectl get node</code> on either <code>cka001</code> or <code>cka003</code>, the status of <code>cka002</code> is <code>NotReady</code>.</p>
-<p>Execute command <code>nerdctl -n k8s.io container ls</code> on <code>cka002</code> and we can observe all containers are still up and running, including the pod <code>my-first-pod</code>.</p>
-<p>Execute command <code>systemctl start kubelet.service</code> on <code>cka002</code>.</p>
-<p>Conclusion:</p>
-<ul>
-<li>The node status is changed to <code>NotReady</code> from <code>Ready</code>.</li>
-<li>For those DaemonSet pods, like <code>calico</code>、<code>kube-proxy</code>, are exclusively running on each node. They won't be terminated after <code>kubelet</code> is down.</li>
-<li>The status of pod <code>my-first-pod</code> keeps showing <code>Terminating</code> on each node because status can not be synced to other nodes via <code>apiserver</code> from <code>cka002</code> because <code>kubelet</code> is down.</li>
-<li>The status of pod is marked by <code>controller</code> and recycled by <code>kubelet</code>.</li>
-<li>When we start kubelet service on <code>cka003</code>, the pod <code>my-first-pod</code> will be termiated completely on <code>cka002</code>.</li>
-</ul>
-<p>In addition, let's create a deployment with 3 replicas. Two are running on <code>cka003</code> and one is running on <code>cka002</code>.</p>
-<pre><code>root@cka001:~# kubectl get pod -o wide -w
-NAME                               READY   STATUS    RESTARTS   AGE    IP           NODE     NOMINATED NODE   READINESS GATES
-nginx-deployment-9d745469b-2xdk4   1/1     Running   0          2m8s   10.244.2.3   cka003   &lt;none&gt;           &lt;none&gt;
-nginx-deployment-9d745469b-4gvmr   1/1     Running   0          2m8s   10.244.2.4   cka003   &lt;none&gt;           &lt;none&gt;
-nginx-deployment-9d745469b-5j927   1/1     Running   0          2m8s   10.244.1.3   cka002   &lt;none&gt;           &lt;none&gt;
-</code></pre>
-<p>After we stop kubelet service on <code>cka003</code>, the two running on <code>cka003</code> are terminated and another two are created and running on <code>cka002</code> automatically. </p>
 <h3 id="modify-existing-deployment">Modify Existing Deployment</h3>
 <p>Scenario: </p>
 <blockquote>
@@ -9107,110 +9089,6 @@ We will receive <code>Welcome to nginx!</code> information, </p>
 </code></pre>
 <p>Conclution:</p>
 <p>With setting Service <code>internalTrafficPolicy: Local</code>, the Service only route internal traffic within the nodes that Pods are running. </p>
-<h3 id="pod-and-pvc">Pod and PVC</h3>
-<p>Scenario: </p>
-<blockquote>
-<p>Refer to sample codes from <a href="https://kubernetes.io/docs/home/">Kubernetes Documentation</a> to complete below tasks:</p>
-<ul>
-<li>Create PV with hostPath type. </li>
-<li>Create PVC and bind it to the PV.</li>
-<li>Create Pod to mount the PVC.</li>
-<li>Mount new volume with emptyDir type to the Pod.</li>
-</ul>
-</blockquote>
-<p>Demo: </p>
-<p>Search <code>Create a PersistentVolume</code> in <a href="https://kubernetes.io/docs/home/">Kubernetes Documentation</a>.</p>
-<p>Choose <a href="https://kubernetes.io/docs/tasks/configure-pod-container/configure-persistent-volume-storage/">Configure a Pod to Use a PersistentVolume for Storage</a></p>
-<p>With sample codes we get from above link, let's complete these demo tasks.</p>
-<p>Task 1: create a PV <code>task-pv-volume</code> and set <code>hostPath</code> is <code>/cka-data</code>.</p>
-<pre><code>kubectl apply -f - &lt;&lt; EOF
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: task-pv-volume
-  labels:
-    type: local
-spec:
-  storageClassName: manual
-  capacity:
-    storage: 10Gi
-  accessModes:
-    - ReadWriteOnce
-  hostPath:
-    path: &quot;/cka-data&quot;
-EOF
-</code></pre>
-<p>Task 2: create PVC <code>task-pv-claim</code> and bind it to the PV <code>task-pv-volume</code> by StorageClass <code>manual</code>.</p>
-<pre><code>kubectl apply -f - &lt;&lt; EOF
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: task-pv-claim
-spec:
-  storageClassName: manual
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 3Gi
-EOF
-</code></pre>
-<p>Task 3: create Pod <code>task-pv-pod</code> to mount the PVC <code>task-pv-claim</code>.</p>
-<pre><code>kubectl apply -f - &lt;&lt; EOF
-apiVersion: v1
-kind: Pod
-metadata:
-  name: task-pv-pod
-spec:
-  volumes:
-    - name: task-pv-storage
-      persistentVolumeClaim:
-        claimName: task-pv-claim
-  containers:
-    - name: task-pv-container
-      image: nginx
-      ports:
-        - containerPort: 80
-          name: &quot;http-server&quot;
-      volumeMounts:
-        - mountPath: &quot;/usr/share/nginx/html&quot;
-          name: task-pv-storage
-EOF
-</code></pre>
-<p>Attach to the Pod and create <code>index.html</code> file in directory <code>/usr/share/nginx/html/</code>.</p>
-<pre><code>kubectl exec -it task-pv-pod -- bash
-root@task-pv-pod:/usr/share/nginx/html# echo &quot;Hello Nginx&quot; &gt; index.html
-</code></pre>
-<p>We can see the file <code>index.html</code> in directory <code>/cka-data/</code> on node <code>cka003</code>, which the Pod is running on.</p>
-<p>Task 4: mount new volume with emptyDir type to the Pod.</p>
-<p>Search <code>Create a PersistentVolume</code> in <a href="https://kubernetes.io/docs/home/">Kubernetes Documentation</a>.</p>
-<p>Get sampe code of <a href="https://kubernetes.io/docs/concepts/storage/volumes/#emptydir">emptydir</a>.</p>
-<p>Update the Pod <code>task-pv-pod</code> and mount new volume <code>mnt-volume</code> with emptyDir type.</p>
-<pre><code>kubectl apply -f - &lt;&lt; EOF
-apiVersion: v1
-kind: Pod
-metadata:
-  name: task-pv-pod
-spec:
-  volumes:
-    - name: task-pv-storage
-      persistentVolumeClaim:
-        claimName: task-pv-claim
-    - name: mnt-volume
-      emptyDir: {}
-  containers:
-    - name: task-pv-container
-      image: nginx
-      ports:
-        - containerPort: 80
-          name: &quot;http-server&quot;
-      volumeMounts:
-        - mountPath: &quot;/usr/share/nginx/html&quot;
-          name: task-pv-storage
-        - mountPath: &quot;/mnt&quot;
-          name: mnt-volume
-EOF
-</code></pre>
 <h3 id="clusterrole-and-serviceaccount">ClusterRole and ServiceAccount</h3>
 <p>Scenario: </p>
 <blockquote>
@@ -9481,6 +9359,8 @@ curl &lt;node_ip&gt;:&lt;ext_port&gt;      # succeed on all nodes.
 kubectl create deployment my-nginx --image=nginx --port=80 --namespace=my-ns
 kubectl expose deployment my-nginx --name=my-nginx-svc --port=3456 --target-port=80 --namespace=my-ns
 </code></pre>
+<pre><code>kubectl patch ingressclass nginx -p '{&quot;metadata&quot;: {&quot;annotations&quot;:{&quot;ingressclass.kubernetes.io/is-default-class&quot;: &quot;true&quot;}}}'
+</code></pre>
 <p>Create Ingress on new namespace.
 Refer to the Ingress yaml template via link https://kubernetes.io/zh-cn/docs/concepts/services-networking/ingress/</p>
 <pre><code>kubectl apply -f - &lt;&lt; EOF
@@ -9490,7 +9370,7 @@ metadata:
   name: my-ingress
   namespace: my-ns
   annotations:
-    kubernetes.io/ingress.class: &quot;nginx&quot;
+    kubernetes.io/ingressclass: nginx
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   # ingressClassName: nginx
@@ -9592,6 +9472,367 @@ spec:
     name: redis
 EOF
 </code></pre>
+<h3 id="pvscpvcpod">PV+SC+PVC+Pod</h3>
+<p>Scenario: </p>
+<blockquote>
+<p>Refer to sample codes from <a href="https://kubernetes.io/docs/home/">Kubernetes Documentation</a> to complete below tasks:</p>
+<ul>
+<li>Create PV<blockquote>
+<ul>
+<li>name is <code>my-pv-volume</code></li>
+<li><code>hostPath</code> type</li>
+<li>location is <code>/my-data</code></li>
+<li>size 1Gi</li>
+<li>AccessMode <code>ReadWriteMany</code></li>
+<li>StorageClass is <code>my-sc</code></li>
+</ul>
+</blockquote>
+</li>
+<li>Create PVC and bind it to the PV<blockquote>
+<ul>
+<li>name is <code>my-pv-claim</code></li>
+<li>capacity 10Mi</li>
+<li>consume StorageClass <code>my-sc</code></li>
+<li>AccessMode <code>ReadWriteOnce</code></li>
+</ul>
+</blockquote>
+</li>
+<li>Create Pod to mount the PVC.<blockquote>
+<ul>
+<li>name <code>my-pv-storage</code></li>
+<li>consume PVC <code>my-pv-claim</code></li>
+</ul>
+</blockquote>
+</li>
+<li>Mount new volume with emptyDir type to the Pod.</li>
+</ul>
+</blockquote>
+<p>Demo: </p>
+<p>Search <code>Create a PersistentVolume</code> in <a href="https://kubernetes.io/docs/home/">Kubernetes Documentation</a>.</p>
+<p>Choose <a href="https://kubernetes.io/docs/tasks/configure-pod-container/configure-persistent-volume-storage/">Configure a Pod to Use a PersistentVolume for Storage</a></p>
+<p>With sample codes we get from above link, let's complete these demo tasks.</p>
+<p>Task 1: create a PV.</p>
+<pre><code>kubectl apply -f - &lt;&lt; EOF
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: my-pv-volume
+spec:
+  storageClassName: my-sc
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: &quot;/my-data&quot;
+EOF
+</code></pre>
+<p>Task 2: create PVC.</p>
+<pre><code>kubectl apply -f - &lt;&lt; EOF
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: my-pv-claim
+spec:
+  storageClassName: my-sc
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Mi
+EOF
+</code></pre>
+<p>Task 3: create Pod.</p>
+<pre><code>kubectl apply -f - &lt;&lt; EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-pv-pod
+spec:
+  volumes:
+    - name: my-pv-storage
+      persistentVolumeClaim:
+        claimName: my-pv-claim
+  containers:
+    - name: my-pv-container
+      image: nginx
+      ports:
+        - containerPort: 80
+          name: &quot;http-server&quot;
+      volumeMounts:
+        - mountPath: &quot;/usr/share/nginx/html&quot;
+          name: my-pv-storage
+EOF
+</code></pre>
+<p>Attach to the Pod and create <code>index.html</code> file in directory <code>/usr/share/nginx/html/</code>.</p>
+<pre><code>kubectl exec -it my-pv-pod -- bash
+root@task-pv-pod:/usr/share/nginx/html# echo &quot;Hello Nginx&quot; &gt; index.html
+</code></pre>
+<p>We can see the file <code>index.html</code> in directory <code>/cka-data/</code> on node <code>cka003</code>, which the Pod is running on.</p>
+<p>Task 4: Update Pod to mount new volume with emptyDir type.</p>
+<p>Search <code>Create a PersistentVolume</code> in <a href="https://kubernetes.io/docs/home/">Kubernetes Documentation</a>.</p>
+<p>Get sampe code of <a href="https://kubernetes.io/docs/concepts/storage/volumes/#emptydir">emptydir</a>.</p>
+<p>Update the Pod <code>task-pv-pod</code> and mount new volume <code>mnt-volume</code> with emptyDir type.</p>
+<pre><code>kubectl apply -f - &lt;&lt; EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-pv-pod
+spec:
+  volumes:
+    - name: my-pv-storage
+      persistentVolumeClaim:
+        claimName: my-pv-claim
+    - name: mnt-volume
+      emptyDir: {}
+  containers:
+    - name: my-pv-container
+      image: nginx
+      ports:
+        - containerPort: 80
+          name: &quot;http-server&quot;
+      volumeMounts:
+        - mountPath: &quot;/usr/share/nginx/html&quot;
+          name: my-pv-storage
+        - mountPath: &quot;/mnt&quot;
+          name: mnt-volume
+EOF
+</code></pre>
+<p>Clean up.</p>
+<pre><code>kubectl delete pod my-pv-pod 
+kubectl delete pvc 
+kubectl delete pvc my-pv-claim  
+kubectl delete pv my-pv-volume 
+rm -rf my-data/
+</code></pre>
+<h3 id="sidecar">Sidecar</h3>
+<p>Scenario: </p>
+<p>Create a Pod <code>my-busybox</code> with multiple container <code>container-1-busybox</code>.</p>
+<pre><code>kubectl apply -f - &lt;&lt; EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-busybox
+spec:
+  containers:
+  - name: container-1-busybox
+    image: busybox
+    args:
+    - /bin/sh
+    - -c
+    - &gt;
+      i=0;
+      while true;
+      do
+        echo &quot;Hello message from container-1: $i&quot; &gt;&gt; /var/log/my-pod-busybox.log;
+        i=$((i+1));
+        sleep 1;
+      done
+EOF
+</code></pre>
+<p>Search <code>emptyDir</code> in the Kubernetes documetation.
+Refer to below template for emptyDir via https://kubernetes.io/zh-cn/docs/concepts/storage/volumes/</p>
+<p>Add below new features into the Pod</p>
+<ul>
+<li>Volume:<ul>
+<li>volume name: <code>logfile</code></li>
+<li>type: <code>emptyDir</code></li>
+</ul>
+</li>
+<li>Update existing container:<ul>
+<li>name: <code>container-1-busybox</code></li>
+<li>volumeMounts<ul>
+<li>name: <code>logfile</code></li>
+<li>mounthPath: <code>/var/log</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Add new container:<ul>
+<li>name: <code>container-2-busybox</code></li>
+<li>image: busybox</li>
+<li>args: ['/bin/sh', '-c', 'tail -n+1 -f /var/log/my-pod-busybox.log']</li>
+<li>volumeMounts:<ul>
+<li>name: <code>logfile</code></li>
+<li>mountPath: <code>/var/log</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<pre><code>kubectl get pod my-busybox -o yaml &gt; my-busybox.yaml
+vi my-busybox.yaml
+kubectl delete pod my-busybox 
+kubectl apply -f my-busybox.yaml
+kubectl logs my-busybox -c container-2-busybox
+</code></pre>
+<p>The final file <code>my-busybox.yaml</code> looks like below.</p>
+<pre><code>apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    cni.projectcalico.org/containerID: 89644b6b073cd152f94b4cae7bdea6bbc3292cf59afd4f28102bd74f0205c9e4
+    cni.projectcalico.org/podIP: 10.244.102.20/32
+    cni.projectcalico.org/podIPs: 10.244.102.20/32
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {&quot;apiVersion&quot;:&quot;v1&quot;,&quot;kind&quot;:&quot;Pod&quot;,&quot;metadata&quot;:{&quot;annotations&quot;:{},&quot;name&quot;:&quot;my-busybox&quot;,&quot;namespace&quot;:&quot;dev&quot;},&quot;spec&quot;:{&quot;containers&quot;:[{&quot;args&quot;:[&quot;/bin/sh&quot;,&quot;-c&quot;,&quot;i=0; while true; do\n  echo \&quot;Hello message from container-1: \&quot; \u003e\u003e /var/log/my-pod-busybox.log;\n  i=1;\n  sleep 1;\ndone\n&quot;],&quot;image&quot;:&quot;busybox&quot;,&quot;name&quot;:&quot;container-1-busybox&quot;}]}}
+  creationTimestamp: &quot;2022-07-29T22:58:27Z&quot;
+  name: my-busybox
+  namespace: dev
+  resourceVersion: &quot;1185720&quot;
+  uid: c5e62a16-4459-4828-a441-7d1471b89a56
+spec:
+  containers:
+  - name: container-2-busybox
+    image: busybox
+    args: ['/bin/sh', '-c', 'tail -n+1 -f /var/log/my-pod-busybox.log']
+    volumeMounts:
+    - name: logfile
+      mountPath: /var/log
+  - args:
+    - /bin/sh
+    - -c
+    - |
+      i=0; while true; do
+        echo &quot;Hello message from container-1: $i&quot; &gt;&gt; /var/log/my-pod-busybox.log;
+        i=1;
+        sleep 1;
+      done
+    image: busybox
+    imagePullPolicy: Always
+    name: container-1-busybox
+    resources: {}
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - name: logfile
+      mountPath: /var/log
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-mhxlf
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  nodeName: cka003
+  preemptionPolicy: PreemptLowerPriority
+  priority: 0
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext: {}
+  serviceAccount: default
+  serviceAccountName: default
+  terminationGracePeriodSeconds: 30
+  tolerations:
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+    tolerationSeconds: 300
+  volumes:
+  - name: logfile
+    emptyDir: {}
+  - name: kube-api-access-mhxlf
+    projected:
+      defaultMode: 420
+      sources:
+      - serviceAccountToken:
+          expirationSeconds: 3607
+          path: token
+      - configMap:
+          items:
+          - key: ca.crt
+            path: ca.crt
+          name: kube-root-ca.crt
+      - downwardAPI:
+          items:
+          - fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+            path: namespace
+status:
+  conditions:
+  - lastProbeTime: null
+    lastTransitionTime: &quot;2022-07-29T22:58:27Z&quot;
+    status: &quot;True&quot;
+    type: Initialized
+  - lastProbeTime: null
+    lastTransitionTime: &quot;2022-07-29T22:58:30Z&quot;
+    status: &quot;True&quot;
+    type: Ready
+  - lastProbeTime: null
+    lastTransitionTime: &quot;2022-07-29T22:58:30Z&quot;
+    status: &quot;True&quot;
+    type: ContainersReady
+  - lastProbeTime: null
+    lastTransitionTime: &quot;2022-07-29T22:58:27Z&quot;
+    status: &quot;True&quot;
+    type: PodScheduled
+  containerStatuses:
+  - containerID: containerd://fd42d4ba4d94d8918d8846327b1db2328be13c5f93f381877ff0228ed7b5468d
+    image: docker.io/library/busybox:latest
+    imageID: docker.io/library/busybox@sha256:0e97a8ca6955f22dbc7db9e9dbe970971f423541e52c34b8cb96ccc88d6a3883
+    lastState: {}
+    name: container-1-busybox
+    ready: true
+    restartCount: 0
+    started: true
+    state:
+      running:
+        startedAt: &quot;2022-07-29T22:58:30Z&quot;
+  hostIP: 172.16.18.168
+  phase: Running
+  podIP: 10.244.102.20
+  podIPs:
+  - ip: 10.244.102.20
+  qosClass: BestEffort
+  startTime: &quot;2022-07-29T22:58:27Z&quot;
+</code></pre>
+<p>Clean up:</p>
+<pre><code>kubectl delete pod my-busybox
+</code></pre>
+<h3 id="monitoring">Monitoring</h3>
+<p>Scenario: </p>
+<blockquote>
+<ul>
+<li>Find out top pod consuming CPU</li>
+</ul>
+</blockquote>
+<p>Use option <code>--sort-by</code> to get top CPU workload</p>
+<pre><code>kubectl top pod --sort-by cpu -A
+</code></pre>
+<h3 id="node-notready">Node NotReady</h3>
+<p>Scenario: </p>
+<blockquote>
+<p>When we stop <code>kubelet</code> service on worker node <code>cka002</code>,</p>
+<ul>
+<li>What's the status of each node?</li>
+<li>What's containers changed via command <code>nerdctl</code>?</li>
+<li>What's pods status via command <code>kubectl get pod -owide -A</code>? </li>
+</ul>
+</blockquote>
+<p>Demo:</p>
+<p>Execute command <code>systemctl stop kubelet.service</code> on <code>cka002</code>.</p>
+<p>Execute command <code>kubectl get node</code> on either <code>cka001</code> or <code>cka003</code>, the status of <code>cka002</code> is <code>NotReady</code>.</p>
+<p>Execute command <code>nerdctl -n k8s.io container ls</code> on <code>cka002</code> and we can observe all containers are still up and running, including the pod <code>my-first-pod</code>.</p>
+<p>Execute command <code>systemctl start kubelet.service</code> on <code>cka002</code>.</p>
+<p>Conclusion:</p>
+<ul>
+<li>The node status is changed to <code>NotReady</code> from <code>Ready</code>.</li>
+<li>For those DaemonSet pods, like <code>calico</code>、<code>kube-proxy</code>, are exclusively running on each node. They won't be terminated after <code>kubelet</code> is down.</li>
+<li>The status of pod <code>my-first-pod</code> keeps showing <code>Terminating</code> on each node because status can not be synced to other nodes via <code>apiserver</code> from <code>cka002</code> because <code>kubelet</code> is down.</li>
+<li>The status of pod is marked by <code>controller</code> and recycled by <code>kubelet</code>.</li>
+<li>When we start kubelet service on <code>cka003</code>, the pod <code>my-first-pod</code> will be termiated completely on <code>cka002</code>.</li>
+</ul>
+<p>In addition, let's create a deployment with 3 replicas. Two are running on <code>cka003</code> and one is running on <code>cka002</code>.</p>
+<pre><code>root@cka001:~# kubectl get pod -o wide -w
+NAME                               READY   STATUS    RESTARTS   AGE    IP           NODE     NOMINATED NODE   READINESS GATES
+nginx-deployment-9d745469b-2xdk4   1/1     Running   0          2m8s   10.244.2.3   cka003   &lt;none&gt;           &lt;none&gt;
+nginx-deployment-9d745469b-4gvmr   1/1     Running   0          2m8s   10.244.2.4   cka003   &lt;none&gt;           &lt;none&gt;
+nginx-deployment-9d745469b-5j927   1/1     Running   0          2m8s   10.244.1.3   cka002   &lt;none&gt;           &lt;none&gt;
+</code></pre>
+<p>After we stop kubelet service on <code>cka003</code>, the two running on <code>cka003</code> are terminated and another two are created and running on <code>cka002</code> automatically. </p>
                 
               
               
