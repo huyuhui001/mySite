@@ -1150,7 +1150,6 @@ spec:
   - name: container-2-alpine
     image: alpine
     command: ["watch", "wget", "-qO-", "localhost"]
-
 EOF
 ```
 
