@@ -1,7 +1,7 @@
 site/
 .idea/
 .vscode/
-_00.py
+_tmp.md
 _myscript.py
 Demo/CourseSystem/conf/__pycache__/
 Demo/CourseSystem/core/__pycache__/
