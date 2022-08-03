@@ -1,7 +1,7 @@
 # Introduction
 
-This [website](https://huyuhui001.github.io/mySite/) is my learning memo, including Linux, Python, and Cloud.
-
+This is my learning memo, including contents Linux, Python, and Cloud below. 
+The [website](https://huyuhui001.github.io/mySite/) provide same contents with easy reading style.
 
 [Linux](./docs/linux.md)
 * SUSE Linux Administration
