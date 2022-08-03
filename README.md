@@ -1,7 +1,35 @@
-Short introduction
+# Introduction
 
 This [website](https://huyuhui001.github.io/mySite/) is my learning memo, including Linux, Python, and Cloud.
 
+
+[Linux](./docs/linux.md)
+* SUSE Linux Administration
+* SUSE Enterprise Storage Foundation and Basic Operation
+
+[Python](./docs/python.md)
+* Foundation
+* Data Analysis
+* Practice
+
+[Cloud](./docs/cloud.md)
+* Microservice
+    * Microservices with Kubernetes
+* Kubernetes
+    * Kubernetes Foundamentals
+    * Local Installation
+        + Single Node Installation on Ubuntu Server (Docker)
+        + Multiple Nodes Installation on Ubuntu Server (nerdctl)
+        + Multiple Nodes Installation on openSUSE on Aliyun ECS.
+    * Foundamental on Kyma@SAP BTP
+        + Foundamentals of Docker and Kubernetes
+    * Foundamental on Ubuntu@Aliyun
+        + Installation and Upgrade on Ubuntu Server on Aliyun ECS.
+        + Foundamentals of Kubernetes (inc. replace Flannel by Calico)
+        + Development with Helm
+
+
+# About the site
 
 The website is built by [mkdocs](https://www.mkdocs.org/).
 
