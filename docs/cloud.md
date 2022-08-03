@@ -19,7 +19,7 @@
      + Foundamentals of Docker and Kubernetes
 
 - [Tutorials](./cloud/KubernetesTutorials-Aliyun-Ubuntu.md): Foundamental on Ubuntu@Aliyun
-     + Installation and Upgrade on Ubuntu Server on Aliyun ECS.
+     + Installation and upgrade Kubernetes on Ubuntu Server on Aliyun ECS.
      + Foundamentals of Kubernetes (inc. replace Flannel by Calico)
      + Development with Helm
 
