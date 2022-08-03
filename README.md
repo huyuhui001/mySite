@@ -24,7 +24,7 @@ The [website](https://huyuhui001.github.io/mySite/) provide same contents with e
     * Foundamental on Kyma@SAP BTP
         + Foundamentals of Docker and Kubernetes
     * Foundamental on Ubuntu@Aliyun
-        + Installation and Upgrade on Ubuntu Server on Aliyun ECS.
+        + Installation and upgrade Kubernetes on Ubuntu Server on Aliyun ECS.
         + Foundamentals of Kubernetes (inc. replace Flannel by Calico)
         + Development with Helm
 
