@@ -17,11 +17,65 @@ Request three Elastic Computer Service(ECS) instances with below sizing:
 * Cloud disk: 40GiB
 * Billing Method: Preemptible instance (spot price)
 
-Generate SSH key pairs with name `cka-key-pair` in local directcory `/opt`.
 
-Change access control to `400` per security required by command `sudo chmod 400 cka-key-pair.pem`.
-cka003
-Access remote cka servers via command `ssh -i cka-key-pair.pem root@<your public ip address>`
+Open a local terminal, log onto remote ECS `cka001` using the key pair (e.g., `aliyun-root`) from Aliyun cloud.
+```
+ssh -i aliyun-root root@cka001
+```
+
+Create a common user (e.g., `james`), and set primary group as `sudo` and other group as `root`.
+```
+adduser james
+usermod -g sudo james
+usermod -a -G root james
+```
+
+Back to the local terminal, generate key for common user `james` by below command.
+```
+# Windows
+ssh-keygen.exe
+
+# Linux
+ssh-keygen
+```
+
+Two files will be created, e.g., `aliyun-james` and `aliyun-james.pub`
+
+Upload the public key `aliyun-james.pub` to remote `cka001` using `sftp` command.
+```
+sftp -i aliyun-root root@cka001
+put aliyun-james.pub
+```
+
+Log onto remote ECS `cka001` using `root` account again. 
+Move the key `aliyun-james.pub` to `/home/james/.ssh/`. 
+Rename file `aliyun-james.pub` to `authorized_keys`.
+Change ower of file `authorized_keys` to `james`.
+Change default group of file `authorized_keys` to `sudo`.
+```
+mkdir /home/james/.ssh/
+mv aliyun-james.pub /home/james/.ssh/authorized_keys
+chown james.sudo /home/james/.ssh/authorized_keys
+chmod 600 /home/james/.ssh/authorized_keys
+```
+
+Check file `/etc/ssh/sshd_config`, make sure password authentication is disabled `PasswordAuthentication no`
+```
+cat /etc/ssh/sshd_config
+```
+
+Back to the local terminal, use `james` to log onto remote `cka001`.
+```
+ssh -i aliyun-james james@cka001
+```
+
+Upload the public key `aliyun-james.pub` to remote `cka002` and `cka003` using `sftp` command and do the same set up on `cka002` and `cka003` in order to enable user `james` to log onto `cka002` and `cka003`.
+
+Till now, user `james` can log onto `cka001`, `cka002` and `cka003` using key `aliyun-james`. 
+
+All demo below will be done by user `james`.
+
+
 
 
 ### Initialize VMs
