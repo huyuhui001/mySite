@@ -1885,10 +1885,45 @@
 <li>Cloud disk: 40GiB</li>
 <li>Billing Method: Preemptible instance (spot price)</li>
 </ul>
-<p>Generate SSH key pairs with name <code>cka-key-pair</code> in local directcory <code>/opt</code>.</p>
-<p>Change access control to <code>400</code> per security required by command <code>sudo chmod 400 cka-key-pair.pem</code>.
-cka003
-Access remote cka servers via command <code>ssh -i cka-key-pair.pem root@&lt;your public ip address&gt;</code></p>
+<p>Open a local terminal, log onto remote ECS <code>cka001</code> using the key pair (e.g., <code>aliyun-root</code>) from Aliyun cloud.</p>
+<pre><code>ssh -i aliyun-root root@cka001
+</code></pre>
+<p>Create a common user (e.g., <code>james</code>), and set primary group as <code>sudo</code> and other group as <code>root</code>.</p>
+<pre><code>adduser james
+usermod -g sudo james
+usermod -a -G root james
+</code></pre>
+<p>Back to the local terminal, generate key for common user <code>james</code> by below command.</p>
+<pre><code># Windows
+ssh-keygen.exe
+
+# Linux
+ssh-keygen
+</code></pre>
+<p>Two files will be created, e.g., <code>aliyun-james</code> and <code>aliyun-james.pub</code></p>
+<p>Upload the public key <code>aliyun-james.pub</code> to remote <code>cka001</code> using <code>sftp</code> command.</p>
+<pre><code>sftp -i aliyun-root root@cka001
+put aliyun-james.pub
+</code></pre>
+<p>Log onto remote ECS <code>cka001</code> using <code>root</code> account again. 
+Move the key <code>aliyun-james.pub</code> to <code>/home/james/.ssh/</code>. 
+Rename file <code>aliyun-james.pub</code> to <code>authorized_keys</code>.
+Change ower of file <code>authorized_keys</code> to <code>james</code>.
+Change default group of file <code>authorized_keys</code> to <code>sudo</code>.</p>
+<pre><code>mkdir /home/james/.ssh/
+mv aliyun-james.pub /home/james/.ssh/authorized_keys
+chown james.sudo /home/james/.ssh/authorized_keys
+chmod 600 /home/james/.ssh/authorized_keys
+</code></pre>
+<p>Check file <code>/etc/ssh/sshd_config</code>, make sure password authentication is disabled <code>PasswordAuthentication no</code></p>
+<pre><code>cat /etc/ssh/sshd_config
+</code></pre>
+<p>Back to the local terminal, use <code>james</code> to log onto remote <code>cka001</code>.</p>
+<pre><code>ssh -i aliyun-james james@cka001
+</code></pre>
+<p>Upload the public key <code>aliyun-james.pub</code> to remote <code>cka002</code> and <code>cka003</code> using <code>sftp</code> command and do the same set up on <code>cka002</code> and <code>cka003</code> in order to enable user <code>james</code> to log onto <code>cka002</code> and <code>cka003</code>.</p>
+<p>Till now, user <code>james</code> can log onto <code>cka001</code>, <code>cka002</code> and <code>cka003</code> using key <code>aliyun-james</code>. </p>
+<p>All demo below will be done by user <code>james</code>.</p>
 <h3 id="initialize-vms">Initialize VMs</h3>
 <h4 id="configure-etchosts-file">Configure /etc/hosts file</h4>
 <p>Add private IPs in the <code>/etc/hosts</code> file in all VMs.</p>
