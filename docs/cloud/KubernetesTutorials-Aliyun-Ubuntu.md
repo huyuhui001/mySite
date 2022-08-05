@@ -84,6 +84,7 @@ All demo below will be done by user `james`.
 #### Configure /etc/hosts file
 Add private IPs in the `/etc/hosts` file in all VMs.
 
+
 #### Disable firewall
 
 Disable firewall by command `ufw disable` in all VMs.
