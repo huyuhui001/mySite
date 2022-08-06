@@ -83,7 +83,9 @@ All demo below will be done by user `james`.
 
 #### Configure /etc/hosts file
 Add private IPs in the `/etc/hosts` file in all VMs.
-
+```
+vi /etc/hosts
+```
 
 #### Disable firewall
 
@@ -102,23 +104,26 @@ sudo ufw status verbose
 
 ### Turn off swap
 
-Turn off swap by command `swapoff -a` in all VMs.
-
+Turn off swap in all VMs.
+```
+sudo swapoff -a
+```
 
 ### Set timezone and locale
 
-Set timezone and local for all VMs. For ECS with Ubuntu 20.04 version created by Aliyun, this step is not needed.
+Set timezone and local for all VMs. This step was already done during Aliyun ECS installation.
 ```
 ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 sudo echo 'LANG="en_US.UTF-8"' >> /etc/profile
 source /etc/profile
 ```
+
 Something like this:
 ```
 ll /etc/localtime
 ```
 ```
-lrwxrwxrwx 1 root root 33 May 24 18:14 /etc/localtime -> /usr/share/zoneinfo/Asia/Shanghai
+lrwxrwxrwx 1 root root 33 Jul  5 14:51 /etc/localtime -> /usr/share/zoneinfo/Asia/Shanghai
 ```
 
 
@@ -227,7 +232,7 @@ Configure Containerd. Modify file `/etc/containerd/config.toml`.
 ```
 sudo mkdir -p /etc/containerd
 containerd config default | sudo tee /etc/containerd/config.toml
-vi /etc/containerd/config.toml
+sudo vi /etc/containerd/config.toml
 ```
 
 Update `sandbox_image` with new value `"registry.aliyuncs.com/google_containers/pause:3.6"`.
@@ -256,6 +261,8 @@ sudo systemctl restart containerd
 sudo systemctl status containerd
 ```
 
+
+
   
 ### Install nerdctl
 
@@ -268,7 +275,7 @@ Get the release from the link https://github.com/containerd/nerdctl/releases.
 ```
 wget https://github.com/containerd/nerdctl/releases/download/v0.22.0/nerdctl-0.22.0-linux-amd64.tar.gz
 tar -zxvf nerdctl-0.22.0-linux-amd64.tar.gz
-cp nerdctl /usr/bin/
+sudo cp nerdctl /usr/bin/
 ```
 
 Verify nerdctl.
