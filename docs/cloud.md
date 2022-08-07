@@ -8,18 +8,18 @@
 
 **Kubernetes**
 
-- [Memo](./cloud/KubernetesFoundationMemo.md): Kubernetes Foundamentals
+- Memo: [Kubernetes Foundamentals](./cloud/KubernetesFoundationMemo.md)
 
-- [Tutorials](./cloud/Kubernetes-Deployment.md): Local Installation
+- Tutorials: [Installation](./cloud/Kubernetes-Installation.md)
      + Single Node Installation on Ubuntu Server (Docker)
      + Multiple Nodes Installation on Ubuntu Server (nerdctl)
      + Multiple Nodes Installation on openSUSE on Aliyun ECS.
+     + Multiple Nodes Installation on Ubuntu on Aliyun ECS.
 
-- [Tutorials](./cloud/KubernetesTutorials-BTP-trail.md): Foundamental on Kyma@SAP BTP
+- Tutorials: [Foundamental on Kyma@SAP BTP](./cloud/KubernetesTutorials-BTP-trail.md)
      + Foundamentals of Docker and Kubernetes
 
-- [Tutorials](./cloud/KubernetesTutorials-Aliyun-Ubuntu.md): Foundamental on Ubuntu@Aliyun
-     + Installation and upgrade Kubernetes on Ubuntu Server on Aliyun ECS.
+- Tutorials: [Foundamental on Ubuntu@Aliyun](./cloud/KubernetesTutorials-Aliyun-Foundamentals.md)
      + Foundamentals of Kubernetes (inc. replace Flannel by Calico)
      + Development with Helm
 
