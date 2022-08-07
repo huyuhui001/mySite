@@ -1,13 +1,27 @@
 site_name: MEMO
 site_url: https://huyuhui001.github.io/mySite/index.html
 nav:
-        - Home: index.md
-        - Linux: linux.md
-        - Python: python.md
-        - Cloud: cloud.md
-        - About: about.md
+- Linux:
+    - SUSE Linux Administration: linux/Administration/linux_admin.md
+    - SUSE Enterprise Storage Foundation: linux/SES/linux_ses.md
+- Python:
+    - Python Foundamentals: python/Foundation/python_foundation_index.md
+    - Data Analysis: python/DataAnalysis/python_data_analysis_index.md
+    - Demos: python/Demo/python_demo_index.md
+- Cloud:
+    - Microservices with K8s: cloud/MicroservicesKubernetes.md
+    - K8s Foundamentals: cloud/KubernetesFoundationMemo.md
+    - K8s Installation: cloud/Kubernetes-Installation.md
+    - K8s Demos on Kyma@SAP BTP: cloud/KubernetesTutorials-BTP-trail.md
+    - K8s Demos on Ubuntu@Aliyun: cloud/KubernetesTutorials-Aliyun-Foundamentals.md
+- About: about.md
 theme:
   name: 'material'
+  logo: assets/logo.jpg
+  features:
+  - navigation.tracking
+  - navigation.top
+  - navigation.expand
   palette:
-    primary: 'blue'
+    primary: 'indigo'
     accent: 'Deep blue'
