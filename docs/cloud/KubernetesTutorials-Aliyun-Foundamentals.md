@@ -210,11 +210,7 @@ Good references about container pause: [article](https://zhuanlan.zhihu.com/p/46
 
 
 
-
-
-
-
-## 4.Kubernetes API and Resource
+## 2.Kubernetes API and Resource
 
 ### kubectl
 
@@ -448,6 +444,214 @@ kubectl delete pod multi-container-pod
 ```
 
 
+Quick reference of yaml file to create Multiple Containers.
+```
+kubectl apply -f - << EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-multi-pod
+spec:
+  containers:
+  - image: nginx
+    name: nginx
+  - image: memcached
+    name: memcached
+  - image: redis
+    name: redis
+EOF
+```
+
+
+
+#### Sidecar
+
+Create a Pod `my-busybox` with multiple container `container-1-busybox`.
+```
+kubectl apply -f - << EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-busybox
+spec:
+  containers:
+  - name: container-1-busybox
+    image: busybox
+    args:
+    - /bin/sh
+    - -c
+    - >
+      i=0;
+      while true;
+      do
+        echo "Hello message from container-1: $i" >> /var/log/my-pod-busybox.log;
+        i=$((i+1));
+        sleep 1;
+      done
+EOF
+```
+
+Search `emptyDir` in the Kubernetes documetation.
+Refer to below template for emptyDir via https://kubernetes.io/zh-cn/docs/concepts/storage/volumes/
+
+Add below new features into the Pod
+
+* Volume:
+    * volume name: `logfile`
+    * type: `emptyDir`
+* Update existing container:
+    * name: `container-1-busybox`
+    * volumeMounts
+        * name: `logfile`
+        * mounthPath: `/var/log`
+* Add new container:
+    * name: `container-2-busybox`
+    * image: busybox
+    * args: ['/bin/sh', '-c', 'tail -n+1 -f /var/log/my-pod-busybox.log']
+    * volumeMounts:
+        * name: `logfile`
+        * mountPath: `/var/log`
+```
+kubectl get pod my-busybox -o yaml > my-busybox.yaml
+vi my-busybox.yaml
+kubectl delete pod my-busybox 
+kubectl apply -f my-busybox.yaml
+kubectl logs my-busybox -c container-2-busybox
+```
+
+
+The final file `my-busybox.yaml` looks like below.
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    cni.projectcalico.org/containerID: 89644b6b073cd152f94b4cae7bdea6bbc3292cf59afd4f28102bd74f0205c9e4
+    cni.projectcalico.org/podIP: 10.244.102.20/32
+    cni.projectcalico.org/podIPs: 10.244.102.20/32
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","kind":"Pod","metadata":{"annotations":{},"name":"my-busybox","namespace":"dev"},"spec":{"containers":[{"args":["/bin/sh","-c","i=0; while true; do\n  echo \"Hello message from container-1: \" \u003e\u003e /var/log/my-pod-busybox.log;\n  i=1;\n  sleep 1;\ndone\n"],"image":"busybox","name":"container-1-busybox"}]}}
+  creationTimestamp: "2022-07-29T22:58:27Z"
+  name: my-busybox
+  namespace: dev
+  resourceVersion: "1185720"
+  uid: c5e62a16-4459-4828-a441-7d1471b89a56
+spec:
+  containers:
+  - name: container-2-busybox
+    image: busybox
+    args: ['/bin/sh', '-c', 'tail -n+1 -f /var/log/my-pod-busybox.log']
+    volumeMounts:
+    - name: logfile
+      mountPath: /var/log
+  - args:
+    - /bin/sh
+    - -c
+    - |
+      i=0; while true; do
+        echo "Hello message from container-1: $i" >> /var/log/my-pod-busybox.log;
+        i=1;
+        sleep 1;
+      done
+    image: busybox
+    imagePullPolicy: Always
+    name: container-1-busybox
+    resources: {}
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - name: logfile
+      mountPath: /var/log
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-mhxlf
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  nodeName: cka003
+  preemptionPolicy: PreemptLowerPriority
+  priority: 0
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext: {}
+  serviceAccount: default
+  serviceAccountName: default
+  terminationGracePeriodSeconds: 30
+  tolerations:
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+    tolerationSeconds: 300
+  volumes:
+  - name: logfile
+    emptyDir: {}
+  - name: kube-api-access-mhxlf
+    projected:
+      defaultMode: 420
+      sources:
+      - serviceAccountToken:
+          expirationSeconds: 3607
+          path: token
+      - configMap:
+          items:
+          - key: ca.crt
+            path: ca.crt
+          name: kube-root-ca.crt
+      - downwardAPI:
+          items:
+          - fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+            path: namespace
+status:
+  conditions:
+  - lastProbeTime: null
+    lastTransitionTime: "2022-07-29T22:58:27Z"
+    status: "True"
+    type: Initialized
+  - lastProbeTime: null
+    lastTransitionTime: "2022-07-29T22:58:30Z"
+    status: "True"
+    type: Ready
+  - lastProbeTime: null
+    lastTransitionTime: "2022-07-29T22:58:30Z"
+    status: "True"
+    type: ContainersReady
+  - lastProbeTime: null
+    lastTransitionTime: "2022-07-29T22:58:27Z"
+    status: "True"
+    type: PodScheduled
+  containerStatuses:
+  - containerID: containerd://fd42d4ba4d94d8918d8846327b1db2328be13c5f93f381877ff0228ed7b5468d
+    image: docker.io/library/busybox:latest
+    imageID: docker.io/library/busybox@sha256:0e97a8ca6955f22dbc7db9e9dbe970971f423541e52c34b8cb96ccc88d6a3883
+    lastState: {}
+    name: container-1-busybox
+    ready: true
+    restartCount: 0
+    started: true
+    state:
+      running:
+        startedAt: "2022-07-29T22:58:30Z"
+  hostIP: 172.16.18.168
+  phase: Running
+  podIP: 10.244.102.20
+  podIPs:
+  - ip: 10.244.102.20
+  qosClass: BestEffort
+  startTime: "2022-07-29T22:58:27Z"
+```
+
+
+Clean up:
+```
+kubectl delete pod my-busybox
+```
+
+
 
 
 
@@ -584,7 +788,79 @@ kubectl delete pod myapp-pod
 ```
 
 
+### Deployment
 
+
+#### Mini-demo: Modify Existing Deployment
+
+Scenario: 
+> Update existing Deployment, e.g., add port number
+
+Demo:
+
+Create Deployment `nginx`.
+```
+kubectl create deployment nginx --image=nginx
+```
+
+Execute command below to get yaml template with port number.
+```
+kubectl create deployment nginx --image=nginx --port=8080 --dry-run=client -o yaml
+```
+
+Then we get to know the path to add port number, like below.
+```
+kubectl explain deployment.spec.template.spec.containers.ports.containerPort
+```
+
+Execute command below to edit the Deployemnt.
+```
+kubectl edit deployment nginx
+```
+Add below two lines to specify port number with `80` and protocol is `TCP`.
+```
+    spec:
+      containers:
+      - image: nginx
+        imagePullPolicy: Always
+        name: nginx
+        ports:
+        - containerPort: 80
+          protocol: TCP
+```
+
+
+Use command `kubectl describe deployment <deployment_name>`, we can see the port number was added.
+```
+Pod Template:
+  Labels:  app=nginx
+  Containers:
+   nginx:
+    Image:        nginx
+    Port:         80/TCP
+    Host Port:    0/TCP
+    Environment:  <none>
+    Mounts:       <none>
+  Volumes:        <none>
+```
+
+With command `kubectl describe pod <pod_name>`, we can see the port number was added.
+```
+Containers:
+  nginx:
+    Container ID:   containerd://af4a1243f981497074b5c006ac55fcf795688399871d1dfe91a095321f5c91aa
+    Image:          nginx
+    Image ID:       docker.io/library/nginx@sha256:1761fb5661e4d77e107427d8012ad3a5955007d997e0f4a3d41acc9ff20467c7
+    Port:           80/TCP
+    Host Port:      0/TCP
+    State:          Running
+      Started:      Sun, 24 Jul 2022 22:50:12 +0800
+    Ready:          True
+    Restart Count:  0
+    Environment:    <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-hftdt (ro)
+```
 
 
 ### StatefulSet
@@ -1327,11 +1603,10 @@ kubectl delete deployment myapp
 
 
 
-## 5.Label and Annotation
+## 3.Label and Annotation
 
-### Label and Annotation
 
-#### Label
+### Label
 
 Set Label `disktype=ssd` for node `cka003`.
 ```
@@ -1357,7 +1632,7 @@ kubectl label node cka003 disktype-
 
 
 
-#### Annotation
+### Annotation
 
 Create Nginx deployment
 ```
@@ -1425,7 +1700,7 @@ kubectl delete deployment nginx
 
 
 
-## 6.Health Check
+## 4.Health Check
 
 ### Status of Pod and Container
 
@@ -1954,7 +2229,7 @@ The `default.conf` we modified will be replaced by default file and the containe
 
 
 
-## 7.Namespace
+## 5.Namespace
 
 Get list of Namespace
 ```
@@ -2003,7 +2278,7 @@ kubectl delete ns cka
 
 
 
-## 8.Horizontal Pod Autoscaling (HPA)
+## 6.Horizontal Pod Autoscaling (HPA)
 
 Summary:
 
@@ -2307,7 +2582,7 @@ kubectl delete deployment podinfo
 
 
 
-## 9.Service
+## 7.Service
 
 Summary:
 
@@ -2428,6 +2703,55 @@ nslookup   1/1     Running   0          2m44s   10.244.112.20   cka002   <none> 
 ```
 
 
+##### Mini-demo: Expose Service
+
+Scenario:
+> * Create a `nginx` deployment
+> * Add port number and alias name of the `nginx` Pod.
+> * Expose the deployment with internal traffic to local only.
+
+
+Demo:
+
+Create deployment `my-nginx` with port number `80`.
+```
+kubectl create deployment my-nginx --image=nginx --port=80
+```
+
+Edit deployment.
+```
+kubectl edit deployment my-nginx
+```
+Add port alias name `http`.
+Refer to the link for deployment yaml template https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+```
+    spec:
+      containers:
+      - image: nginx
+        imagePullPolicy: Always
+        name: nginx
+        ports:
+        - containerPort: 80
+          protocol: TCP
+          name: http
+```
+
+Expose the deployment with `NodePort` type.
+```
+kubectl expose deployment my-nginx --port=80 --target-port=http --name=my-nginx-svc --type=NodePort
+```
+
+Edit the service. Change `internalTrafficPolicy` from `Cluster` to `Local`.
+```
+kubectl edit svc my-nginx-svc 
+```
+
+Verify the access. Note, the pod is running on node `cka003`. We will see below expected results.
+```
+curl <deployment_pod_ip>:80    # succeed on node cka003. internalTrafficPolicy is effective.
+curl <service_cluster_ip>:80   # succeed on all nodes.
+curl <node_ip>:<ext_port>      # succeed on all nodes.
+```
 
 
 ### NodePort
@@ -2614,9 +2938,113 @@ kubectl delete deployment httpd-app
 
 
 
+### Mini-demo: Service Internal Traffic Policy
+
+Scenario: 
+> * Simulate how Service Internal Traffic Policy works.
+> * Expected result:
+>     * With setting Service `internalTrafficPolicy: Local`, the Service only route internal traffic within the nodes that Pods are running. 
+
+Backgroud:
+
+Service Internal Traffic Policy enables internal traffic restrictions to only route internal traffic to endpoints within the node the traffic originated from. 
+
+The "internal" traffic here refers to traffic originated from Pods in the current cluster.
+
+By setting its `.spec.internalTrafficPolicy` to Local. This tells kube-proxy to only use node local endpoints for cluster internal traffic.
+
+For pods on nodes with no endpoints for a given Service, the Service behaves as if it has zero endpoints (for Pods on this node) even if the service does have endpoints on other nodes.
+
+Demo:
+
+Create Deployment `my-nginx` and Service `my-nginx`.
+```
+kubectl apply -f - << EOF
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-nginx
+spec:
+  selector:
+    matchLabels:
+      run: my-nginx
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: my-nginx
+    spec:
+      containers:
+      - name: my-nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-nginx
+  labels:
+    run: my-nginx
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    run: my-nginx
+EOF
+```
+
+With command `kubectl get pod -o wide`, we know the Pod of Deployment `my-nginx` is running on node `cka003`.
+```
+NAME                                      READY   STATUS    RESTARTS   AGE     IP              NODE     NOMINATED NODE   READINESS GATES
+my-nginx-cf54cdbf7-bscf8                  1/1     Running   0          9h      10.244.112.63   cka002   <none>           <none>
+```
+
+Let's send http request from `cka001` to the Pod on `cka002`. 
+We will receive `Welcome to nginx!` information, which means the Pod is accessable from other nodes.
+```
+curl 11.244.163.60
+```
+
+Let's modify the Serivce `my-nginx` and specify `internalTrafficPolicy: Local`. 
+```
+kubectl apply -f - << EOF
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-nginx
+  labels:
+    run: my-nginx
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    run: my-nginx
+  internalTrafficPolicy: Local
+EOF
+```
+
+Let's send http request from `cka001` to the http request to the Pod again. 
+We will receive `curl: (7) Failed to connect to 11.244.163.60 port 80: Connection refused` error information.
+```
+curl 11.244.163.60
+```
+
+Let's log onto `cka002` and the http request to the Pod again. 
+We will receive `Welcome to nginx!` information, 
+```
+curl 11.244.163.60
+```
+
+Conclution:
+
+With setting Service `internalTrafficPolicy: Local`, the Service only route internal traffic within the nodes that Pods are running. 
 
 
-## 10.Ingress
+
+## 8.Ingress
 
 Summary:
 
@@ -2936,7 +3364,7 @@ This is test 2 !!
 
 
 
-## 11.Storage
+## 9.Storage
 
 Summary: 
 
@@ -4001,7 +4429,7 @@ blue
 
 
 
-## 12.Scheduling
+## 10.Scheduling
 
 Summary:
 
@@ -4274,7 +4702,7 @@ kubectl taint nodes cka003 key-
 
 
 
-## 13.ResourceQuota
+## 11.ResourceQuota
 
 Summary:
 
@@ -4396,7 +4824,7 @@ status:
 
 
 
-## 14.LimitRange
+## 12.LimitRange
 
 Summary:
 
@@ -4564,7 +4992,7 @@ spec:
 
 
 
-## 15.Troubleshooting
+## 13.Troubleshooting
 
 ### Event
 
@@ -4642,6 +5070,67 @@ kubectl logs -f tomcat --tail 100 -c tomcat
 ```
 
 
+### Node Availability
+
+#### Check Available Node
+
+Option 1:
+```
+kubectl describe node | grep -i taint
+```
+Manual check the result, here it's `2` nodes are available
+```
+Taints:             node-role.kubernetes.io/control-plane:NoSchedule
+Taints:             <none>
+Taints:             <none>
+```
+
+Option 2:
+```
+kubectl describe node | grep -i taint |grep -vc NoSchedule
+```
+We will get same result `2`. Here `-v` means exclude, `-c` count numbers.
+
+
+#### Node NotReady
+
+Scenario: 
+> When we stop `kubelet` service on worker node `cka002`,
+
+> * What's the status of each node?
+> * What's containers changed via command `nerdctl`?
+> * What's pods status via command `kubectl get pod -owide -A`? 
+
+Demo:
+
+Execute command `systemctl stop kubelet.service` on `cka002`.
+
+Execute command `kubectl get node` on either `cka001` or `cka003`, the status of `cka002` is `NotReady`.
+
+Execute command `nerdctl -n k8s.io container ls` on `cka002` and we can observe all containers are still up and running, including the pod `my-first-pod`.
+
+Execute command `systemctl start kubelet.service` on `cka002`.
+
+
+Conclusion:
+
+* The node status is changed to `NotReady` from `Ready`.
+* For those DaemonSet pods, like `calico`、`kube-proxy`, are exclusively running on each node. They won't be terminated after `kubelet` is down.
+* The status of pod `my-first-pod` keeps showing `Terminating` on each node because status can not be synced to other nodes via `apiserver` from `cka002` because `kubelet` is down.
+* The status of pod is marked by `controller` and recycled by `kubelet`.
+* When we start kubelet service on `cka003`, the pod `my-first-pod` will be termiated completely on `cka002`.
+
+In addition, let's create a deployment with 3 replicas. Two are running on `cka003` and one is running on `cka002`.
+```
+root@cka001:~# kubectl get pod -o wide -w
+NAME                               READY   STATUS    RESTARTS   AGE    IP           NODE     NOMINATED NODE   READINESS GATES
+nginx-deployment-9d745469b-2xdk4   1/1     Running   0          2m8s   10.244.2.3   cka003   <none>           <none>
+nginx-deployment-9d745469b-4gvmr   1/1     Running   0          2m8s   10.244.2.4   cka003   <none>           <none>
+nginx-deployment-9d745469b-5j927   1/1     Running   0          2m8s   10.244.1.3   cka002   <none>           <none>
+```
+After we stop kubelet service on `cka003`, the two running on `cka003` are terminated and another two are created and running on `cka002` automatically. 
+
+
 
 
 ### Monitoring Indicators
@@ -4716,6 +5205,8 @@ busybox-with-secret                       0m           0Mi
 
 ### Node Eviction
 
+#### Cordon/Uncordon
+
 Disable scheduling for a Node.
 ```
 kubectl cordon <node_name>
@@ -4748,16 +5239,61 @@ cka002   Ready    <none>                 18d   v1.24.0
 cka003   Ready    <none>                 18d   v1.24.0
 ```
 
-Evict Pods on a Node.
+
+
+#### Drain Node
+
+Scenario:
+> Drain the node `cka003`
+
+Demo:
+
+Get list of Pods running.
 ```
-kubectl drain <node_name>
-kubectl drain <node_name> --ignore-daemonsets
-kubectl drain <node_name> --ignore-daemonsets --delete-emptydir-data
+kubectl get pod -o wide
+```
+
+We know that a Pod is running on `cka003`.
+```
+NAME                                      READY   STATUS    RESTARTS   AGE   IP             NODE     NOMINATED NODE   READINESS GATES
+nfs-client-provisioner-86d7fb78b6-xk8nw   1/1     Running   0          22h   10.244.102.3   cka003   <none>           <none>
+```
+
+Evict node `cka003`.
+```
+kubectl drain cka003 --ignore-daemonsets --delete-emptydir-data --force
+```
+Output looks like below.
+```
+node/cka003 cordoned
+WARNING: ignoring DaemonSet-managed Pods: kube-system/calico-node-tr22l, kube-system/kube-proxy-g76kg
+evicting pod dev/nfs-client-provisioner-86d7fb78b6-xk8nw
+evicting pod cka/cka-demo-64f88f7f46-dkxmk
+pod/nfs-client-provisioner-86d7fb78b6-xk8nw evicted
+pod/cka-demo-64f88f7f46-dkxmk evicted
+node/cka003 drained
+```
+
+Check pod status again.
+```
+kubectl get pod -o wide
+```
+The pod is running on `cka002` now.
+```
+NAME                                      READY   STATUS    RESTARTS   AGE     IP             NODE     NOMINATED NODE   READINESS GATES
+nfs-client-provisioner-86d7fb78b6-k8xnl   1/1     Running   0          2m20s   10.244.112.4   cka002   <none>           <none>
 ```
 
 
+Notes:
+> * `cordon` is included in `drain`, no need additional step to `cordon` node before `drain` node. 
 
-## 16.RBAC
+
+
+
+
+
+## 14.RBAC
 
 Summary:
 
@@ -5396,7 +5932,44 @@ kubectl config use-context kubernetes-admin@kubernetes
 
 
 
-## 17.Network Policy
+### Mini-demo: ClusterRole and ServiceAccount
+
+Scenario: 
+> * Create a ClusterRole, which is authorized to create Deployment, StatefulSet, DaemonSet.
+> * Bind the ClusterRole to a ServiceAccount.
+
+Demo:
+
+```
+kubectl create namespace my-namespace
+
+kubectl -n my-namespace create serviceaccount my-sa
+
+kubectl create clusterrole my-clusterrole --verb=create --resource=deployments,statefulsets,daemonsets
+
+kubectl -n my-namespace create rolebinding my-clusterrolebinding --clusterrole=my-clusterrole --serviceaccount=my-namespace:my-sa
+```
+
+Hints:
+
+    1. A RoleBinding may reference any Role in the same namespace. 
+    2. A RoleBinding can reference a ClusterRole and bind that ClusterRole to the namespace of the RoleBinding. 
+    3. If you want to bind a ClusterRole to all the namespaces in your cluster, you use a ClusterRoleBinding.
+    4. Use RoleBinding to bind ClusterRole is to reuse the ClusterRole for namespaced resources, avoid duplicated namespaced roles for same authorization.
+    
+
+Clean up.
+```
+kubectl delete namespace my-namespace 
+kubectl delete clusterrole my-clusterrole
+```
+
+
+
+
+
+
+## 15.Network Policy
 
 ### Replace Flannel by Calico
 
@@ -5797,10 +6370,104 @@ Be noted that we can use namespace default label as well.
 
 
 
+### Mini-demo: NetworkPolicy
+
+Scenario: Ingress:
+> * Create two namespaces `my-ns-1`, `my-ns-2`.
+> * Create two deployments on `my-ns-1`, `nginx` listens to port `80` and `tomcat` listens to port `8080`.
+> * Create NetworkPolicy `my-networkpolicy-1` on namespace `my-ns-1` to allow access to port 8080 from namespace `my-ns-1`.
+> * Verify the access to `nginx` port `80` and `tomcat` port `8080`.
+> * Edit the NetworkPolicy to allow access to port 8080 from namespace `my-ns-2`.
+> * Verify the access to `nginx` port `80` and `tomcat` port `8080`.
+
+Demo:
+
+Create namespaces
+```
+kubectl create namespace my-ns-1
+kubectl create namespace my-ns-2
+```
+
+Create deployment on `my-ns-1`
+```
+kubectl create deployment my-nginx --image=nginx --namespace=my-ns-1 --port=80
+kubectl create deployment my-tomcat --image=tomcat --namespace=my-ns-1 --port=8080
+```
+
+Get the label: e.g., `kubernetes.io/metadata.name=my-ns-1`, `kubernetes.io/metadata.name=my-ns-2`.
+```
+kubectl get namespace my-ns-1 --show-labels  
+kubectl get namespace my-ns-2 --show-labels   
+```
+
+Create NetworkPolicy to allow access from my-ns-2 to Pod with port 8080 on my-ns-1.
+Refer to yaml template from the link https://kubernetes.io/docs/concepts/services-networking/network-policies/.
+```
+kubectl apply -f - << EOF
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: my-networkpolicy-1
+  namespace: my-ns-1
+spec:
+  podSelector:
+    matchLabels: {}
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: my-ns-1
+      ports:
+        - protocol: TCP
+          port: 8080
+EOF
+```
+
+Check Deployment and Pod status
+```
+kubectl get deployment,pod -n my-ns-1 -o wide
+```
+
+Create temp pod on namespace `my-ns-1`.
+Attach to the pod and verify the access. 
+Command `curl <nginx_ip>:80` failed. 
+Command `curl <tomcat_ip>:80` succeed. 
+```
+kubectl run centos --image=centos -n my-ns-1 -- "/bin/sh" "-c" "sleep 3600"
+kubectl exec -it mycentos -n my-ns-1 -- bash
+```
+
+Create temp pod on namespace `my-ns-2`.
+Attach to the pod and verify the access. 
+Command `curl <nginx_ip>:80` failed. 
+Command `curl <tomcat_ip>:80` failed. 
+```
+kubectl run centos --image=centos -n my-ns-2 -- "/bin/sh" "-c" "sleep 3600"
+kubectl exec -it mycentos -n my-ns-2 -- bash
+```
+
+Edit `my-networkpolicy-1` to change `ingress.from.namespaceSelector.matchLabels` to `my-ns-2`.
+
+Attach to temp pod on namespace `my-ns-2`.
+Verify the access. 
+Command `curl <nginx_ip>:80` failed. 
+Command `curl <tomcat_ip>:80` succeed. 
+```
+kubectl exec -it mycentos -n my-ns-2 -- bash
+```
+
+
+Clean up:
+```
+kubectl delete namespace my-ns-1
+kubectl delete namespace my-ns-2
+```
 
 
 
-## 18.Cluster Management
+## 16.Cluster Management
 
 ### `etcd` Backup and Restore
 
@@ -6049,7 +6716,14 @@ app-before-backup        1/1     1            1           11m
 
 
 
+
+
+
+
+
 ### Upgrade
+
+[Reference documentation](https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/)
 
 #### Upgrade `Control Plane`
 
@@ -6356,12 +7030,59 @@ cka003   Ready    <none>                 32h   v1.24.2
 ```
 
 
+#### Summary
+
+Control Plane
+```
+kubectl get node -owide
+kubectl drain cka001 --ignore-daemonsets 
+kubectl get node -owide
+apt policy kubeadm
+apt-get -y install kubeadm=1.24.0-00 --allow-downgrades
+kubeadm upgrade plan
+kubeadm upgrade apply v1.24.0
+# kubeadm upgrade apply v1.24.0 --etcd-upgrade=false
+apt-get -y install kubelet=1.24.0-00 kubectl=1.24.0-00 --allow-downgrades
+systemctl daemon-reload
+systemctl restart kubelet
+kubectl get node
+kubectl uncordon cka001
+```
+
+Worker Node
+```
+# On Control Plane
+kubectl drain cka002 --ignore-daemonsets
+
+$ On Workder Node
+apt-get -y install kubeadm=1.24.1-00 --allow-downgrades
+kubeadm upgrade node
+apt-get -y install kubelet=1.24.1-00 --allow-downgrades
+systemctl daemon-reload
+systemctl restart kubelet
+kubectl uncordon cka002
+```
+
+Worker Node
+```
+# On Control Plane
+kubectl drain cka003 --ignore-daemonsets
+
+$ On Workder Node
+apt-get -y install kubeadm=1.24.1-00 --allow-downgrades
+kubeadm upgrade node
+apt-get -y install kubelet=1.24.1-00 --allow-downgrades
+systemctl daemon-reload
+systemctl restart kubelet
+kubectl uncordon cka003
+```
 
 
 
 
 
-## 19.Helm Chart
+
+## 17.Helm Chart
 
 ### Install Helm
 
@@ -8424,1082 +9145,9 @@ kubectl delete pod pingtest-ippool-2
 
 
 
-## Mini-practice
 
 
-### Modify Existing Deployment
 
-Scenario: 
-> Update existing Deployment, e.g., add port number
-
-Demo:
-
-Create Deployment `nginx`.
-```
-kubectl create deployment nginx --image=nginx
-```
-
-Execute command below to get yaml template with port number.
-```
-kubectl create deployment nginx --image=nginx --port=8080 --dry-run=client -o yaml
-```
-
-Then we get to know the path to add port number, like below.
-```
-kubectl explain deployment.spec.template.spec.containers.ports.containerPort
-```
-
-Execute command below to edit the Deployemnt.
-```
-kubectl edit deployment nginx
-```
-Add below two lines to specify port number with `80` and protocol is `TCP`.
-```
-    spec:
-      containers:
-      - image: nginx
-        imagePullPolicy: Always
-        name: nginx
-        ports:
-        - containerPort: 80
-          protocol: TCP
-```
-
-
-Use command `kubectl describe deployment <deployment_name>`, we can see the port number was added.
-```
-Pod Template:
-  Labels:  app=nginx
-  Containers:
-   nginx:
-    Image:        nginx
-    Port:         80/TCP
-    Host Port:    0/TCP
-    Environment:  <none>
-    Mounts:       <none>
-  Volumes:        <none>
-```
-
-With command `kubectl describe pod <pod_name>`, we can see the port number was added.
-```
-Containers:
-  nginx:
-    Container ID:   containerd://af4a1243f981497074b5c006ac55fcf795688399871d1dfe91a095321f5c91aa
-    Image:          nginx
-    Image ID:       docker.io/library/nginx@sha256:1761fb5661e4d77e107427d8012ad3a5955007d997e0f4a3d41acc9ff20467c7
-    Port:           80/TCP
-    Host Port:      0/TCP
-    State:          Running
-      Started:      Sun, 24 Jul 2022 22:50:12 +0800
-    Ready:          True
-    Restart Count:  0
-    Environment:    <none>
-    Mounts:
-      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-hftdt (ro)
-```
-
-
-
-
-### Service Internal Traffic Policy
-
-Scenario: 
-> * Simulate how Service Internal Traffic Policy works.
-> * Expected result:
->     * With setting Service `internalTrafficPolicy: Local`, the Service only route internal traffic within the nodes that Pods are running. 
-
-Backgroud:
-
-Service Internal Traffic Policy enables internal traffic restrictions to only route internal traffic to endpoints within the node the traffic originated from. 
-
-The "internal" traffic here refers to traffic originated from Pods in the current cluster.
-
-By setting its `.spec.internalTrafficPolicy` to Local. This tells kube-proxy to only use node local endpoints for cluster internal traffic.
-
-For pods on nodes with no endpoints for a given Service, the Service behaves as if it has zero endpoints (for Pods on this node) even if the service does have endpoints on other nodes.
-
-Demo:
-
-Create Deployment `my-nginx` and Service `my-nginx`.
-```
-kubectl apply -f - << EOF
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: my-nginx
-spec:
-  selector:
-    matchLabels:
-      run: my-nginx
-  replicas: 1
-  template:
-    metadata:
-      labels:
-        run: my-nginx
-    spec:
-      containers:
-      - name: my-nginx
-        image: nginx
-        ports:
-        - containerPort: 80
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: my-nginx
-  labels:
-    run: my-nginx
-spec:
-  ports:
-  - port: 80
-    protocol: TCP
-  selector:
-    run: my-nginx
-EOF
-```
-
-With command `kubectl get pod -o wide`, we know the Pod of Deployment `my-nginx` is running on node `cka003`.
-```
-NAME                                      READY   STATUS    RESTARTS   AGE     IP              NODE     NOMINATED NODE   READINESS GATES
-my-nginx-cf54cdbf7-bscf8                  1/1     Running   0          9h      10.244.112.63   cka002   <none>           <none>
-```
-
-Let's send http request from `cka001` to the Pod on `cka002`. 
-We will receive `Welcome to nginx!` information, which means the Pod is accessable from other nodes.
-```
-curl 11.244.163.60
-```
-
-Let's modify the Serivce `my-nginx` and specify `internalTrafficPolicy: Local`. 
-```
-kubectl apply -f - << EOF
-apiVersion: v1
-kind: Service
-metadata:
-  name: my-nginx
-  labels:
-    run: my-nginx
-spec:
-  ports:
-  - port: 80
-    protocol: TCP
-  selector:
-    run: my-nginx
-  internalTrafficPolicy: Local
-EOF
-```
-
-Let's send http request from `cka001` to the http request to the Pod again. 
-We will receive `curl: (7) Failed to connect to 11.244.163.60 port 80: Connection refused` error information.
-```
-curl 11.244.163.60
-```
-
-Let's log onto `cka002` and the http request to the Pod again. 
-We will receive `Welcome to nginx!` information, 
-```
-curl 11.244.163.60
-```
-
-Conclution:
-
-With setting Service `internalTrafficPolicy: Local`, the Service only route internal traffic within the nodes that Pods are running. 
-
-
-
-
-
-
-### ClusterRole and ServiceAccount
-
-Scenario: 
-> * Create a ClusterRole, which is authorized to create Deployment, StatefulSet, DaemonSet.
-> * Bind the ClusterRole to a ServiceAccount.
-
-Demo:
-
-```
-kubectl create namespace my-namespace
-
-kubectl -n my-namespace create serviceaccount my-sa
-
-kubectl create clusterrole my-clusterrole --verb=create --resource=deployments,statefulsets,daemonsets
-
-kubectl -n my-namespace create rolebinding my-clusterrolebinding --clusterrole=my-clusterrole --serviceaccount=my-namespace:my-sa
-```
-
-Hints:
-
-    1. A RoleBinding may reference any Role in the same namespace. 
-    2. A RoleBinding can reference a ClusterRole and bind that ClusterRole to the namespace of the RoleBinding. 
-    3. If you want to bind a ClusterRole to all the namespaces in your cluster, you use a ClusterRoleBinding.
-    4. Use RoleBinding to bind ClusterRole is to reuse the ClusterRole for namespaced resources, avoid duplicated namespaced roles for same authorization.
-    
-
-Clean up.
-```
-kubectl delete namespace my-namespace 
-kubectl delete clusterrole my-clusterrole
-```
-
-
-### Drain a Node
-
-Scenario:
-> Drain the node `cka003`
-
-Demo:
-
-Get list of Pods running.
-```
-kubectl get pod -o wide
-```
-
-We know that a Pod is running on `cka003`.
-```
-NAME                                      READY   STATUS    RESTARTS   AGE   IP             NODE     NOMINATED NODE   READINESS GATES
-nfs-client-provisioner-86d7fb78b6-xk8nw   1/1     Running   0          22h   10.244.102.3   cka003   <none>           <none>
-```
-
-Evict node `cka003`.
-```
-kubectl drain cka003 --ignore-daemonsets --delete-emptydir-data --force
-```
-Output looks like below.
-```
-node/cka003 cordoned
-WARNING: ignoring DaemonSet-managed Pods: kube-system/calico-node-tr22l, kube-system/kube-proxy-g76kg
-evicting pod dev/nfs-client-provisioner-86d7fb78b6-xk8nw
-evicting pod cka/cka-demo-64f88f7f46-dkxmk
-pod/nfs-client-provisioner-86d7fb78b6-xk8nw evicted
-pod/cka-demo-64f88f7f46-dkxmk evicted
-node/cka003 drained
-```
-
-Check pod status again.
-```
-kubectl get pod -o wide
-```
-The pod is running on `cka002` now.
-```
-NAME                                      READY   STATUS    RESTARTS   AGE     IP             NODE     NOMINATED NODE   READINESS GATES
-nfs-client-provisioner-86d7fb78b6-k8xnl   1/1     Running   0          2m20s   10.244.112.4   cka002   <none>           <none>
-```
-
-
-Notes:
-> * `cordon` is included in `drain`, no need additional step to `cordon` node before `drain` node. 
-
-
-
-
-### Upgrade
-
-Scenario:
-> Upgrade `kubeadm`, `kubectl`, `kubelet`.
-
-Demo:
-
-Reference link: `https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/`.
-
-Control Plane
-```
-kubectl get node -owide
-kubectl drain cka001 --ignore-daemonsets 
-kubectl get node -owide
-apt policy kubeadm
-apt-get -y install kubeadm=1.24.0-00 --allow-downgrades
-kubeadm upgrade plan
-kubeadm upgrade apply v1.24.0
-# kubeadm upgrade apply v1.24.0 --etcd-upgrade=false
-apt-get -y install kubelet=1.24.0-00 kubectl=1.24.0-00 --allow-downgrades
-systemctl daemon-reload
-systemctl restart kubelet
-kubectl get node
-kubectl uncordon cka001
-```
-
-Worker Node
-```
-# On Control Plane
-kubectl drain cka002 --ignore-daemonsets
-
-$ On Workder Node
-apt-get -y install kubeadm=1.24.1-00 --allow-downgrades
-kubeadm upgrade node
-apt-get -y install kubelet=1.24.1-00 --allow-downgrades
-systemctl daemon-reload
-systemctl restart kubelet
-kubectl uncordon cka002
-```
-
-Worker Node
-```
-# On Control Plane
-kubectl drain cka003 --ignore-daemonsets
-
-$ On Workder Node
-apt-get -y install kubeadm=1.24.1-00 --allow-downgrades
-kubeadm upgrade node
-apt-get -y install kubelet=1.24.1-00 --allow-downgrades
-systemctl daemon-reload
-systemctl restart kubelet
-kubectl uncordon cka003
-```
-
-
-### etcd Snapshot
-
-Scenario:
-> * Backup etcd to `/opt/backup/snapshot-backup.db`.
-> * Restore etcd from `/opt/backup/snapshot-backup.db`.
-
-Demo:
-
-Get Control Plan Node information.
-```
-kubectl get node -o wide
-```
-
-Backup
-```
-etcdctl \
---endpoints=172.16.18.170:2379 \
---cert=/etc/kubernetes/pki/etcd/server.crt \
---key=/etc/kubernetes/pki/etcd/server.key \
---cacert=/etc/kubernetes/pki/etcd/ca.crt \
-snapshot save /opt/backup/snapshot-backup.db
-```
-
-Restore
-```
-etcdctl  \
---endpoints=172.16.18.170:2379 \
---cert=/etc/kubernetes/pki/etcd/server.crt \
---key=/etc/kubernetes/pki/etcd/server.key \
---cacert=/etc/kubernetes/pki/etcd/ca.crt \
-snapshot restore /opt/backup/snapshot-backup.db
-```
-
-
-
-
-
-### NetworkPolicy
-
-Scenario: Ingress:
-> * Create two namespaces `my-ns-1`, `my-ns-2`.
-> * Create two deployments on `my-ns-1`, `nginx` listens to port `80` and `tomcat` listens to port `8080`.
-> * Create NetworkPolicy `my-networkpolicy-1` on namespace `my-ns-1` to allow access to port 8080 from namespace `my-ns-1`.
-> * Verify the access to `nginx` port `80` and `tomcat` port `8080`.
-> * Edit the NetworkPolicy to allow access to port 8080 from namespace `my-ns-2`.
-> * Verify the access to `nginx` port `80` and `tomcat` port `8080`.
-
-Demo:
-
-Create namespaces
-```
-kubectl create namespace my-ns-1
-kubectl create namespace my-ns-2
-```
-
-Create deployment on `my-ns-1`
-```
-kubectl create deployment my-nginx --image=nginx --namespace=my-ns-1 --port=80
-kubectl create deployment my-tomcat --image=tomcat --namespace=my-ns-1 --port=8080
-```
-
-Get the label: e.g., `kubernetes.io/metadata.name=my-ns-1`, `kubernetes.io/metadata.name=my-ns-2`.
-```
-kubectl get namespace my-ns-1 --show-labels  
-kubectl get namespace my-ns-2 --show-labels   
-```
-
-Create NetworkPolicy to allow access from my-ns-2 to Pod with port 8080 on my-ns-1.
-Refer to yaml template from the link https://kubernetes.io/docs/concepts/services-networking/network-policies/.
-```
-kubectl apply -f - << EOF
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: my-networkpolicy-1
-  namespace: my-ns-1
-spec:
-  podSelector:
-    matchLabels: {}
-  policyTypes:
-    - Ingress
-  ingress:
-    - from:
-        - namespaceSelector:
-            matchLabels:
-              kubernetes.io/metadata.name: my-ns-1
-      ports:
-        - protocol: TCP
-          port: 8080
-EOF
-```
-
-Check Deployment and Pod status
-```
-kubectl get deployment,pod -n my-ns-1 -o wide
-```
-
-Create temp pod on namespace `my-ns-1`.
-Attach to the pod and verify the access. 
-Command `curl <nginx_ip>:80` failed. 
-Command `curl <tomcat_ip>:80` succeed. 
-```
-kubectl run centos --image=centos -n my-ns-1 -- "/bin/sh" "-c" "sleep 3600"
-kubectl exec -it mycentos -n my-ns-1 -- bash
-```
-
-Create temp pod on namespace `my-ns-2`.
-Attach to the pod and verify the access. 
-Command `curl <nginx_ip>:80` failed. 
-Command `curl <tomcat_ip>:80` failed. 
-```
-kubectl run centos --image=centos -n my-ns-2 -- "/bin/sh" "-c" "sleep 3600"
-kubectl exec -it mycentos -n my-ns-2 -- bash
-```
-
-Edit `my-networkpolicy-1` to change `ingress.from.namespaceSelector.matchLabels` to `my-ns-2`.
-
-Attach to temp pod on namespace `my-ns-2`.
-Verify the access. 
-Command `curl <nginx_ip>:80` failed. 
-Command `curl <tomcat_ip>:80` succeed. 
-```
-kubectl exec -it mycentos -n my-ns-2 -- bash
-```
-
-
-Clean up:
-```
-kubectl delete namespace my-ns-1
-kubectl delete namespace my-ns-2
-```
-
-
-
-
-
-### Expose Service
-
-Scenario:
-> * Create a `nginx` deployment
-> * Add port number and alias name of the `nginx` Pod.
-> * Expose the deployment with internal traffic to local only.
-
-
-Demo:
-
-Create deployment `my-nginx` with port number `80`.
-```
-kubectl create deployment my-nginx --image=nginx --port=80
-```
-
-Edit deployment.
-```
-kubectl edit deployment my-nginx
-```
-Add port alias name `http`.
-Refer to the link for deployment yaml template https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
-```
-    spec:
-      containers:
-      - image: nginx
-        imagePullPolicy: Always
-        name: nginx
-        ports:
-        - containerPort: 80
-          protocol: TCP
-          name: http
-```
-
-Expose the deployment with `NodePort` type.
-```
-kubectl expose deployment my-nginx --port=80 --target-port=http --name=my-nginx-svc --type=NodePort
-```
-
-Edit the service. Change `internalTrafficPolicy` from `Cluster` to `Local`.
-```
-kubectl edit svc my-nginx-svc 
-```
-
-Verify the access. Note, the pod is running on node `cka003`. We will see below expected results.
-```
-curl <deployment_pod_ip>:80    # succeed on node cka003. internalTrafficPolicy is effective.
-curl <service_cluster_ip>:80   # succeed on all nodes.
-curl <node_ip>:<ext_port>      # succeed on all nodes.
-```
-
-
-
-
-### Ingress
-
-Scenario:
-> * Create Deployment `nginx` on new namespace `my-ns`.
-> * Expose the deployment with Service name `my-nginx-svc` and service port `3456`
-> * Create Ingress with to expose the service on path `/test`.
-> * Verify the http access to `<ingress_ip><your_path>` instead of `<ip><port>`.
-
-
-Demo:
-
-Create namespace, deployment, and service.
-```
-kubectl create namespace my-ns
-kubectl create deployment my-nginx --image=nginx --port=80 --namespace=my-ns
-kubectl expose deployment my-nginx --name=my-nginx-svc --port=3456 --target-port=80 --namespace=my-ns
-```
-
-```
-kubectl patch ingressclass nginx -p '{"metadata": {"annotations":{"ingressclass.kubernetes.io/is-default-class": "true"}}}'
-```
-
-Create Ingress on new namespace.
-Refer to the Ingress yaml template via link https://kubernetes.io/zh-cn/docs/concepts/services-networking/ingress/
-```
-kubectl apply -f - << EOF
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: my-ingress
-  namespace: my-ns
-  annotations:
-    kubernetes.io/ingressclass: nginx
-    nginx.ingress.kubernetes.io/rewrite-target: /
-spec:
-  # ingressClassName: nginx
-  rules:
-  - http:
-      paths:
-      - path: /test
-        pathType: Prefix
-        backend:
-          service:
-            name: my-nginx-svc
-            port:
-              number: 3456
-EOF
-```
-
-Get the IP address via and test the access.
-```
-kubectl get ingress -n my-ns
-curl 10.110.175.39/test
-```
-
-
-
-Clean up.
-```
-kubectl delete namespace my-ns
-```
-
-
-
-### Schedule Pod to Node
-
-Scenario:
-> * Label a node
-> * Create a Pod and assign it to the node by nodeSelector
-
-
-Demo:
-
-Label node.
-```
-kubectl label node cka003 disk=ssd
-```
-
-Create Pod with name `my-nginx` and set `nodeSelector` as `disk=ssd` and set container name `my-nginx`.
-Get Pod template via the link https://kubernetes.io/docs/tasks/configure-pod-container/assign-pods-nodes/
-```
-kubectl apply -f - << EOF
-apiVersion: v1
-kind: Pod
-metadata:
-  name: my-nginx
-  labels:
-    env: demo
-spec:
-  containers:
-  - name: my-nginx
-    image: nginx
-    imagePullPolicy: IfNotPresent
-  nodeSelector:
-    disk: ssd
-EOF
-```
-
-
-Clean up
-```
-kubectl label node cka003 disk-
-kubectl delete pod my-nginx
-```
-
-
-
-
-
-
-
-### Check Available Node
-
-Scenario:
-> * Check available Node
-
-Option 1:
-```
-kubectl describe node | grep -i taint
-```
-Manual check the result, here it's `2` nodes are available
-```
-Taints:             node-role.kubernetes.io/control-plane:NoSchedule
-Taints:             <none>
-Taints:             <none>
-```
-
-Option 2:
-```
-kubectl describe node | grep -i taint |grep -vc NoSchedule
-```
-We will get same result `2`. Here `-v` means exclude, `-c` count numbers.
-
-
-
-
-
-### Multiple Containers
-
-Scenario:
-> * Create multiple container Pod.
-
-
-Get yaml template with below command.
-```
-kubectl run my-pod --image=nginx --dry-run=client -o yaml
-```
-
-Add more containers in the template we get from above command.
-```
-kubectl apply -f - << EOF
-apiVersion: v1
-kind: Pod
-metadata:
-  name: my-multi-pod
-spec:
-  containers:
-  - image: nginx
-    name: nginx
-  - image: memcached
-    name: memcached
-  - image: redis
-    name: redis
-EOF
-```
-
-
-
-
-### PV+SC+PVC+Pod
-
-Scenario: 
-> Refer to sample codes from [Kubernetes Documentation](https://kubernetes.io/docs/home/) to complete below tasks:
->   
-> * Create PV
->>    * name is `my-pv-volume`
->>    * `hostPath` type
->>    * location is `/my-data`
->>    * size 1Gi
->>    * AccessMode `ReadWriteMany`
->>    * StorageClass is `my-sc`
-> * Create PVC and bind it to the PV
->>    * name is `my-pv-claim`
->>    * capacity 10Mi
->>    * consume StorageClass `my-sc`
->>    * AccessMode `ReadWriteOnce`
-> * Create Pod to mount the PVC.
->>    * name `my-pv-storage`
->>    * consume PVC `my-pv-claim`
-> * Mount new volume with emptyDir type to the Pod.
-
-Demo: 
-
-Search `Create a PersistentVolume` in [Kubernetes Documentation](https://kubernetes.io/docs/home/).
-
-Choose [Configure a Pod to Use a PersistentVolume for Storage](https://kubernetes.io/docs/tasks/configure-pod-container/configure-persistent-volume-storage/)
-
-With sample codes we get from above link, let's complete these demo tasks.
-
-Task 1: create a PV.
-```
-kubectl apply -f - << EOF
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: my-pv-volume
-spec:
-  storageClassName: my-sc
-  capacity:
-    storage: 1Gi
-  accessModes:
-    - ReadWriteOnce
-  hostPath:
-    path: "/my-data"
-EOF
-```
-
-Task 2: create PVC.
-```
-kubectl apply -f - << EOF
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: my-pv-claim
-spec:
-  storageClassName: my-sc
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 10Mi
-EOF
-```
-
-
-Task 3: create Pod.
-```
-kubectl apply -f - << EOF
-apiVersion: v1
-kind: Pod
-metadata:
-  name: my-pv-pod
-spec:
-  volumes:
-    - name: my-pv-storage
-      persistentVolumeClaim:
-        claimName: my-pv-claim
-  containers:
-    - name: my-pv-container
-      image: nginx
-      ports:
-        - containerPort: 80
-          name: "http-server"
-      volumeMounts:
-        - mountPath: "/usr/share/nginx/html"
-          name: my-pv-storage
-EOF
-```
-
-Attach to the Pod and create `index.html` file in directory `/usr/share/nginx/html/`.
-```
-kubectl exec -it my-pv-pod -- bash
-root@task-pv-pod:/usr/share/nginx/html# echo "Hello Nginx" > index.html
-```
-
-We can see the file `index.html` in directory `/cka-data/` on node `cka003`, which the Pod is running on.
-
-
-Task 4: Update Pod to mount new volume with emptyDir type.
-
-Search `Create a PersistentVolume` in [Kubernetes Documentation](https://kubernetes.io/docs/home/).
-
-Get sampe code of [emptydir](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir).
-
-Update the Pod `task-pv-pod` and mount new volume `mnt-volume` with emptyDir type.
-```
-kubectl apply -f - << EOF
-apiVersion: v1
-kind: Pod
-metadata:
-  name: my-pv-pod
-spec:
-  volumes:
-    - name: my-pv-storage
-      persistentVolumeClaim:
-        claimName: my-pv-claim
-    - name: mnt-volume
-      emptyDir: {}
-  containers:
-    - name: my-pv-container
-      image: nginx
-      ports:
-        - containerPort: 80
-          name: "http-server"
-      volumeMounts:
-        - mountPath: "/usr/share/nginx/html"
-          name: my-pv-storage
-        - mountPath: "/mnt"
-          name: mnt-volume
-EOF
-```
-
-
-Clean up.
-```
-kubectl delete pod my-pv-pod 
-kubectl delete pvc 
-kubectl delete pvc my-pv-claim  
-kubectl delete pv my-pv-volume 
-rm -rf my-data/
-```
-
-
-
-### Sidecar
-
-Scenario: 
-
-
-
-Create a Pod `my-busybox` with multiple container `container-1-busybox`.
-```
-kubectl apply -f - << EOF
-apiVersion: v1
-kind: Pod
-metadata:
-  name: my-busybox
-spec:
-  containers:
-  - name: container-1-busybox
-    image: busybox
-    args:
-    - /bin/sh
-    - -c
-    - >
-      i=0;
-      while true;
-      do
-        echo "Hello message from container-1: $i" >> /var/log/my-pod-busybox.log;
-        i=$((i+1));
-        sleep 1;
-      done
-EOF
-```
-
-Search `emptyDir` in the Kubernetes documetation.
-Refer to below template for emptyDir via https://kubernetes.io/zh-cn/docs/concepts/storage/volumes/
-
-Add below new features into the Pod
-
-* Volume:
-    * volume name: `logfile`
-    * type: `emptyDir`
-* Update existing container:
-    * name: `container-1-busybox`
-    * volumeMounts
-        * name: `logfile`
-        * mounthPath: `/var/log`
-* Add new container:
-    * name: `container-2-busybox`
-    * image: busybox
-    * args: ['/bin/sh', '-c', 'tail -n+1 -f /var/log/my-pod-busybox.log']
-    * volumeMounts:
-        * name: `logfile`
-        * mountPath: `/var/log`
-```
-kubectl get pod my-busybox -o yaml > my-busybox.yaml
-vi my-busybox.yaml
-kubectl delete pod my-busybox 
-kubectl apply -f my-busybox.yaml
-kubectl logs my-busybox -c container-2-busybox
-```
-
-
-The final file `my-busybox.yaml` looks like below.
-```
-apiVersion: v1
-kind: Pod
-metadata:
-  annotations:
-    cni.projectcalico.org/containerID: 89644b6b073cd152f94b4cae7bdea6bbc3292cf59afd4f28102bd74f0205c9e4
-    cni.projectcalico.org/podIP: 10.244.102.20/32
-    cni.projectcalico.org/podIPs: 10.244.102.20/32
-    kubectl.kubernetes.io/last-applied-configuration: |
-      {"apiVersion":"v1","kind":"Pod","metadata":{"annotations":{},"name":"my-busybox","namespace":"dev"},"spec":{"containers":[{"args":["/bin/sh","-c","i=0; while true; do\n  echo \"Hello message from container-1: \" \u003e\u003e /var/log/my-pod-busybox.log;\n  i=1;\n  sleep 1;\ndone\n"],"image":"busybox","name":"container-1-busybox"}]}}
-  creationTimestamp: "2022-07-29T22:58:27Z"
-  name: my-busybox
-  namespace: dev
-  resourceVersion: "1185720"
-  uid: c5e62a16-4459-4828-a441-7d1471b89a56
-spec:
-  containers:
-  - name: container-2-busybox
-    image: busybox
-    args: ['/bin/sh', '-c', 'tail -n+1 -f /var/log/my-pod-busybox.log']
-    volumeMounts:
-    - name: logfile
-      mountPath: /var/log
-  - args:
-    - /bin/sh
-    - -c
-    - |
-      i=0; while true; do
-        echo "Hello message from container-1: $i" >> /var/log/my-pod-busybox.log;
-        i=1;
-        sleep 1;
-      done
-    image: busybox
-    imagePullPolicy: Always
-    name: container-1-busybox
-    resources: {}
-    terminationMessagePath: /dev/termination-log
-    terminationMessagePolicy: File
-    volumeMounts:
-    - name: logfile
-      mountPath: /var/log
-    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
-      name: kube-api-access-mhxlf
-      readOnly: true
-  dnsPolicy: ClusterFirst
-  enableServiceLinks: true
-  nodeName: cka003
-  preemptionPolicy: PreemptLowerPriority
-  priority: 0
-  restartPolicy: Always
-  schedulerName: default-scheduler
-  securityContext: {}
-  serviceAccount: default
-  serviceAccountName: default
-  terminationGracePeriodSeconds: 30
-  tolerations:
-  - effect: NoExecute
-    key: node.kubernetes.io/not-ready
-    operator: Exists
-    tolerationSeconds: 300
-  - effect: NoExecute
-    key: node.kubernetes.io/unreachable
-    operator: Exists
-    tolerationSeconds: 300
-  volumes:
-  - name: logfile
-    emptyDir: {}
-  - name: kube-api-access-mhxlf
-    projected:
-      defaultMode: 420
-      sources:
-      - serviceAccountToken:
-          expirationSeconds: 3607
-          path: token
-      - configMap:
-          items:
-          - key: ca.crt
-            path: ca.crt
-          name: kube-root-ca.crt
-      - downwardAPI:
-          items:
-          - fieldRef:
-              apiVersion: v1
-              fieldPath: metadata.namespace
-            path: namespace
-status:
-  conditions:
-  - lastProbeTime: null
-    lastTransitionTime: "2022-07-29T22:58:27Z"
-    status: "True"
-    type: Initialized
-  - lastProbeTime: null
-    lastTransitionTime: "2022-07-29T22:58:30Z"
-    status: "True"
-    type: Ready
-  - lastProbeTime: null
-    lastTransitionTime: "2022-07-29T22:58:30Z"
-    status: "True"
-    type: ContainersReady
-  - lastProbeTime: null
-    lastTransitionTime: "2022-07-29T22:58:27Z"
-    status: "True"
-    type: PodScheduled
-  containerStatuses:
-  - containerID: containerd://fd42d4ba4d94d8918d8846327b1db2328be13c5f93f381877ff0228ed7b5468d
-    image: docker.io/library/busybox:latest
-    imageID: docker.io/library/busybox@sha256:0e97a8ca6955f22dbc7db9e9dbe970971f423541e52c34b8cb96ccc88d6a3883
-    lastState: {}
-    name: container-1-busybox
-    ready: true
-    restartCount: 0
-    started: true
-    state:
-      running:
-        startedAt: "2022-07-29T22:58:30Z"
-  hostIP: 172.16.18.168
-  phase: Running
-  podIP: 10.244.102.20
-  podIPs:
-  - ip: 10.244.102.20
-  qosClass: BestEffort
-  startTime: "2022-07-29T22:58:27Z"
-```
-
-
-Clean up:
-```
-kubectl delete pod my-busybox
-```
-
-
-
-
-
-
-### Monitoring
-
-Scenario: 
-> * Find out top pod consuming CPU
-
-
-Use option `--sort-by` to get top CPU workload
-```
-kubectl top pod --sort-by cpu -A
-```
-
-
-
-
-
-
-### Node NotReady
-
-Scenario: 
-> When we stop `kubelet` service on worker node `cka002`,
-
-> * What's the status of each node?
-> * What's containers changed via command `nerdctl`?
-> * What's pods status via command `kubectl get pod -owide -A`? 
-
-Demo:
-
-Execute command `systemctl stop kubelet.service` on `cka002`.
-
-Execute command `kubectl get node` on either `cka001` or `cka003`, the status of `cka002` is `NotReady`.
-
-Execute command `nerdctl -n k8s.io container ls` on `cka002` and we can observe all containers are still up and running, including the pod `my-first-pod`.
-
-Execute command `systemctl start kubelet.service` on `cka002`.
-
-
-Conclusion:
-
-* The node status is changed to `NotReady` from `Ready`.
-* For those DaemonSet pods, like `calico`、`kube-proxy`, are exclusively running on each node. They won't be terminated after `kubelet` is down.
-* The status of pod `my-first-pod` keeps showing `Terminating` on each node because status can not be synced to other nodes via `apiserver` from `cka002` because `kubelet` is down.
-* The status of pod is marked by `controller` and recycled by `kubelet`.
-* When we start kubelet service on `cka003`, the pod `my-first-pod` will be termiated completely on `cka002`.
-
-In addition, let's create a deployment with 3 replicas. Two are running on `cka003` and one is running on `cka002`.
-```
-root@cka001:~# kubectl get pod -o wide -w
-NAME                               READY   STATUS    RESTARTS   AGE    IP           NODE     NOMINATED NODE   READINESS GATES
-nginx-deployment-9d745469b-2xdk4   1/1     Running   0          2m8s   10.244.2.3   cka003   <none>           <none>
-nginx-deployment-9d745469b-4gvmr   1/1     Running   0          2m8s   10.244.2.4   cka003   <none>           <none>
-nginx-deployment-9d745469b-5j927   1/1     Running   0          2m8s   10.244.1.3   cka002   <none>           <none>
-```
-After we stop kubelet service on `cka003`, the two running on `cka003` are terminated and another two are created and running on `cka002` automatically. 
 
 
 
