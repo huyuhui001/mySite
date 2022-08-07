@@ -20,11 +20,11 @@ The [website](https://huyuhui001.github.io/mySite/) provide same contents with e
     * Local Installation
         + Single Node Installation on Ubuntu Server (Docker)
         + Multiple Nodes Installation on Ubuntu Server (nerdctl)
-        + Multiple Nodes Installation on openSUSE on Aliyun ECS.
+        + Multiple Nodes Installation on openSUSE on Aliyun ECS
+        + Multiple Nodes Installation on Ubuntu on Aliyun ECS
     * Foundamental on Kyma@SAP BTP
-        + Foundamentals of Docker and Kubernetes
-    * Foundamental on Ubuntu@Aliyun
-        + Installation and upgrade Kubernetes on Ubuntu Server on Aliyun ECS.
+        + Foundamentals of Docker and Kubernetes on SAP BTP Kyma
+    * Foundamental on Ubuntu
         + Foundamentals of Kubernetes (inc. replace Flannel by Calico)
         + Development with Helm
 
@@ -39,6 +39,8 @@ Beyond that,
 [material Theme](https://github.com/squidfunk/mkdocs-material) and 
 [mermaid plugin](https://mermaid-js.github.io/mermaid/#/) 
 need to be installed via pip3.
+
+Set up [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/setup/changing-the-colors/)
 
 Install `mkdocs` and extensions with below specified version.
 ```
