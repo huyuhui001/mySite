@@ -1,18 +1,20 @@
-# Introduction
+# MEMO
+
+## Introduction
 
 This is my learning memo, including contents Linux, Python, and Cloud below. 
 The [website](https://huyuhui001.github.io/mySite/) provide same contents with easy reading style.
 
-[Linux](./docs/linux.md)
+Linux
 * SUSE Linux Administration
 * SUSE Enterprise Storage Foundation and Basic Operation
 
-[Python](./docs/python.md)
+Python
 * Foundation
 * Data Analysis
 * Practice
 
-[Cloud](./docs/cloud.md)
+Cloud
 * Microservice
     * Microservices with Kubernetes
 * Kubernetes
@@ -29,7 +31,7 @@ The [website](https://huyuhui001.github.io/mySite/) provide same contents with e
         + Development with Helm
 
 
-# About the site
+## About the site
 
 The website is built by [mkdocs](https://www.mkdocs.org/).
 
