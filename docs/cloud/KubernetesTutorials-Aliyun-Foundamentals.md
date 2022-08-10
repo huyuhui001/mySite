@@ -6,9 +6,9 @@ Refer to "Installation on Aliyun Ubuntu" in file [Kubernetes-Installation.md](./
 
 ### Container Layer
 
-We are using Containerd service to manage our images and containers via command `nerdctl`, which is same concept with Docker.
+Scenario:
 
-Tasks:
+Use Containerd service to manage our images and containers via command `nerdctl`, which is same concept with Docker.
 
 * Get namespace.
 * Get containers.
@@ -17,11 +17,11 @@ Tasks:
 * Get overall status.
 * Get network status.
 
-#### namespace.
+Demo: 
 
 Get namespaces.
 ```
-nerdctl namespace ls
+sudo nerdctl namespace ls
 ```
 Result
 ```
@@ -29,77 +29,52 @@ NAME      CONTAINERS    IMAGES    VOLUMES    LABELS
 k8s.io    21            30        0      
 ```
 
-#### containers.
-
-Get containers under specific namespace with `-n` option.
+Get containers under specific namespace `k8s.io`.
 ```
-nerdctl -n k8s.io ps
+sudo nerdctl -n k8s.io ps
 ```
 Result
 ```
-CONTAINER ID    IMAGE                                                                      COMMAND                   CREATED           STATUS    PORTS    NAMES
-0965b195f41a    registry.aliyuncs.com/google_containers/etcd:3.5.1-0                       "etcd --advertise-cl…"    44 minutes ago    Up                 k8s://kube-system/etcd-cka001/etcd
-0c5e69118f1b    registry.aliyuncs.com/google_containers/kube-apiserver:v1.24.0             "kube-apiserver --ad…"    44 minutes ago    Up                 k8s://kube-system/kube-apiserver-cka001/kube-apiserver
-1285b6814c3b    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  44 minutes ago    Up                 k8s://kube-system/kube-scheduler-cka001
-29a1ef016b43    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  24 minutes ago    Up                 k8s://kube-system/calico-kube-controllers-5c64b68895-jr4nl
-2aab1a388a4a    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  25 minutes ago    Up                 k8s://kube-system/calico-node-dsx76
-2f09aa56c83a    registry.aliyuncs.com/google_containers/coredns:v1.8.6                     "/coredns -conf /etc…"    24 minutes ago    Up                 k8s://kube-system/coredns-6d8c4cb4d-g4jxc/coredns
-49ca8fcbee2d    docker.io/calico/node:v3.23.3                                              "start_runit"             24 minutes ago    Up                 k8s://kube-system/calico-node-dsx76/calico-node
-4ed8183581b5    registry.aliyuncs.com/google_containers/coredns:v1.8.6                     "/coredns -conf /etc…"    24 minutes ago    Up                 k8s://kube-system/coredns-6d8c4cb4d-sqcvj/coredns
-545b4ad4e448    docker.io/calico/kube-controllers:v3.23.3                                  "/usr/bin/kube-contr…"    24 minutes ago    Up                 k8s://kube-system/calico-kube-controllers-5c64b68895-jr4nl/calico-kube-controllers
-638bb602c310    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  44 minutes ago    Up                 k8s://kube-system/kube-apiserver-cka001
-9e1bea9f25d1    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  44 minutes ago    Up                 k8s://kube-system/etcd-cka001
-ad6f45ec7cd8    registry.aliyuncs.com/google_containers/kube-controller-manager:v1.24.0    "kube-controller-man…"    44 minutes ago    Up                 k8s://kube-system/kube-controller-manager-cka001/kube-controller-manager
-b95c81350937    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  24 minutes ago    Up                 k8s://kube-system/coredns-6d8c4cb4d-g4jxc
-d655d2b02af3    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  44 minutes ago    Up                 k8s://kube-system/kube-proxy-cm4hc
-df5e4d68acae    registry.aliyuncs.com/google_containers/kube-proxy:v1.24.0                 "/usr/local/bin/kube…"    44 minutes ago    Up                 k8s://kube-system/kube-proxy-cm4hc/kube-proxy
-edb274666e48    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  44 minutes ago    Up                 k8s://kube-system/kube-controller-manager-cka001
-ee2a0b3713f5    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  24 minutes ago    Up                 k8s://kube-system/coredns-6d8c4cb4d-sqcvj
-f9ff812d8e07    registry.aliyuncs.com/google_containers/kube-scheduler:v1.24.0             "kube-scheduler --au…"    44 minutes ago    Up                 k8s://kube-system/kube-scheduler-cka001/kube-scheduler
+CONTAINER ID    IMAGE                                                                      COMMAND                   CREATED         STATUS    PORTS    NAMES
+0a3625f22f65    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  16 hours ago    Up                 k8s://kube-system/coredns-74586cf9b6-4jwmk
+121af2ecd1a1    registry.aliyuncs.com/google_containers/coredns:v1.8.6                     "/coredns -conf /etc…"    16 hours ago    Up                 k8s://kube-system/coredns-74586cf9b6-c5mll/coredns
+49f6c7e3efe5    registry.aliyuncs.com/google_containers/kube-proxy:v1.24.0                 "/usr/local/bin/kube…"    16 hours ago    Up                 k8s://kube-system/kube-proxy-dmj2t/kube-proxy
+4bba5fbd701d    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  16 hours ago    Up                 k8s://kube-system/kube-scheduler-cka001
+57d47b57eb12    docker.io/calico/node:v3.23.3                                              "start_runit"             16 hours ago    Up                 k8s://kube-system/calico-node-w8nvl/calico-node
+5ce4c351a886    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  16 hours ago    Up                 k8s://kube-system/calico-node-w8nvl
+6456eef784bf    registry.aliyuncs.com/google_containers/kube-scheduler:v1.24.0             "kube-scheduler --au…"    16 hours ago    Up                 k8s://kube-system/kube-scheduler-cka001/kube-scheduler
+6a687305871c    registry.aliyuncs.com/google_containers/kube-apiserver:v1.24.0             "kube-apiserver --ad…"    16 hours ago    Up                 k8s://kube-system/kube-apiserver-cka001/kube-apiserver
+7dcb24568574    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  16 hours ago    Up                 k8s://kube-system/coredns-74586cf9b6-c5mll
+a06b101118b8    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  16 hours ago    Up                 k8s://kube-system/kube-controller-manager-cka001
+a07ef8c3fc3a    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  16 hours ago    Up                 k8s://kube-system/etcd-cka001
+b8566d3e4174    registry.aliyuncs.com/google_containers/kube-controller-manager:v1.24.0    "kube-controller-man…"    16 hours ago    Up                 k8s://kube-system/kube-controller-manager-cka001/kube-controller-manager
+ca6ac26314ff    registry.aliyuncs.com/google_containers/coredns:v1.8.6                     "/coredns -conf /etc…"    16 hours ago    Up                 k8s://kube-system/coredns-74586cf9b6-4jwmk/coredns
+cdc041b4791e    registry.aliyuncs.com/google_containers/etcd:3.5.3-0                       "etcd --advertise-cl…"    16 hours ago    Up                 k8s://kube-system/etcd-cka001/etcd
+e0c59abadf2e    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  16 hours ago    Up                 k8s://kube-system/kube-proxy-dmj2t
+e0d2e5f6ccff    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  16 hours ago    Up                 k8s://kube-system/kube-apiserver-cka001
 ```
 
-```
-nerdctl -n default ps
-```
-Result
-```
-CONTAINER ID    IMAGE    COMMAND    CREATED    STATUS    PORTS    NAMES
-```
-
-#### images.
 
 Get images.
 ```
-nerdctl image ls -a
-nerdctl -n k8s.io image ls -a
+sudo nerdctl -n k8s.io image ls -a
 ```
-
-#### volumes.
 
 Get volumes. After inintial installation, no volume within namespaces.
 ```
-nerdctl -n default volume ls
-nerdctl -n k8s.io volume ls
+sudo nerdctl -n k8s.io volume ls
 ```
-
-#### overall status.
 
 Get overall status
 ```
-nerdctl stats
+sudo nerdctl stats
 ```
-Result
-```
-CONTAINER ID   NAME      CPU %     MEM USAGE / LIMIT   MEM %     NET I/O           BLOCK I/O     PIDS
-```
-
-#### network status.
 
 Get network status.
 ```
-nerdctl network ls
-nerdctl network inspect bridge
-nerdctl network inspect k8s-pod-network
+sudo nerdctl network ls
+sudo nerdctl network inspect bridge
+sudo nerdctl network inspect k8s-pod-network
 ```
 Result
 ```
@@ -115,11 +90,10 @@ Get network interface in host `cka001` with command `ip addr list`.
 IP pool of `10.4.0.1/24` is `ipam` and defined in `/etc/cni/net.d/nerdctl-bridge.conflist`.
 ```
 lo                   : inet 127.0.0.1/8 qlen 1000
-eth0                 : inet 172.16.18.170/24 brd 172.16.18.255 scope global dynamic eth0
+eth0                 : inet <cka001_ip>/24 brd xxx.xxx.xxx.255 scope global dynamic eth0
 tunl0@NONE           : inet 10.244.228.192/32 scope global tunl0
-calid100479d885@if4  :
-cali01418e9b2c2@if4  :
-cali24f48a34a33@if4  :
+cali96e32d88db2@if4  :
+cali93613212490@if4  :
 ```
 
 
@@ -130,31 +104,22 @@ cali24f48a34a33@if4  :
 
 Kubernetes is beyond container layer. 
 
-Summary: 
+Scenario:
 
 * Nodes
 * Namespaces
 * System Pods
 
-#### Node
+Demo:
 
-In Kubernetes layer, we have three nodes here, `cka001`, `cka002`, and `cka003`.
+In the demo, there are three nodes, `cka001`, `cka002`, and `cka003`.
 
 Get nodes status.
 ```
 kubectl get node -o wide
 ```
-Result
-```
-NAME     STATUS   ROLES                  AGE   VERSION   INTERNAL-IP     EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION      CONTAINER-RUNTIME
-cka001   Ready    control-plane,master   56m   v1.24.0   172.16.18.170   <none>        Ubuntu 20.04.4 LTS   5.4.0-122-generic   containerd://1.5.9
-cka002   Ready    <none>                 52m   v1.24.0   172.16.18.169   <none>        Ubuntu 20.04.4 LTS   5.4.0-122-generic   containerd://1.5.9
-cka003   Ready    <none>                 52m   v1.24.0   172.16.18.168   <none>        Ubuntu 20.04.4 LTS   5.4.0-122-generic   containerd://1.5.9
-```
 
-#### Namespaces
-
-We have four initial namespaces across three nodes.
+There are four initial namespaces across three nodes.
 ```
 kubectl get namespace -A
 ```
@@ -162,34 +127,31 @@ Result
 ```
 NAME              STATUS   AGE
 default           Active   56m
-dev               Active   22m
 kube-node-lease   Active   56m
 kube-public       Active   56m
 kube-system       Active   56m
 ```
 
-#### System Pods
-
-We have some initial pods. 
+There are some initial pods. 
 ```
 kubectl get pod -A -o wide
 ```
 Result
 ```
-NAMESPACE     NAME                                       READY   STATUS    RESTARTS   AGE   IP               NODE     NOMINATED NODE   READINESS GATES
-kube-system   calico-kube-controllers-5c64b68895-jr4nl   1/1     Running   0          37m   10.244.228.194   cka001   <none>           <none>
-kube-system   calico-node-dsx76                          1/1     Running   0          37m   172.16.18.170    cka001   <none>           <none>
-kube-system   calico-node-p5rf2                          1/1     Running   0          37m   172.16.18.169    cka002   <none>           <none>
-kube-system   calico-node-tr22l                          1/1     Running   0          37m   172.16.18.168    cka003   <none>           <none>
-kube-system   coredns-6d8c4cb4d-g4jxc                    1/1     Running   0          56m   10.244.228.195   cka001   <none>           <none>
-kube-system   coredns-6d8c4cb4d-sqcvj                    1/1     Running   0          56m   10.244.228.193   cka001   <none>           <none>
-kube-system   etcd-cka001                                1/1     Running   0          56m   172.16.18.170    cka001   <none>           <none>
-kube-system   kube-apiserver-cka001                      1/1     Running   0          56m   172.16.18.170    cka001   <none>           <none>
-kube-system   kube-controller-manager-cka001             1/1     Running   0          56m   172.16.18.170    cka001   <none>           <none>
-kube-system   kube-proxy-5cdbj                           1/1     Running   0          52m   172.16.18.169    cka002   <none>           <none>
-kube-system   kube-proxy-cm4hc                           1/1     Running   0          56m   172.16.18.170    cka001   <none>           <none>
-kube-system   kube-proxy-g4w52                           1/1     Running   0          52m   172.16.18.168    cka003   <none>           <none>
-kube-system   kube-scheduler-cka001                      1/1     Running   0          56m   172.16.18.170    cka001   <none>           <none>
+NAMESPACE     NAME                                       READY   STATUS    RESTARTS   AGE   NODE     NOMINATED NODE   READINESS GATES
+kube-system   calico-kube-controllers-555bc4b957-l8bn2   1/1     Running   0          15h   cka003   <none>           <none>
+kube-system   calico-node-255pc                          1/1     Running   0          15h   cka003   <none>           <none>
+kube-system   calico-node-7tmnb                          1/1     Running   0          15h   cka002   <none>           <none>
+kube-system   calico-node-w8nvl                          1/1     Running   0          15h   cka001   <none>           <none>
+kube-system   coredns-74586cf9b6-4jwmk                   1/1     Running   0          15h   cka001   <none>           <none>
+kube-system   coredns-74586cf9b6-c5mll                   1/1     Running   0          15h   cka001   <none>           <none>
+kube-system   etcd-cka001                                1/1     Running   0          15h   cka001   <none>           <none>
+kube-system   kube-apiserver-cka001                      1/1     Running   0          15h   cka001   <none>           <none>
+kube-system   kube-controller-manager-cka001             1/1     Running   0          15h   cka001   <none>           <none>
+kube-system   kube-proxy-dmj2t                           1/1     Running   0          15h   cka001   <none>           <none>
+kube-system   kube-proxy-n77zw                           1/1     Running   0          15h   cka002   <none>           <none>
+kube-system   kube-proxy-qs6rf                           1/1     Running   0          15h   cka003   <none>           <none>
+kube-system   kube-scheduler-cka001                      1/1     Running   0          15h   cka001   <none>           <none>
 ```
 
 Summary below shows the relationship between containers and pods. 
@@ -214,34 +176,31 @@ Good references about container pause: [article](https://zhuanlan.zhihu.com/p/46
 
 ### kubectl
 
-Three approach to operate Kubernetes cluster:
+Scenario:
+
+Get to know how to operate Kubernetes cluster using `kubectl`. 
+Refer to the link of [`kubectl`](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands)
 
 * via [API](https://kubernetes.io/docs/reference/kubernetes-api/)
 * via kubectl
 * via Dashboard
 
+Demo: 
 
-Remember the link of `kubectl`: https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands
-
-
-1. Get a complete list of supported resources
-
+Get a complete list of supported resources
 ```
 kubectl api-resources
 ```
 
-2. Get cluster status.
-
+Get cluster status.
+    * Kubernetes control plane is running at `https://<control_plane_ip>:6443`
+    * CoreDNS is running at `https://<control_plane_ip>:6443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy`
 ```
 kubectl cluster-info
 kubectl cluster-info dump
 ```
 
-* Kubernetes control plane is running at `https://<control_plane_ip>:6443`
-* CoreDNS is running at `https://<control_plane_ip>:6443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy`
-
-
-3. Display resources
+Display resources.
 
 Use `kubectl get --help` to get examples of displaying one or many resources.
 
@@ -263,19 +222,8 @@ Get node status.
 kubectl get nodes
 kubectl get nodes -o wide
 ```
-Result
-```
-NAME     STATUS   ROLES                  AGE   VERSION   INTERNAL-IP     EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION      CONTAINER-RUNTIME
-cka001   Ready    control-plane,master   74m   v1.24.0   172.16.18.170   <none>        Ubuntu 20.04.4 LTS   5.4.0-122-generic   containerd://1.5.9
-cka002   Ready    <none>                 70m   v1.24.0   172.16.18.169   <none>        Ubuntu 20.04.4 LTS   5.4.0-122-generic   containerd://1.5.9
-cka003   Ready    <none>                 69m   v1.24.0   172.16.18.168   <none>        Ubuntu 20.04.4 LTS   5.4.0-122-generic   containerd://1.5.9
-```
-
-
-4. Create resources
 
 Use command `kubectl create --help` to get examples of creating resources.
-
 
 Create namespace.
 ```
@@ -312,7 +260,10 @@ kubectl create rolebinding my-admin --clusterrole=pod-creater --serviceaccount=m
 
 ### Static Pod
 
-`kubectl` will automatically check yaml file in `/etc/kubernetes/manifests/` and create the static pod once it's detected.
+Scenario:
+
+* Create a static pod.
+* `kubectl` will automatically check yaml file in `/etc/kubernetes/manifests/` and create the static pod once it's detected.
 
 Some system static Pods are already in place.
 ```
@@ -326,9 +277,9 @@ Result
 -rw------- 1 root root 1464 Jul 23 10:45 kube-scheduler.yaml
 ```
 
-Create yaml file in directory `/etc/kubernetes/manifests/`.
+Create yaml file `my-nginx.yaml` in directory `/etc/kubernetes/manifests/`. Once the file is created, the static pod `my-nginx` is created automatically.
 ```
-kubectl run my-nginx --image=nginx:mainline --dry-run=client -n dev -oyaml > /etc/kubernetes/manifests/my-nginx.yaml
+kubectl run my-nginx --image=nginx:mainline --dry-run=client -n default -oyaml | sudo tee /etc/kubernetes/manifests/my-nginx.yaml
 ```
 
 Check status of the Pod `my-nginx`.
@@ -344,7 +295,7 @@ my-nginx-cka001   1/1     Running   0          20s   10.244.228.196   cka001   <
 
 Delete the yaml file `/etc/kubernetes/manifests/my-nginx.yaml`, the static pod will be deleted automatically.
 ```
-rm /etc/kubernetes/manifests/my-nginx.yaml 
+sudo rm /etc/kubernetes/manifests/my-nginx.yaml 
 ```
 
 
@@ -353,7 +304,7 @@ rm /etc/kubernetes/manifests/my-nginx.yaml
 
 ### Multi-Container Pod
 
-Summary:
+Scenario:
 
 * Create Multi-Container Pod
 * Describe the Pod
@@ -443,8 +394,7 @@ Clean up
 kubectl delete pod multi-container-pod
 ```
 
-
-Quick reference of yaml file to create Multiple Containers.
+Quick reference of a simple yaml file to create Multiple Containers.
 ```
 kubectl apply -f - << EOF
 apiVersion: v1
@@ -464,9 +414,15 @@ EOF
 
 
 
-#### Sidecar
+Scenario:
 
-Create a Pod `my-busybox` with multiple container `container-1-busybox`.
+* Create a Pod `my-busybox` with a container `container-1-busybox`. The container will write message to file `/var/log/my-pod-busybox.log`.
+* Add another container `container-2-busybox` (Sidecar) to the Pod `my-busybox`. The sidecar container read message from file `/var/log/my-pod-busybox.log`.
+* Tips: create a Volume to store the log file, which is shared with two containers.
+
+Demo:
+
+Create a Pod `my-busybox` with a container `container-1-busybox`.
 ```
 kubectl apply -f - << EOF
 apiVersion: v1
@@ -636,7 +592,7 @@ status:
     state:
       running:
         startedAt: "2022-07-29T22:58:30Z"
-  hostIP: 172.16.18.168
+  hostIP: <cka003_ip>
   phase: Running
   podIP: 10.244.102.20
   podIPs:
@@ -657,7 +613,7 @@ kubectl delete pod my-busybox
 
 ### initContainer Pod
 
-Summary: 
+Scenario: 
 
 * Create Pod `myapp-pod` that has two init containers. 
     * `myapp-container`
@@ -675,13 +631,12 @@ Demo:
 
 Create Pod `myapp-pod` with below yaml file.
 
-Create yaml file `myapp-pod.yaml`.
+Create yaml file `myapp-pod.yaml` and add below content. 
+Note: Due to the command `$(cat /var/.....` will be treated as host variable, we can not use echo to generate the file. It's the variabel in container itself.
 ```
 vi myapp-pod.yaml
 ```
-
-Add below content. 
-Due to the command `$(cat /var/.....` will be treated as host variable, we can not use echo to generate the file. It's the variabel in container itself.
+Content
 ```
 apiVersion: v1
 kind: Pod
@@ -779,8 +734,6 @@ myapp-pod   0/1     Init:0/2   0          2m40s   10.244.112.2   cka002   <none>
 
 We now see that those init containers complete, and that the myapp-pod Pod moves into the Running state.
 
-
-
 Clean up.
 ```
 kubectl delete service mydb myservice 
@@ -790,11 +743,9 @@ kubectl delete pod myapp-pod
 
 ### Deployment
 
-
-#### Mini-demo: Modify Existing Deployment
-
 Scenario: 
-> Update existing Deployment, e.g., add port number
+
+* Modify Existing Deployment, e.g., add port number in below demo.
 
 Demo:
 
@@ -804,6 +755,7 @@ kubectl create deployment nginx --image=nginx
 ```
 
 Execute command below to get yaml template with port number.
+The option `--port=8080` specified the port that this container exposes.
 ```
 kubectl create deployment nginx --image=nginx --port=8080 --dry-run=client -o yaml
 ```
@@ -817,15 +769,16 @@ Execute command below to edit the Deployemnt.
 ```
 kubectl edit deployment nginx
 ```
-Add below two lines to specify port number with `80` and protocol is `TCP`.
+Add below two lines to specify port number with `8080` and protocol is `TCP`.
 ```
+spec:
+  template:
     spec:
       containers:
       - image: nginx
-        imagePullPolicy: Always
         name: nginx
         ports:
-        - containerPort: 80
+        - containerPort: 8080
           protocol: TCP
 ```
 
@@ -837,7 +790,7 @@ Pod Template:
   Containers:
    nginx:
     Image:        nginx
-    Port:         80/TCP
+    Port:         8080/TCP
     Host Port:    0/TCP
     Environment:  <none>
     Mounts:       <none>
@@ -851,7 +804,7 @@ Containers:
     Container ID:   containerd://af4a1243f981497074b5c006ac55fcf795688399871d1dfe91a095321f5c91aa
     Image:          nginx
     Image ID:       docker.io/library/nginx@sha256:1761fb5661e4d77e107427d8012ad3a5955007d997e0f4a3d41acc9ff20467c7
-    Port:           80/TCP
+    Port:           8080/TCP
     Host Port:      0/TCP
     State:          Running
       Started:      Sun, 24 Jul 2022 22:50:12 +0800
@@ -865,13 +818,12 @@ Containers:
 
 ### StatefulSet
 
-Summary: 
+Scenario: 
 
 * Create Headless Service `nginx` and StatefulSet `web`
 * Scale out StatefulSet `web`
 
-
-#### Create Headless Service and StatefulSet
+Demo:
 
 Create Headless Service `nginx` and StatefulSet `web`.
 ```
@@ -930,12 +882,10 @@ Use command `kubectl edit sts web` to update an existing StatefulSet.
 ONLY these fields can be updated: `replicas`、`image`、`rolling updates`、`labels`、`resource request/limit` and `annotations`.
 
 Note: 
-Copy of StatefulSet Pod will not be created automatically in other node when it's dead in current node.  
+When StatefulSet Pod is dead in current node, no copies will be created in other node automatically.
 
 
-
-
-#### Scale out StatefulSet
+Scale out StatefulSet. 
 
 Scale StatefulSet `web` to `5` Replicas.
 ```
@@ -953,6 +903,13 @@ kubectl delete service nginx
 
 
 ### DaemonSet
+
+Scenario: 
+
+* Create DaemonSet.
+* The DaemonSet will run its pod on each node.
+
+Demo:
 
 Create DaemonSet `daemonset-busybox`.
 ```
@@ -1019,6 +976,12 @@ kubectl delete daemonset daemonset-busybox
 
 ### Job
 
+Scenario: 
+
+* Create Job.
+
+Demo:
+
 Create Job `pi`.
 ```
 kubectl apply -f - << EOF
@@ -1066,6 +1029,12 @@ kubectl delete job pi
 
 ### Cronjob
 
+Scenario: 
+
+* Create Cronjob.
+
+Demo:
+
 Create Cronjob `hello`.
 ```
 kubectl apply -f - << EOF
@@ -1112,9 +1081,9 @@ kubectl delete cronjob hello
 
 
 
-### Demo: Operations on Resources
+### Operations on Resources
 
-Summary:
+Scenario:
 
 * Node Label
 * Namespace
@@ -1129,9 +1098,10 @@ Summary:
 * Logging
 
 
-#### Node Label
+Demo:
 
-Add/update/remove node Label.
+* Add/update/remove node Label.
+
 ```
 # Update node label
 kubectl label node cka002 node=demonode
@@ -1146,11 +1116,8 @@ kubectl get node -l node=demonode
 kubectl label node cka002 node-
 ```
 
+* Get current available namespaces.
 
-
-#### Namespace
-
-Get current available namespaces.
 ```
 kubectl get namespace
 ```
@@ -1164,7 +1131,8 @@ kube-public       Active   3h45m
 kube-system       Active   3h45m
 ```
 
-Get Pod under a specific namespace.
+* Get Pod under a specific namespace.
+
 ```
 kubectl get pod -n kube-system
 ```
@@ -1186,7 +1154,8 @@ kube-proxy-g4w52                           1/1     Running   0          3h41m
 kube-scheduler-cka001                      1/1     Running   0          3h45m
 ```
 
-Get Pods in all namespaces.
+* Get Pods in all namespaces.
+
 ```
 kubectl get pod --all-namespaces
 kubectl get pod -A
@@ -1194,61 +1163,65 @@ kubectl get pod -A
 
 
 
-#### ServiceAccount Authorization
+* ServiceAccount Authorization
 
 With Kubernetes 1.23 and lower version, when we create a new namespace, Kubernetes will automatically create a ServiceAccount `default` and a token `default-token-xxxxx`.
 
-We can say that the ServiceAccount `default` is an account under the namespace.
+With Kubernetes 1.24, only ServiceAccount `default` is created automatically when a new namespace is created, need manually create a toke linked to the ServiceAccount `default`.
 
-Here is an example of new namespace `dev`.
+Here is an example to create a new namespace `dev`, we can see that only ServiceAcccount: `default` was created in namespace `dev`, no secretes (token) linked to the ServiceAccount `default`.
 
-* ServiceAcccount: `default`
-* Token: `default-token-8vrsc`
-
-Get current ServiceAccount on Namespace `dev`.
 ```
+kubectl create namespace dev
 kubectl get serviceaccount -n dev
-```
-Result
-```
-NAME      SECRETS   AGE
-default   1         3h12m
-```
-
-Get current Token for ServiceAccount `default` on Namespace `dev`.
-```
 kubectl get secrets -n dev
-```
-Result
-```
-NAME                  TYPE                                  DATA   AGE
-default-token-qd68h   kubernetes.io/service-account-token   3      3h12m
 ```
 
 There is a default cluster role `admin`.
-```
-kubectl get clusterrole admin
-```
-Result
-```
-NAME    CREATED AT
-admin   2022-07-23T02:45:51Z
-```
-
 But there is no clusterrole binding to the cluster role `admin`.
 ```
+kubectl get clusterrole admin
 kubectl get clusterrolebinding | grep ClusterRole/admin
 ```
 
-Role and rolebinding is namespaces based. On Namespace `dev`, there is no role and rolebinding after fresh installation.
+Role and rolebinding is namespaces based. On namespace `dev`, there is no role and rolebinding.
 ```
 kubectl get role -n dev
 kubectl get rolebinding -n dev
 ```
 
+
+A Secret in the Kubernetes cluster is an object and it is used to store sensitive information such as username, password, and token, etc. 
+The objective of Secrets is to encode or hash the credentials. 
+The secrets can be reused in the various Pod definition file.
+
+A `kubernetes.io/service-account-token` type of Secret is used to store a token that identifies a service account. 
+When using this Secret type, you need to ensure that the `kubernetes.io/service-account.name` annotation is set to an existing service account name.
+
+Let's create token for the ServiceAcccount: `default` in namespace `dev`. 
+```
+kubectl apply -f - << EOF
+apiVersion: v1
+kind: Secret
+metadata:
+  name: default-token-dev
+  namespace: dev
+  annotations:
+    kubernetes.io/service-account.name: "default"
+type: kubernetes.io/service-account-token
+
+EOF
+```
+
+Now we get ServiceAcccount: `default` and Secret (token) `default-token-dev` in namespace `dev`.
+```
+kubectl get serviceaccount -n dev
+kubectl get secrets -n dev
+```
+
 Get token of the service account `default`.
 ```
-TOKEN=$(kubectl describe secret $(kubectl get secrets | grep default | cut -f1 -d ' ') | grep -E '^token' | cut -f2 -d':' | tr -d ' ')
+TOKEN=$(kubectl -n dev describe secret $(kubectl -n dev get secrets | grep default | cut -f1 -d ' ') | grep -E '^token' | cut -f2 -d':' | tr -d ' ')
 echo $TOKEN
 ```
 
@@ -1263,7 +1236,7 @@ Get Pod resources in namespace `dev` via API server with JSON layout.
 curl $APISERVER/api/v1/namespaces/dev/pods --header "Authorization: Bearer $TOKEN" --insecure
 ```
 
-We will receive `430 forbidden` error message. The ServiceAccount `default` does not have authorization to access pod.
+We will receive `403 forbidden` error message. The ServiceAccount `default` does not have authorization to access pod in namespace `dev`.
 
 Let's create a rolebinding `rolebinding-admin` to bind cluster role `admin` to service account `default` in namespapce `dev`.
 Hence service account `default` is granted adminstrator authorization in namespace `dev`.
@@ -1286,10 +1259,14 @@ Try again, get pod resources in namespace `dev` via API server with JSON layout.
 curl $APISERVER/api/v1/namespaces/dev/pods --header "Authorization: Bearer $TOKEN" --insecure
 ```
 
+Clean up.
+```
+kubectl delete namespace dev
+```
 
 
 
-#### Deployment
+* Deployment
 
 Create a Ubuntu Pod for operation. And attach to the running Pod. 
 ```
@@ -1370,7 +1347,7 @@ Events:
 
 
 
-#### Expose Service
+* Expose Service
 
 Get the Pod and Deployment we created just now.
 ```
@@ -1421,7 +1398,7 @@ Send http request to the service and node sucessfully. Pod port `8080` is mapped
 
 Send http request to node port on `cka003`.
 ```
-curl 172.16.18.168:30514
+curl <cka003_node_ip>:30514
 Hello Kubernetes bootcamp! | Running on: myapp-b5d775f5d-6jtgs | v=1
 ```
 
@@ -1430,14 +1407,14 @@ Attach to Ubuntu Pod we created and send http request to the Service and Pod and
 kubectl exec --stdin --tty ubuntu -- /bin/bash
 curl 10.244.102.7:8080
 curl 11.244.74.3:8080
-curl 172.16.18.168:30514
+curl <cka003_node_ip>:30514
 Hello Kubernetes bootcamp! | Running on: myapp-b5d775f5d-6jtgs | v=1
 ```
 
 
 
 
-#### Scale out Deployment
+* Scale out Deployment
 
 Scale out by replicaset. We set three replicasets to scale out deployment `myapp`. The number of deployment `myapp` is now three.
 ```
@@ -1455,7 +1432,7 @@ kubectl get replicaset
 ```
 
 
-#### Rolling update
+* Rolling update
 
 Command usage: `kubectl set image (-f FILENAME | TYPE NAME) CONTAINER_NAME_1=CONTAINER_IMAGE_1 ... CONTAINER_NAME_N=CONTAINER_IMAGE_N`.
 
@@ -1532,7 +1509,7 @@ REVISION  CHANGE-CAUSE
 
 
 
-#### Event
+* Event
 
 Get detail event info of related Pod.
 ```
@@ -1559,7 +1536,7 @@ kubectl get event
 
 
 
-#### Logging
+* Logging
 
 Get log info of Pod.
 ```
@@ -1608,6 +1585,12 @@ kubectl delete deployment myapp
 
 ### Label
 
+Scenario:
+
+* Set label to node
+
+Demo:
+
 Set Label `disktype=ssd` for node `cka003`.
 ```
 kubectl label node cka003 disktype=ssd
@@ -1633,6 +1616,12 @@ kubectl label node cka003 disktype-
 
 
 ### Annotation
+
+Scenario:
+
+* Add/update/remove annotation of a deployment
+
+Demo:
 
 Create Nginx deployment
 ```
@@ -1704,6 +1693,12 @@ kubectl delete deployment nginx
 
 ### Status of Pod and Container
 
+Scenario:
+
+* Create a pod with two containers.
+
+Demo:
+
 Create a Pod `multi-pods` with two containers `nginx` and `busybox`. 
 ```
 kubectl apply -f - << EOF
@@ -1767,6 +1762,12 @@ Conditions:
 
 Detail description of the demo can be found on the [Kubernetes document](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/).
 
+Scenario:
+
+* Create pod with `livenessProbe` check.
+
+Demo:
+
 Create a yaml file `liveness.yaml` with `livenessProbe` setting and apply it.
 ```
 kubectl apply -f - <<EOF
@@ -1822,6 +1823,12 @@ Events:
 
 
 ### ReadinessProbe
+
+Scenario:
+
+* Create a pod with `readinessProbe` check.
+
+Demo: 
 
 Readiness probes are configured similarly to liveness probes. 
 The only difference is that you use the readinessProbe field instead of the livenessProbe field.
@@ -1894,9 +1901,9 @@ kubectl delete pod readiness
 
 
 
-### Demo: Health Check
+### Health Check
 
-Summary:
+Scenario:
 
 * Create Deployment and Service
 * Simulate an error (delete index.html)
@@ -1904,8 +1911,9 @@ Summary:
 * Fix the error (revert the index.html)
 * Pod is back to normal and in endpoint list
 
+Demo:
 
-#### Create Deployment and Service
+* Create Deployment and Service
 
 Create Deployment `nginx-healthcheck` and Service `nginx-healthcheck`.
 ```
@@ -2017,7 +2025,7 @@ nginx-healthcheck   10.244.102.14:80,10.244.112.13:80   72s
 Till now, two `nginx-healthcheck` Pods are working and providing service as expected. 
 
 
-#### Simulate readinessProbe Failure
+* Simulate readinessProbe Failure
 
 Let's simulate an error by deleting and `index.html` file in on of `nginx-healthcheck` Pod and see what's readinessProbe will do.
 
@@ -2109,7 +2117,7 @@ nginx-healthcheck   10.244.112.13:80   6m5s
 ```
 
 
-#### Fix readinessProbe Failure
+* Fix readinessProbe Failure
 
 Let's re-create the `index.html` file again in the Pod. 
 ```
@@ -2166,7 +2174,7 @@ Verify the Pod status again.
 kubectl describe pod nginx-healthcheck-79fc55d944-jw887
 ```
 
-#### Conclusion
+* Conclusion
 
 By delete the `index.html` file, the Pod is in unhealth status and is removed from endpoint list. 
 One one health Pod can provide normal service.
@@ -2179,7 +2187,7 @@ kubectl delete deployment nginx-healthcheck
 ```
 
 
-#### Simulate livenessProbe Failure
+* Simulate livenessProbe Failure
 
 Re-create Deployment `nginx-healthcheck` and Service `nginx-healthcheck`.
 
@@ -2231,6 +2239,15 @@ The `default.conf` we modified will be replaced by default file and the containe
 
 ## 5.Namespace
 
+Scenario:
+
+* Get namespace list
+* Create new namespace
+* Label a namespace
+* Delete a namespace
+
+Demo:
+
 Get list of Namespace
 ```
 kubectl get namespace
@@ -2280,16 +2297,16 @@ kubectl delete ns cka
 
 ## 6.Horizontal Pod Autoscaling (HPA)
 
-Summary:
+Scenario:
 
 * Install Metrics Server component
 * Create Deployment `podinfo` and Service `podinfo` for stress testing
 * Create HPA `nginx`
 * Stress Testing
 
+Demo:
 
-
-### Install Metrics Server component
+* Install Metrics Server component
 
 Download yaml file for Metrics Server component
 ```
@@ -2366,7 +2383,7 @@ cka003   79m          3%     1026Mi          26%
 ```
 
 
-### Deploy a Service `podinfo`
+* Deploy a Service `podinfo`
 
 Create Deployment `podinfo` and Service `podinfo` for further stress testing.
 ```
@@ -2428,7 +2445,7 @@ EOF
 
 
 
-### Config HPA
+* Config HPA
  
 Create HPA `nginx` by setting CPU threshold `50%` to trigger auto-scalling with minimal `2` and maximal `10` Replicas.
 ```
@@ -2506,7 +2523,7 @@ nginx   Deployment/podinfo   5%/50%    2         10        2          21s
 
 
 
-### Stress Testing
+* Stress Testing
 
 Install ab
 
@@ -2812,9 +2829,9 @@ httpd-app   NodePort   11.244.247.7   <none>        80:30080/TCP   18m
 
 Test the connection to the Service `httpd-app` via command `curl <your_node_ip>:30080` to each node.
 ```
-curl 172.16.18.170:30080
-curl 172.16.18.169:30080
-curl 172.16.18.168:30080
+curl <node1_ip>:30080
+curl <node2_ip>:30080
+curl <node3_ip>:30080
 ```
 We will receive below successful information.
 ```
@@ -3319,18 +3336,13 @@ ingress-nginx-admission-patch-nk9fv         0/1     Completed   0          117m 
 ingress-nginx-controller-556fbd6d6f-6jl4x   1/1     Running     0          117m   10.244.102.23   cka003   <none>           <none>
 ```
 
-cka001  172.16.18.170
-cka002  172.16.18.169
-cka003  172.16.18.168
-
-
 Update `/etc/hosts file` in current node. 
 Add mapping between node `cka003` IP and two host names `app1.com` and `app1.com` which present Services `nginx-app-1` and `nginx-app-2`. 
 Ingress Controllers are running on node `cka003`
 ```
 cat >> /etc/hosts << EOF
-172.16.18.168   app1.com
-172.16.18.168   app2.com
+<cka003_ip>  app1.com
+<cka003_ip>  app2.com
 EOF
 ```
 
@@ -3692,7 +3704,7 @@ cka002:/nfsdata   40G  5.8G   32G  16% /remote-nfs-dir
 #### Create PV
 
 Create a PV `mysql-pv`. 
-Replace the NFS Server IP with actual IP (here is `172.16.18.169`) that NFS server `cka002` is running on.
+Replace the NFS Server IP with actual IP (here is `<cka002_ip>`) that NFS server `cka002` is running on.
 ```
 kubectl apply -f - <<EOF
 apiVersion: v1
@@ -3708,7 +3720,7 @@ spec:
  storageClassName: nfs
  nfs:
    path: /nfsdata/
-   server: 172.16.18.169
+   server: <cka002_ip>
 EOF
 ```
 
@@ -3884,8 +3896,8 @@ kubectl apply -f nfs-provisioner-rbac.yaml
 
 #### Create Provisioner's Deloyment
 
-Create Deloyment `nfs-client-provisioner` by consuming volume `nfs-client-root` mapped to `/nfsdata` on `172.16.18.169`(`cka002`). 
-Replace NFS server IP with actual IP (here is `172.16.18.169`)
+Create Deloyment `nfs-client-provisioner` by consuming volume `nfs-client-root` mapped to `/nfsdata` on `<cka002_ip>`(`cka002`). 
+Replace NFS server IP with actual IP (here is `<cka002_ip>`)
 ```
 cat > nfs-provisioner-deployment.yaml <<EOF
 apiVersion: apps/v1
@@ -3915,13 +3927,13 @@ spec:
             - name: PROVISIONER_NAME
               value: k8s-sigs.io/nfs-subdir-external-provisioner
             - name: NFS_SERVER
-              value: 172.16.18.169
+              value: <cka002_ip>
             - name: NFS_PATH
               value: /nfsdata
       volumes:
         - name: nfs-client-root
           nfs:
-            server: 172.16.18.169
+            server: <cka002_ip>
             path: /nfsdata
 EOF
 
@@ -5484,20 +5496,20 @@ ll -tr | grep cka-dev
 
 #### Create file kubeconfig
 
-Get the IP of Control Plane (e.g., `172.16.18.170` here) to composite evn variable `APISERVER` (`https://<control_plane_ip>:<port>`).
+Get the IP of Control Plane (e.g., `<cka001_ip>` here) to composite evn variable `APISERVER` (`https://<control_plane_ip>:<port>`).
 ```
 kubectl get node -owide
 ```
 ```
-NAME     STATUS   ROLES                  AGE   VERSION   INTERNAL-IP     EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION      CONTAINER-RUNTIME
-cka001   Ready    control-plane,master   14h   v1.24.0   172.16.18.170   <none>        Ubuntu 20.04.4 LTS   5.4.0-122-generic   containerd://1.5.9
-cka002   Ready    <none>                 14h   v1.24.0   172.16.18.169   <none>        Ubuntu 20.04.4 LTS   5.4.0-122-generic   containerd://1.5.9
-cka003   Ready    <none>                 14h   v1.24.0   172.16.18.168   <none>        Ubuntu 20.04.4 LTS   5.4.0-122-generic   containerd://1.5.9
+NAME     STATUS   ROLES                  AGE   VERSION  OS-IMAGE             KERNEL-VERSION      CONTAINER-RUNTIME
+cka001   Ready    control-plane,master   14h   v1.24.0  Ubuntu 20.04.4 LTS   5.4.0-122-generic   containerd://1.5.9
+cka002   Ready    <none>                 14h   v1.24.0  Ubuntu 20.04.4 LTS   5.4.0-122-generic   containerd://1.5.9
+cka003   Ready    <none>                 14h   v1.24.0  Ubuntu 20.04.4 LTS   5.4.0-122-generic   containerd://1.5.9
 ```
 
 Export env `APISERVER`.
 ```
-echo "export APISERVER=\"https://172.16.18.170:6443\"" >> ~/.bashrc
+echo "export APISERVER=\"https://<cka001_ip>:6443\"" >> ~/.bashrc
 source ~/.bashrc
 ```
 
@@ -5507,7 +5519,7 @@ echo $APISERVER
 ```
 Output:
 ```
-https://172.16.18.170:6443
+https://<cka001_ip>:6443
 ```
 
 
@@ -5546,7 +5558,7 @@ apiVersion: v1
 clusters:
 - cluster:
     certificate-authority-data: <your_key>
-    server: https://172.16.18.170:6443
+    server: https://<cka001_ip>:6443
   name: kubernetes
 contexts: null
 current-context: ""
@@ -5580,7 +5592,7 @@ apiVersion: v1
 clusters:
 - cluster:
     certificate-authority-data: <your_key>
-    server: https://172.16.18.170:6443
+    server: https://<cka001_ip>:6443
   name: kubernetes
 contexts: null
 current-context: ""
@@ -5676,7 +5688,7 @@ apiVersion: v1
 clusters:
 - cluster:
     certificate-authority-data: <your_key>
-    server: https://172.16.18.170:6443
+    server: https://<cka001_ip>:6443
   name: kubernetes
 contexts:
 - context:
@@ -6372,7 +6384,7 @@ Be noted that we can use namespace default label as well.
 
 ### Mini-demo: NetworkPolicy
 
-Scenario: Ingress:
+Scenario: Ingress
 > * Create two namespaces `my-ns-1`, `my-ns-2`.
 > * Create two deployments on `my-ns-1`, `nginx` listens to port `80` and `tomcat` listens to port `8080`.
 > * Create NetworkPolicy `my-networkpolicy-1` on namespace `my-ns-1` to allow access to port 8080 from namespace `my-ns-1`.
@@ -6519,7 +6531,7 @@ etcdctl \
 
 ```
 etcdctl \
-  --endpoints=https://172.16.18.170:2379 \
+  --endpoints=https://<cka001_ip>:2379 \
   --cert=/etc/kubernetes/pki/etcd/server.crt \
   --key=/etc/kubernetes/pki/etcd/server.key \
   --cacert=/etc/kubernetes/pki/etcd/ca.crt \
@@ -6529,9 +6541,9 @@ Output:
 ```
 {"level":"info","ts":"2022-07-24T18:51:21.328+0800","caller":"snapshot/v3_snapshot.go:65","msg":"created temporary db file","path":"snapshot-20220724185121.db.part"}
 {"level":"info","ts":"2022-07-24T18:51:21.337+0800","logger":"client","caller":"v3/maintenance.go:211","msg":"opened snapshot stream; downloading"}
-{"level":"info","ts":"2022-07-24T18:51:21.337+0800","caller":"snapshot/v3_snapshot.go:73","msg":"fetching snapshot","endpoint":"https://172.16.18.170:2379"}
+{"level":"info","ts":"2022-07-24T18:51:21.337+0800","caller":"snapshot/v3_snapshot.go:73","msg":"fetching snapshot","endpoint":"https://<cka001_ip>:2379"}
 {"level":"info","ts":"2022-07-24T18:51:21.415+0800","logger":"client","caller":"v3/maintenance.go:219","msg":"completed snapshot read; closing"}
-{"level":"info","ts":"2022-07-24T18:51:21.477+0800","caller":"snapshot/v3_snapshot.go:88","msg":"fetched snapshot","endpoint":"https://172.16.18.170:2379","size":"3.6 MB","took":"now"}
+{"level":"info","ts":"2022-07-24T18:51:21.477+0800","caller":"snapshot/v3_snapshot.go:88","msg":"fetched snapshot","endpoint":"https://<cka001_ip>:2379","size":"3.6 MB","took":"now"}
 {"level":"info","ts":"2022-07-24T18:51:21.477+0800","caller":"snapshot/v3_snapshot.go:97","msg":"saved","path":"snapshot-20220724185121.db"}
 Snapshot saved at snapshot-20220724185121.db
 ```
@@ -6638,7 +6650,7 @@ nerdctl -n k8s.io ps -a | grep etcd
 Execute the restore operation on Control Plane node with actual backup file, here it's file `snapshot-20220724185121.db`.
 ```
 etcdctl snapshot restore snapshot-20220724185121.db \
-    --endpoints=172.16.18.170:2379 \
+    --endpoints=<cka001_ip>:2379 \
     --cert=/etc/kubernetes/pki/etcd/server.crt \
     --key=/etc/kubernetes/pki/etcd/server.key \
     --cacert=/etc/kubernetes/pki/etcd/ca.crt\
@@ -6754,10 +6766,10 @@ kubectl get node -owide
 ```
 Result
 ```
-NAME     STATUS                     ROLES                  AGE   VERSION   INTERNAL-IP     EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION      CONTAINER-RUNTIME
-cka001   Ready,SchedulingDisabled   control-plane,master   32h   v1.24.0   172.16.18.170   <none>        Ubuntu 20.04.4 LTS   5.4.0-122-generic   containerd://1.5.9
-cka002   Ready                      <none>                 32h   v1.24.0   172.16.18.169   <none>        Ubuntu 20.04.4 LTS   5.4.0-122-generic   containerd://1.5.9
-cka003   Ready                      <none>                 32h   v1.24.0   172.16.18.168   <none>        Ubuntu 20.04.4 LTS   5.4.0-122-generic   containerd://1.5.9
+NAME     STATUS                     ROLES                  AGE   VERSION   OS-IMAGE             KERNEL-VERSION      CONTAINER-RUNTIME
+cka001   Ready,SchedulingDisabled   control-plane,master   32h   v1.24.0   Ubuntu 20.04.4 LTS   5.4.0-122-generic   containerd://1.5.9
+cka002   Ready                      <none>                 32h   v1.24.0   Ubuntu 20.04.4 LTS   5.4.0-122-generic   containerd://1.5.9
+cka003   Ready                      <none>                 32h   v1.24.0   Ubuntu 20.04.4 LTS   5.4.0-122-generic   containerd://1.5.9
 ```
 
 Check current available version of `kubeadm`.
@@ -7827,10 +7839,10 @@ Nodes are backed by the Kubernetes node object, so we should see names that matc
 kubectl get nodes -o wide
 ```
 ```
-NAME     STATUS     ROLES                  AGE   VERSION   INTERNAL-IP     EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION      CONTAINER-RUNTIME
-cka001   NotReady   control-plane,master   23m   v1.24.0   172.16.18.170   <none>        Ubuntu 20.04.4 LTS   5.4.0-113-generic   containerd://1.5.9
-cka002   NotReady   <none>                 22m   v1.24.0   172.16.18.169   <none>        Ubuntu 20.04.4 LTS   5.4.0-113-generic   containerd://1.5.9
-cka003   NotReady   <none>                 21m   v1.24.0   172.16.18.159   <none>        Ubuntu 20.04.4 LTS   5.4.0-113-generic   containerd://1.5.9
+NAME     STATUS     ROLES                  AGE   VERSION   OS-IMAGE             KERNEL-VERSION      CONTAINER-RUNTIME
+cka001   NotReady   control-plane,master   23m   v1.24.0   Ubuntu 20.04.4 LTS   5.4.0-113-generic   containerd://1.5.9
+cka002   NotReady   <none>                 22m   v1.24.0   Ubuntu 20.04.4 LTS   5.4.0-113-generic   containerd://1.5.9
+cka003   NotReady   <none>                 21m   v1.24.0   Ubuntu 20.04.4 LTS   5.4.0-113-generic   containerd://1.5.9
 ```
 
 
@@ -9041,19 +9053,7 @@ ip route get 10.244.31.1
 ip route get 10.244.31.0
 ip route get 10.244.28.64
 ```
-Result
-```
-10.244.31.1 via 172.16.18.253 dev eth0 src 172.16.18.170 uid 0 
-    cache 
-
-10.244.31.0 via 172.16.18.253 dev eth0 src 172.16.18.170 uid 0 
-    cache 
-
-10.244.28.64 via 172.16.18.253 dev eth0 src 172.16.18.170 uid 0 
-    cache 
-```
-
-The via `172.16.18.170`(it's control-plane) in this example indicates the next-hop for this pod IP, which matches the IP address of the node the pod is scheduled on, as expected.
+In the result, the `via <cka001_ip>`(it's control-plane) in this example indicates the next-hop for this pod IP, which matches the IP address of the node the pod is scheduled on, as expected.
 IPAM allocations from different pools.
 
 Recall that we created two IP pools, but left one disabled.

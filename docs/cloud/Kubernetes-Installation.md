@@ -1591,6 +1591,7 @@ For NetworkPolicy purpose, choose Calico.
 [Flannel](https://github.com/flannel-io/flannel) is a simple and easy way to configure a layer 3 network fabric designed for Kubernetes.
 
 Deploy Flannel on master node.
+
 In the kube-flannel.yml we can get the default network setting of Flannel, which is same with `--pod-network-cidr=10.244.0.0/16` we defined before when we initiated `kubeadm`.
 ```
   net-conf.json: |
@@ -1602,8 +1603,12 @@ In the kube-flannel.yml we can get the default network setting of Flannel, which
     }
 ```
 
+Create Flannel
 ```
-root@cka001:~# kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+```
+Result
+```
 Warning: policy/v1beta1 PodSecurityPolicy is deprecated in v1.21+, unavailable in v1.25+
 podsecuritypolicy.policy/psp.flannel.unprivileged created
 clusterrole.rbac.authorization.k8s.io/flannel created
