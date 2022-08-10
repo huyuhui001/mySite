@@ -27,7 +27,7 @@
         
           
           
-          <meta name="theme-color" content="#4051b5">
+          <meta name="theme-color" content="#000000">
         
       
     
@@ -56,7 +56,7 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="indigo" data-md-color-accent="deep-blue">
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="black" data-md-color-accent="deep-blue">
   
     
     <script>function __prefix(e){return new URL("../..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
@@ -2563,8 +2563,8 @@ users:
 <p>For NetworkPolicy purpose, choose Calico.</p>
 <h4 id="install-flannel_2">Install Flannel</h4>
 <p><a href="https://github.com/flannel-io/flannel">Flannel</a> is a simple and easy way to configure a layer 3 network fabric designed for Kubernetes.</p>
-<p>Deploy Flannel on master node.
-In the kube-flannel.yml we can get the default network setting of Flannel, which is same with <code>--pod-network-cidr=10.244.0.0/16</code> we defined before when we initiated <code>kubeadm</code>.</p>
+<p>Deploy Flannel on master node.</p>
+<p>In the kube-flannel.yml we can get the default network setting of Flannel, which is same with <code>--pod-network-cidr=10.244.0.0/16</code> we defined before when we initiated <code>kubeadm</code>.</p>
 <pre><code>  net-conf.json: |
     {
       &quot;Network&quot;: &quot;10.244.0.0/16&quot;,
@@ -2573,8 +2573,11 @@ In the kube-flannel.yml we can get the default network setting of Flannel, which
       }
     }
 </code></pre>
-<pre><code>root@cka001:~# kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
-Warning: policy/v1beta1 PodSecurityPolicy is deprecated in v1.21+, unavailable in v1.25+
+<p>Create Flannel</p>
+<pre><code>apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+</code></pre>
+<p>Result</p>
+<pre><code>Warning: policy/v1beta1 PodSecurityPolicy is deprecated in v1.21+, unavailable in v1.25+
 podsecuritypolicy.policy/psp.flannel.unprivileged created
 clusterrole.rbac.authorization.k8s.io/flannel created
 clusterrolebinding.rbac.authorization.k8s.io/flannel created
