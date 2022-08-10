@@ -23,5 +23,5 @@ theme:
   - navigation.top
   - navigation.expand
   palette:
-    primary: 'indigo'
-    accent: 'Deep blue'
+    primary: 'black'
+    accent: 'deep blue'
