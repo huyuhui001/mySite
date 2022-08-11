@@ -70,11 +70,22 @@ nav:
     - Python Foundamentals: python/Foundation/python_foundation_index.md
     - Data Analysis: python/DataAnalysis/python_data_analysis_index.md
     - Demos: python/Demo/python_demo_index.md
-- Cloud:
-    - Microservices with K8s: cloud/MicroservicesKubernetes.md
-    - K8s Foundamentals: cloud/KubernetesFoundationMemo.md
-    - K8s Installation: cloud/Kubernetes-Installation.md
-    - K8s Demos on Kyma@SAP BTP: cloud/KubernetesTutorials-BTP-trail.md
-    - K8s Demos on Ubuntu@Aliyun: cloud/KubernetesTutorials-Aliyun-Foundamentals.md
+- Kubernetes:
+    - Installation:
+        - Single Node Installation: k8s/installation/single-local.md
+        - Multiple Nodes Installation: k8s/installation/multiple-local.md
+        - Installation on Aliyun openSUSE: k8s/installation/aliyun-opensuse.md
+        - Installation on Aliyun Ubuntu: k8s/installation/aliyun-ubuntu.md
+    - Foundamentals:
+        - kubectl basics: k8s/foundamentals/basics.md
+        - Work on pod: k8s/foundamentals/pod.md
+        - Deployment: k8s/foundamentals/deployment.md
+        - Expose application: k8s/foundamentals/expose.md
+        - Persistence: k8s/foundamentals/persistence.md
+        - ConfigMaps and Secrets: k8s/foundamentals/configmaps.md
+        - Ingress: k8s/foundamentals/ingress.md
+        - StatefulSet: k8s/foundamentals/statefulset.md
+        - Network Policy: k8s/foundamentals/networkpolicy.md
+        - Helming: k8s/foundamentals/helming.md
 - About: about.md
 
