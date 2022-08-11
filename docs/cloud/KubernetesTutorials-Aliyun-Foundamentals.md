@@ -2601,7 +2601,7 @@ kubectl delete deployment podinfo
 
 ## 7.Service
 
-Summary:
+Scenario:
 
 * Create Deployment `httpd-app`.
 * Create Service `httpd-app` with type `ClusterIP`, which is default type and accessable internally.
@@ -2609,11 +2609,12 @@ Summary:
 * Update Service `httpd-app` with type `NodePort`. No change to the Deployment `httpd-app`.
 * Verify the access to Node. The access will route to Pod. The service is now accesable from outside.
 * Create Headless Service `web` and StatefulSet `web`.
+* Service Internal Traffic Policy
 
 
 ### ClusterIP
 
-#### Create Service
+* Create Service
 
 Create a Deployment `http-app`.
 Create a Service `httpd-app` link to Development `http-app` by Label Selector. 
@@ -2691,7 +2692,7 @@ And receive below successful information.
 
 
 
-#### Expose Service
+* Expose Service
 
 Create and attach to a temporary Pod `nslookup` and to verify DNS resolution. The option `--rm` means delete the Pod after exit.
 ```
@@ -2719,56 +2720,6 @@ NAME       READY   STATUS    RESTARTS   AGE     IP              NODE     NOMINAT
 nslookup   1/1     Running   0          2m44s   10.244.112.20   cka002   <none>           <none>
 ```
 
-
-##### Mini-demo: Expose Service
-
-Scenario:
-> * Create a `nginx` deployment
-> * Add port number and alias name of the `nginx` Pod.
-> * Expose the deployment with internal traffic to local only.
-
-
-Demo:
-
-Create deployment `my-nginx` with port number `80`.
-```
-kubectl create deployment my-nginx --image=nginx --port=80
-```
-
-Edit deployment.
-```
-kubectl edit deployment my-nginx
-```
-Add port alias name `http`.
-Refer to the link for deployment yaml template https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
-```
-    spec:
-      containers:
-      - image: nginx
-        imagePullPolicy: Always
-        name: nginx
-        ports:
-        - containerPort: 80
-          protocol: TCP
-          name: http
-```
-
-Expose the deployment with `NodePort` type.
-```
-kubectl expose deployment my-nginx --port=80 --target-port=http --name=my-nginx-svc --type=NodePort
-```
-
-Edit the service. Change `internalTrafficPolicy` from `Cluster` to `Local`.
-```
-kubectl edit svc my-nginx-svc 
-```
-
-Verify the access. Note, the pod is running on node `cka003`. We will see below expected results.
-```
-curl <deployment_pod_ip>:80    # succeed on node cka003. internalTrafficPolicy is effective.
-curl <service_cluster_ip>:80   # succeed on all nodes.
-curl <node_ip>:<ext_port>      # succeed on all nodes.
-```
 
 
 ### NodePort
@@ -2842,9 +2793,7 @@ We will receive below successful information.
 
 
 
-### Special Service
-
-#### Headless Service
+### Headless Service
 
 Create Headless Service `web` and StatefulSet `web`.
 ```
@@ -2955,12 +2904,13 @@ kubectl delete deployment httpd-app
 
 
 
-### Mini-demo: Service Internal Traffic Policy
+### Service Internal Traffic Policy
 
 Scenario: 
-> * Simulate how Service Internal Traffic Policy works.
-> * Expected result:
->     * With setting Service `internalTrafficPolicy: Local`, the Service only route internal traffic within the nodes that Pods are running. 
+
+ * Simulate how Service Internal Traffic Policy works.
+ * Expected result:
+     * With setting Service `internalTrafficPolicy: Local`, the Service only route internal traffic within the nodes that Pods are running. 
 
 Backgroud:
 
@@ -3061,9 +3011,65 @@ With setting Service `internalTrafficPolicy: Local`, the Service only route inte
 
 
 
+
+Scenario:
+
+ * Create a `nginx` deployment
+ * Add port number and alias name of the `nginx` Pod.
+ * Expose the deployment with internal traffic to local only.
+
+
+Demo:
+
+Create deployment `my-nginx` with port number `80`.
+```
+kubectl create deployment my-nginx --image=nginx --port=80
+```
+
+Edit deployment.
+```
+kubectl edit deployment my-nginx
+```
+Add port alias name `http`.
+Refer to the link for deployment yaml template https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+```
+    spec:
+      containers:
+      - image: nginx
+        imagePullPolicy: Always
+        name: nginx
+        ports:
+        - containerPort: 80
+          protocol: TCP
+          name: http
+```
+
+Expose the deployment with `NodePort` type.
+```
+kubectl expose deployment my-nginx --port=80 --target-port=http --name=my-nginx-svc --type=NodePort
+```
+
+Edit the service. Change `internalTrafficPolicy` from `Cluster` to `Local`.
+```
+kubectl edit svc my-nginx-svc 
+```
+
+Verify the access. Note, the pod is running on node `cka003`. We will see below expected results.
+```
+curl <deployment_pod_ip>:80    # succeed on node cka003. internalTrafficPolicy is effective.
+curl <service_cluster_ip>:80   # succeed on all nodes.
+curl <node_ip>:<ext_port>      # succeed on all nodes.
+```
+
+
+
+
+
+
+
 ## 8.Ingress
 
-Summary:
+Scenario:
 
 * Deploy Ingress Controller.
 * Create two deployment `nginx-app-1` and `nginx-app-2`.
@@ -3378,7 +3384,7 @@ This is test 2 !!
 
 ## 9.Storage
 
-Summary: 
+Scenario: 
 
 * Creat Pod with `emptyDir` type Volume. Container in the Pod will mount default directory `/var/lib/kubelet/pods/` on running node.
 
@@ -4443,7 +4449,7 @@ blue
 
 ## 10.Scheduling
 
-Summary:
+Scenario:
 
 * Configure nodeSelector for Pod.
 * Configure nodeName for Node.
@@ -4716,7 +4722,7 @@ kubectl taint nodes cka003 key-
 
 ## 11.ResourceQuota
 
-Summary:
+Scenario:
 
 * Create ResourceQuota `object-quota-demo` for namespace `quota-object-example`.
 * Test ResourceQuota `object-quota-demo` for NodePort
@@ -4838,7 +4844,7 @@ status:
 
 ## 12.LimitRange
 
-Summary:
+Scenario:
 
 * Create LimitRange `cpu-limit-range` to define range of CPU Request and CPU Limit for a Container. 
 * Test LimitRange `cpu-limit-range` via Pod.
@@ -4847,7 +4853,7 @@ Summary:
     * Scenario 3: Pod with CPU Request onlyl, without CPU Limits
 
 
-
+Background:
 
 A *LimitRange* provides constraints that can:
 
@@ -4887,7 +4893,7 @@ EOF
 
 ### Test via Pod
 
-#### Scenario 1: Pod without specified limits
+* Scenario 1: Pod without specified limits
 
 Create a Pod without any specified limits.
 ```
@@ -4923,7 +4929,7 @@ spec:
 
 
 
-#### Scenario 2: Pod with CPU limit, without CPU Request
+* Scenario 2: Pod with CPU limit, without CPU Request
 
 Create Pod with specified CPU limits only.  
 ```
@@ -4962,7 +4968,8 @@ spec:
         cpu: "1"
 ```
 
-#### Scenario 3: Pod with CPU Request onlyl, without CPU Limits
+
+* Scenario 3: Pod with CPU Request onlyl, without CPU Limits
 
 Create Pod with specified CPU Request only. 
 ```
@@ -5007,6 +5014,12 @@ spec:
 ## 13.Troubleshooting
 
 ### Event
+
+Scenario:
+
+* Describe pod to get event information.
+
+Demo:
 
 Usage:
 ```
@@ -5061,6 +5074,11 @@ kubectl get events -A
 
 ### Logs
 
+Scenario:
+
+* Get log of pod
+
+
 Usage:
 ```
 kubectl logs <pod_name> -n <namespace_name>
@@ -5084,7 +5102,14 @@ kubectl logs -f tomcat --tail 100 -c tomcat
 
 ### Node Availability
 
+
 #### Check Available Node
+
+Scenario:
+
+* Check node availibility.
+
+Demo: 
 
 Option 1:
 ```
@@ -5102,6 +5127,7 @@ Option 2:
 kubectl describe node | grep -i taint |grep -vc NoSchedule
 ```
 We will get same result `2`. Here `-v` means exclude, `-c` count numbers.
+
 
 
 #### Node NotReady
@@ -5146,6 +5172,13 @@ After we stop kubelet service on `cka003`, the two running on `cka003` are termi
 
 
 ### Monitoring Indicators
+
+Scenario:
+
+* Get monitoring indicators of pod
+
+
+Demo:
 
 Get node monitoring information
 ```
@@ -5219,6 +5252,12 @@ busybox-with-secret                       0m           0Mi
 
 #### Cordon/Uncordon
 
+Scenario:
+
+* Scheduling for a node
+
+Demo:
+
 Disable scheduling for a Node.
 ```
 kubectl cordon <node_name>
@@ -5256,7 +5295,8 @@ cka003   Ready    <none>                 18d   v1.24.0
 #### Drain Node
 
 Scenario:
-> Drain the node `cka003`
+
+* Drain the node `cka003`
 
 Demo:
 
@@ -5307,13 +5347,14 @@ Notes:
 
 ## 14.RBAC
 
-Summary:
+Scenario:
 
 1. Create differnet profiles for one cluster.
 2. Use `cfssl` generate certificates for each profile.
 3. Create new kubeconfig file with all profiles and associated users.
 4. Merge old and new kubeconfig files into new kubeconfig file. We can switch different context for further demo.
 
+Background:
 
 Role-based access control (RBAC) is a method of regulating access to computer or network resources based on the roles of individual users within the organization.
 
@@ -5944,11 +5985,12 @@ kubectl config use-context kubernetes-admin@kubernetes
 
 
 
-### Mini-demo: ClusterRole and ServiceAccount
+### ClusterRole and ServiceAccount
 
 Scenario: 
-> * Create a ClusterRole, which is authorized to create Deployment, StatefulSet, DaemonSet.
-> * Bind the ClusterRole to a ServiceAccount.
+
+ * Create a ClusterRole, which is authorized to create Deployment, StatefulSet, DaemonSet.
+ * Bind the ClusterRole to a ServiceAccount.
 
 Demo:
 
@@ -5984,6 +6026,14 @@ kubectl delete clusterrole my-clusterrole
 ## 15.Network Policy
 
 ### Replace Flannel by Calico
+
+Scenario: 
+
+* Remove Flannel
+* Install Calico
+
+
+Demo:
 
 If Calico was installed at the installation phase, ignore this section.
 
@@ -6090,6 +6140,15 @@ kubectl get pod -A
 
 
 ### Inbound Rules
+
+Scenario: 
+
+* Create workload for test.
+* Deny For All Ingress
+* Allow For Specific Ingress
+* Verify NetworkPolicy
+
+Demo:
 
 1. Create workload for test.
 
@@ -6265,6 +6324,14 @@ As expected, `pod-netpol-2` is reachable and `pod-netpol-3` is still unreachable
 
 ### Inbound Across Namespace
 
+Scenario: 
+
+* Create workload and namespace for test
+* Create Allow Ingress
+* Verify Policy
+
+Demo:
+
 1. Create workload and namespace for test
 
 Create Namespace `ns-netpol`.
@@ -6382,15 +6449,16 @@ Be noted that we can use namespace default label as well.
 
 
 
-### Mini-demo: NetworkPolicy
+### NetworkPolicy
 
 Scenario: Ingress
-> * Create two namespaces `my-ns-1`, `my-ns-2`.
-> * Create two deployments on `my-ns-1`, `nginx` listens to port `80` and `tomcat` listens to port `8080`.
-> * Create NetworkPolicy `my-networkpolicy-1` on namespace `my-ns-1` to allow access to port 8080 from namespace `my-ns-1`.
-> * Verify the access to `nginx` port `80` and `tomcat` port `8080`.
-> * Edit the NetworkPolicy to allow access to port 8080 from namespace `my-ns-2`.
-> * Verify the access to `nginx` port `80` and `tomcat` port `8080`.
+
+* Create two namespaces `my-ns-1`, `my-ns-2`.
+* Create two deployments on `my-ns-1`, `nginx` listens to port `80` and `tomcat` listens to port `8080`.
+* Create NetworkPolicy `my-networkpolicy-1` on namespace `my-ns-1` to allow access to port 8080 from namespace `my-ns-1`.
+* Verify the access to `nginx` port `80` and `tomcat` port `8080`.
+* Edit the NetworkPolicy to allow access to port 8080 from namespace `my-ns-2`.
+* Verify the access to `nginx` port `80` and `tomcat` port `8080`.
 
 Demo:
 
@@ -6480,6 +6548,19 @@ kubectl delete namespace my-ns-2
 
 
 ## 16.Cluster Management
+
+Scenario: `etcd` Backup and Restore
+* Install `etcdctl`
+* Create Deployment Before Backup
+* Backup `etcd`
+* Create Deployment After Backup
+* Stop Services
+* Stop etcd
+* Restore `etcd`
+* Start Services
+* Verify
+
+
 
 ### `etcd` Backup and Restore
 
@@ -6735,7 +6816,21 @@ app-before-backup        1/1     1            1           11m
 
 ### Upgrade
 
+Scenario: Upgrade
+
+* Evict Control Plane node
+* Check current available version of `kubeadm`
+* Upgrade `kubeadm` to new version
+* Check upgrade plan
+* Apply upgrade plan to upgrade to new version
+* Upgrade `kubelet` and `kubectl`
+* Enable Control Plane node scheduling
+* Evict Worker nodes
+* Upgrade `kubeadm` and `kubelet`
+* Enable Worker node scheduling
+
 [Reference documentation](https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/)
+
 
 #### Upgrade `Control Plane`
 
