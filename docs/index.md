@@ -12,11 +12,11 @@ Same contents can be found on github [mySite](https://github.com/huyuhui001/mySi
     + [Demos](./python/Demo/python_demo_index.md)
 
 3. Cloud
-    + [Microservices with K8s](./cloud/MicroservicesKubernetes.md)
-    + [K8s Foundamentals](./cloud/KubernetesFoundationMemo.md)
-    + [K8s Installation](./cloud/Kubernetes-Installation.md)
-    + [K8s Demos on Kyma@SAP BTP](./cloud/KubernetesTutorials-BTP-trail.md)
-    + [K8s Demos on Ubuntu@Aliyun](./cloud/KubernetesTutorials-Aliyun-Foundamentals.md)
+    + [Microservices with K8s](./k8s/MicroservicesKubernetes.md)
+    + [K8s Foundamentals](./k8s/KubernetesFoundationMemo.md)
+    + [K8s Installation](./k8s/Kubernetes-Installation.md)
+    + [K8s Demos on Kyma@SAP BTP](./k8s/KubernetesTutorials-BTP-trail.md)
+    + [K8s Demos on Ubuntu@Aliyun](./k8s/KubernetesTutorials-Aliyun-Foundamentals.md)
 
 
 
