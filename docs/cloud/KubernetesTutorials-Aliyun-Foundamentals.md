@@ -3067,7 +3067,8 @@ curl <node_ip>:<ext_port>      # succeed on all nodes.
 
 
 
-## 8.Ingress
+## 8. Ingress-nginx
+
 
 Scenario:
 
@@ -3080,6 +3081,15 @@ Scenario:
     * Create Ingress resource `nginx-app` and map to two Services `nginx-app-1` and `nginx-app-1`.
 * Test Accessibility.
     * Send HTTP request to two hosts defined in Ingress
+
+
+Reference:
+
+* Github [ingress-nginx](https://github.com/kubernetes/ingress-nginx)
+* [Installation Guide](https://kubernetes.github.io/ingress-nginx/deploy/)
+
+
+
 
 
 ### Deploy Ingress Controller
