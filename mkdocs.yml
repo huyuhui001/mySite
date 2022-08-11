@@ -1,5 +1,67 @@
 site_name: MEMO
-site_url: https://huyuhui001.github.io/mySite/index.html
+site_url: https://huyuhui001.github.io/mySite/
+repo_name: "huyuhui001/mySite"
+repo_url: https://github.com/huyuhui001/mySite
+edit_uri: edit/main/docs/
+
+# Extensions
+markdown_extensions:
+  - admonition
+  - abbr
+  - attr_list
+  - def_list
+  - footnotes
+  - meta
+  - md_in_html
+  - toc:
+      # insert a blank space before the character
+      permalink: " ¶"
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.critic
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.snippets:
+      check_paths: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+
+theme:
+  name: 'material'
+  logo: assets/logo.jpg
+  features:
+  - navigation.tabs
+  - navigation.tabs.sticky
+  - navigation.instant
+  - navigation.sections
+ 
+  palette:
+    primary: 'teal'
+    accent: 'green'
+
+  include_sidebar: true
+
+plugins:
+  - search
+
 nav:
 - Linux:
     - SUSE Linux Administration: linux/Administration/linux_admin.md
@@ -15,13 +77,4 @@ nav:
     - K8s Demos on Kyma@SAP BTP: cloud/KubernetesTutorials-BTP-trail.md
     - K8s Demos on Ubuntu@Aliyun: cloud/KubernetesTutorials-Aliyun-Foundamentals.md
 - About: about.md
-theme:
-  name: 'material'
-  logo: assets/logo.jpg
-  features:
-  - navigation.tracking
-  - navigation.top
-  - navigation.expand
-  palette:
-    primary: 'black'
-    accent: 'deep blue'
+
