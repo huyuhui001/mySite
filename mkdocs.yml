@@ -61,15 +61,12 @@ theme:
 
 plugins:
   - search
+  - minify:
+      minify_html: true
+
+extra_css: [extra.css]
 
 nav:
-- Linux:
-    - SUSE Linux Administration: linux/Administration/linux_admin.md
-    - SUSE Enterprise Storage Foundation: linux/SES/linux_ses.md
-- Python:
-    - Python Foundamentals: python/Foundation/python_foundation_index.md
-    - Data Analysis: python/DataAnalysis/python_data_analysis_index.md
-    - Demos: python/Demo/python_demo_index.md
 - Kubernetes:
     - Installation:
         - Single Node Installation: k8s/installation/single-local.md
@@ -87,5 +84,11 @@ nav:
         - StatefulSet: k8s/foundamentals/statefulset.md
         - Network Policy: k8s/foundamentals/networkpolicy.md
         - Helming: k8s/foundamentals/helming.md
-- About: about.md
+- Linux:
+    - SUSE Linux Administration: linux/Administration/linux_admin.md
+    - SUSE Enterprise Storage Foundation: linux/SES/linux_ses.md
+- Python:
+    - Python Foundamentals: python/Foundation/python_foundation_index.md
+    - Data Analysis: python/DataAnalysis/python_data_analysis_index.md
+    - Demos: python/Demo/python_demo_index.md
 
