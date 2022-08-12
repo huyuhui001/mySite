@@ -49,6 +49,8 @@ Install `mkdocs` and extensions with below specified version.
 pip3 install mkdocs==1.3.0
 pip3 install mkdocs-material==7.3.6
 pip3 install mkdocs-mermaid2-plugin==0.6.0
+pip3 install mkdocs-awesome-pages-plugin==2.8.0
+pip3 install mkdocs-minify-plugin==0.5.0
 ```
 All makdown files are under folder /docs.
 All website files are under folder /site.
