@@ -1,6 +1,6 @@
 # Kubernetes Tutourials: Ubuntu@Aliyun
 
-Refer to "Installation on Aliyun Ubuntu" in file [Kubernetes-Installation.md](./Kubernetes-Installation.md)
+Refer to "Installation on Aliyun Ubuntu" in file [Installation on Aliyun Ubuntu](./installation/aliyun-ubuntu.md)
 
 ## 1.Cluster Overview
 
