@@ -79,18 +79,20 @@ nav:
     - Foundamentals:
         - Overview: k8s/foundamentals/overview.md
         - kubectl basics: k8s/foundamentals/basics.md
+        - Namespace: k8s/foundamentals/namespace.md
         - Work on pod: k8s/foundamentals/pod.md
         - Deployment: k8s/foundamentals/deployment.md
         - StatefulSet: k8s/foundamentals/statefulset.md
         - DaemonSet: k8s/foundamentals/daemonset.md
         - Job and Cronjob: k8s/foundamentals/job.md
-        - Expose application: k8s/foundamentals/expose.md
+        - Horizontal Pod Autoscaling: k8s/foundamentals/hpa.md
+        - Service: k8s/foundamentals/service.md
         - Persistence: k8s/foundamentals/persistence.md
         - ConfigMaps and Secrets: k8s/foundamentals/configmaps.md
         - Ingress: k8s/foundamentals/ingress.md
-        - StatefulSet: k8s/foundamentals/statefulset.md
         - Network Policy: k8s/foundamentals/networkpolicy.md
         - Helming: k8s/foundamentals/helming.md
+        - Health Check: k8s/foundamentals/healthcheck.md
         - Case Study: k8s/foundamentals/casestudy.md
 - Python:
     - Python Foundamentals: python/Foundation/python_foundation_index.md
