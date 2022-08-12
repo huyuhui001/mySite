@@ -23,7 +23,7 @@ Demo:
 
 * Add/update/remove node Label.
 
-```
+```console
 # Update node label
 kubectl label node cka002 node=demonode
 
@@ -40,19 +40,13 @@ kubectl label node cka002 node-
 
 ### Annotation
 
-Scenario:
-
-* Add/update/remove annotation of a deployment
-
-Demo:
-
 Create Nginx deployment
-```
+```console
 kubectl create deploy nginx --image=nginx:mainline
 ```
 
 Get Annotation info.
-```
+```console
 kubectl describe deployment/nginx
 ```
 Result
@@ -65,7 +59,7 @@ Selector:               app=nginx
 ```
 
 Add new Annotation.
-```
+```console
 kubectl annotate deployment nginx owner=James.H
 ```
 
@@ -80,7 +74,7 @@ Selector:               app=nginx
 ```
 
 Update/Overwrite Annotation.
-```
+```console
 kubectl annotate deployment/nginx owner=K8s --overwrite
 ```
 Now annotation looks like below.
@@ -93,7 +87,7 @@ Selector:               app=nginx
 ```
 
 Remove Annotation
-```
+```console
 kubectl annotate deployment/nginx owner-
 ```
 ```
@@ -105,7 +99,7 @@ Selector:               app=nginx
 ```
 
 Clean up
-```
+```console
 kubectl delete deployment nginx
 ```
 
@@ -116,7 +110,7 @@ kubectl delete deployment nginx
 
 * Get current available namespaces.
 
-```
+```console
 kubectl get namespace
 ```
 Result
@@ -131,7 +125,7 @@ kube-system       Active   3h45m
 
 * Get Pod under a specific namespace.
 
-```
+```console
 kubectl get pod -n kube-system
 ```
 Result
@@ -154,7 +148,7 @@ kube-scheduler-cka001                      1/1     Running   0          3h45m
 
 * Get Pods in all namespaces.
 
-```
+```console
 kubectl get pod --all-namespaces
 kubectl get pod -A
 ```
@@ -169,7 +163,7 @@ With Kubernetes 1.24, only ServiceAccount `default` is created automatically whe
 
 Here is an example to create a new namespace `dev`, we can see that only ServiceAcccount: `default` was created in namespace `dev`, no secretes (token) linked to the ServiceAccount `default`.
 
-```
+```console
 kubectl create namespace dev
 kubectl get serviceaccount -n dev
 kubectl get secrets -n dev
@@ -177,13 +171,13 @@ kubectl get secrets -n dev
 
 There is a default cluster role `admin`.
 But there is no clusterrole binding to the cluster role `admin`.
-```
+```console
 kubectl get clusterrole admin
 kubectl get clusterrolebinding | grep ClusterRole/admin
 ```
 
 Role and rolebinding is namespaces based. On namespace `dev`, there is no role and rolebinding.
-```
+```console
 kubectl get role -n dev
 kubectl get rolebinding -n dev
 ```
@@ -197,7 +191,7 @@ A `kubernetes.io/service-account-token` type of Secret is used to store a token 
 When using this Secret type, you need to ensure that the `kubernetes.io/service-account.name` annotation is set to an existing service account name.
 
 Let's create token for the ServiceAcccount: `default` in namespace `dev`. 
-```
+```console
 kubectl apply -f - << EOF
 apiVersion: v1
 kind: Secret
@@ -212,25 +206,25 @@ EOF
 ```
 
 Now we get ServiceAcccount: `default` and Secret (token) `default-token-dev` in namespace `dev`.
-```
+```console
 kubectl get serviceaccount -n dev
 kubectl get secrets -n dev
 ```
 
 Get token of the service account `default`.
-```
+```console
 TOKEN=$(kubectl -n dev describe secret $(kubectl -n dev get secrets | grep default | cut -f1 -d ' ') | grep -E '^token' | cut -f2 -d':' | tr -d ' ')
 echo $TOKEN
 ```
 
 Get API Service address.
-```
+```console
 APISERVER=$(kubectl config view | grep https | cut -f 2- -d ":" | tr -d " ")
 echo $APISERVER
 ```
 
 Get Pod resources in namespace `dev` via API server with JSON layout.
-```
+```console
 curl $APISERVER/api/v1/namespaces/dev/pods --header "Authorization: Bearer $TOKEN" --insecure
 ```
 
@@ -238,7 +232,7 @@ We will receive `403 forbidden` error message. The ServiceAccount `default` does
 
 Let's create a rolebinding `rolebinding-admin` to bind cluster role `admin` to service account `default` in namespapce `dev`.
 Hence service account `default` is granted adminstrator authorization in namespace `dev`.
-```
+```console
 # Usage:
 kubectl create rolebinding <rule> --clusterrole=<clusterrule> --serviceaccount=<namespace>:<name> --namespace=<namespace>
 
@@ -253,12 +247,12 @@ rolebinding-admin   ClusterRole/admin   10s
 ```
 
 Try again, get pod resources in namespace `dev` via API server with JSON layout.
-```
+```console
 curl $APISERVER/api/v1/namespaces/dev/pods --header "Authorization: Bearer $TOKEN" --insecure
 ```
 
 Clean up.
-```
+```console
 kubectl delete namespace dev
 ```
 
@@ -267,7 +261,7 @@ kubectl delete namespace dev
 ### Deployment
 
 Create a Ubuntu Pod for operation. And attach to the running Pod. 
-```
+```console
 kubectl create -f - << EOF
 apiVersion: v1
 kind: Pod
@@ -289,12 +283,12 @@ kubectl exec --stdin --tty ubuntu -- /bin/bash
 
 Create a deployment, option `--image` specifies a image，option `--port` specifies port for external access. 
 A pod is also created when deployment is created.
-```
+```console
 kubectl create deployment myapp --image=docker.io/jocatalin/kubernetes-bootcamp:v1 --replicas=1 --port=8080
 ```
 
 Get deployment status
-```
+```console
 kubectl get deployment myapp -o wide
 ```
 Result
@@ -304,7 +298,7 @@ myapp   1/1     1            1           79s   kubernetes-bootcamp   docker.io/j
 ```
 
 Get detail information of deployment.
-```
+```console
 kubectl describe deployment myapp
 ```
 Result
@@ -348,7 +342,7 @@ Events:
 ### Expose Service
 
 Get the Pod and Deployment we created just now.
-```
+```console
 kubectl get deployment myapp -o wide
 kubectl get pod -o wide
 ```
@@ -364,7 +358,7 @@ Hello Kubernetes bootcamp! | Running on: myapp-b5d775f5d-6jtgs | v=1
 ```
 
 To make pod be accessed outside, we need expose port `8080` to a node port. A related service will be created. 
-```
+```console
 kubectl expose deployment myapp --type=NodePort --port=8080
 ```
 
@@ -375,13 +369,13 @@ myapp   NodePort   11.244.74.3   <none>        8080:30514/TCP   7s    app=myapp
 ```
 
 Send http request to service port.
-```
+```console
 curl 11.244.74.3:8080
 Hello Kubernetes bootcamp! | Running on: myapp-b5d775f5d-cx8dx | v=1
 ```
 
 Get more details of the service.
-```
+```console
 kubectl get svc myapp -o yaml
 kubectl describe svc myapp
 ```
@@ -395,13 +389,13 @@ myapp   10.244.102.7:8080   43s
 Send http request to the service and node sucessfully. Pod port `8080` is mapped to node port `32566`.
 
 Send http request to node port on `cka003`.
-```
+```console
 curl <cka003_node_ip>:30514
 Hello Kubernetes bootcamp! | Running on: myapp-b5d775f5d-6jtgs | v=1
 ```
 
 Attach to Ubuntu Pod we created and send http request to the Service and Pod and Node of `myapp`.
-```
+```console
 kubectl exec --stdin --tty ubuntu -- /bin/bash
 curl 10.244.102.7:8080
 curl 11.244.74.3:8080
@@ -415,17 +409,17 @@ Hello Kubernetes bootcamp! | Running on: myapp-b5d775f5d-6jtgs | v=1
 ### Scale out Deployment
 
 Scale out by replicaset. We set three replicasets to scale out deployment `myapp`. The number of deployment `myapp` is now three.
-```
+```console
 kubectl scale deployment myapp --replicas=3
 ```
 
 Get status of deployment
-```
+```console
 kubectl get deployment myapp
 ```
 
 Get status of replicaset
-```
+```console
 kubectl get replicaset
 ```
 
@@ -435,17 +429,17 @@ kubectl get replicaset
 Command usage: `kubectl set image (-f FILENAME | TYPE NAME) CONTAINER_NAME_1=CONTAINER_IMAGE_1 ... CONTAINER_NAME_N=CONTAINER_IMAGE_N`.
 
 With the command `kubectl get deployment`, we will get deployment name `myapp` and related container name `kubernetes-bootcamp`.
-```
+```console
 kubectl get deployment myapp -o wide
 ```
 
 With the command `kubectl set image` to update image to many versions and log the change under deployment's annotations with option `--record`.
-```
+```console
 kubectl set image deployment/myapp kubernetes-bootcamp=docker.io/jocatalin/kubernetes-bootcamp:v2 --record
 ```
 
 Current replicas status
-```
+```console
 kubectl get replicaset -o wide -l app=myapp
 ```
 Result. Pods are running on new Replicas.
@@ -456,7 +450,7 @@ myapp-b5d775f5d    3         3         3       14m   kubernetes-bootcamp   docke
 ```
 
 We can get the change history under `metadata.annotations`.
-```
+```console
 kubectl get deployment myapp -o yaml
 ```
 Result
@@ -472,7 +466,7 @@ metadata:
 ```
 
 We can also get the change history by command `kubectl rollout history`, and show details with specific revision `--revision=<revision_number>`.
-```
+```console
 kubectl rollout history deployment/myapp
 ```
 Result
@@ -484,17 +478,17 @@ REVISION  CHANGE-CAUSE
 ```
 
 Get rollout history with specific revision.
-```
+```console
 kubectl rollout history deployment/myapp --revision=2
 ```
 
 Roll back to previous revision with command `kubectl rollout undo `, or roll back to specific revision with option `--to-revision=<revision_number>`.
-```
+```console
 kubectl rollout undo deployment/myapp --to-revision=1
 ```
 
 Revision `1` was replaced by new revision `3` now.
-```
+```console
 kubectl rollout history deployment/myapp
 ```
 Result
@@ -510,7 +504,7 @@ REVISION  CHANGE-CAUSE
 ### Event
 
 Get detail event info of related Pod.
-```
+```console
 kubectl describe pod myapp-b5d775f5d-jlx6g
 ```
 
@@ -527,7 +521,7 @@ Events:
 ```
 
 Get detail event info of entire cluster.
-```
+```console
 kubectl get event
 ```
 
@@ -537,22 +531,21 @@ kubectl get event
 ### Logging
 
 Get log info of Pod.
-```
+```console
 kubectl logs -f <pod_name>
 kubectl logs -f <pod_name> -c <container_name> 
 ```
 
 Get a Pod logs
-```
+```console
 kubectl logs -f myapp-b5d775f5d-jlx6g
 ```
 ```
 Kubernetes Bootcamp App Started At: 2022-07-23T06:54:18.532Z | Running On:  myapp-b5d775f5d-jlx6g
-
 ```
 
 Get log info of K8s components. 
-```
+```console
 kubectl logs kube-apiserver-cka001 -n kube-system
 kubectl logs kube-controller-manager-cka001 -n kube-system
 kubectl logs kube-scheduler-cka001 -n kube-system
@@ -564,7 +557,7 @@ kubectl logs kube-proxy-5cdbj -n kube-system
 
 
 Clean up.
-```
+```console
 kubectl delete service myapp
 kubectl delete deployment myapp
 ```
@@ -573,6 +566,340 @@ kubectl delete deployment myapp
 
 
 
+
+## Health Check
+
+!!! Scenario
+    * Create Deployment and Service
+    * Simulate an error (delete index.html)
+    * Pod is in unhealth status and is removed from endpoint list
+    * Fix the error (revert the index.html)
+    * Pod is back to normal and in endpoint list
+
+Demo:
+
+### Create Deployment and Service
+
+Create Deployment `nginx-healthcheck` and Service `nginx-healthcheck`.
+```console
+kubectl apply -f - <<EOF
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-healthcheck
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      name: nginx-healthcheck
+  template:
+    metadata:
+      labels:
+        name: nginx-healthcheck
+    spec:
+      containers:
+        - name: nginx-healthcheck
+          image: nginx:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80  
+          livenessProbe:
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            tcpSocket:
+              port: 80
+            timeoutSeconds: 5   
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+              scheme: HTTP
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 5
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-healthcheck
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+  type: NodePort
+  selector:
+    name: nginx-healthcheck
+EOF
+
+```
+
+Check Pod `nginx-healthcheck`.
+```console
+kubectl get pod -owide
+```
+Result
+```
+NAME                                 READY   STATUS    RESTARTS   AGE   IP              NODE     NOMINATED NODE   READINESS GATES
+nginx-healthcheck-79fc55d944-jw887   1/1     Running   0          9s    10.244.102.14   cka003   <none>           <none>
+nginx-healthcheck-79fc55d944-nwwjc   1/1     Running   0          9s    10.244.112.13   cka002   <none>           <none>
+```
+
+Access Pod IP via `curl` command, e.g., above example.
+```console
+curl 10.244.102.14
+curl 10.244.112.13
+```
+We see a successful `index.html` content of Nginx below with above example.
+
+Check details of Service craeted in above example.
+```console
+kubectl describe svc nginx-healthcheck
+```
+We will see below output. There are two Pods information listed in `Endpoints`.
+```
+Name:                     nginx-healthcheck
+Namespace:                dev
+Labels:                   <none>
+Annotations:              <none>
+Selector:                 name=nginx-healthcheck
+Type:                     NodePort
+IP Family Policy:         SingleStack
+IP Families:              IPv4
+IP:                       11.244.238.20
+IPs:                      11.244.238.20
+Port:                     <unset>  80/TCP
+TargetPort:               80/TCP
+NodePort:                 <unset>  31795/TCP
+Endpoints:                10.244.102.14:80,10.244.112.13:80
+Session Affinity:         None
+External Traffic Policy:  Cluster
+Events:                   <none>
+```
+
+We can also get information of Endpoints.
+```console
+kubectl get endpoints nginx-healthcheck
+```
+Result
+```
+NAME                ENDPOINTS                           AGE
+nginx-healthcheck   10.244.102.14:80,10.244.112.13:80   72s
+```
+
+Till now, two `nginx-healthcheck` Pods are working and providing service as expected. 
+
+
+### Simulate readinessProbe Failure
+
+Let's simulate an error by deleting and `index.html` file in on of `nginx-healthcheck` Pod and see what's readinessProbe will do.
+
+First, execute `kubectl exec -it <your_pod_name> -- bash` to log into `nginx-healthcheck` Pod, and delete the `index.html` file.
+```console
+kubectl exec -it nginx-healthcheck-79fc55d944-jw887 -- bash
+cd /usr/share/nginx/html/
+rm -rf index.html
+exit
+```
+
+After that, let's check the status of above Pod that `index.html` file was deleted.
+```console
+kubectl describe pod nginx-healthcheck-79fc55d944-jw887
+```
+We can now see `Readiness probe failed` error event message.
+```
+......
+Events:
+  Type     Reason     Age              From               Message
+  ----     ------     ----             ----               -------
+  Normal   Scheduled  2m8s             default-scheduler  Successfully assigned dev/nginx-healthcheck-79fc55d944-jw887 to cka003
+  Normal   Pulled     2m7s             kubelet            Container image "nginx:latest" already present on machine
+  Normal   Created    2m7s             kubelet            Created container nginx-healthcheck
+  Normal   Started    2m7s             kubelet            Started container nginx-healthcheck
+  Warning  Unhealthy  2s (x2 over 7s)  kubelet            Readiness probe failed: HTTP probe failed with statuscode: 403
+```
+
+Let's check another Pod. 
+```console
+kubectl describe pod nginx-healthcheck-79fc55d944-nwwjc
+```
+There is no error info.
+```
+......
+Events:
+  Type    Reason     Age    From               Message
+  ----    ------     ----   ----               -------
+  Normal  Scheduled  3m46s  default-scheduler  Successfully assigned dev/nginx-healthcheck-79fc55d944-nwwjc to cka002
+  Normal  Pulled     3m45s  kubelet            Container image "nginx:latest" already present on machine
+  Normal  Created    3m45s  kubelet            Created container nginx-healthcheck
+  Normal  Started    3m45s  kubelet            Started container nginx-healthcheck
+```
+
+Now, access Pod IP via `curl` command and see what the result of each Pod.
+```console
+curl 10.244.102.14
+curl 10.244.112.13
+```
+
+Result: 
+
+* `curl 10.244.102.14` failed with `403 Forbidden` error below. 
+* `curl 10.244.112.13` works well.
+
+
+Let's check current status of Nginx Service after one of Pods runs into failure. 
+```console
+kubectl describe svc nginx-healthcheck
+```
+
+In below output, there is only one Pod information listed in Endpoint.
+```
+Name:                     nginx-healthcheck
+Namespace:                dev
+Labels:                   <none>
+Annotations:              <none>
+Selector:                 name=nginx-healthcheck
+Type:                     NodePort
+IP Family Policy:         SingleStack
+IP Families:              IPv4
+IP:                       11.244.238.20
+IPs:                      11.244.238.20
+Port:                     <unset>  80/TCP
+TargetPort:               80/TCP
+NodePort:                 <unset>  31795/TCP
+Endpoints:                10.244.112.13:80
+Session Affinity:         None
+External Traffic Policy:  Cluster
+Events:                   <none>
+```
+
+Same result we can get by checking information of Endpoints, which is only Pod is running.
+```console
+kubectl get endpoints nginx-healthcheck 
+```
+Output:
+```
+NAME                ENDPOINTS          AGE
+nginx-healthcheck   10.244.112.13:80   6m5s
+```
+
+
+### Fix readinessProbe Failure
+
+Let's re-create the `index.html` file again in the Pod. 
+```console
+kubectl exec -it nginx-healthcheck-79fc55d944-jw887 -- bash
+
+cd /usr/share/nginx/html/
+
+cat > index.html << EOF 
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+    body {
+        width: 35em;
+        margin: 0 auto;
+        font-family: Tahoma, Verdana, Arial, sans-serif;
+    }
+</style>
+</head>
+<body>
+<h1>Welcome to nginx!</h1>
+<p>If you see this page, the nginx web server is successfully installed and
+working. Further configuration is required.</p>
+
+<p>For online documentation and support please refer to
+<a href="http://nginx.org/">nginx.org</a>.<br/>
+Commercial support is available at
+<a href="http://nginx.com/">nginx.com</a>.</p>
+
+<p><em>Thank you for using nginx.</em></p>
+</body>
+</html>
+EOF
+
+exit
+```
+
+We now can see that two Pods are back to Endpoints to provide service now.
+```console
+kubectl describe svc nginx-healthcheck
+kubectl get endpoints nginx-healthcheck
+```
+
+Re-access Pod IP via `curl` command and we can see both are back to normal status.
+```console
+curl 10.244.102.14
+curl 10.244.112.13
+```
+
+Verify the Pod status again. 
+```console
+kubectl describe pod nginx-healthcheck-79fc55d944-jw887
+```
+
+!!! Conclusion
+
+    By delete the `index.html` file, the Pod is in unhealth status and is removed from endpoint list. 
+
+    One one health Pod can provide normal service.
+
+
+Clean up
+```console
+kubectl delete service nginx-healthcheck
+kubectl delete deployment nginx-healthcheck
+```
+
+
+### Simulate livenessProbe Failure
+
+Re-create Deployment `nginx-healthcheck` and Service `nginx-healthcheck`.
+
+Deployment:
+```
+NAME                     READY   UP-TO-DATE   AVAILABLE   AGE
+nginx-healthcheck        0/2     2            0           7s
+```
+
+Pods:
+```
+NAME                                      READY   STATUS    RESTARTS   AGE
+nginx-healthcheck-79fc55d944-lknp9        1/1     Running   0          96s
+nginx-healthcheck-79fc55d944-wntmg        1/1     Running   0          96s
+```
+
+Change nginx default listening port from `80` to `90` to simulate livenessProbe Failure. livenessProbe check the live status via port `80`. 
+```console
+kubectl exec -it nginx-healthcheck-79fc55d944-lknp9 -- bash
+root@nginx-healthcheck-79fc55d944-lknp9:/# cd /etc/nginx/conf.d
+root@nginx-healthcheck-79fc55d944-lknp9:/etc/nginx/conf.d# sed -i 's/80/90/g' default.conf
+root@nginx-healthcheck-79fc55d944-lknp9:/etc/nginx/conf.d# nginx -s reload
+2022/07/24 12:59:45 [notice] 79#79: signal process started
+```
+
+The Pod runs into failure.
+```console
+kubectl describe pod nginx-healthcheck-79fc55d944-lknp9
+```
+We can see `livenessProbe` failed error event message.
+```
+Events:
+  Type     Reason     Age                    From               Message
+  ----     ------     ----                   ----               -------
+  Normal   Scheduled  17m                    default-scheduler  Successfully assigned dev/nginx-healthcheck-79fc55d944-lknp9 to cka003
+  Normal   Pulled     2m47s (x2 over 17m)    kubelet            Container image "nginx:latest" already present on machine
+  Normal   Created    2m47s (x2 over 17m)    kubelet            Created container nginx-healthcheck
+  Normal   Started    2m47s (x2 over 17m)    kubelet            Started container nginx-healthcheck
+  Warning  Unhealthy  2m47s (x4 over 2m57s)  kubelet            Readiness probe failed: Get "http://10.244.102.46:80/": dial tcp 10.244.102.46:80: connect: connection refused
+  Warning  Unhealthy  2m47s (x3 over 2m57s)  kubelet            Liveness probe failed: dial tcp 10.244.102.46:80: connect: connection refused
+  Normal   Killing    2m47s                  kubelet            Container nginx-healthcheck failed liveness probe, will be restarted
+```
+
+Once failure detected by `livenessProbe`, the container will restarted again automatically. 
+The `default.conf` we modified will be replaced by default file and the container status is up and normal.
 
 
 
