@@ -1,5 +1,7 @@
 # Single Node Installation
 
+## Local VM setting
+
 VMWare Setting.
 
 * VMnet1: host-only, subnet: 192.168.150.0/24
