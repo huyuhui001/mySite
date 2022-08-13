@@ -3,7 +3,7 @@
 !!! Scenario
     * Install Metrics Server component
     * Create Deployment `podinfo` and Service `podinfo` for stress testing
-    * Create HPA `nginx`
+    * Create HPA `my-hpa`
     * Stress Testing
 
 Demo:
@@ -20,7 +20,7 @@ Replace Google image by Aliyun image `image: registry.aliyuncs.com/google_contai
 sed -i 's/k8s\.gcr\.io\/metrics-server\/metrics-server\:v0\.6\.1/registry\.aliyuncs\.com\/google_containers\/metrics-server\:v0\.6\.1/g' components.yaml
 ```
 
-Change `arg` of `metrics-server` by adding `--kubelet-insecure-tls` to disable tls certificate validation. 
+Change `arg` of deployment `metrics-server` by adding `--kubelet-insecure-tls` to disable tls certificate validation. 
 ```console
 vi components.yaml
 ```
@@ -142,20 +142,26 @@ spec:
             memory: "256Mi"
             cpu: "100m"
 EOF
-
 ```
 
 
 
 ## Config HPA
  
-Create HPA `nginx` by setting CPU threshold `50%` to trigger auto-scalling with minimal `2` and maximal `10` Replicas.
+Create HPA `my-hpa` by setting CPU threshold `50%` to trigger auto-scalling with minimal `2` and maximal `10` Replicas.
+
+Use `kubectl autoscal` to create HPA `my-hpa`.
+```
+kubectl autoscale deployment podinfo --cpu-percent=50 --min=1 --max=10
+```
+
+Use `autoscaling/v1` version template to crreate HPA `my-hpa`. 
 ```console
 kubectl apply -f - <<EOF
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
-  name: nginx
+  name: my-hpa
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
@@ -167,14 +173,13 @@ spec:
 EOF
 ```
 
-For `autoscaling/v2` version, we can either use below template to create HPA. 
-And add memory resource in the matrics.
+Use `autoscaling/v2` version template to crreate HPA `my-hpa`, adding memory resource in the matrics.
 ```console
 kubectl apply -f - <<EOF
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: nginx
+  name: my-hpa
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
@@ -198,6 +203,16 @@ spec:
 EOF
 ```
 
+Get status of HPA.
+```console
+kubectl get hpa
+```
+Result:
+```
+NAME     REFERENCE            TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+my-hpa   Deployment/podinfo   2%/50%    2         10        2          60s
+```
+
 !!! Memo
     * `metrics.resource` The values will be averaged together before being compared to the target. 在与目标值比较之前，这些指标值将被平均。
     * `metrics.resource.target.type` represents whether the metric type is Utilization, Value, or AverageValue
@@ -205,18 +220,8 @@ EOF
     * `metrics.resource.target.averageValue` (Quantity) is the target value of the average of the metric across all relevant pods (as a quantity). 跨所有 Pod 得出的指标均值的目标值（以数量形式给出）。
     * `metrics.resource.target.value` (Quantity) is the target value of the metric (as a quantity). 是指标的目标值（以数量形式给出）。
 
-
-
-Get status of HPA.
-```console
-kubectl get hpa
-```
-Result:
-```
-NAME    REFERENCE            TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
-nginx   Deployment/podinfo   5%/50%    2         10        2          21s
-```
-
+!!! info
+    [Algorithm details](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/#algorithm-details)
 
 
 
@@ -232,7 +237,7 @@ The short definition form apache.org is: The acronym `ab` stands for Apache Benc
 
 Execute below command to install `ab` tool.
 ```console
-apt install apache2-utils -y
+sudo apt install apache2-utils -y
 ```
 
 Most common options of `ab` are `-n` and `-c`：
@@ -282,14 +287,18 @@ kubectl get hpa -w
 ```
 After several hours, we can see below result with above command.
 ```
-NAME    REFERENCE            TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
-nginx   Deployment/podinfo   0%/50%    2         10        2          8h 
+NAME     REFERENCE            TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+my-hpa   Deployment/podinfo   2%/50%    2         10        2          60s
 ```
 
 Clean up.
 ```console
 kubectl delete service podinfo
 kubectl delete deployment podinfo
+kubectl delete hpa my-hpa
 ```
+
+
+
 
 
