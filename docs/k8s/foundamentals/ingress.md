@@ -312,14 +312,14 @@ By executing command below, we know Ingress Controllers are running on node `cka
 kubectl get pod -n ingress-nginx -o wide
 ```
 
-Update `/etc/hosts file` in current node. 
+Update `/etc/hosts` file in current node. 
 
 Add mapping between node `cka003` IP and two host names `app1.com` and `app1.com` which present Services `nginx-app-1` and `nginx-app-2`. 
 
 Ingress Controllers are running on node `cka003`
 
 ```console
-cat <<EOF | sudo tee /etc/hosts
+cat <<EOF | sudo tee -a /etc/hosts
 <cka003_ip>  app1.com
 <cka003_ip>  app2.com
 EOF
