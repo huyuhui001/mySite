@@ -532,7 +532,7 @@ Let's show an example of multi-stage build. The multi-stage in the context of Do
 
 Create folder `/opt/tmp-2` and `/opt/tmp-2/tmpl`. 
 
-Create files [edit.html](./assets/edit.html), [view.html](./assets/view.html), [wiki.go](./assets/wiki.go) and structure likes below.
+Create files [edit.html](../assets/edit.html), [view.html](../assets/view.html), [wiki.go](../assets/wiki.go) and structure likes below.
 ```
 tree -l /opt/tmp-2
 ```
