@@ -77,6 +77,8 @@ nav:
         - Installation on Aliyun openSUSE: k8s/installation/aliyun-opensuse.md
         - Installation on Aliyun Ubuntu: k8s/installation/aliyun-ubuntu.md
     - Foundamentals:
+        - Memo: k8s/foundamentals/memo.md
+        - Docker Fundamentals: k8s/foundamentals/docker.md
         - Overview: k8s/foundamentals/overview.md
         - kubectl basics: k8s/foundamentals/basics.md
         - Namespace: k8s/foundamentals/namespace.md
