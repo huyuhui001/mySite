@@ -88,13 +88,13 @@ nav:
     - Service: k8s/foundamentals/service.md
   - Application Modelling:
     - Namespace: k8s/foundamentals/namespace.md
+    - StatefulSet: k8s/foundamentals/statefulset.md
+    - DaemonSet: k8s/foundamentals/daemonset.md
+    - Job and Cronjob: k8s/foundamentals/job.md
     - Configuration: k8s/foundamentals/configuration.md
     - Secrets: k8s/foundamentals/secrets.md
     - Persistence: k8s/foundamentals/persistence.md
     - Role Based Access Control (RBAC): k8s/foundamentals/rbac.md
-    - StatefulSet: k8s/foundamentals/statefulset.md
-    - DaemonSet: k8s/foundamentals/daemonset.md
-    - Job and Cronjob: k8s/foundamentals/job.md
     - Ingress: k8s/foundamentals/ingress.md
   - Advanced Kubernetes:
     - Scheduling: k8s/foundamentals/scheduling.md
