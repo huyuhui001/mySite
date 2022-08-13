@@ -51,7 +51,7 @@ theme:
   - navigation.tabs
   - navigation.tabs.sticky
   - navigation.instant
-  - navigation.sections
+  - navigation.top
  
   palette:
     primary: 'teal'
