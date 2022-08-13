@@ -2,8 +2,12 @@
 
 ## Introduction
 
-This is my learning memo, including contents Linux, Python, and Cloud below. 
+This is my learning memo. 
 The [website](https://huyuhui001.github.io/mySite/) provide same contents with easy reading style.
+
+Kubernetes
+* Local Installation
+* Foundamentals
 
 Linux
 * SUSE Linux Administration
@@ -13,22 +17,6 @@ Python
 * Foundation
 * Data Analysis
 * Practice
-
-Cloud
-* Microservice
-    * Microservices with Kubernetes
-* Kubernetes
-    * Kubernetes Foundamentals
-    * Local Installation
-        + Single Node Installation on Ubuntu Server (Docker)
-        + Multiple Nodes Installation on Ubuntu Server (nerdctl)
-        + Multiple Nodes Installation on openSUSE on Aliyun ECS
-        + Multiple Nodes Installation on Ubuntu on Aliyun ECS
-    * Foundamental on Kyma@SAP BTP
-        + Foundamentals of Docker and Kubernetes on SAP BTP Kyma
-    * Foundamental on Ubuntu
-        + Foundamentals of Kubernetes (inc. replace Flannel by Calico)
-        + Development with Helm
 
 
 ## About the site
