@@ -1,720 +1,19 @@
-
-<!doctype html>
-<html lang="en" class="no-js">
-  <head>
-    
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width,initial-scale=1">
-      
-      
-      
-      
-        <link rel="canonical" href="https://huyuhui001.github.io/mySite/index.html/python/DataAnalysis/ch10/">
-      
-      <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-7.3.6">
-    
-    
-      
-        <title>NumPy进阶 - MEMO</title>
-      
-    
-    
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.a57b2b03.min.css">
-      
-        
-        <link rel="stylesheet" href="../../../assets/stylesheets/palette.3f5d1f46.min.css">
-        
-          
-          
-          <meta name="theme-color" content="#000000">
-        
-      
-    
-    
-    
-      
-        
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
-        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
-      
-    
-    
-    
-    
-      
-
-
-    
-    
-  </head>
-  
-  
-    
-    
-    
-    
-    
-    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="black" data-md-color-accent="deep-blue">
-  
-    
-    <script>function __prefix(e){return new URL("../../..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
-    
-    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
-    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
-    <label class="md-overlay" for="__drawer"></label>
-    <div data-md-component="skip">
-      
-        
-        <a href="#numpy" class="md-skip">
-          Skip to content
-        </a>
-      
-    </div>
-    <div data-md-component="announce">
-      
-    </div>
-    
-      
-
-<header class="md-header" data-md-component="header">
-  <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../../.." title="MEMO" class="md-header__button md-logo" aria-label="MEMO" data-md-component="logo">
-      
-  <img src="../../../assets/logo.jpg" alt="logo">
-
-    </a>
-    <label class="md-header__button md-icon" for="__drawer">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
-    </label>
-    <div class="md-header__title" data-md-component="header-title">
-      <div class="md-header__ellipsis">
-        <div class="md-header__topic">
-          <span class="md-ellipsis">
-            MEMO
-          </span>
-        </div>
-        <div class="md-header__topic" data-md-component="header-topic">
-          <span class="md-ellipsis">
-            
-              NumPy进阶
-            
-          </span>
-        </div>
-      </div>
-    </div>
-    
-    
-    
-      <label class="md-header__button md-icon" for="__search">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
-      </label>
-      
-<div class="md-search" data-md-component="search" role="dialog">
-  <label class="md-search__overlay" for="__search"></label>
-  <div class="md-search__inner" role="search">
-    <form class="md-search__form" name="search">
-      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
-      <label class="md-search__icon md-icon" for="__search">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
-      </label>
-      <nav class="md-search__options" aria-label="Search">
-        
-        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
-        </button>
-      </nav>
-      
-    </form>
-    <div class="md-search__output">
-      <div class="md-search__scrollwrap" data-md-scrollfix>
-        <div class="md-search-result" data-md-component="search-result">
-          <div class="md-search-result__meta">
-            Initializing search
-          </div>
-          <ol class="md-search-result__list"></ol>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-    
-    
-  </nav>
-  
-</header>
-    
-    <div class="md-container" data-md-component="container">
-      
-      
-        
-          
-        
-      
-      <main class="md-main" data-md-component="main">
-        <div class="md-main__inner md-grid">
-          
-            
-              
-              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
-                <div class="md-sidebar__scrollwrap">
-                  <div class="md-sidebar__inner">
-                    
-
-
-<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
-  <label class="md-nav__title" for="__drawer">
-    <a href="../../.." title="MEMO" class="md-nav__button md-logo" aria-label="MEMO" data-md-component="logo">
-      
-  <img src="../../../assets/logo.jpg" alt="logo">
-
-    </a>
-    MEMO
-  </label>
-  
-  <ul class="md-nav__list" data-md-scrollfix>
-    
-      
-      
-      
-
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1" data-md-state="indeterminate" type="checkbox" id="__nav_1" checked>
-      
-      
-      
-      
-        <label class="md-nav__link" for="__nav_1">
-          Linux
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" aria-label="Linux" data-md-level="1">
-        <label class="md-nav__title" for="__nav_1">
-          <span class="md-nav__icon md-icon"></span>
-          Linux
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../linux/Administration/linux_admin/" class="md-nav__link">
-        SUSE Linux Administration
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../linux/SES/linux_ses/" class="md-nav__link">
-        SUSE Enterprise Storage Foundation
-      </a>
-    </li>
-  
-
-            
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" data-md-state="indeterminate" type="checkbox" id="__nav_2" checked>
-      
-      
-      
-      
-        <label class="md-nav__link" for="__nav_2">
-          Python
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" aria-label="Python" data-md-level="1">
-        <label class="md-nav__title" for="__nav_2">
-          <span class="md-nav__icon md-icon"></span>
-          Python
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../Foundation/python_foundation_index/" class="md-nav__link">
-        Python Foundamentals
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../python_data_analysis_index/" class="md-nav__link">
-        Data Analysis
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../Demo/python_demo_index/" class="md-nav__link">
-        Demos
-      </a>
-    </li>
-  
-
-            
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" data-md-state="indeterminate" type="checkbox" id="__nav_3" checked>
-      
-      
-      
-      
-        <label class="md-nav__link" for="__nav_3">
-          Cloud
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" aria-label="Cloud" data-md-level="1">
-        <label class="md-nav__title" for="__nav_3">
-          <span class="md-nav__icon md-icon"></span>
-          Cloud
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../cloud/MicroservicesKubernetes/" class="md-nav__link">
-        Microservices with K8s
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../cloud/KubernetesFoundationMemo/" class="md-nav__link">
-        K8s Foundamentals
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../cloud/Kubernetes-Installation/" class="md-nav__link">
-        K8s Installation
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../cloud/KubernetesTutorials-BTP-trail/" class="md-nav__link">
-        K8s Demos on Kyma@SAP BTP
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../cloud/KubernetesTutorials-Aliyun-Foundamentals/" class="md-nav__link">
-        K8s Demos on Ubuntu@Aliyun
-      </a>
-    </li>
-  
-
-            
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../about/" class="md-nav__link">
-        About
-      </a>
-    </li>
-  
-
-    
-  </ul>
-</nav>
-                  </div>
-                </div>
-              </div>
-            
-            
-              
-              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
-                <div class="md-sidebar__scrollwrap">
-                  <div class="md-sidebar__inner">
-                    
-
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#ndarray" class="md-nav__link">
-    ndarray对象的内部机理
-  </a>
-  
-    <nav class="md-nav" aria-label="ndarray对象的内部机理">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#numpy-dtype" class="md-nav__link">
-    NumPy dtype层次结构
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_1" class="md-nav__link">
-    高级数组操作
-  </a>
-  
-    <nav class="md-nav" aria-label="高级数组操作">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#_2" class="md-nav__link">
-    重塑数组
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#cf" class="md-nav__link">
-    C顺序和F顺序
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_3" class="md-nav__link">
-    数组连接和分隔
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#r_c_" class="md-nav__link">
-    数组堆叠的方法：r_和c_
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#tilerepeat" class="md-nav__link">
-    重复元素：tile和repeat
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#fancy-indexingtakeput" class="md-nav__link">
-    神奇索引（Fancy Indexing）的等价方法：take和put
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_4" class="md-nav__link">
-    广播
-  </a>
-  
-    <nav class="md-nav" aria-label="广播">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#_5" class="md-nav__link">
-    广播的规则
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_6" class="md-nav__link">
-    一维广播
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_7" class="md-nav__link">
-    二维广播
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_8" class="md-nav__link">
-    三维广播
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#n" class="md-nav__link">
-    N维广播
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_9" class="md-nav__link">
-    通过广播设定数组的值
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#ufunc" class="md-nav__link">
-    ufunc高级应用
-  </a>
-  
-    <nav class="md-nav" aria-label="ufunc高级应用">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#ufunc_1" class="md-nav__link">
-    ufunc实例方法
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#pythonufunc" class="md-nav__link">
-    使用Python编写新的ufunc方法
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_10" class="md-nav__link">
-    结构化和记录式数组
-  </a>
-  
-    <nav class="md-nav" aria-label="结构化和记录式数组">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#dtype" class="md-nav__link">
-    嵌套dtype和多维字段
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_11" class="md-nav__link">
-    为什么要使用结构化数组
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-                  </div>
-                </div>
-              </div>
-            
-          
-          <div class="md-content" data-md-component="content">
-            <article class="md-content__inner md-typeset">
-              
-                
-                
-                <h1 id="numpy">NumPy进阶</h1>
-<p>包含以下内容：</p>
-<ul>
-<li>ndarray对象的内部机理</li>
-<li>高级数组操作<ul>
-<li>重塑数组</li>
-<li>C顺序和F顺序</li>
-<li>连接和分隔数组</li>
-<li>堆叠助手：r 和c</li>
-<li>重复元素：tile和repeat</li>
-<li>神奇索引的等价方法：take和put</li>
-</ul>
-</li>
-<li>广播</li>
-<li>ufunc高级应用</li>
-<li>结构化和记录式数组</li>
-</ul>
-<h2 id="ndarray">ndarray对象的内部机理</h2>
-<p>NumPy的<code>ndarray</code>提供了一种将同质数据块（可以是连续或跨越）解释为多维数组对象的方式。
-<code>ndarray</code>的数据类型<code>dtype</code>决定了数据的解释方式，比如浮点数、整数、布尔值等。
-<code>ndarray</code>的所有数组对象都是数据块的一个跨度视图（strided view）。</p>
-<p>数组视图<code>arr[::2,::-1]</code>不复制任何数据的原因是什么？
-简单地说，<code>ndarray</code>不只是一块内存和一个<code>dtype</code>，它还有跨度信息，这使得数组能以各种步幅（step size）在内存中移动。</p>
-<p>更准确地讲，<code>ndarray</code>内部由以下内容组成：</p>
-<ul>
-<li>一个指向数据（内存或内存映射文件中的一块数据）的指针。</li>
-<li>数据类型或<code>dtype</code>，描述在数组中的固定大小值的格子。</li>
-<li>一个表示数组形状（shape）的元组。</li>
-<li>一个跨度元组（stride），其中的整数指的是为了前进到当前维度下一个元素需要“跨过”的字节数。</li>
-</ul>
-<p>例如，一个10×5的数组，其shape为(10, 5)：</p>
-<pre><code>s = np.ones((10, 5)).shape
+<!doctype html><html lang=en class=no-js> <head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><link href=https://huyuhui001.github.io/mySite/python/DataAnalysis/ch10/ rel=canonical><link rel=icon href=../../../assets/images/favicon.png><meta name=generator content="mkdocs-1.3.0, mkdocs-material-7.3.6"><title>NumPy进阶 - MEMO</title><link rel=stylesheet href=../../../assets/stylesheets/main.a57b2b03.min.css><link rel=stylesheet href=../../../assets/stylesheets/palette.3f5d1f46.min.css><meta name=theme-color content=#009485><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback"><style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style><link rel=stylesheet href=../../../extra.css></head> <body dir=ltr data-md-color-scheme data-md-color-primary=teal data-md-color-accent=green> <script>function __prefix(e){return new URL("../../..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script> <input class=md-toggle data-md-toggle=drawer type=checkbox id=__drawer autocomplete=off> <input class=md-toggle data-md-toggle=search type=checkbox id=__search autocomplete=off> <label class=md-overlay for=__drawer></label> <div data-md-component=skip> <a href=#numpy class=md-skip> Skip to content </a> </div> <div data-md-component=announce> </div> <header class="md-header md-header--lifted" data-md-component=header> <nav class="md-header__inner md-grid" aria-label=Header> <a href=../../.. title=MEMO class="md-header__button md-logo" aria-label=MEMO data-md-component=logo> <img src=../../../assets/logo.jpg alt=logo> </a> <label class="md-header__button md-icon" for=__drawer> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg> </label> <div class=md-header__title data-md-component=header-title> <div class=md-header__ellipsis> <div class=md-header__topic> <span class=md-ellipsis> MEMO </span> </div> <div class=md-header__topic data-md-component=header-topic> <span class=md-ellipsis> NumPy进阶 </span> </div> </div> </div> <label class="md-header__button md-icon" for=__search> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg> </label> <div class=md-search data-md-component=search role=dialog> <label class=md-search__overlay for=__search></label> <div class=md-search__inner role=search> <form class=md-search__form name=search> <input type=text class=md-search__input name=query aria-label=Search placeholder=Search autocapitalize=off autocorrect=off autocomplete=off spellcheck=false data-md-component=search-query required> <label class="md-search__icon md-icon" for=__search> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg> </label> <nav class=md-search__options aria-label=Search> <button type=reset class="md-search__icon md-icon" aria-label=Clear tabindex=-1> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg> </button> </nav> </form> <div class=md-search__output> <div class=md-search__scrollwrap data-md-scrollfix> <div class=md-search-result data-md-component=search-result> <div class=md-search-result__meta> Initializing search </div> <ol class=md-search-result__list></ol> </div> </div> </div> </div> </div> <div class=md-header__source> <a href=https://github.com/huyuhui001/mySite title="Go to repository" class=md-source data-md-component=source> <div class="md-source__icon md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg> </div> <div class=md-source__repository> huyuhui001/mySite </div> </a> </div> </nav> <nav class=md-tabs aria-label=Tabs data-md-component=tabs> <div class="md-tabs__inner md-grid"> <ul class=md-tabs__list> <li class=md-tabs__item> <a href=../../../linux/Administration/linux_admin/ class=md-tabs__link> Linux </a> </li> <li class=md-tabs__item> <a href=../../../k8s/installation/single-local/ class=md-tabs__link> Kubernetes </a> </li> <li class=md-tabs__item> <a href=../../Foundation/python_foundation_index/ class=md-tabs__link> Python </a> </li> </ul> </div> </nav> </header> <div class=md-container data-md-component=container> <main class=md-main data-md-component=main> <div class="md-main__inner md-grid"> <div class="md-sidebar md-sidebar--primary" data-md-component=sidebar data-md-type=navigation> <div class=md-sidebar__scrollwrap> <div class=md-sidebar__inner> <nav class="md-nav md-nav--primary md-nav--lifted" aria-label=Navigation data-md-level=0> <label class=md-nav__title for=__drawer> <a href=../../.. title=MEMO class="md-nav__button md-logo" aria-label=MEMO data-md-component=logo> <img src=../../../assets/logo.jpg alt=logo> </a> MEMO </label> <div class=md-nav__source> <a href=https://github.com/huyuhui001/mySite title="Go to repository" class=md-source data-md-component=source> <div class="md-source__icon md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg> </div> <div class=md-source__repository> huyuhui001/mySite </div> </a> </div> <ul class=md-nav__list data-md-scrollfix> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_1 type=checkbox id=__nav_1> <label class=md-nav__link for=__nav_1> Linux <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label=Linux data-md-level=1> <label class=md-nav__title for=__nav_1> <span class="md-nav__icon md-icon"></span> Linux </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../linux/Administration/linux_admin/ class=md-nav__link> SUSE Linux Administration </a> </li> <li class=md-nav__item> <a href=../../../linux/SES/linux_ses/ class=md-nav__link> SUSE Enterprise Storage Foundation </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_2 type=checkbox id=__nav_2> <label class=md-nav__link for=__nav_2> Kubernetes <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label=Kubernetes data-md-level=1> <label class=md-nav__title for=__nav_2> <span class="md-nav__icon md-icon"></span> Kubernetes </label> <ul class=md-nav__list data-md-scrollfix> <li class="md-nav__item md-nav__item--section md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_2_1 type=checkbox id=__nav_2_1> <label class=md-nav__link for=__nav_2_1> Installation <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label=Installation data-md-level=2> <label class=md-nav__title for=__nav_2_1> <span class="md-nav__icon md-icon"></span> Installation </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../k8s/installation/single-local/ class=md-nav__link> Single Node Installation </a> </li> <li class=md-nav__item> <a href=../../../k8s/installation/multiple-local/ class=md-nav__link> Multiple Nodes Installation </a> </li> <li class=md-nav__item> <a href=../../../k8s/installation/aliyun-opensuse/ class=md-nav__link> Installation on Aliyun openSUSE </a> </li> <li class=md-nav__item> <a href=../../../k8s/installation/aliyun-ubuntu/ class=md-nav__link> Installation on Aliyun Ubuntu </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--section md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_2_2 type=checkbox id=__nav_2_2> <label class=md-nav__link for=__nav_2_2> Foundamentals <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label=Foundamentals data-md-level=2> <label class=md-nav__title for=__nav_2_2> <span class="md-nav__icon md-icon"></span> Foundamentals </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../k8s/foundamentals/memo/ class=md-nav__link> Memo </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/docker/ class=md-nav__link> Docker Fundamentals </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/overview/ class=md-nav__link> Overview </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/basics/ class=md-nav__link> kubectl basics </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/namespace/ class=md-nav__link> Namespace </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/pod/ class=md-nav__link> Work on pod </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/deployment/ class=md-nav__link> Deployment </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/statefulset/ class=md-nav__link> StatefulSet </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/daemonset/ class=md-nav__link> DaemonSet </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/job/ class=md-nav__link> Job and Cronjob </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/hpa/ class=md-nav__link> Horizontal Pod Autoscaling </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/service/ class=md-nav__link> Service </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/ingress/ class=md-nav__link> Ingress </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/persistence/ class=md-nav__link> Persistence </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/scheduling/ class=md-nav__link> Scheduling </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/policy/ class=md-nav__link> Policy </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/configuration/ class=md-nav__link> Configuration </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/rbac/ class=md-nav__link> Role Based Access Control (RBAC) </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/networkpolicy/ class=md-nav__link> Network Policy </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/clustermgt/ class=md-nav__link> Cluster Management </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/helming/ class=md-nav__link> Helming </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/troubleshooting/ class=md-nav__link> Troubleshooting </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/healthcheck/ class=md-nav__link> Health Check </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/casestudy/ class=md-nav__link> Case Study </a> </li> </ul> </nav> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_3 type=checkbox id=__nav_3> <label class=md-nav__link for=__nav_3> Python <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label=Python data-md-level=1> <label class=md-nav__title for=__nav_3> <span class="md-nav__icon md-icon"></span> Python </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../Foundation/python_foundation_index/ class=md-nav__link> Python Foundamentals </a> </li> <li class=md-nav__item> <a href=../python_data_analysis_index/ class=md-nav__link> Data Analysis </a> </li> <li class=md-nav__item> <a href=../../Demo/python_demo_index/ class=md-nav__link> Demos </a> </li> </ul> </nav> </li> </ul> </nav> </div> </div> </div> <div class="md-sidebar md-sidebar--secondary" data-md-component=sidebar data-md-type=toc> <div class=md-sidebar__scrollwrap> <div class=md-sidebar__inner> <nav class="md-nav md-nav--secondary" aria-label="Table of contents"> <label class=md-nav__title for=__toc> <span class="md-nav__icon md-icon"></span> Table of contents </label> <ul class=md-nav__list data-md-component=toc data-md-scrollfix> <li class=md-nav__item> <a href=#ndarray class=md-nav__link> ndarray对象的内部机理 </a> <nav class=md-nav aria-label=ndarray对象的内部机理> <ul class=md-nav__list> <li class=md-nav__item> <a href=#numpy-dtype class=md-nav__link> NumPy dtype层次结构 </a> </li> </ul> </nav> </li> <li class=md-nav__item> <a href=#_1 class=md-nav__link> 高级数组操作 </a> <nav class=md-nav aria-label=高级数组操作> <ul class=md-nav__list> <li class=md-nav__item> <a href=#_2 class=md-nav__link> 重塑数组 </a> </li> <li class=md-nav__item> <a href=#cf class=md-nav__link> C顺序和F顺序 </a> </li> <li class=md-nav__item> <a href=#_3 class=md-nav__link> 数组连接和分隔 </a> </li> <li class=md-nav__item> <a href=#r_c_ class=md-nav__link> 数组堆叠的方法：r_和c_ </a> </li> <li class=md-nav__item> <a href=#tilerepeat class=md-nav__link> 重复元素：tile和repeat </a> </li> <li class=md-nav__item> <a href=#fancy-indexingtakeput class=md-nav__link> 神奇索引（Fancy Indexing）的等价方法：take和put </a> </li> </ul> </nav> </li> <li class=md-nav__item> <a href=#_4 class=md-nav__link> 广播 </a> <nav class=md-nav aria-label=广播> <ul class=md-nav__list> <li class=md-nav__item> <a href=#_5 class=md-nav__link> 广播的规则 </a> </li> <li class=md-nav__item> <a href=#_6 class=md-nav__link> 一维广播 </a> </li> <li class=md-nav__item> <a href=#_7 class=md-nav__link> 二维广播 </a> </li> <li class=md-nav__item> <a href=#_8 class=md-nav__link> 三维广播 </a> </li> <li class=md-nav__item> <a href=#n class=md-nav__link> N维广播 </a> </li> <li class=md-nav__item> <a href=#_9 class=md-nav__link> 通过广播设定数组的值 </a> </li> </ul> </nav> </li> <li class=md-nav__item> <a href=#ufunc class=md-nav__link> ufunc高级应用 </a> <nav class=md-nav aria-label=ufunc高级应用> <ul class=md-nav__list> <li class=md-nav__item> <a href=#ufunc_1 class=md-nav__link> ufunc实例方法 </a> </li> <li class=md-nav__item> <a href=#pythonufunc class=md-nav__link> 使用Python编写新的ufunc方法 </a> </li> </ul> </nav> </li> <li class=md-nav__item> <a href=#_10 class=md-nav__link> 结构化和记录式数组 </a> <nav class=md-nav aria-label=结构化和记录式数组> <ul class=md-nav__list> <li class=md-nav__item> <a href=#dtype class=md-nav__link> 嵌套dtype和多维字段 </a> </li> <li class=md-nav__item> <a href=#_11 class=md-nav__link> 为什么要使用结构化数组 </a> </li> </ul> </nav> </li> </ul> </nav> </div> </div> </div> <div class=md-content data-md-component=content> <article class="md-content__inner md-typeset"> <a href=https://github.com/huyuhui001/mySite/edit/main/docs/python/DataAnalysis/ch10.md title="Edit this page" class="md-content__button md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg> </a> <h1 id=numpy>NumPy进阶<a class=headerlink href=#numpy title="Permanent link"> ¶</a></h1> <p>包含以下内容：</p> <ul> <li>ndarray对象的内部机理</li> <li>高级数组操作<ul> <li>重塑数组</li> <li>C顺序和F顺序</li> <li>连接和分隔数组</li> <li>堆叠助手：r 和c</li> <li>重复元素：tile和repeat</li> <li>神奇索引的等价方法：take和put</li> </ul> </li> <li>广播</li> <li>ufunc高级应用</li> <li>结构化和记录式数组</li> </ul> <h2 id=ndarray>ndarray对象的内部机理<a class=headerlink href=#ndarray title="Permanent link"> ¶</a></h2> <p>NumPy的<code>ndarray</code>提供了一种将同质数据块（可以是连续或跨越）解释为多维数组对象的方式。 <code>ndarray</code>的数据类型<code>dtype</code>决定了数据的解释方式，比如浮点数、整数、布尔值等。 <code>ndarray</code>的所有数组对象都是数据块的一个跨度视图（strided view）。</p> <p>数组视图<code>arr[::2,::-1]</code>不复制任何数据的原因是什么？ 简单地说，<code>ndarray</code>不只是一块内存和一个<code>dtype</code>，它还有跨度信息，这使得数组能以各种步幅（step size）在内存中移动。</p> <p>更准确地讲，<code>ndarray</code>内部由以下内容组成：</p> <ul> <li>一个指向数据（内存或内存映射文件中的一块数据）的指针。</li> <li>数据类型或<code>dtype</code>，描述在数组中的固定大小值的格子。</li> <li>一个表示数组形状（shape）的元组。</li> <li>一个跨度元组（stride），其中的整数指的是为了前进到当前维度下一个元素需要“跨过”的字节数。</li> </ul> <p>例如，一个10×5的数组，其shape为(10, 5)： <div class=highlight><pre><span></span><code>s = np.ones((10, 5)).shape
 print(s)
 # (10, 5)
-</code></pre>
-<p>一个典型的（C阶）3×4×5 float64值（8字节）的数组具有跨度（160,40,8）（通常特定轴上的跨度越大，沿着该轴执行计算的代价越高）：</p>
-<pre><code>s = np.ones((3, 4, 5), dtype=np.float64).strides
+</code></pre></div></p> <p>一个典型的（C阶）3×4×5 float64值（8字节）的数组具有跨度（160,40,8）（通常特定轴上的跨度越大，沿着该轴执行计算的代价越高）： <div class=highlight><pre><span></span><code>s = np.ones((3, 4, 5), dtype=np.float64).strides
 print(s)
 # (160, 40, 8)
-</code></pre>
-<p>数组跨度（strides）是构建“零复制”数组视图的关键因素。</p>
-<p>数组跨度甚至可以是负的，这使得数组能够穿过内存“向后”移动（例如，在诸如obj[::-1]或obj[:, ::-1]的切片中就是这种情况）。</p>
-<h3 id="numpy-dtype">NumPy dtype层次结构</h3>
-<p>有时候需要通过一些代码来检查数组是否包含整数、浮点数、字符串或Python对象。
-由于浮点数有多种类型（float16到float128），因此检查dtype是否在类型列表中会非常麻烦。
-dtype有超类，如np.integer和np.floating，它们可以和np.issubdtype函数一起使用：</p>
-<pre><code>ints = np.ones(10, dtype=np.uint16)
+</code></pre></div></p> <p>数组跨度（strides）是构建“零复制”数组视图的关键因素。</p> <p>数组跨度甚至可以是负的，这使得数组能够穿过内存“向后”移动（例如，在诸如obj[::-1]或obj[:, ::-1]的切片中就是这种情况）。</p> <h3 id=numpy-dtype>NumPy dtype层次结构<a class=headerlink href=#numpy-dtype title="Permanent link"> ¶</a></h3> <p>有时候需要通过一些代码来检查数组是否包含整数、浮点数、字符串或Python对象。 由于浮点数有多种类型（float16到float128），因此检查dtype是否在类型列表中会非常麻烦。 dtype有超类，如np.integer和np.floating，它们可以和np.issubdtype函数一起使用： <div class=highlight><pre><span></span><code>ints = np.ones(10, dtype=np.uint16)
 floats = np.ones(10, dtype=np.float32)
-</code></pre>
-<p>可以通过调用类型的mro方法来查看特定dtype的所有父类：</p>
-<pre><code>print(np.float64.mro())
-# [&lt;class 'numpy.float64'&gt;,
-#  &lt;class 'numpy.floating'&gt;,
-#  &lt;class 'numpy.inexact'&gt;,
-#  &lt;class 'numpy.number'&gt;,
-#  &lt;class 'numpy.generic'&gt;,
-#  &lt;class 'float'&gt;,
-#  &lt;class 'object'&gt;]
+</code></pre></div></p> <p>可以通过调用类型的mro方法来查看特定dtype的所有父类： <div class=highlight><pre><span></span><code>print(np.float64.mro())
+# [&lt;class &#39;numpy.float64&#39;&gt;,
+#  &lt;class &#39;numpy.floating&#39;&gt;,
+#  &lt;class &#39;numpy.inexact&#39;&gt;,
+#  &lt;class &#39;numpy.number&#39;&gt;,
+#  &lt;class &#39;numpy.generic&#39;&gt;,
+#  &lt;class &#39;float&#39;&gt;,
+#  &lt;class &#39;object&#39;&gt;]
 
 print(np.issubdtype(ints.dtype, np.integer))
 # True
@@ -724,42 +23,31 @@ print(np.issubdtype(floats.dtype, np.number))
 # True
 print(np.issubdtype(floats.dtype, np.generic))
 # True
-</code></pre>
-<h2 id="_1">高级数组操作</h2>
-<h3 id="_2">重塑数组</h3>
-<p>通常，通过<code>reshape</code>将数组从一个形状转换为另一个形状，并且不复制任何数据。
-<code>reshape</code>里面有两种重塑顺序，按C顺序（行方向）的重塑和按Fortran顺序（列方向）的重塑。
-首先是取数，然后是放数，取数按什么顺序，放数就按什么顺序。</p>
-<p>下面是官网的解释：</p>
-<pre><code>‘C’ means to read / write the elements using C-like index order, with the last axis index changing fastest, back to the first axis index changing slowest.
+</code></pre></div></p> <h2 id=_1>高级数组操作<a class=headerlink href=#_1 title="Permanent link"> ¶</a></h2> <h3 id=_2>重塑数组<a class=headerlink href=#_2 title="Permanent link"> ¶</a></h3> <p>通常，通过<code>reshape</code>将数组从一个形状转换为另一个形状，并且不复制任何数据。 <code>reshape</code>里面有两种重塑顺序，按C顺序（行方向）的重塑和按Fortran顺序（列方向）的重塑。 首先是取数，然后是放数，取数按什么顺序，放数就按什么顺序。</p> <p>下面是官网的解释：</p> <div class=highlight><pre><span></span><code>‘C’ means to read / write the elements using C-like index order, with the last axis index changing fastest, back to the first axis index changing slowest.
 
 ‘F’ means to read / write the elements using Fortran-like index order, with the first index changing fastest, and the last index changing slowest.
 
 Note that the ‘C’ and ‘F’ options take no account of the memory layout of the underlying array, and only refer to the order of indexing.
 
 ‘A’ means to read / write the elements in Fortran-like index order if a is Fortran contiguous in memory, C-like order otherwise.
-</code></pre>
-<p>一维数组重塑：</p>
-<pre><code>arr = np.arange(8)
+</code></pre></div> <p>一维数组重塑： <div class=highlight><pre><span></span><code>arr = np.arange(8)
 print(arr)
 # [0 1 2 3 4 5 6 7]
 
-a = arr.reshape((4, 2), order='C')
+a = arr.reshape((4, 2), order=&#39;C&#39;)
 print(a)
 # [[0 1]
 #  [2 3]
 #  [4 5]
 #  [6 7]]
 
-a = arr.reshape((4, 2), order='F')
+a = arr.reshape((4, 2), order=&#39;F&#39;)
 print(a)
 # [[0 4]
 #  [1 5]
 #  [2 6]
 #  [3 7]]
-</code></pre>
-<p>多维数组重塑：传递的形状维度可以有一个值是-1，表示维度通过数据进行推断：</p>
-<pre><code>a = arr.reshape((4, 2)).reshape((2, 4))
+</code></pre></div></p> <p>多维数组重塑：传递的形状维度可以有一个值是-1，表示维度通过数据进行推断： <div class=highlight><pre><span></span><code>a = arr.reshape((4, 2)).reshape((2, 4))
 print(a)
 # [[0 1 2 3]
 #  [4 5 6 7]]
@@ -774,19 +62,14 @@ print(a)
 #  [12 13 14]]
 print(a.shape)
 # (5, 3)
-</code></pre>
-<p>数组的<code>shape</code>属性是一个<strong>元组</strong>，它也可以被传递给<code>reshape</code>，接上例：</p>
-<pre><code>other_arr = np.ones((3, 5))
+</code></pre></div></p> <p>数组的<code>shape</code>属性是一个**元组**，它也可以被传递给<code>reshape</code>，接上例： <div class=highlight><pre><span></span><code>other_arr = np.ones((3, 5))
 print(other_arr.shape)
 # (3, 5)
 
 a = arr.reshape(other_arr.shape)
 print(a.shape)
 # (3, 5)
-</code></pre>
-<p><code>reshape</code>的反操作可以将更高维度的数组转换为一维数组，这种操作通常被成为扁平化（flattening）或分散化（raveling）。</p>
-<p>如果结果中的值在原始数组中是连续的，则<code>ravel</code>不会生成底层数值的副本。<code>flatten</code>方法的行为类似于<code>ravel</code>，但它总是生成数据的副本。</p>
-<pre><code>arr = np.arange(15).reshape((5, 3))
+</code></pre></div></p> <p><code>reshape</code>的反操作可以将更高维度的数组转换为一维数组，这种操作通常被成为扁平化（flattening）或分散化（raveling）。</p> <p>如果结果中的值在原始数组中是连续的，则<code>ravel</code>不会生成底层数值的副本。<code>flatten</code>方法的行为类似于<code>ravel</code>，但它总是生成数据的副本。 <div class=highlight><pre><span></span><code>arr = np.arange(15).reshape((5, 3))
 print(arr)
 # [[ 0  1  2]
 #  [ 3  4  5]
@@ -801,12 +84,7 @@ print(a)
 a = arr.flatten()
 print(a)
 # [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14]
-</code></pre>
-<h3 id="cf">C顺序和F顺序</h3>
-<p>数据可以按照不同的顺序进行重塑或扁平化。默认情况下，NumPy数组是按行方向顺序创建的。</p>
-<p>对于一个二维的数据数组，<strong>C顺序</strong>说明数组每行中的元素存储在相邻的存储单元中。<strong>F顺序</strong>意味着每列数据中的值都存储在相邻的内存位置中。</p>
-<p>可以通过设置<code>reshape</code>和<code>ravel</code>函数的<code>order</code>参数来表示数据在数组中使用哪种顺序。</p>
-<pre><code>arr = np.arange(15).reshape((5, 3))
+</code></pre></div></p> <h3 id=cf>C顺序和F顺序<a class=headerlink href=#cf title="Permanent link"> ¶</a></h3> <p>数据可以按照不同的顺序进行重塑或扁平化。默认情况下，NumPy数组是按行方向顺序创建的。</p> <p>对于一个二维的数据数组，**C顺序**说明数组每行中的元素存储在相邻的存储单元中。**F顺序**意味着每列数据中的值都存储在相邻的内存位置中。</p> <p>可以通过设置<code>reshape</code>和<code>ravel</code>函数的<code>order</code>参数来表示数据在数组中使用哪种顺序。 <div class=highlight><pre><span></span><code>arr = np.arange(15).reshape((5, 3))
 print(arr)
 # [[ 0  1  2]
 #  [ 3  4  5]
@@ -817,15 +95,9 @@ print(arr)
 print(arr.ravel())
 # [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14]
 
-print(arr.ravel('F'))
+print(arr.ravel(&#39;F&#39;))
 # [ 0  3  6  9 12  1  4  7 10 13  2  5  8 11 14]
-</code></pre>
-<p>C顺序和Fortran顺序的核心区别就是在维度方向上遍历的方式。
-C顺序/行方向顺序首先遍历更高的维度（例如，在轴0上行进之前先在轴1上行进）。
-Fortran顺序/列方向顺序最后遍历更高的维度（例如，在轴1上行进之前先在轴0上行进）。</p>
-<h3 id="_3">数组连接和分隔</h3>
-<p><code>numpy.concatenate</code>可以获取数组的序列（元组、列表等），并沿着输入轴将它们按顺序连接在一起：</p>
-<pre><code>arr1 = np.array(
+</code></pre></div></p> <p>C顺序和Fortran顺序的核心区别就是在维度方向上遍历的方式。 C顺序/行方向顺序首先遍历更高的维度（例如，在轴0上行进之前先在轴1上行进）。 Fortran顺序/列方向顺序最后遍历更高的维度（例如，在轴1上行进之前先在轴0上行进）。</p> <h3 id=_3>数组连接和分隔<a class=headerlink href=#_3 title="Permanent link"> ¶</a></h3> <p><code>numpy.concatenate</code>可以获取数组的序列（元组、列表等），并沿着输入轴将它们按顺序连接在一起： <div class=highlight><pre><span></span><code>arr1 = np.array(
     [
         [1, 2, 3],
         [4, 5, 6]
@@ -850,9 +122,7 @@ a = np.concatenate([arr1, arr2], axis=1)
 print(a)
 # [[ 1  2  3  7  8  9]
 #  [ 4  5  6 10 11 12]]
-</code></pre>
-<p>其他类似<code>concatenate</code>的函数。<code>vstack</code>类似<code>concatenate</code>沿<code>axis=0</code>操作，<code>hstack</code>类似<code>concatenate</code>沿<code>axis=1</code>操作。</p>
-<pre><code>a = np.vstack((arr1, arr2))
+</code></pre></div></p> <p>其他类似<code>concatenate</code>的函数。<code>vstack</code>类似<code>concatenate</code>沿<code>axis=0</code>操作，<code>hstack</code>类似<code>concatenate</code>沿<code>axis=1</code>操作。 <div class=highlight><pre><span></span><code>a = np.vstack((arr1, arr2))
 print(a)
 # [[ 1  2  3]
 #  [ 4  5  6]
@@ -863,29 +133,21 @@ a = np.hstack((arr1, arr2))
 print(a)
 # [[ 1  2  3  7  8  9]
 #  [ 4  5  6 10 11 12]]
-</code></pre>
-<p><code>split</code>可以将一个数组沿轴向切片成多个数组。先看一维数组。<code>np.split(arr, 3)</code>表示将数组拆分时的<strong>索引位置</strong></p>
-<pre><code>arr = np.array(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k'])
+</code></pre></div></p> <p><code>split</code>可以将一个数组沿轴向切片成多个数组。先看一维数组。<code>np.split(arr, 3)</code>表示将数组拆分时的**索引位置** <div class=highlight><pre><span></span><code>arr = np.array([&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;d&#39;, &#39;e&#39;, &#39;f&#39;, &#39;g&#39;, &#39;h&#39;, &#39;i&#39;, &#39;j&#39;, &#39;k&#39;])
 print(arr)
-# ['a' 'b' 'c' 'd' 'e' 'f' 'g' 'h' 'i' 'j' 'k']
+# [&#39;a&#39; &#39;b&#39; &#39;c&#39; &#39;d&#39; &#39;e&#39; &#39;f&#39; &#39;g&#39; &#39;h&#39; &#39;i&#39; &#39;j&#39; &#39;k&#39;]
 
 print(np.split(arr, 3))
 
 print(np.split(arr, [3]))  # 从索引位置为3进行拆分
-# [array(['a', 'b', 'c'], dtype='&lt;U1'), array(['d', 'e', 'f', 'g', 'h', 'i', 'j', 'k'], dtype='&lt;U1')]
+# [array([&#39;a&#39;, &#39;b&#39;, &#39;c&#39;], dtype=&#39;&lt;U1&#39;), array([&#39;d&#39;, &#39;e&#39;, &#39;f&#39;, &#39;g&#39;, &#39;h&#39;, &#39;i&#39;, &#39;j&#39;, &#39;k&#39;], dtype=&#39;&lt;U1&#39;)]
 
 print(np.split(arr, [3, 7]))  # 从索引位置为3和7进行拆分
-# [array(['a', 'b', 'c'], dtype='&lt;U1'), array(['d', 'e', 'f', 'g'], dtype='&lt;U1'), array(['h', 'i', 'j', 'k'], dtype='&lt;U1')]
+# [array([&#39;a&#39;, &#39;b&#39;, &#39;c&#39;], dtype=&#39;&lt;U1&#39;), array([&#39;d&#39;, &#39;e&#39;, &#39;f&#39;, &#39;g&#39;], dtype=&#39;&lt;U1&#39;), array([&#39;h&#39;, &#39;i&#39;, &#39;j&#39;, &#39;k&#39;], dtype=&#39;&lt;U1&#39;)]
 
 print(np.split(arr, [3, 7, 9]))  # 从索引位置为3、7、9进行拆分
-# [array(['a', 'b', 'c'], dtype='&lt;U1'), array(['d', 'e', 'f', 'g'], dtype='&lt;U1'), array(['h', 'i'], dtype='&lt;U1'), array(['j', 'k'], dtype='&lt;U1')]
-
-</code></pre>
-<p>二维数组和一维数组类似。</p>
-<p><code>np.split(arr, [1, 2])</code>默认axis=0，沿水平方向进行拆分，拆分行索引分别为行号1和行号2，即[0, 1)，[1, 2)，[2, 4]三个行区间。</p>
-<p><code>np.split(arr, [1, 2], axis=1)</code>沿垂直方向进行拆分，拆分列索引分别为列号1和列号2，即[0, 1)，[1, 2)，[2, 3]三个列区间。</p>
-<p>如果拆分区间出现倒序，如<code>np.split(arr, [3, 1])</code>，沿水平方向拆分，第一个行区间是[0, 3)，第二个行区间是[3, 1)，无结果，当前行索引为0，未达到最大行数，所以输出第三个区间[1, 4]。同理可推<code>np.split(arr, [3, 1], axis=1)</code>的三个列区间。</p>
-<pre><code>arr = np.arange(15).reshape((5, 3))
+# [array([&#39;a&#39;, &#39;b&#39;, &#39;c&#39;], dtype=&#39;&lt;U1&#39;), array([&#39;d&#39;, &#39;e&#39;, &#39;f&#39;, &#39;g&#39;], dtype=&#39;&lt;U1&#39;), array([&#39;h&#39;, &#39;i&#39;], dtype=&#39;&lt;U1&#39;), array([&#39;j&#39;, &#39;k&#39;], dtype=&#39;&lt;U1&#39;)]
+</code></pre></div></p> <p>二维数组和一维数组类似。</p> <p><code>np.split(arr, [1, 2])</code>默认axis=0，沿水平方向进行拆分，拆分行索引分别为行号1和行号2，即[0, 1)，[1, 2)，[2, 4]三个行区间。</p> <p><code>np.split(arr, [1, 2], axis=1)</code>沿垂直方向进行拆分，拆分列索引分别为列号1和列号2，即[0, 1)，[1, 2)，[2, 3]三个列区间。</p> <p>如果拆分区间出现倒序，如<code>np.split(arr, [3, 1])</code>，沿水平方向拆分，第一个行区间是[0, 3)，第二个行区间是[3, 1)，无结果，当前行索引为0，未达到最大行数，所以输出第三个区间[1, 4]。同理可推<code>np.split(arr, [3, 1], axis=1)</code>的三个列区间。 <div class=highlight><pre><span></span><code>arr = np.arange(15).reshape((5, 3))
 print(arr)
 # [[ 0  1  2]
 #  [ 3  4  5]
@@ -943,14 +205,7 @@ print(result)
 #         [ 7,  8],
 #         [10, 11],
 #         [13, 14]])]
-</code></pre>
-<h3 id="r_c_">数组堆叠的方法：r_和c_</h3>
-<p>在NumPy中有两个特殊的对象：r_和c_，它们可以使堆栈数组的操作更为简洁：</p>
-<ul>
-<li><code>np.r_</code>是按列连接两个矩阵，就是把两矩阵上下相加，要求列数相等。</li>
-<li><code>np.c_</code>是按行连接两个矩阵，就是把两矩阵左右相加，要求行数相等。</li>
-</ul>
-<pre><code>arr = np.arange(6)
+</code></pre></div></p> <h3 id=r_c_>数组堆叠的方法：r_和c_<a class=headerlink href=#r_c_ title="Permanent link"> ¶</a></h3> <p>在NumPy中有两个特殊的对象：r_和c_，它们可以使堆栈数组的操作更为简洁：</p> <ul> <li><code>np.r_</code>是按列连接两个矩阵，就是把两矩阵上下相加，要求列数相等。</li> <li><code>np.c_</code>是按行连接两个矩阵，就是把两矩阵左右相加，要求行数相等。</li> </ul> <div class=highlight><pre><span></span><code>arr = np.arange(6)
 arr1 = arr.reshape((3, 2))
 arr2 = np.random.randn(3, 2)
 
@@ -988,38 +243,28 @@ print(a)
 #  [ 0.15407269  0.56316672  3.        ]
 #  [-1.2390795  -1.59294986  4.        ]
 #  [ 0.082398    0.75602857  5.        ]]
-</code></pre>
-<p>还可以将切片转换为数组：</p>
-<pre><code>a = np.c_[1:6, -10:-5]
+</code></pre></div> <p>还可以将切片转换为数组： <div class=highlight><pre><span></span><code>a = np.c_[1:6, -10:-5]
 print(a)
 # [[  1 -10]
 #  [  2  -9]
 #  [  3  -8]
 #  [  4  -7]
 #  [  5  -6]]
-</code></pre>
-<h3 id="tilerepeat">重复元素：tile和repeat</h3>
-<p><code>repeat</code>和<code>tile</code>函数是用于重复或复制数组的两个有用的工具。<code>repeat</code>函数按照给定次数对数组中的<em>每个元素</em>进行复制，生成一个更大的数组。</p>
-<p>对于NumPy而言，复制或重复数组的需求可能不如其他数组编程框架（如MATLAB）那样常见。其中一个原因是广播通常会更好地满足这一需求。</p>
-<pre><code>arr = np.arange(3)
+</code></pre></div></p> <h3 id=tilerepeat>重复元素：tile和repeat<a class=headerlink href=#tilerepeat title="Permanent link"> ¶</a></h3> <p><code>repeat</code>和<code>tile</code>函数是用于重复或复制数组的两个有用的工具。<code>repeat</code>函数按照给定次数对数组中的*每个元素*进行复制，生成一个更大的数组。</p> <p>对于NumPy而言，复制或重复数组的需求可能不如其他数组编程框架（如MATLAB）那样常见。其中一个原因是广播通常会更好地满足这一需求。 <div class=highlight><pre><span></span><code>arr = np.arange(3)
 print(arr)
 # [0 1 2]
 
 a = arr.repeat(3)
 print(a)
 # [0 0 0 1 1 1 2 2 2]
-</code></pre>
-<p>默认情况下，如果你传递一个整数，每个元素都会复制相应的次数。如果你传递了一个整数数组，每个元素都会重复相应的不同次数：</p>
-<pre><code>arr = np.arange(3)
+</code></pre></div></p> <p>默认情况下，如果你传递一个整数，每个元素都会复制相应的次数。如果你传递了一个整数数组，每个元素都会重复相应的不同次数： <div class=highlight><pre><span></span><code>arr = np.arange(3)
 print(arr)
 # [0 1 2]
 
 a = arr.repeat([2, 3, 4])
 print(a)
 # [0 0 1 1 1 2 2 2 2]
-</code></pre>
-<p>多维数组可以在指定的轴向上对它们的元素进行重复，注意，如果没有传递轴，数组将首先扁平化（沿0轴复制）。</p>
-<pre><code>arr = np.random.randn(2, 2)
+</code></pre></div></p> <p>多维数组可以在指定的轴向上对它们的元素进行重复，注意，如果没有传递轴，数组将首先扁平化（沿0轴复制）。 <div class=highlight><pre><span></span><code>arr = np.random.randn(2, 2)
 print(arr)
 # [[-0.15870621  0.26521446]
 #  [-1.35042383 -0.65562376]]
@@ -1035,9 +280,7 @@ a = arr.repeat(2, axis=1)
 print(a)
 # [[-0.15870621 -0.15870621  0.26521446  0.26521446]
 #  [-1.35042383 -1.35042383 -0.65562376 -0.65562376]]
-</code></pre>
-<p>同样，需要按照不同次数重复多维数组的切片时，可以传递一个整数数组：</p>
-<pre><code>arr = np.random.randn(2, 2)
+</code></pre></div></p> <p>同样，需要按照不同次数重复多维数组的切片时，可以传递一个整数数组： <div class=highlight><pre><span></span><code>arr = np.random.randn(2, 2)
 print(arr)
 # [[-0.15870621  0.26521446]
 #  [-1.35042383 -0.65562376]]
@@ -1049,10 +292,7 @@ print(a)
 #  [-1.35042383 -0.65562376]
 #  [-1.35042383 -0.65562376]
 #  [-1.35042383 -0.65562376]]
-</code></pre>
-<p><code>tile</code>是一种快捷方法，它可以沿着轴向堆叠副本。在视觉上，你可以把它看作类似于“铺设瓷砖”。
-<code>np.tile(arr, 2)</code>第二个参数是瓷砖的数量。用标量来说，铺设是逐行进行的，而不是逐列，第二个参数也可以是表示“铺瓷砖”布局的元组。</p>
-<pre><code>arr = np.random.randn(2, 2)
+</code></pre></div></p> <p><code>tile</code>是一种快捷方法，它可以沿着轴向堆叠副本。在视觉上，你可以把它看作类似于“铺设瓷砖”。 <code>np.tile(arr, 2)</code>第二个参数是瓷砖的数量。用标量来说，铺设是逐行进行的，而不是逐列，第二个参数也可以是表示“铺瓷砖”布局的元组。 <div class=highlight><pre><span></span><code>arr = np.random.randn(2, 2)
 print(arr)
 # [[-0.15870621  0.26521446]
 #  [-1.35042383 -0.65562376]]
@@ -1077,10 +317,7 @@ print(a)
 #  [-1.35042383 -0.65562376 -1.35042383 -0.65562376]
 #  [-0.15870621  0.26521446 -0.15870621  0.26521446]
 #  [-1.35042383 -0.65562376 -1.35042383 -0.65562376]]
-</code></pre>
-<h3 id="fancy-indexingtakeput">神奇索引（Fancy Indexing）的等价方法：take和put</h3>
-<p><code>take</code>函数可以获取数组子集，<code>put</code>函数可以设置数组子集。其他一些ndarray方法可以用于特殊情况下在单个轴上的数据选取.</p>
-<pre><code>arr = np.arange(10) * 100
+</code></pre></div></p> <h3 id=fancy-indexingtakeput>神奇索引（Fancy Indexing）的等价方法：take和put<a class=headerlink href=#fancy-indexingtakeput title="Permanent link"> ¶</a></h3> <p><code>take</code>函数可以获取数组子集，<code>put</code>函数可以设置数组子集。其他一些ndarray方法可以用于特殊情况下在单个轴上的数据选取. <div class=highlight><pre><span></span><code>arr = np.arange(10) * 100
 inds = [7, 1, 2, 6]
 
 print(arr)
@@ -1110,14 +347,10 @@ inds = [7, 1, 2, 6]
 np.put(arr, inds, [40, 41, 42])
 print(arr)
 # [  0  41  42 300 400 500  40  40 800 900]
-</code></pre>
-<p>注意，上例如果改写为<code>a = np.put(arr, inds, 41)</code>，则返回<code>None</code>。</p>
-<pre><code>a = np.put(arr, inds, 41)
+</code></pre></div></p> <p>注意，上例如果改写为<code>a = np.put(arr, inds, 41)</code>，则返回<code>None</code>。 <div class=highlight><pre><span></span><code>a = np.put(arr, inds, 41)
 print(a)
 # None
-</code></pre>
-<p>如果要在别的轴上使用<code>take</code>，可以通过传递<code>axis</code>关键字来实现。</p>
-<pre><code>inds = [2, 0, 2, 1]
+</code></pre></div></p> <p>如果要在别的轴上使用<code>take</code>，可以通过传递<code>axis</code>关键字来实现。 <div class=highlight><pre><span></span><code>inds = [2, 0, 2, 1]
 arr = np.random.randn(2, 4)
 print(arr)
 # [[-0.82371274 -0.16911898 -0.01903239 -0.91792531]
@@ -1127,11 +360,7 @@ a = arr.take(inds, axis=1)
 print(a)
 # [[-0.01903239 -0.82371274 -0.01903239 -0.16911898]
 #  [ 0.33872999 -0.55176496  0.33872999 -0.30111564]]
-</code></pre>
-<h2 id="_4">广播</h2>
-<p><strong>广播（broadcasting）</strong>指的是不同形状的数组之间的算术运算的执行方式。受某些约束的影响，较小的数组在较大的数组上“广播”，以便它们具有兼容的形状。广播提供了一种矢量化数组操作的方法。</p>
-<p>NumPy 操作通常在<em>逐个元素</em>的基础上在数组对上完成。在最简单的情况下，两个数组必须具有完全相同的形状，如下例所示：</p>
-<pre><code>a = np.array([1, 3, 5])
+</code></pre></div></p> <h2 id=_4>广播<a class=headerlink href=#_4 title="Permanent link"> ¶</a></h2> <p>**广播（broadcasting）**指的是不同形状的数组之间的算术运算的执行方式。受某些约束的影响，较小的数组在较大的数组上“广播”，以便它们具有兼容的形状。广播提供了一种矢量化数组操作的方法。</p> <p>NumPy 操作通常在*逐个元素*的基础上在数组对上完成。在最简单的情况下，两个数组必须具有完全相同的形状，如下例所示： <div class=highlight><pre><span></span><code>a = np.array([1, 3, 5])
 b = np.array([2, 2, 2])
 
 print(a * b)
@@ -1139,9 +368,7 @@ print(a * b)
 
 print(a + b)
 # [3 5 7]
-</code></pre>
-<p>当一个数组和一个标量值在一个操作中组合时，会发生最简单的广播示例，NumPy的广播规则放宽了这种约束。</p>
-<pre><code>a = np.array([1, 3, 5])
+</code></pre></div></p> <p>当一个数组和一个标量值在一个操作中组合时，会发生最简单的广播示例，NumPy的广播规则放宽了这种约束。 <div class=highlight><pre><span></span><code>a = np.array([1, 3, 5])
 b = 2
 
 print(a * b)
@@ -1149,21 +376,10 @@ print(a * b)
 
 print(a + b)
 # [3 5 7]
-</code></pre>
-<p>结果等同于前面的示例，其中<code>b</code>是数组。可以假象将在算术运算期间标量<code>b</code>被<em>拉伸</em>成与数组<code>a</code>具有相同形状的数组。拉伸类比只是概念性的。NumPy在实际运算中直接使用原始标量值而不会去制作拉伸副本，因此广播操作效率更高效，在上例的乘法期间，通过广播操作，移动的内存较少（b是标量而不是数组）。</p>
-<h3 id="_5">广播的规则</h3>
-<p><strong>广播的规则</strong>：</p>
-<p>如果两个数组的后缘维度（trailing dimension，即从末尾开始算起的维度）的轴长度相符，或其中的一方的长度为1，则认为它们是广播兼容的。广播会在缺失和（或）长度为1的维度上进行。</p>
-<p>这句话是理解广播的核心。广播主要发生在两种情况，一种是两个数组的维数不相等，但是它们的后缘维度的轴长相符，另外一种是有一方的长度为1。</p>
-<p>如果不满足这些条件，则抛出 ValueError: operands could not be broadcast together 异常，指示数组具有不兼容的形状。结果数组的大小是沿输入的每个轴不是1的大小。</p>
-<p>将标量值跟数组合并时就会发生最简单的广播，标量值4已经被广播给乘法运算中的所有其他元素。</p>
-<pre><code>arr = np.arange(5)
+</code></pre></div></p> <p>结果等同于前面的示例，其中<code>b</code>是数组。可以假象将在算术运算期间标量<code>b</code>被*拉伸*成与数组<code>a</code>具有相同形状的数组。拉伸类比只是概念性的。NumPy在实际运算中直接使用原始标量值而不会去制作拉伸副本，因此广播操作效率更高效，在上例的乘法期间，通过广播操作，移动的内存较少（b是标量而不是数组）。</p> <h3 id=_5>广播的规则<a class=headerlink href=#_5 title="Permanent link"> ¶</a></h3> <p><strong>广播的规则</strong>：</p> <p>如果两个数组的后缘维度（trailing dimension，即从末尾开始算起的维度）的轴长度相符，或其中的一方的长度为1，则认为它们是广播兼容的。广播会在缺失和（或）长度为1的维度上进行。</p> <p>这句话是理解广播的核心。广播主要发生在两种情况，一种是两个数组的维数不相等，但是它们的后缘维度的轴长相符，另外一种是有一方的长度为1。</p> <p>如果不满足这些条件，则抛出 ValueError: operands could not be broadcast together 异常，指示数组具有不兼容的形状。结果数组的大小是沿输入的每个轴不是1的大小。</p> <p>将标量值跟数组合并时就会发生最简单的广播，标量值4已经被广播给乘法运算中的所有其他元素。 <div class=highlight><pre><span></span><code>arr = np.arange(5)
 print(arr * 4)
 # [ 0  4  8 12 16]
-</code></pre>
-<h3 id="_6">一维广播</h3>
-<p>下面是一个一维数组沿0轴广播的例子：</p>
-<pre><code>arr1 = np.array([[0, 0, 0], [1, 1, 1], [2, 2, 2], [3, 3, 3]])
+</code></pre></div></p> <h3 id=_6>一维广播<a class=headerlink href=#_6 title="Permanent link"> ¶</a></h3> <p>下面是一个一维数组沿0轴广播的例子： <div class=highlight><pre><span></span><code>arr1 = np.array([[0, 0, 0], [1, 1, 1], [2, 2, 2], [3, 3, 3]])
 print(arr1.shape)
 # (4, 3)
 
@@ -1177,18 +393,11 @@ print(arr_sum)
 #  [2 3 4]
 #  [3 4 5]
 #  [4 5 6]]
-</code></pre>
-<p><img alt="一维数组沿0轴广播" src="../Assets/05.png" /></p>
-<p>上例中<code>arr1</code>的<code>shape</code>为<code>(4,3)</code>，<code>arr2</code>的<code>shape</code>为<code>(3,)</code>。即，<code>arr1</code>是二维数组，<code>arr2</code>是一维数组。虽然它们的维度<code>shape</code>不同，但后缘维度都是<code>3</code>，符合广播规则，所以它们之间是可以执行相加操作。</p>
-<p>在这个例子当中是将arr2沿着0轴进行扩展。直观的描述是，<code>arr2</code>在参与运算时是以下面这样的形式进行0轴扩展的（沿0轴水平方向移动，在列方向进行“拉伸”）：</p>
-<pre><code>[[1 2 3]
+</code></pre></div> <img alt=一维数组沿0轴广播 src=../Assets/05.png></p> <p>上例中<code>arr1</code>的<code>shape</code>为<code>(4,3)</code>，<code>arr2</code>的<code>shape</code>为<code>(3,)</code>。即，<code>arr1</code>是二维数组，<code>arr2</code>是一维数组。虽然它们的维度<code>shape</code>不同，但后缘维度都是<code>3</code>，符合广播规则，所以它们之间是可以执行相加操作。</p> <p>在这个例子当中是将arr2沿着0轴进行扩展。直观的描述是，<code>arr2</code>在参与运算时是以下面这样的形式进行0轴扩展的（沿0轴水平方向移动，在列方向进行“拉伸”）： <div class=highlight><pre><span></span><code>[[1 2 3]
  [1 2 3]
  [1 2 3]
  [1 2 3]]
-</code></pre>
-<h3 id="_7">二维广播</h3>
-<p>在下面行减均值的例子中，根据规则，为了从轴1减均值（即从每行减去行平均值），对较小的数组<code>row_means</code>的塑形必须是（4, 1），即，重新塑造行意味着形状是（4,1）而不是（4, ）。</p>
-<pre><code>arr = np.array([[1, 2, 3], [4, 5, 6], [1, 2, 3], [4, 5, 6]])
+</code></pre></div></p> <h3 id=_7>二维广播<a class=headerlink href=#_7 title="Permanent link"> ¶</a></h3> <p>在下面行减均值的例子中，根据规则，为了从轴1减均值（即从每行减去行平均值），对较小的数组<code>row_means</code>的塑形必须是（4, 1），即，重新塑造行意味着形状是（4,1）而不是（4, ）。 <div class=highlight><pre><span></span><code>arr = np.array([[1, 2, 3], [4, 5, 6], [1, 2, 3], [4, 5, 6]])
 print(arr)
 # [[1 2 3]
 #  [4 5 6]
@@ -1216,16 +425,7 @@ print(demeaned)
 
 print(demeaned.mean(1))
 # [0. 0. 0. 0.]
-</code></pre>
-<p><img alt="二维数组沿1轴广播" src="../Assets/06.png" /></p>
-<h3 id="_8">三维广播</h3>
-<p>在轴0以外的轴上使用较低维数组进行算术运算也是相当普遍的。根据广播规则，“广播维度”在较小的数组中必须为1。</p>
-<p>在三维情况下，在三个维度中的任何一个维度上进行广播只是将数据重塑为形状兼容。</p>
-<p>因此，需要添加一个长度为1的新轴，专门用于广播目的。使用<code>reshape</code>是一种选择，但插入一个轴需要构造一个新形状的元组。NumPy数组提供了<code>np.newaxis</code>属性和“完整”切片来插入新轴。</p>
-<p>看下面的例子了解一些<code>np.newaxis</code>的用法。</p>
-<p><code>x1[:, np.newaxis]</code>对原<code>x1</code>添加了1轴，即，行方向有5个元素（5行），列方向只有1个元素（1列）。</p>
-<p><code>x1[np.newaxis, :]</code>对原<code>x1</code>添加了0轴，即，行方向有1个元素（1行），列方向只有5个元素（5列）。</p>
-<pre><code>x1 = np.array([1, 2, 3, 4, 5])
+</code></pre></div> <img alt=二维数组沿1轴广播 src=../Assets/06.png></p> <h3 id=_8>三维广播<a class=headerlink href=#_8 title="Permanent link"> ¶</a></h3> <p>在轴0以外的轴上使用较低维数组进行算术运算也是相当普遍的。根据广播规则，“广播维度”在较小的数组中必须为1。</p> <p>在三维情况下，在三个维度中的任何一个维度上进行广播只是将数据重塑为形状兼容。</p> <p>因此，需要添加一个长度为1的新轴，专门用于广播目的。使用<code>reshape</code>是一种选择，但插入一个轴需要构造一个新形状的元组。NumPy数组提供了<code>np.newaxis</code>属性和“完整”切片来插入新轴。</p> <p>看下面的例子了解一些<code>np.newaxis</code>的用法。</p> <p><code>x1[:, np.newaxis]</code>对原<code>x1</code>添加了1轴，即，行方向有5个元素（5行），列方向只有1个元素（1列）。</p> <p><code>x1[np.newaxis, :]</code>对原<code>x1</code>添加了0轴，即，行方向有1个元素（1行），列方向只有5个元素（5列）。 <div class=highlight><pre><span></span><code>x1 = np.array([1, 2, 3, 4, 5])
 print(x1.shape)
 # (5,)
 
@@ -1244,12 +444,7 @@ print(x1_new.shape)
 # (1, 5)
 print(x1_new)
 # [[1 2 3 4 5]]
-
-</code></pre>
-<p>下例一个通过<code>np.newaxis</code>对二维数组到三维的扩展。</p>
-<p><code>arr[np.newaxis, :, :, np.newaxis]</code>表示对<code>arr</code>添加0，3轴，原数组<code>arr</code>做为1，2轴。其等价写法是<code>arr[np.newaxis, ..., np.newaxis]</code></p>
-<p><code>arr[:, np.newaxis, np.newaxis]</code>表示对<code>arr</code>添加1，2轴，原数组<code>arr</code>做为0，3轴。其等价写法是<code>arr[np.newaxis, :, np.newaxis, :]</code>，理解上需要注意的是<code>:</code>只代表一个轴。</p>
-<pre><code>arr = np.arange(3 * 4).reshape(3, 4)
+</code></pre></div></p> <p>下例一个通过<code>np.newaxis</code>对二维数组到三维的扩展。</p> <p><code>arr[np.newaxis, :, :, np.newaxis]</code>表示对<code>arr</code>添加0，3轴，原数组<code>arr</code>做为1，2轴。其等价写法是<code>arr[np.newaxis, ..., np.newaxis]</code></p> <p><code>arr[:, np.newaxis, np.newaxis]</code>表示对<code>arr</code>添加1，2轴，原数组<code>arr</code>做为0，3轴。其等价写法是<code>arr[np.newaxis, :, np.newaxis, :]</code>，理解上需要注意的是<code>:</code>只代表一个轴。 <div class=highlight><pre><span></span><code>arr = np.arange(3 * 4).reshape(3, 4)
 print(arr.shape)
 # (3, 4)
 print(arr)
@@ -1304,12 +499,7 @@ print(arr_3D)
 #  [[[3 4 5]]]
 #
 #  [[[6 7 8]]]]
-
-</code></pre>
-<p>下图显示了在三维数组的每个轴上广播所需的形状。</p>
-<p><img alt="三维数组的每个轴上广播所需的形状" src="../Assets/07.png" /></p>
-<p>下面的例子演示了基于一个三维数组进行的广播操作。</p>
-<pre><code>arr = np.zeros((3, 2, 4))
+</code></pre></div></p> <p>下图显示了在三维数组的每个轴上广播所需的形状。</p> <p><img alt=三维数组的每个轴上广播所需的形状 src=../Assets/07.png></p> <p>下面的例子演示了基于一个三维数组进行的广播操作。</p> <div class=highlight><pre><span></span><code>arr = np.zeros((3, 2, 4))
 print(arr.shape)
 # (3, 2, 4)
 print(arr)
@@ -1420,10 +610,7 @@ print(demeaned)
 
 #  [[0. 0. 0. 0.]
 #   [0. 0. 0. 0.]]]
-</code></pre>
-<h3 id="n">N维广播</h3>
-<p>和上例最后场景的计算结果相同。</p>
-<pre><code>arr = np.zeros((3, 2, 4))
+</code></pre></div> <h3 id=n>N维广播<a class=headerlink href=#n title="Permanent link"> ¶</a></h3> <p>和上例最后场景的计算结果相同。</p> <div class=highlight><pre><span></span><code>arr = np.zeros((3, 2, 4))
 
 def demean_axis(arr, axis=0):
     means = arr.mean(axis)
@@ -1440,10 +627,7 @@ print(demean_axis(arr, axis=2))
 
 #  [[0. 0. 0. 0.]
 #   [0. 0. 0. 0.]]]
-</code></pre>
-<h3 id="_9">通过广播设定数组的值</h3>
-<p>进行数组算术运算的广播规则同样也适用于通过数组索引设置值。</p>
-<pre><code>arr = np.zeros((4, 3))
+</code></pre></div> <h3 id=_9>通过广播设定数组的值<a class=headerlink href=#_9 title="Permanent link"> ¶</a></h3> <p>进行数组算术运算的广播规则同样也适用于通过数组索引设置值。</p> <div class=highlight><pre><span></span><code>arr = np.zeros((4, 3))
 arr[:] = 5
 print(arr)
 # [[5. 5. 5.]
@@ -1458,15 +642,7 @@ print(arr)
 #  [1. 1. 1.]
 #  [2. 2. 2.]
 #  [3. 3. 3.]]
-</code></pre>
-<h2 id="ufunc">ufunc高级应用</h2>
-<h3 id="ufunc_1">ufunc实例方法</h3>
-<p><strong>通用函数（或简称为ufunc ）</strong>是一种<code>ndarrays</code>以逐元素方式操作的函数，支持数组广播，类型转换和其他一些标准功能。
-也就是说，ufunc是一个函数的<strong>矢量化包装器</strong>，它接受固定数量的特定输入并产生固定数量的特定输出。</p>
-<p>在NumPy中，通用函数是numpy.ufunc类的实例。 NumPy的每个二元ufunc（通用函数）都有特殊的方法来执行某些特殊的向量化操作。</p>
-<p><code>reduce</code>方法接收单个数组并通过执行一系列二元操作在指定的轴向上对数组的值进行聚合。</p>
-<p>例如，使用np.add.reduce是对数组中元素进行加和的另一种方法：起始值（对于add方法是0）取决于ufunc。如果传递了一个轴，则沿该轴执行缩聚（collapse）。</p>
-<pre><code>arr = np.arange(10)
+</code></pre></div> <h2 id=ufunc>ufunc高级应用<a class=headerlink href=#ufunc title="Permanent link"> ¶</a></h2> <h3 id=ufunc_1>ufunc实例方法<a class=headerlink href=#ufunc_1 title="Permanent link"> ¶</a></h3> <p><strong>通用函数（或简称为ufunc ）**是一种<code>ndarrays</code>以逐元素方式操作的函数，支持数组广播，类型转换和其他一些标准功能。 也就是说，ufunc是一个函数的**矢量化包装器</strong>，它接受固定数量的特定输入并产生固定数量的特定输出。</p> <p>在NumPy中，通用函数是numpy.ufunc类的实例。 NumPy的每个二元ufunc（通用函数）都有特殊的方法来执行某些特殊的向量化操作。</p> <p><code>reduce</code>方法接收单个数组并通过执行一系列二元操作在指定的轴向上对数组的值进行聚合。</p> <p>例如，使用np.add.reduce是对数组中元素进行加和的另一种方法：起始值（对于add方法是0）取决于ufunc。如果传递了一个轴，则沿该轴执行缩聚（collapse）。 <div class=highlight><pre><span></span><code>arr = np.arange(10)
 
 a = np.add.reduce(arr)
 print(a)
@@ -1475,9 +651,7 @@ print(a)
 a = arr.sum()
 print(a)
 # 45
-</code></pre>
-<p>例如：使用np.logical_and来检查数组的每一行中的值是否被排序(logical_and.reduce等价于all方法)：</p>
-<pre><code>arr = np.random.randn(5, 5)
+</code></pre></div></p> <p>例如：使用np.logical_and来检查数组的每一行中的值是否被排序(logical_and.reduce等价于all方法)： <div class=highlight><pre><span></span><code>arr = np.random.randn(5, 5)
 print(arr)
 # [[ 0.75217836  1.26134639 -0.39387918  0.46348823 -1.0026674 ]
 #  [ 0.72085602 -0.50487667  3.21023694 -0.2752039  -1.41158734]
@@ -1501,9 +675,7 @@ print(a)
 a = np.logical_and.reduce(arr[:, :-1] &lt; arr[:, 1:], axis=1)
 print(a)
 # [ True False  True False  True]
-</code></pre>
-<p><code>accumulate</code>与<code>reduce</code>是相关的，就像<code>cumsum</code>与<code>sum</code>相关一样。<code>accumulate</code>生成一个数组，其尺寸与中间“累计”值相同：</p>
-<pre><code>arr = np.arange(15).reshape((3, 5))
+</code></pre></div></p> <p><code>accumulate</code>与<code>reduce</code>是相关的，就像<code>cumsum</code>与<code>sum</code>相关一样。<code>accumulate</code>生成一个数组，其尺寸与中间“累计”值相同： <div class=highlight><pre><span></span><code>arr = np.arange(15).reshape((3, 5))
 print(arr)
 # [[ 0  1  2  3  4]
 #  [ 5  6  7  8  9]
@@ -1514,9 +686,7 @@ print(a)
 # [[ 0  1  3  6 10]
 #  [ 5 11 18 26 35]
 #  [10 21 33 46 60]]
-</code></pre>
-<p><code>outer</code>在两个数组之间执行成对的交叉乘积：</p>
-<pre><code>arr = np.arange(3).repeat([1, 2, 2])
+</code></pre></div></p> <p><code>outer</code>在两个数组之间执行成对的交叉乘积： <div class=highlight><pre><span></span><code>arr = np.arange(3).repeat([1, 2, 2])
 print(arr)
 # [0 1 1 2 2]
 
@@ -1527,22 +697,15 @@ print(a)
 #  [0 1 2 3 4]
 #  [0 2 4 6 8]
 #  [0 2 4 6 8]]
-</code></pre>
-<p><code>outer</code>输出的维度等于输入的维度总和：</p>
-<pre><code>x, y = np.random.randn(3, 4), np.random.randn(5)
+</code></pre></div></p> <p><code>outer</code>输出的维度等于输入的维度总和： <div class=highlight><pre><span></span><code>x, y = np.random.randn(3, 4), np.random.randn(5)
 result = np.subtract.outer(x, y)
 print(result.shape)
 # (3, 4, 5)
-</code></pre>
-<p><code>reduceat</code>方法执行“本地缩聚”，本质上是一个数组groupby操作，在操作中数组的切片聚合在了一起。<code>reduceat</code>方法接受一系列的“箱体边缘”，这些箱体边缘表示如何分隔以及聚合数据值。</p>
-<p>下例是在arr的<code>[0:5)</code>、<code>[5:8)</code>和<code>[8:]</code>三个区间上执行了缩聚（此处是计算累加和）。</p>
-<pre><code>arr = np.arange(10)
+</code></pre></div></p> <p><code>reduceat</code>方法执行“本地缩聚”，本质上是一个数组groupby操作，在操作中数组的切片聚合在了一起。<code>reduceat</code>方法接受一系列的“箱体边缘”，这些箱体边缘表示如何分隔以及聚合数据值。</p> <p>下例是在arr的<code>[0:5)</code>、<code>[5:8)</code>和<code>[8:]</code>三个区间上执行了缩聚（此处是计算累加和）。 <div class=highlight><pre><span></span><code>arr = np.arange(10)
 a = np.add.reduceat(arr, [0, 5, 8])
 print(a)
 # [10 18 17]
-</code></pre>
-<p>可以传递一个axis参数：</p>
-<pre><code>arr = np.multiply.outer(np.arange(4), np.arange(5))
+</code></pre></div></p> <p>可以传递一个axis参数： <div class=highlight><pre><span></span><code>arr = np.multiply.outer(np.arange(4), np.arange(5))
 print(arr)
 # [[ 0  0  0  0  0]
 #  [ 0  1  2  3  4]
@@ -1555,12 +718,7 @@ print(a)
 #  [ 1  5  4]
 #  [ 2 10  8]
 #  [ 3 15 12]]
-</code></pre>
-<h3 id="pythonufunc">使用Python编写新的ufunc方法</h3>
-<p>有很多工具可以用于创建你自己的NumPy ufunc，最常用的是NumPy的C语言API，但不在这里讨论。这里主要关注纯Python的ufunc方法。</p>
-<p><code>numpy.frompyfunc</code>函数接收一个具有特定数字输入和输出的函数。使用<code>frompyfunc</code>创建的函数通常返回的是Python对象的数组，这并不方便。还有另一个函数<code>numpy.vectorize</code>允许指定输出的类型（但功能稍差）。</p>
-<p>例如，一个简单的按元素相加的函数可以如下：</p>
-<pre><code>def add_elements(x, y):
+</code></pre></div></p> <h3 id=pythonufunc>使用Python编写新的ufunc方法<a class=headerlink href=#pythonufunc title="Permanent link"> ¶</a></h3> <p>有很多工具可以用于创建你自己的NumPy ufunc，最常用的是NumPy的C语言API，但不在这里讨论。这里主要关注纯Python的ufunc方法。</p> <p><code>numpy.frompyfunc</code>函数接收一个具有特定数字输入和输出的函数。使用<code>frompyfunc</code>创建的函数通常返回的是Python对象的数组，这并不方便。还有另一个函数<code>numpy.vectorize</code>允许指定输出的类型（但功能稍差）。</p> <p>例如，一个简单的按元素相加的函数可以如下： <div class=highlight><pre><span></span><code>def add_elements(x, y):
     return x + y
 
 add_them = np.frompyfunc(add_elements, 2, 1)
@@ -1572,11 +730,7 @@ add_them = np.vectorize(add_elements, otypes=[np.float64])
 result = add_them(np.arange(8), np.arange(8))
 print(result)
 # [ 0.  2.  4.  6.  8. 10. 12. 14.]
-</code></pre>
-<h2 id="_10">结构化和记录式数组</h2>
-<p><code>ndarray</code>是一个同构数据的容器。也就是说，它表示一个内存块，其中每个元素占用相同数量的字节，由dtype确定。<code>ndarray</code>的这种特性不能用来表示异构的数据或表格型数据。</p>
-<p><strong>结构化数组</strong>是一个<code>ndarray</code>，其中每个元素可以被认为代表C中的struct（因此是“结构化”的名称），或者是SQL表中具有多个命名字段的行：</p>
-<pre><code>dtype = [('x', np.float64), ('y', np.int32)]
+</code></pre></div></p> <h2 id=_10>结构化和记录式数组<a class=headerlink href=#_10 title="Permanent link"> ¶</a></h2> <p><code>ndarray</code>是一个同构数据的容器。也就是说，它表示一个内存块，其中每个元素占用相同数量的字节，由dtype确定。<code>ndarray</code>的这种特性不能用来表示异构的数据或表格型数据。</p> <p>**结构化数组**是一个<code>ndarray</code>，其中每个元素可以被认为代表C中的struct（因此是“结构化”的名称），或者是SQL表中具有多个命名字段的行： <div class=highlight><pre><span></span><code>dtype = [(&#39;x&#39;, np.float64), (&#39;y&#39;, np.int32)]
 
 sarr = np.array(
     [
@@ -1588,89 +742,23 @@ sarr = np.array(
 
 print(sarr)
 # [(1.5       ,  6) (3.14159265, -2)]
-</code></pre>
-<p>有几种方法可以指定结构化的dtype（请参阅NumPy官方在线文档）。一种典型的方式是使用(field_name, field_data_type)作为元组的列表。</p>
-<p>数组的元素是元组对象，其元素可以像字典一样访问，字段名称存储在dtype.names属性中。</p>
-<pre><code>print(sarr[0])
+</code></pre></div></p> <p>有几种方法可以指定结构化的dtype（请参阅NumPy官方在线文档）。一种典型的方式是使用(field_name, field_data_type)作为元组的列表。</p> <p>数组的元素是元组对象，其元素可以像字典一样访问，字段名称存储在dtype.names属性中。 <div class=highlight><pre><span></span><code>print(sarr[0])
 # (1.5, 6)
 
-print(sarr['x'])
+print(sarr[&#39;x&#39;])
 # [1.5        3.14159265]
 
-print(sarr[0]['y'])
+print(sarr[0][&#39;y&#39;])
 # 6
-</code></pre>
-<h3 id="dtype">嵌套dtype和多维字段</h3>
-<p>当指定结构化的dtype时，可以另外传递一个形状（以int或元组的形式）：</p>
-<pre><code>dtype = [('x', np.int64, 3), ('y', np.int32)]
+</code></pre></div></p> <h3 id=dtype>嵌套dtype和多维字段<a class=headerlink href=#dtype title="Permanent link"> ¶</a></h3> <p>当指定结构化的dtype时，可以另外传递一个形状（以int或元组的形式）： <div class=highlight><pre><span></span><code>dtype = [(&#39;x&#39;, np.int64, 3), (&#39;y&#39;, np.int32)]
 arr = np.zeros(4, dtype=dtype)
 print(arr)
 # [([0, 0, 0], 0) ([0, 0, 0], 0) ([0, 0, 0], 0) ([0, 0, 0], 0)]
-</code></pre>
-<p><code>x</code>字段引用的是每条记录中长度为3的数组：</p>
-<pre><code>print(arr[0]['x'])
+</code></pre></div></p> <p><code>x</code>字段引用的是每条记录中长度为3的数组： <div class=highlight><pre><span></span><code>print(arr[0][&#39;x&#39;])
 # [0 0 0]
-</code></pre>
-<p>访问<code>arr['x']</code>然后返回一个二维数组，而不是返回一个一维数组：</p>
-<pre><code>print(arr['x'])
+</code></pre></div></p> <p>访问<code>arr['x']</code>然后返回一个二维数组，而不是返回一个一维数组： <div class=highlight><pre><span></span><code>print(arr[&#39;x&#39;])
 # [[0 0 0]
 #  [0 0 0]
 #  [0 0 0]
 #  [0 0 0]]
-</code></pre>
-<h3 id="_11">为什么要使用结构化数组</h3>
-<p>与pandas的DataFrame相比，NumPy结构化数组是一个相对底层的工具。</p>
-<p>结构化数组提供了一种将内存块解释为具有任意复杂嵌套列的表格结构的方法。</p>
-<p>由于数组中的每个元素都在内存中表示为固定数量的字节，因此结构化数组提供了读/写磁盘（包括内存映射）数据，以及在网络上传输数据和其他此类用途的非常快速有效的方法。</p>
-<p>作为结构化数组的另一种常见用途，将数据文件编写为固定长度的记录字节流是将C和C ++代码中的数据序列化的常用方法，这在业界传统系统中很常见。</p>
-<p>只要知道文件的格式（每个记录的大小以及每个元素的顺序、字节大小和数据类型），就可以用np.fromfile将数据读入内存。</p>
-                
-              
-              
-                
-
-
-              
-            </article>
-          </div>
-        </div>
-        
-          <a href="#" class="md-top md-icon" data-md-component="top" data-md-state="hidden">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"/></svg>
-            Back to top
-          </a>
-        
-      </main>
-      
-        
-<footer class="md-footer">
-  
-  <div class="md-footer-meta md-typeset">
-    <div class="md-footer-meta__inner md-grid">
-      <div class="md-footer-copyright">
-        
-        
-          Made with
-          <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
-            Material for MkDocs
-          </a>
-        
-        
-      </div>
-      
-    </div>
-  </div>
-</footer>
-      
-    </div>
-    <div class="md-dialog" data-md-component="dialog">
-      <div class="md-dialog__inner md-typeset"></div>
-    </div>
-    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tracking", "navigation.top", "navigation.expand"], "search": "../../../assets/javascripts/workers/search.fcfe8b6d.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": null}</script>
-    
-    
-      <script src="../../../assets/javascripts/bundle.b1047164.min.js"></script>
-      
-    
-  </body>
-</html>
+</code></pre></div></p> <h3 id=_11>为什么要使用结构化数组<a class=headerlink href=#_11 title="Permanent link"> ¶</a></h3> <p>与pandas的DataFrame相比，NumPy结构化数组是一个相对底层的工具。</p> <p>结构化数组提供了一种将内存块解释为具有任意复杂嵌套列的表格结构的方法。</p> <p>由于数组中的每个元素都在内存中表示为固定数量的字节，因此结构化数组提供了读/写磁盘（包括内存映射）数据，以及在网络上传输数据和其他此类用途的非常快速有效的方法。</p> <p>作为结构化数组的另一种常见用途，将数据文件编写为固定长度的记录字节流是将C和C ++代码中的数据序列化的常用方法，这在业界传统系统中很常见。</p> <p>只要知道文件的格式（每个记录的大小以及每个元素的顺序、字节大小和数据类型），就可以用np.fromfile将数据读入内存。</p> </article> </div> </div> </main> <footer class=md-footer> <div class="md-footer-meta md-typeset"> <div class="md-footer-meta__inner md-grid"> <div class=md-footer-copyright> Made with <a href=https://squidfunk.github.io/mkdocs-material/ target=_blank rel=noopener> Material for MkDocs </a> </div> </div> </div> </footer> </div> <div class=md-dialog data-md-component=dialog> <div class="md-dialog__inner md-typeset"></div> </div> <script id=__config type=application/json>{"base": "../../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.instant", "navigation.sections"], "search": "../../../assets/javascripts/workers/search.fcfe8b6d.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": null}</script> <script src=../../../assets/javascripts/bundle.b1047164.min.js></script> </body> </html>

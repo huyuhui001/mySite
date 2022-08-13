@@ -1,695 +1,8 @@
-
-<!doctype html>
-<html lang="en" class="no-js">
-  <head>
-    
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width,initial-scale=1">
-      
-      
-      
-      
-        <link rel="canonical" href="https://huyuhui001.github.io/mySite/index.html/python/DataAnalysis/ch02/">
-      
-      <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-7.3.6">
-    
-    
-      
-        <title>Pandas入门 - MEMO</title>
-      
-    
-    
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.a57b2b03.min.css">
-      
-        
-        <link rel="stylesheet" href="../../../assets/stylesheets/palette.3f5d1f46.min.css">
-        
-          
-          
-          <meta name="theme-color" content="#000000">
-        
-      
-    
-    
-    
-      
-        
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
-        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
-      
-    
-    
-    
-    
-      
-
-
-    
-    
-  </head>
-  
-  
-    
-    
-    
-    
-    
-    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="black" data-md-color-accent="deep-blue">
-  
-    
-    <script>function __prefix(e){return new URL("../../..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
-    
-    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
-    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
-    <label class="md-overlay" for="__drawer"></label>
-    <div data-md-component="skip">
-      
-        
-        <a href="#pandas" class="md-skip">
-          Skip to content
-        </a>
-      
-    </div>
-    <div data-md-component="announce">
-      
-    </div>
-    
-      
-
-<header class="md-header" data-md-component="header">
-  <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../../.." title="MEMO" class="md-header__button md-logo" aria-label="MEMO" data-md-component="logo">
-      
-  <img src="../../../assets/logo.jpg" alt="logo">
-
-    </a>
-    <label class="md-header__button md-icon" for="__drawer">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
-    </label>
-    <div class="md-header__title" data-md-component="header-title">
-      <div class="md-header__ellipsis">
-        <div class="md-header__topic">
-          <span class="md-ellipsis">
-            MEMO
-          </span>
-        </div>
-        <div class="md-header__topic" data-md-component="header-topic">
-          <span class="md-ellipsis">
-            
-              Pandas入门
-            
-          </span>
-        </div>
-      </div>
-    </div>
-    
-    
-    
-      <label class="md-header__button md-icon" for="__search">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
-      </label>
-      
-<div class="md-search" data-md-component="search" role="dialog">
-  <label class="md-search__overlay" for="__search"></label>
-  <div class="md-search__inner" role="search">
-    <form class="md-search__form" name="search">
-      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
-      <label class="md-search__icon md-icon" for="__search">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
-      </label>
-      <nav class="md-search__options" aria-label="Search">
-        
-        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
-        </button>
-      </nav>
-      
-    </form>
-    <div class="md-search__output">
-      <div class="md-search__scrollwrap" data-md-scrollfix>
-        <div class="md-search-result" data-md-component="search-result">
-          <div class="md-search-result__meta">
-            Initializing search
-          </div>
-          <ol class="md-search-result__list"></ol>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-    
-    
-  </nav>
-  
-</header>
-    
-    <div class="md-container" data-md-component="container">
-      
-      
-        
-          
-        
-      
-      <main class="md-main" data-md-component="main">
-        <div class="md-main__inner md-grid">
-          
-            
-              
-              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
-                <div class="md-sidebar__scrollwrap">
-                  <div class="md-sidebar__inner">
-                    
-
-
-<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
-  <label class="md-nav__title" for="__drawer">
-    <a href="../../.." title="MEMO" class="md-nav__button md-logo" aria-label="MEMO" data-md-component="logo">
-      
-  <img src="../../../assets/logo.jpg" alt="logo">
-
-    </a>
-    MEMO
-  </label>
-  
-  <ul class="md-nav__list" data-md-scrollfix>
-    
-      
-      
-      
-
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1" data-md-state="indeterminate" type="checkbox" id="__nav_1" checked>
-      
-      
-      
-      
-        <label class="md-nav__link" for="__nav_1">
-          Linux
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" aria-label="Linux" data-md-level="1">
-        <label class="md-nav__title" for="__nav_1">
-          <span class="md-nav__icon md-icon"></span>
-          Linux
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../linux/Administration/linux_admin/" class="md-nav__link">
-        SUSE Linux Administration
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../linux/SES/linux_ses/" class="md-nav__link">
-        SUSE Enterprise Storage Foundation
-      </a>
-    </li>
-  
-
-            
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" data-md-state="indeterminate" type="checkbox" id="__nav_2" checked>
-      
-      
-      
-      
-        <label class="md-nav__link" for="__nav_2">
-          Python
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" aria-label="Python" data-md-level="1">
-        <label class="md-nav__title" for="__nav_2">
-          <span class="md-nav__icon md-icon"></span>
-          Python
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../Foundation/python_foundation_index/" class="md-nav__link">
-        Python Foundamentals
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../python_data_analysis_index/" class="md-nav__link">
-        Data Analysis
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../Demo/python_demo_index/" class="md-nav__link">
-        Demos
-      </a>
-    </li>
-  
-
-            
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" data-md-state="indeterminate" type="checkbox" id="__nav_3" checked>
-      
-      
-      
-      
-        <label class="md-nav__link" for="__nav_3">
-          Cloud
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" aria-label="Cloud" data-md-level="1">
-        <label class="md-nav__title" for="__nav_3">
-          <span class="md-nav__icon md-icon"></span>
-          Cloud
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../cloud/MicroservicesKubernetes/" class="md-nav__link">
-        Microservices with K8s
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../cloud/KubernetesFoundationMemo/" class="md-nav__link">
-        K8s Foundamentals
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../cloud/Kubernetes-Installation/" class="md-nav__link">
-        K8s Installation
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../cloud/KubernetesTutorials-BTP-trail/" class="md-nav__link">
-        K8s Demos on Kyma@SAP BTP
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../cloud/KubernetesTutorials-Aliyun-Foundamentals/" class="md-nav__link">
-        K8s Demos on Ubuntu@Aliyun
-      </a>
-    </li>
-  
-
-            
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../about/" class="md-nav__link">
-        About
-      </a>
-    </li>
-  
-
-    
-  </ul>
-</nav>
-                  </div>
-                </div>
-              </div>
-            
-            
-              
-              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
-                <div class="md-sidebar__scrollwrap">
-                  <div class="md-sidebar__inner">
-                    
-
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#pandas_1" class="md-nav__link">
-    pandas数据结构介绍
-  </a>
-  
-    <nav class="md-nav" aria-label="pandas数据结构介绍">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#series" class="md-nav__link">
-    Series
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#dataframe" class="md-nav__link">
-    DataFrame
-  </a>
-  
-    <nav class="md-nav" aria-label="DataFrame">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#dataframe_1" class="md-nav__link">
-    由字典构成DataFrame
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#dataframe_2" class="md-nav__link">
-    使用嵌套字典构建DataFrame
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#seriesdataframe" class="md-nav__link">
-    使用含Series的字典构造DataFrame
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_1" class="md-nav__link">
-    索引对象
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#pandas_2" class="md-nav__link">
-    pandas基本功能
-  </a>
-  
-    <nav class="md-nav" aria-label="pandas基本功能">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#_2" class="md-nav__link">
-    重建索引
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_3" class="md-nav__link">
-    轴向索引删除条目
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_4" class="md-nav__link">
-    索引、选择与过滤
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_5" class="md-nav__link">
-    整数索引
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_6" class="md-nav__link">
-    算术和数据对齐
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#dataframeseries" class="md-nav__link">
-    DataFrame和Series间的算术操作
-  </a>
-  
-    <nav class="md-nav" aria-label="DataFrame和Series间的算术操作">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#numpy" class="md-nav__link">
-    不同维度NumPy数组间的算术操作
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#dataframeseries_1" class="md-nav__link">
-    DataFrame和Series间的算术操作
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_7" class="md-nav__link">
-    函数应用和映射
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_8" class="md-nav__link">
-    排序和排名
-  </a>
-  
-    <nav class="md-nav" aria-label="排序和排名">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#series_1" class="md-nav__link">
-    Series排序
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#dataframe_3" class="md-nav__link">
-    DataFrame排序
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_9" class="md-nav__link">
-    排名
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_10" class="md-nav__link">
-    含有重复标签的轴索引
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_11" class="md-nav__link">
-    描述性统计概述与计算
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_12" class="md-nav__link">
-    相关性和协方差
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_13" class="md-nav__link">
-    唯一值、计数和成员属性
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-                  </div>
-                </div>
-              </div>
-            
-          
-          <div class="md-content" data-md-component="content">
-            <article class="md-content__inner md-typeset">
-              
-                
-                
-                <h1 id="pandas">Pandas入门</h1>
-<p>约定：</p>
-<pre><code>import numpy as np
+<!doctype html><html lang=en class=no-js> <head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><link href=https://huyuhui001.github.io/mySite/python/DataAnalysis/ch02/ rel=canonical><link rel=icon href=../../../assets/images/favicon.png><meta name=generator content="mkdocs-1.3.0, mkdocs-material-7.3.6"><title>Pandas入门 - MEMO</title><link rel=stylesheet href=../../../assets/stylesheets/main.a57b2b03.min.css><link rel=stylesheet href=../../../assets/stylesheets/palette.3f5d1f46.min.css><meta name=theme-color content=#009485><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback"><style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style><link rel=stylesheet href=../../../extra.css></head> <body dir=ltr data-md-color-scheme data-md-color-primary=teal data-md-color-accent=green> <script>function __prefix(e){return new URL("../../..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script> <input class=md-toggle data-md-toggle=drawer type=checkbox id=__drawer autocomplete=off> <input class=md-toggle data-md-toggle=search type=checkbox id=__search autocomplete=off> <label class=md-overlay for=__drawer></label> <div data-md-component=skip> <a href=#pandas class=md-skip> Skip to content </a> </div> <div data-md-component=announce> </div> <header class="md-header md-header--lifted" data-md-component=header> <nav class="md-header__inner md-grid" aria-label=Header> <a href=../../.. title=MEMO class="md-header__button md-logo" aria-label=MEMO data-md-component=logo> <img src=../../../assets/logo.jpg alt=logo> </a> <label class="md-header__button md-icon" for=__drawer> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg> </label> <div class=md-header__title data-md-component=header-title> <div class=md-header__ellipsis> <div class=md-header__topic> <span class=md-ellipsis> MEMO </span> </div> <div class=md-header__topic data-md-component=header-topic> <span class=md-ellipsis> Pandas入门 </span> </div> </div> </div> <label class="md-header__button md-icon" for=__search> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg> </label> <div class=md-search data-md-component=search role=dialog> <label class=md-search__overlay for=__search></label> <div class=md-search__inner role=search> <form class=md-search__form name=search> <input type=text class=md-search__input name=query aria-label=Search placeholder=Search autocapitalize=off autocorrect=off autocomplete=off spellcheck=false data-md-component=search-query required> <label class="md-search__icon md-icon" for=__search> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg> </label> <nav class=md-search__options aria-label=Search> <button type=reset class="md-search__icon md-icon" aria-label=Clear tabindex=-1> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg> </button> </nav> </form> <div class=md-search__output> <div class=md-search__scrollwrap data-md-scrollfix> <div class=md-search-result data-md-component=search-result> <div class=md-search-result__meta> Initializing search </div> <ol class=md-search-result__list></ol> </div> </div> </div> </div> </div> <div class=md-header__source> <a href=https://github.com/huyuhui001/mySite title="Go to repository" class=md-source data-md-component=source> <div class="md-source__icon md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg> </div> <div class=md-source__repository> huyuhui001/mySite </div> </a> </div> </nav> <nav class=md-tabs aria-label=Tabs data-md-component=tabs> <div class="md-tabs__inner md-grid"> <ul class=md-tabs__list> <li class=md-tabs__item> <a href=../../../linux/Administration/linux_admin/ class=md-tabs__link> Linux </a> </li> <li class=md-tabs__item> <a href=../../../k8s/installation/single-local/ class=md-tabs__link> Kubernetes </a> </li> <li class=md-tabs__item> <a href=../../Foundation/python_foundation_index/ class=md-tabs__link> Python </a> </li> </ul> </div> </nav> </header> <div class=md-container data-md-component=container> <main class=md-main data-md-component=main> <div class="md-main__inner md-grid"> <div class="md-sidebar md-sidebar--primary" data-md-component=sidebar data-md-type=navigation> <div class=md-sidebar__scrollwrap> <div class=md-sidebar__inner> <nav class="md-nav md-nav--primary md-nav--lifted" aria-label=Navigation data-md-level=0> <label class=md-nav__title for=__drawer> <a href=../../.. title=MEMO class="md-nav__button md-logo" aria-label=MEMO data-md-component=logo> <img src=../../../assets/logo.jpg alt=logo> </a> MEMO </label> <div class=md-nav__source> <a href=https://github.com/huyuhui001/mySite title="Go to repository" class=md-source data-md-component=source> <div class="md-source__icon md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg> </div> <div class=md-source__repository> huyuhui001/mySite </div> </a> </div> <ul class=md-nav__list data-md-scrollfix> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_1 type=checkbox id=__nav_1> <label class=md-nav__link for=__nav_1> Linux <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label=Linux data-md-level=1> <label class=md-nav__title for=__nav_1> <span class="md-nav__icon md-icon"></span> Linux </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../linux/Administration/linux_admin/ class=md-nav__link> SUSE Linux Administration </a> </li> <li class=md-nav__item> <a href=../../../linux/SES/linux_ses/ class=md-nav__link> SUSE Enterprise Storage Foundation </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_2 type=checkbox id=__nav_2> <label class=md-nav__link for=__nav_2> Kubernetes <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label=Kubernetes data-md-level=1> <label class=md-nav__title for=__nav_2> <span class="md-nav__icon md-icon"></span> Kubernetes </label> <ul class=md-nav__list data-md-scrollfix> <li class="md-nav__item md-nav__item--section md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_2_1 type=checkbox id=__nav_2_1> <label class=md-nav__link for=__nav_2_1> Installation <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label=Installation data-md-level=2> <label class=md-nav__title for=__nav_2_1> <span class="md-nav__icon md-icon"></span> Installation </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../k8s/installation/single-local/ class=md-nav__link> Single Node Installation </a> </li> <li class=md-nav__item> <a href=../../../k8s/installation/multiple-local/ class=md-nav__link> Multiple Nodes Installation </a> </li> <li class=md-nav__item> <a href=../../../k8s/installation/aliyun-opensuse/ class=md-nav__link> Installation on Aliyun openSUSE </a> </li> <li class=md-nav__item> <a href=../../../k8s/installation/aliyun-ubuntu/ class=md-nav__link> Installation on Aliyun Ubuntu </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--section md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_2_2 type=checkbox id=__nav_2_2> <label class=md-nav__link for=__nav_2_2> Foundamentals <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label=Foundamentals data-md-level=2> <label class=md-nav__title for=__nav_2_2> <span class="md-nav__icon md-icon"></span> Foundamentals </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../k8s/foundamentals/memo/ class=md-nav__link> Memo </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/docker/ class=md-nav__link> Docker Fundamentals </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/overview/ class=md-nav__link> Overview </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/basics/ class=md-nav__link> kubectl basics </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/namespace/ class=md-nav__link> Namespace </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/pod/ class=md-nav__link> Work on pod </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/deployment/ class=md-nav__link> Deployment </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/statefulset/ class=md-nav__link> StatefulSet </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/daemonset/ class=md-nav__link> DaemonSet </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/job/ class=md-nav__link> Job and Cronjob </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/hpa/ class=md-nav__link> Horizontal Pod Autoscaling </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/service/ class=md-nav__link> Service </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/ingress/ class=md-nav__link> Ingress </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/persistence/ class=md-nav__link> Persistence </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/scheduling/ class=md-nav__link> Scheduling </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/policy/ class=md-nav__link> Policy </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/configuration/ class=md-nav__link> Configuration </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/rbac/ class=md-nav__link> Role Based Access Control (RBAC) </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/networkpolicy/ class=md-nav__link> Network Policy </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/clustermgt/ class=md-nav__link> Cluster Management </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/helming/ class=md-nav__link> Helming </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/troubleshooting/ class=md-nav__link> Troubleshooting </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/healthcheck/ class=md-nav__link> Health Check </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/casestudy/ class=md-nav__link> Case Study </a> </li> </ul> </nav> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_3 type=checkbox id=__nav_3> <label class=md-nav__link for=__nav_3> Python <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label=Python data-md-level=1> <label class=md-nav__title for=__nav_3> <span class="md-nav__icon md-icon"></span> Python </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../Foundation/python_foundation_index/ class=md-nav__link> Python Foundamentals </a> </li> <li class=md-nav__item> <a href=../python_data_analysis_index/ class=md-nav__link> Data Analysis </a> </li> <li class=md-nav__item> <a href=../../Demo/python_demo_index/ class=md-nav__link> Demos </a> </li> </ul> </nav> </li> </ul> </nav> </div> </div> </div> <div class="md-sidebar md-sidebar--secondary" data-md-component=sidebar data-md-type=toc> <div class=md-sidebar__scrollwrap> <div class=md-sidebar__inner> <nav class="md-nav md-nav--secondary" aria-label="Table of contents"> <label class=md-nav__title for=__toc> <span class="md-nav__icon md-icon"></span> Table of contents </label> <ul class=md-nav__list data-md-component=toc data-md-scrollfix> <li class=md-nav__item> <a href=#pandas_1 class=md-nav__link> pandas数据结构介绍 </a> <nav class=md-nav aria-label=pandas数据结构介绍> <ul class=md-nav__list> <li class=md-nav__item> <a href=#series class=md-nav__link> Series </a> </li> <li class=md-nav__item> <a href=#dataframe class=md-nav__link> DataFrame </a> <nav class=md-nav aria-label=DataFrame> <ul class=md-nav__list> <li class=md-nav__item> <a href=#dataframe_1 class=md-nav__link> 由字典构成DataFrame </a> </li> <li class=md-nav__item> <a href=#dataframe_2 class=md-nav__link> 使用嵌套字典构建DataFrame </a> </li> <li class=md-nav__item> <a href=#seriesdataframe class=md-nav__link> 使用含Series的字典构造DataFrame </a> </li> </ul> </nav> </li> </ul> </nav> </li> <li class=md-nav__item> <a href=#_1 class=md-nav__link> 索引对象 </a> </li> <li class=md-nav__item> <a href=#pandas_2 class=md-nav__link> pandas基本功能 </a> <nav class=md-nav aria-label=pandas基本功能> <ul class=md-nav__list> <li class=md-nav__item> <a href=#_2 class=md-nav__link> 重建索引 </a> </li> <li class=md-nav__item> <a href=#_3 class=md-nav__link> 轴向索引删除条目 </a> </li> <li class=md-nav__item> <a href=#_4 class=md-nav__link> 索引、选择与过滤 </a> </li> <li class=md-nav__item> <a href=#_5 class=md-nav__link> 整数索引 </a> </li> <li class=md-nav__item> <a href=#_6 class=md-nav__link> 算术和数据对齐 </a> </li> <li class=md-nav__item> <a href=#dataframeseries class=md-nav__link> DataFrame和Series间的算术操作 </a> <nav class=md-nav aria-label=DataFrame和Series间的算术操作> <ul class=md-nav__list> <li class=md-nav__item> <a href=#numpy class=md-nav__link> 不同维度NumPy数组间的算术操作 </a> </li> <li class=md-nav__item> <a href=#dataframeseries_1 class=md-nav__link> DataFrame和Series间的算术操作 </a> </li> </ul> </nav> </li> <li class=md-nav__item> <a href=#_7 class=md-nav__link> 函数应用和映射 </a> </li> </ul> </nav> </li> <li class=md-nav__item> <a href=#_8 class=md-nav__link> 排序和排名 </a> <nav class=md-nav aria-label=排序和排名> <ul class=md-nav__list> <li class=md-nav__item> <a href=#series_1 class=md-nav__link> Series排序 </a> </li> <li class=md-nav__item> <a href=#dataframe_3 class=md-nav__link> DataFrame排序 </a> </li> <li class=md-nav__item> <a href=#_9 class=md-nav__link> 排名 </a> </li> </ul> </nav> </li> <li class=md-nav__item> <a href=#_10 class=md-nav__link> 含有重复标签的轴索引 </a> </li> <li class=md-nav__item> <a href=#_11 class=md-nav__link> 描述性统计概述与计算 </a> </li> <li class=md-nav__item> <a href=#_12 class=md-nav__link> 相关性和协方差 </a> </li> <li class=md-nav__item> <a href=#_13 class=md-nav__link> 唯一值、计数和成员属性 </a> </li> </ul> </nav> </div> </div> </div> <div class=md-content data-md-component=content> <article class="md-content__inner md-typeset"> <a href=https://github.com/huyuhui001/mySite/edit/main/docs/python/DataAnalysis/ch02.md title="Edit this page" class="md-content__button md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg> </a> <h1 id=pandas>Pandas入门<a class=headerlink href=#pandas title="Permanent link"> ¶</a></h1> <p>约定： <div class=highlight><pre><span></span><code>import numpy as np
 import pandas as pd
 from pandas import Series, DataFrame
 import pandas_datareader as web
-</code></pre>
-<h2 id="pandas_1">pandas数据结构介绍</h2>
-<h3 id="series">Series</h3>
-<p>Series是一种一维的数组型对象，它包含了一个值序列（与NumPy中的类型相似），并且包含了数据标签，称为<strong>索引（index）</strong>。
-从另一个角度考虑Series，可以认为它是一个<strong>长度固定且有序的字典</strong>，因为它将索引值和数据值按位置配对。索引在左边，值在右边。</p>
-<pre><code>obj = pd.Series([4, 7, -5, 3])
+</code></pre></div></p> <h2 id=pandas_1>pandas数据结构介绍<a class=headerlink href=#pandas_1 title="Permanent link"> ¶</a></h2> <h3 id=series>Series<a class=headerlink href=#series title="Permanent link"> ¶</a></h3> <p>Series是一种一维的数组型对象，它包含了一个值序列（与NumPy中的类型相似），并且包含了数据标签，称为**索引（index）<strong>。 从另一个角度考虑Series，可以认为它是一个**长度固定且有序的字典</strong>，因为它将索引值和数据值按位置配对。索引在左边，值在右边。 <div class=highlight><pre><span></span><code>obj = pd.Series([4, 7, -5, 3])
 print(obj)
 # 0    4
 # 1    7
@@ -702,9 +15,7 @@ print(obj.values)
 
 print(obj.index)
 # RangeIndex(start=0, stop=4, step=1)
-</code></pre>
-<p>自定义index</p>
-<pre><code>obj = pd.Series([4, 7, -5, 3], index=['d', 'b', 'a', 'c'])
+</code></pre></div></p> <p>自定义index <div class=highlight><pre><span></span><code>obj = pd.Series([4, 7, -5, 3], index=[&#39;d&#39;, &#39;b&#39;, &#39;a&#39;, &#39;c&#39;])
 print(obj)
 # d    4
 # b    7
@@ -716,10 +27,10 @@ print(obj.values)
 # [ 4  7 -5  3]
 
 print(obj.index)
-# Index(['d', 'b', 'a', 'c'], dtype='object')
+# Index([&#39;d&#39;, &#39;b&#39;, &#39;a&#39;, &#39;c&#39;], dtype=&#39;object&#39;)
 
-# 输出索引值为'a'的Series值
-print(obj['a'])  
+# 输出索引值为&#39;a&#39;的Series值
+print(obj[&#39;a&#39;])  
 # -5
 
 # 使用布尔值数组进行过滤Series值
@@ -745,10 +56,10 @@ print(np.exp(obj))
 # dtype: float64
 
 # 更新Series数组值
-obj['a'] = 9
+obj[&#39;a&#39;] = 9
 
 # 输出指定索引值的Series值，注意，索引条件是列表
-print(obj[['a', 'b', 'c']])
+print(obj[[&#39;a&#39;, &#39;b&#39;, &#39;c&#39;]])
 # a    9
 # b    7
 # c    3
@@ -758,17 +69,13 @@ print(obj[['a', 'b', 'c']])
 print(obj)
 print(7 in obj) 
 # False
-print('a' in obj)
+print(&#39;a&#39; in obj)
 # True
-</code></pre>
-<p>通过字典生成一个Series。<code>NaN</code>（not a number），这是pandas中标记缺失值或NA值的方式。</p>
-<p>当把字典传递给Series构造函数时，产生的Series的索引将是排序好的字典键。可以将字典键按照你所想要的顺序传递给构造函数，从而使生成的Series的索引顺序符合预期。</p>
-<p>看下例，通过字典sdata生成Series。</p>
-<pre><code>sdata = {'Ohio': 35000, 'Texas': 71000, 'Oregon': 16000, 'Utah': 5000}
+</code></pre></div></p> <p>通过字典生成一个Series。<code>NaN</code>（not a number），这是pandas中标记缺失值或NA值的方式。</p> <p>当把字典传递给Series构造函数时，产生的Series的索引将是排序好的字典键。可以将字典键按照你所想要的顺序传递给构造函数，从而使生成的Series的索引顺序符合预期。</p> <p>看下例，通过字典sdata生成Series。 <div class=highlight><pre><span></span><code>sdata = {&#39;Ohio&#39;: 35000, &#39;Texas&#39;: 71000, &#39;Oregon&#39;: 16000, &#39;Utah&#39;: 5000}
 obj3 = pd.Series(sdata)
 
 print(sdata)  
-# {'Ohio': 35000, 'Texas': 71000, 'Oregon': 16000, 'Utah': 5000}
+# {&#39;Ohio&#39;: 35000, &#39;Texas&#39;: 71000, &#39;Oregon&#39;: 16000, &#39;Utah&#39;: 5000}
 
 print(obj3)
 # Ohio      35000
@@ -776,9 +83,7 @@ print(obj3)
 # Oregon    16000
 # Utah       5000
 # dtype: int64
-</code></pre>
-<p>通过指定索引states去匹配字典sdata生成基于新索引states的Series。</p>
-<pre><code>states = ['California', 'Ohio', 'Oregon', 'Texas']
+</code></pre></div></p> <p>通过指定索引states去匹配字典sdata生成基于新索引states的Series。 <div class=highlight><pre><span></span><code>states = [&#39;California&#39;, &#39;Ohio&#39;, &#39;Oregon&#39;, &#39;Texas&#39;]
 obj4 = pd.Series(sdata, index=states)
 
 print(obj4)
@@ -787,9 +92,7 @@ print(obj4)
 # Oregon        16000.0
 # Texas         71000.0
 # dtype: float64
-</code></pre>
-<p>对Series进行布尔值判断。</p>
-<pre><code>print(pd.isnull(obj4))
+</code></pre></div></p> <p>对Series进行布尔值判断。 <div class=highlight><pre><span></span><code>print(pd.isnull(obj4))
 # California     True
 # Ohio          False
 # Oregon        False
@@ -802,9 +105,7 @@ print(pd.notnull(obj4))
 # Oregon         True
 # Texas          True
 # dtype: bool
-</code></pre>
-<p>对Series进行布尔值判断。</p>
-<pre><code>print(obj4.isnull)
+</code></pre></div></p> <p>对Series进行布尔值判断。 <div class=highlight><pre><span></span><code>print(obj4.isnull)
 # &lt;bound method Series.isnull of California        NaN
 # Ohio          35000.0
 # Oregon        16000.0
@@ -817,9 +118,7 @@ print(obj4.notnull)
 # Oregon        16000.0
 # Texas         71000.0
 # dtype: float64&gt;
-</code></pre>
-<p>Series的自动对齐索引，与数据库的join操作是非常相似。</p>
-<pre><code>print(&quot;obj3 \n&quot;, obj3)
+</code></pre></div></p> <p>Series的自动对齐索引，与数据库的join操作是非常相似。 <div class=highlight><pre><span></span><code>print(&quot;obj3 \n&quot;, obj3)
 # obj3 
 #  Ohio      35000
 # Texas     71000
@@ -851,10 +150,8 @@ print(&quot;obj3+obj4 \n&quot;, obj3 + obj4)
 # Oregon    16000               Oregon        16000.0
 # Utah       5000               Texas         71000.0
 # dtype: int64                  dtype: float64
-</code></pre>
-<p>Series对象自身和其索引都有name属性。</p>
-<pre><code>obj4.name = 'population'
-obj4.index.name = 'state'
+</code></pre></div></p> <p>Series对象自身和其索引都有name属性。 <div class=highlight><pre><span></span><code>obj4.name = &#39;population&#39;
+obj4.index.name = &#39;state&#39;
 print(obj4)
 # state
 # California        NaN
@@ -862,30 +159,19 @@ print(obj4)
 # Oregon        16000.0
 # Texas         71000.0
 # Name: population, dtype: float64
-</code></pre>
-<p>替换Series的索引名。</p>
-<pre><code>obj = pd.Series([4, 7, -5, 3], index=['d', 'b', 'a', 'c'])
+</code></pre></div></p> <p>替换Series的索引名。 <div class=highlight><pre><span></span><code>obj = pd.Series([4, 7, -5, 3], index=[&#39;d&#39;, &#39;b&#39;, &#39;a&#39;, &#39;c&#39;])
 print(obj)
-obj.index = ['Bob', 'Steve', 'Jeff', 'Ryan']
+obj.index = [&#39;Bob&#39;, &#39;Steve&#39;, &#39;Jeff&#39;, &#39;Ryan&#39;]
 print(obj)
 # Bob      4
 # Steve    7
 # Jeff    -5
 # Ryan     3
 # dtype: int64
-</code></pre>
-<h3 id="dataframe">DataFrame</h3>
-<p>DataFrame表示的是矩阵的数据表，它包含已排序的列集合，每一列可以是不同的值类型（数值、字符串、布尔值等）。</p>
-<p>DataFrame既有行索引也有列索引，它可以被视为一个共享相同索引的Series的字典，比如所有列共享同一个列索引。</p>
-<p>在DataFrame中，数据被存储为一个以上的二维块，而不是列表、字典或其他一维数组的集合。</p>
-<p>DataFrame是二维的，但可以利用<strong>分层索引</strong>在DataFrame中展现更高维度的数据。</p>
-<p><strong>从DataFrame中选取的列是数据的视图，而不是拷贝</strong>。因此，对Series的修改会映射到DataFrame中。如果需要复制，则应当显式地使用Series的copy方法。</p>
-<h4 id="dataframe_1">由字典构成DataFrame</h4>
-<p>基于字典<code>data</code>产生的DataFrame会自动为Sereies分配索引，并且列会按照排序的顺序排列。</p>
-<pre><code>data = {
-    'state': ['Ohio', 'Ohio', 'Ohio', 'Nevada', 'Nevada', 'Nevada'],
-    'year': [2000, 2001, 2002, 2001, 2002, 2003],
-    'pop': [1.5, 1.7, 3.6, 2.4, 2.9, 3.2]
+</code></pre></div></p> <h3 id=dataframe>DataFrame<a class=headerlink href=#dataframe title="Permanent link"> ¶</a></h3> <p>DataFrame表示的是矩阵的数据表，它包含已排序的列集合，每一列可以是不同的值类型（数值、字符串、布尔值等）。</p> <p>DataFrame既有行索引也有列索引，它可以被视为一个共享相同索引的Series的字典，比如所有列共享同一个列索引。</p> <p>在DataFrame中，数据被存储为一个以上的二维块，而不是列表、字典或其他一维数组的集合。</p> <p>DataFrame是二维的，但可以利用**分层索引**在DataFrame中展现更高维度的数据。</p> <p><strong>从DataFrame中选取的列是数据的视图，而不是拷贝</strong>。因此，对Series的修改会映射到DataFrame中。如果需要复制，则应当显式地使用Series的copy方法。</p> <h4 id=dataframe_1>由字典构成DataFrame<a class=headerlink href=#dataframe_1 title="Permanent link"> ¶</a></h4> <p>基于字典<code>data</code>产生的DataFrame会自动为Sereies分配索引，并且列会按照排序的顺序排列。 <div class=highlight><pre><span></span><code>data = {
+    &#39;state&#39;: [&#39;Ohio&#39;, &#39;Ohio&#39;, &#39;Ohio&#39;, &#39;Nevada&#39;, &#39;Nevada&#39;, &#39;Nevada&#39;],
+    &#39;year&#39;: [2000, 2001, 2002, 2001, 2002, 2003],
+    &#39;pop&#39;: [1.5, 1.7, 3.6, 2.4, 2.9, 3.2]
 }
 
 frame = pd.DataFrame(data)
@@ -905,9 +191,7 @@ print(frame.head(3))
 # 0  Ohio  2000  1.5
 # 1  Ohio  2001  1.7
 # 2  Ohio  2002  3.6
-</code></pre>
-<p>如果指定了列的顺序，DataFrame的列将会按照指定顺序排列。</p>
-<pre><code>frame = pd.DataFrame(data, columns=['year', 'state', 'pop'])
+</code></pre></div></p> <p>如果指定了列的顺序，DataFrame的列将会按照指定顺序排列。 <div class=highlight><pre><span></span><code>frame = pd.DataFrame(data, columns=[&#39;year&#39;, &#39;state&#39;, &#39;pop&#39;])
 print(frame)
 #    year   state  pop
 # 0  2000    Ohio  1.5
@@ -916,12 +200,10 @@ print(frame)
 # 3  2001  Nevada  2.4
 # 4  2002  Nevada  2.9
 # 5  2003  Nevada  3.2
-</code></pre>
-<p>如果传的列（<code>debt</code>）不包含在字典（<code>data</code>）中，将会在结果中出现缺失值。</p>
-<pre><code>frame2 = pd.DataFrame(
+</code></pre></div></p> <p>如果传的列（<code>debt</code>）不包含在字典（<code>data</code>）中，将会在结果中出现缺失值。 <div class=highlight><pre><span></span><code>frame2 = pd.DataFrame(
     data,
-    columns=['year', 'state', 'pop', 'debt'],
-    index=['one', 'two', 'three', 'four', 'five', 'six']
+    columns=[&#39;year&#39;, &#39;state&#39;, &#39;pop&#39;, &#39;debt&#39;],
+    index=[&#39;one&#39;, &#39;two&#39;, &#39;three&#39;, &#39;four&#39;, &#39;five&#39;, &#39;six&#39;]
 )
 
 print(frame2)
@@ -932,19 +214,13 @@ print(frame2)
 # four   2001  Nevada  2.4  NaN
 # five   2002  Nevada  2.9  NaN
 # six    2003  Nevada  3.2  NaN
-</code></pre>
-<p>选取行, 可以通过位置或行索引标签<code>loc</code>进行选取。</p>
-<pre><code>print(frame2.loc['three'])
+</code></pre></div></p> <p>选取行, 可以通过位置或行索引标签<code>loc</code>进行选取。 <div class=highlight><pre><span></span><code>print(frame2.loc[&#39;three&#39;])
 # year     2002
 # state    Ohio
 # pop       3.6
 # debt      NaN
 # Name: three, dtype: object
-</code></pre>
-<p>DataFrame中的一列，可以按字典型标记或属性那样检索为Series。
-<code>frame2[colunm]</code>对于任意列名均有效，但是<code>frame2.column</code>只在列名是有效的Python变量名时有效。
-返回的Series与原DataFrame有相同的索引，且Series的<code>name</code>属性也会被合理地设置。</p>
-<pre><code>print(frame2['state'])
+</code></pre></div></p> <p>DataFrame中的一列，可以按字典型标记或属性那样检索为Series。 <code>frame2[colunm]</code>对于任意列名均有效，但是<code>frame2.column</code>只在列名是有效的Python变量名时有效。 返回的Series与原DataFrame有相同的索引，且Series的<code>name</code>属性也会被合理地设置。 <div class=highlight><pre><span></span><code>print(frame2[&#39;state&#39;])
 # one        Ohio
 # two        Ohio
 # three      Ohio
@@ -961,9 +237,7 @@ print(frame2.state)  # 属性型连接
 # five     Nevada
 # six      Nevada
 # Name: state, dtype: object
-</code></pre>
-<p>列的引用是可以修改的。值的长度必须和DataFrame的长度相匹配,比如，下例中<code>np.arange(6.)</code>和<code>frame2['debt']</code>的长度都是6。</p>
-<pre><code>frame2['debt'] = 16.5
+</code></pre></div></p> <p>列的引用是可以修改的。值的长度必须和DataFrame的长度相匹配,比如，下例中<code>np.arange(6.)</code>和<code>frame2['debt']</code>的长度都是6。 <div class=highlight><pre><span></span><code>frame2[&#39;debt&#39;] = 16.5
 print(frame2)
 # Name: state, dtype: object
 #        year   state  pop  debt
@@ -974,7 +248,7 @@ print(frame2)
 # five   2002  Nevada  2.9  16.5
 # six    2003  Nevada  3.2  16.5
 
-frame2['debt'] = np.arange(6.)
+frame2[&#39;debt&#39;] = np.arange(6.)
 print(frame2)
 #        year   state  pop  debt
 # one    2000    Ohio  1.5   0.0
@@ -983,11 +257,9 @@ print(frame2)
 # four   2001  Nevada  2.4   3.0
 # five   2002  Nevada  2.9   4.0
 # six    2003  Nevada  3.2   5.0
-</code></pre>
-<p>如果将Series赋值给一列时，Series的索引将会按照DataFrame的索引重新排列，并在空缺的地方填充缺失值</p>
-<pre><code>val = pd.Series([-1.2, -1.5, -1.7], index=['two', 'four', 'five'])
+</code></pre></div></p> <p>如果将Series赋值给一列时，Series的索引将会按照DataFrame的索引重新排列，并在空缺的地方填充缺失值 <div class=highlight><pre><span></span><code>val = pd.Series([-1.2, -1.5, -1.7], index=[&#39;two&#39;, &#39;four&#39;, &#39;five&#39;])
 
-frame2['debt'] = val
+frame2[&#39;debt&#39;] = val
 
 print(frame2)
 #        year   state  pop  debt
@@ -997,9 +269,7 @@ print(frame2)
 # four   2001  Nevada  2.4  -1.5
 # five   2002  Nevada  2.9  -1.7
 # six    2003  Nevada  3.2   NaN
-</code></pre>
-<p>如果被赋值的列(<code>eastern</code>列)并不存在，则会生成一个新的列。<code>frame2.state == 'Ohio'</code>返回的是布尔值，赋值给<code>eastern</code>。</p>
-<pre><code>frame2['eastern'] = frame2.state == 'Ohio'
+</code></pre></div></p> <p>如果被赋值的列(<code>eastern</code>列)并不存在，则会生成一个新的列。<code>frame2.state == 'Ohio'</code>返回的是布尔值，赋值给<code>eastern</code>。 <div class=highlight><pre><span></span><code>frame2[&#39;eastern&#39;] = frame2.state == &#39;Ohio&#39;
 
 print(frame2)
 #        year   state  pop  debt  eastern
@@ -1018,20 +288,15 @@ print(frame2.eastern)
 # five     False
 # six      False
 # Name: eastern, dtype: bool
-</code></pre>
-<p><code>del</code>关键字可以像在字典中那样对DataFrame删除列。</p>
-<pre><code>del frame2['eastern']
+</code></pre></div></p> <p><code>del</code>关键字可以像在字典中那样对DataFrame删除列。 <div class=highlight><pre><span></span><code>del frame2[&#39;eastern&#39;]
 print(frame2.columns)
-# Index(['year', 'state', 'pop', 'debt'], dtype='object')
-</code></pre>
-<h4 id="dataframe_2">使用嵌套字典构建DataFrame</h4>
-<p>pandas会将字典的键作为列('Nevada', etc.)，将内部字典的键作为行索引(2001, etc.)</p>
-<pre><code>pop = {
-    'Nevada': {
+# Index([&#39;year&#39;, &#39;state&#39;, &#39;pop&#39;, &#39;debt&#39;], dtype=&#39;object&#39;)
+</code></pre></div></p> <h4 id=dataframe_2>使用嵌套字典构建DataFrame<a class=headerlink href=#dataframe_2 title="Permanent link"> ¶</a></h4> <p>pandas会将字典的键作为列('Nevada', etc.)，将内部字典的键作为行索引(2001, etc.) <div class=highlight><pre><span></span><code>pop = {
+    &#39;Nevada&#39;: {
         2001: 2.4,
         2002: 2.9
     },
-    'Ohio': {
+    &#39;Ohio&#39;: {
         2000: 1.5,
         2001: 1.7,
         2002: 3.6
@@ -1054,34 +319,26 @@ print(pd.DataFrame(pop, index=[2001, 2002, 2003]))
 # 2003     NaN   NaN
 
 # 指定不相干索引
-print(pd.DataFrame(pop, index=['a', 'b', 'c']))
+print(pd.DataFrame(pop, index=[&#39;a&#39;, &#39;b&#39;, &#39;c&#39;]))
 #    Nevada  Ohio
 # a     NaN   NaN
 # b     NaN   NaN
 # c     NaN   NaN
-</code></pre>
-<p>转置操作（调换行和列）</p>
-<pre><code>print(frame3.T)
+</code></pre></div></p> <p>转置操作（调换行和列） <div class=highlight><pre><span></span><code>print(frame3.T)
 #         2001  2002  2000
 # Nevada   2.4   2.9   NaN
 # Ohio     1.7   3.6   1.5
-</code></pre>
-<h4 id="seriesdataframe">使用含Series的字典构造DataFrame</h4>
-<p><code>frame3['Ohio'][:-1]</code>是值为<code>Ohio</code>的Series的0~倒数第一个元素（不含），一共3个。
-<code>frame3['Nevada'][:2]</code>是值为<code>Nevada</code>的Series的前2个元素。</p>
-<pre><code>pdata = {
-    'Ohio': frame3['Ohio'][:-1],
-    'Nevada': frame3['Nevada'][:2]
+</code></pre></div></p> <h4 id=seriesdataframe>使用含Series的字典构造DataFrame<a class=headerlink href=#seriesdataframe title="Permanent link"> ¶</a></h4> <p><code>frame3['Ohio'][:-1]</code>是值为<code>Ohio</code>的Series的0~倒数第一个元素（不含），一共3个。 <code>frame3['Nevada'][:2]</code>是值为<code>Nevada</code>的Series的前2个元素。</p> <div class=highlight><pre><span></span><code>pdata = {
+    &#39;Ohio&#39;: frame3[&#39;Ohio&#39;][:-1],
+    &#39;Nevada&#39;: frame3[&#39;Nevada&#39;][:2]
 }
 
 print(pd.DataFrame(pdata))
 #       Ohio  Nevada
 # 2001   1.7     2.4
 # 2002   3.6     2.9
-</code></pre>
-<p>指定Dataframe <code>frame3</code>的列名。</p>
-<pre><code>frame3.index.name = 'year'
-frame3.columns.name = 'state'
+</code></pre></div> <p>指定Dataframe <code>frame3</code>的列名。 <div class=highlight><pre><span></span><code>frame3.index.name = &#39;year&#39;
+frame3.columns.name = &#39;state&#39;
 
 print(frame3)
 # state  Nevada  Ohio
@@ -1089,15 +346,11 @@ print(frame3)
 # 2001      2.4   1.7
 # 2002      2.9   3.6
 # 2000      NaN   1.5
-</code></pre>
-<p>只输出Dataframe的值<code>frame3.values</code>，是一个二维数组。</p>
-<pre><code>print(frame3.values)
+</code></pre></div></p> <p>只输出Dataframe的值<code>frame3.values</code>，是一个二维数组。 <div class=highlight><pre><span></span><code>print(frame3.values)
 # [[2.4 1.7]
 #  [2.9 3.6]
 #  [nan 1.5]]
-</code></pre>
-<p>只输出Dataframe的值<code>frame2.values</code>，是一个二维数组。</p>
-<pre><code>print(frame2)
+</code></pre></div></p> <p>只输出Dataframe的值<code>frame2.values</code>，是一个二维数组。 <div class=highlight><pre><span></span><code>print(frame2)
 #        year   state  pop  debt
 # one    2000    Ohio  1.5   NaN
 # two    2001    Ohio  1.7  -1.2
@@ -1107,21 +360,13 @@ print(frame3)
 # six    2003  Nevada  3.2   NaN
 
 print(frame2.values)
-# [[2000 'Ohio' 1.5 nan]
-#  [2001 'Ohio' 1.7 -1.2]
-#  [2002 'Ohio' 3.6 nan]
-#  [2001 'Nevada' 2.4 -1.5]
-#  [2002 'Nevada' 2.9 -1.7]
-#  [2003 'Nevada' 3.2 nan]]
-</code></pre>
-<h2 id="_1">索引对象</h2>
-<p>pandas中的<strong>索引对象</strong>是用于存储轴标签和其他元数据的（例如轴名称或标签）。</p>
-<p>在构造Series或DataFrame时，你所使用的任意数组或标签序列都可以在内部转换为索引对象。
-<strong>索引对象是不可变的。</strong></p>
-<p>除了类似数组，索引对象也像一个固定大小的集合。与Python集合不同，<em>pandas索引对象可以包含重复标签</em>。
-因为一些操作会产生包含索引化数据的结果，理解索引如何工作还是很重要的。</p>
-<p>下例演示了如何读取Dataframe的索引值。</p>
-<pre><code>obj = pd.Series(range(3), index=['a', 'b', 'c'])
+# [[2000 &#39;Ohio&#39; 1.5 nan]
+#  [2001 &#39;Ohio&#39; 1.7 -1.2]
+#  [2002 &#39;Ohio&#39; 3.6 nan]
+#  [2001 &#39;Nevada&#39; 2.4 -1.5]
+#  [2002 &#39;Nevada&#39; 2.9 -1.7]
+#  [2003 &#39;Nevada&#39; 3.2 nan]]
+</code></pre></div></p> <h2 id=_1>索引对象<a class=headerlink href=#_1 title="Permanent link"> ¶</a></h2> <p>pandas中的**索引对象**是用于存储轴标签和其他元数据的（例如轴名称或标签）。</p> <p>在构造Series或DataFrame时，你所使用的任意数组或标签序列都可以在内部转换为索引对象。 <strong>索引对象是不可变的。</strong></p> <p>除了类似数组，索引对象也像一个固定大小的集合。与Python集合不同，<em>pandas索引对象可以包含重复标签</em>。 因为一些操作会产生包含索引化数据的结果，理解索引如何工作还是很重要的。</p> <p>下例演示了如何读取Dataframe的索引值。 <div class=highlight><pre><span></span><code>obj = pd.Series(range(3), index=[&#39;a&#39;, &#39;b&#39;, &#39;c&#39;])
 index = obj.index
 
 print(obj)
@@ -1131,16 +376,14 @@ print(obj)
 # dtype: int64
 
 print(index)
-# Index(['a', 'b', 'c'], dtype='object')
+# Index([&#39;a&#39;, &#39;b&#39;, &#39;c&#39;], dtype=&#39;object&#39;)
 
 print(index[1:])
-# Index(['b', 'c'], dtype='object')
-</code></pre>
-<p>下例演示了通过一个指定的Dataframe索引<code>labels</code>来生成Dataframe <code>obj2</code>。</p>
-<pre><code>labels = pd.Index(np.arange(3))
+# Index([&#39;b&#39;, &#39;c&#39;], dtype=&#39;object&#39;)
+</code></pre></div></p> <p>下例演示了通过一个指定的Dataframe索引<code>labels</code>来生成Dataframe <code>obj2</code>。 <div class=highlight><pre><span></span><code>labels = pd.Index(np.arange(3))
 
 print(labels)
-# Int64Index([0, 1, 2], dtype='int64')
+# Int64Index([0, 1, 2], dtype=&#39;int64&#39;)
 
 obj2 = pd.Series([1.5, -2.5, 0], index=labels)
 print(obj2)
@@ -1151,14 +394,12 @@ print(obj2)
 
 print(obj2.index is labels)
 # True
-</code></pre>
-<p>下例演示了不指定索引，默认使用字典索引来创建Dataframe。</p>
-<pre><code>pop = {
-    'Nevada': {
+</code></pre></div></p> <p>下例演示了不指定索引，默认使用字典索引来创建Dataframe。 <div class=highlight><pre><span></span><code>pop = {
+    &#39;Nevada&#39;: {
         2001: 2.4,
         2002: 2.9
     },
-    'Ohio': {
+    &#39;Ohio&#39;: {
         2000: 1.5,
         2001: 1.7,
         2002: 3.6
@@ -1181,108 +422,75 @@ print(frame3)
 # 2000      NaN   1.5
 
 print(frame3.columns)
-# Index(['Nevada', 'Ohio'], dtype='object', name='state')
+# Index([&#39;Nevada&#39;, &#39;Ohio&#39;], dtype=&#39;object&#39;, name=&#39;state&#39;)
 
 print(frame3.index)
-# Int64Index([2001, 2002, 2000], dtype='int64', name='year')
+# Int64Index([2001, 2002, 2000], dtype=&#39;int64&#39;, name=&#39;year&#39;)
 
-print('Ohio' in frame3.columns)
+print(&#39;Ohio&#39; in frame3.columns)
 # True
 
 print(2003 in frame3.index)
 # False
-</code></pre>
-<p>pandas索引对象允许包含重复标签。根据重复标签进行筛选，会选取所有重复标签对应的数据。</p>
-<pre><code>dup_labels = pd.Index(['foo', 'foo', 'bar', 'bar'])
+</code></pre></div></p> <p>pandas索引对象允许包含重复标签。根据重复标签进行筛选，会选取所有重复标签对应的数据。 <div class=highlight><pre><span></span><code>dup_labels = pd.Index([&#39;foo&#39;, &#39;foo&#39;, &#39;bar&#39;, &#39;bar&#39;])
 
 print(dup_labels)
-# Index(['foo', 'foo', 'bar', 'bar'], dtype='object')
-</code></pre>
-<p>一些常用索引对象的方法和属性。</p>
-<pre><code>obj1 = pd.Series(range(3), index=['a', 'b', 'c'])
+# Index([&#39;foo&#39;, &#39;foo&#39;, &#39;bar&#39;, &#39;bar&#39;], dtype=&#39;object&#39;)
+</code></pre></div></p> <p>一些常用索引对象的方法和属性。 <div class=highlight><pre><span></span><code>obj1 = pd.Series(range(3), index=[&#39;a&#39;, &#39;b&#39;, &#39;c&#39;])
 index1 = obj1.index
 
-obj2 = pd.Series(range(3), index=['c', 'f', 'g'])
+obj2 = pd.Series(range(3), index=[&#39;c&#39;, &#39;f&#39;, &#39;g&#39;])
 index2 = obj2.index
 
 print(index1)
-# Index(['a', 'b', 'c'], dtype='object')
+# Index([&#39;a&#39;, &#39;b&#39;, &#39;c&#39;], dtype=&#39;object&#39;)
 
 print(index2)
-# Index(['c', 'f', 'g'], dtype='object')
-</code></pre>
-<p><code>append</code>方法：将外部的索引对象粘贴到原索引后，产生一个新的索引。
-接上例，把<code>index2</code>对象追加到<code>index1</code>对象。</p>
-<pre><code>print(index1.append(index2))
-# Index(['a', 'b', 'c', 'c', 'f', 'g'], dtype='object')
-</code></pre>
-<p><code>difference</code>方法: 计算2个索引的差集。</p>
-<pre><code>print(index1.difference(index2))
-# Index(['a', 'b'], dtype='object')
-</code></pre>
-<p><code>intersection</code>方法: 计算2个索引的交集。</p>
-<pre><code>print(index1.intersection(index2))
-# Index(['c'], dtype='object')
-</code></pre>
-<p><code>union</code>方法: 计算2个索引的并集（去重）。</p>
-<pre><code>print(index1.union(index2))
-# Index(['a', 'b', 'c', 'f', 'g'], dtype='object')
-</code></pre>
-<p><code>isin</code>方法: 计算表示每一个值是否在传值容器中，返回的是一个布尔数组。</p>
-<pre><code>print(index1.isin(index2))
+# Index([&#39;c&#39;, &#39;f&#39;, &#39;g&#39;], dtype=&#39;object&#39;)
+</code></pre></div></p> <p><code>append</code>方法：将外部的索引对象粘贴到原索引后，产生一个新的索引。 接上例，把<code>index2</code>对象追加到<code>index1</code>对象。 <div class=highlight><pre><span></span><code>print(index1.append(index2))
+# Index([&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;c&#39;, &#39;f&#39;, &#39;g&#39;], dtype=&#39;object&#39;)
+</code></pre></div></p> <p><code>difference</code>方法: 计算2个索引的差集。 <div class=highlight><pre><span></span><code>print(index1.difference(index2))
+# Index([&#39;a&#39;, &#39;b&#39;], dtype=&#39;object&#39;)
+</code></pre></div></p> <p><code>intersection</code>方法: 计算2个索引的交集。 <div class=highlight><pre><span></span><code>print(index1.intersection(index2))
+# Index([&#39;c&#39;], dtype=&#39;object&#39;)
+</code></pre></div></p> <p><code>union</code>方法: 计算2个索引的并集（去重）。 <div class=highlight><pre><span></span><code>print(index1.union(index2))
+# Index([&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;f&#39;, &#39;g&#39;], dtype=&#39;object&#39;)
+</code></pre></div></p> <p><code>isin</code>方法: 计算表示每一个值是否在传值容器中，返回的是一个布尔数组。 <div class=highlight><pre><span></span><code>print(index1.isin(index2))
 # [False False  True]
-</code></pre>
-<p><code>delete</code>方法: 将位置i（从0开始编号）的元素删除，并产生新的索引。</p>
-<pre><code>print(index1.delete('b'))
+</code></pre></div></p> <p><code>delete</code>方法: 将位置i（从0开始编号）的元素删除，并产生新的索引。 <div class=highlight><pre><span></span><code>print(index1.delete(&#39;b&#39;))
 # IndexError: arrays used as indices must be of integer (or boolean) type
 
 print(index1.delete(1))
-# Index(['a', 'c'], dtype='object')
+# Index([&#39;a&#39;, &#39;c&#39;], dtype=&#39;object&#39;)
 
 print(index1)
-# Index(['a', 'b', 'c'], dtype='object')
-</code></pre>
-<p><code>drop</code>方法: 根据传参删除指定索引值，并产生新的索引, 对比和delete的区别，<code>delete</code>方法是输入位置，<code>drop</code>方法是输入索引名称。</p>
-<pre><code>print(index2.drop(1))
-# KeyError: '[1] not found in axis'
+# Index([&#39;a&#39;, &#39;b&#39;, &#39;c&#39;], dtype=&#39;object&#39;)
+</code></pre></div></p> <p><code>drop</code>方法: 根据传参删除指定索引值，并产生新的索引, 对比和delete的区别，<code>delete</code>方法是输入位置，<code>drop</code>方法是输入索引名称。 <div class=highlight><pre><span></span><code>print(index2.drop(1))
+# KeyError: &#39;[1] not found in axis&#39;
 
-print(index2.drop('f'))
-# Index(['c', 'g'], dtype='object')
+print(index2.drop(&#39;f&#39;))
+# Index([&#39;c&#39;, &#39;g&#39;], dtype=&#39;object&#39;)
 
 print(index2)
-# Index(['c', 'f', 'g'], dtype='object')
-</code></pre>
-<p><code>insert</code>方法: 在位置<code>i</code>插入元素，并产生新的索引。</p>
-<pre><code>print(index1.insert(1, 'e'))  
-# Index(['a', 'e', 'b', 'c'], dtype='object')
+# Index([&#39;c&#39;, &#39;f&#39;, &#39;g&#39;], dtype=&#39;object&#39;)
+</code></pre></div></p> <p><code>insert</code>方法: 在位置<code>i</code>插入元素，并产生新的索引。 <div class=highlight><pre><span></span><code>print(index1.insert(1, &#39;e&#39;))  
+# Index([&#39;a&#39;, &#39;e&#39;, &#39;b&#39;, &#39;c&#39;], dtype=&#39;object&#39;)
 
 print(index1)  
-# Index(['a', 'b', 'c'], dtype='object')
-</code></pre>
-<p><code>is_monotonic</code>方法: 如果索引序列递增，则返回<code>True</code>。</p>
-<pre><code>print(index1.is_monotonic) 
+# Index([&#39;a&#39;, &#39;b&#39;, &#39;c&#39;], dtype=&#39;object&#39;)
+</code></pre></div></p> <p><code>is_monotonic</code>方法: 如果索引序列递增，则返回<code>True</code>。 <div class=highlight><pre><span></span><code>print(index1.is_monotonic) 
 # True
 
-print(index1.insert(1, 'e').is_monotonic) 
+print(index1.insert(1, &#39;e&#39;).is_monotonic) 
 # False
-</code></pre>
-<p><code>is_unique</code>方法: 如果索引序列唯一则返回<code>True</code>。</p>
-<pre><code>print(index1.is_unique)  # True
+</code></pre></div></p> <p><code>is_unique</code>方法: 如果索引序列唯一则返回<code>True</code>。 <div class=highlight><pre><span></span><code>print(index1.is_unique)  # True
 print(index1.append(index2).is_unique)  # False
-</code></pre>
-<p><code>unique</code>方法: 计算索引的唯一值序列（对比Union）。</p>
-<pre><code>print(index1.unique())
-# Index(['a', 'b', 'c'], dtype='object')
+</code></pre></div></p> <p><code>unique</code>方法: 计算索引的唯一值序列（对比Union）。 <div class=highlight><pre><span></span><code>print(index1.unique())
+# Index([&#39;a&#39;, &#39;b&#39;, &#39;c&#39;], dtype=&#39;object&#39;)
 
 print(index1.append(index2).unique())
-# Index(['a', 'b', 'c', 'f', 'g'], dtype='object')
-</code></pre>
-<h2 id="pandas_2">pandas基本功能</h2>
-<h3 id="_2">重建索引</h3>
-<p>Series调用<code>reindex</code>方法时，会将数据按照新的索引进行排列，如果某个索引值之前并不存在，则会引入缺失值。
-下例中，对<code>obj1</code>做<code>reindex</code>，<code>reindex</code>方法会创建一个新索引对象<code>obj2</code>，索引值<code>e</code>之前并不存在，所以填入缺失值。
-如果对obj1做<code>reindex</code>时指定<code>method='ffill'</code>，会报错<code>index must be monotonic increasing or decreasing</code>。</p>
-<pre><code>obj1 = pd.Series([4.5, 7.2, -5.3, 3.6], index=['d', 'b', 'a', 'c'])
+# Index([&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;f&#39;, &#39;g&#39;], dtype=&#39;object&#39;)
+</code></pre></div></p> <h2 id=pandas_2>pandas基本功能<a class=headerlink href=#pandas_2 title="Permanent link"> ¶</a></h2> <h3 id=_2>重建索引<a class=headerlink href=#_2 title="Permanent link"> ¶</a></h3> <p>Series调用<code>reindex</code>方法时，会将数据按照新的索引进行排列，如果某个索引值之前并不存在，则会引入缺失值。 下例中，对<code>obj1</code>做<code>reindex</code>，<code>reindex</code>方法会创建一个新索引对象<code>obj2</code>，索引值<code>e</code>之前并不存在，所以填入缺失值。 如果对obj1做<code>reindex</code>时指定<code>method='ffill'</code>，会报错<code>index must be monotonic increasing or decreasing</code>。</p> <div class=highlight><pre><span></span><code>obj1 = pd.Series([4.5, 7.2, -5.3, 3.6], index=[&#39;d&#39;, &#39;b&#39;, &#39;a&#39;, &#39;c&#39;])
 print(obj1)
 # d    4.5
 # b    7.2
@@ -1290,7 +498,7 @@ print(obj1)
 # c    3.6
 # dtype: float64
 
-obj2 = obj1.reindex(['a', 'b', 'c', 'd', 'e'])
+obj2 = obj1.reindex([&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;d&#39;, &#39;e&#39;])
 print(obj2)
 # a   -5.3
 # b    7.2
@@ -1299,12 +507,10 @@ print(obj2)
 # e    NaN
 # dtype: float64
 
-obj2 = obj1.reindex(['a', 'b', 'c', 'd', 'e'], method='ffill')
+obj2 = obj1.reindex([&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;d&#39;, &#39;e&#39;], method=&#39;ffill&#39;)
 # ValueError: index must be monotonic increasing or decreasing
-</code></pre>
-<p>对于顺序数据，比如时间序列，在重建索引时可能会需要进行插值或填值。<code>ffill</code>方法在重建索引时插值，将值前向填充。</p>
-<pre><code>obj3 = pd.Series(['blue', 'purple', 'yellow'], index=[0, 2, 4])
-print(obj3.reindex(range(6), method='ffill'))
+</code></pre></div> <p>对于顺序数据，比如时间序列，在重建索引时可能会需要进行插值或填值。<code>ffill</code>方法在重建索引时插值，将值前向填充。 <div class=highlight><pre><span></span><code>obj3 = pd.Series([&#39;blue&#39;, &#39;purple&#39;, &#39;yellow&#39;], index=[0, 2, 4])
+print(obj3.reindex(range(6), method=&#39;ffill&#39;))
 # 0      blue
 # 1      blue
 # 2    purple
@@ -1312,14 +518,8 @@ print(obj3.reindex(range(6), method='ffill'))
 # 4    yellow
 # 5    yellow
 # dtype: object
-</code></pre>
-<p>在DataFrame中，<code>reindex</code>可以改变行索引、列索引，也可以同时改变二者。当仅传入一个序列时，会重建行索引。
-下例中，通过<code>indexes</code>创建Dataframe <code>frame</code>。
-通过<code>frame.reindex(['a', 'b', 'c', 'd'])重建行索引</code>。
-通过<code>frame2.reindex(columns=['Ohio', 'Uta', 'California'])</code>重建列索引。
-缺失的索引列填入缺失值。</p>
-<pre><code>indexes = index = ['a', 'b', 'c']
-states = ['Ohio', 'Texas', 'California']
+</code></pre></div></p> <p>在DataFrame中，<code>reindex</code>可以改变行索引、列索引，也可以同时改变二者。当仅传入一个序列时，会重建行索引。 下例中，通过<code>indexes</code>创建Dataframe <code>frame</code>。 通过<code>frame.reindex(['a', 'b', 'c', 'd'])重建行索引</code>。 通过<code>frame2.reindex(columns=['Ohio', 'Uta', 'California'])</code>重建列索引。 缺失的索引列填入缺失值。 <div class=highlight><pre><span></span><code>indexes = index = [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;]
+states = [&#39;Ohio&#39;, &#39;Texas&#39;, &#39;California&#39;]
 frame = pd.DataFrame(
     np.arange(9).reshape(3, 3),
     index=indexes,
@@ -1332,7 +532,7 @@ print(frame)
 # b     3      4           5
 # c     6      7           8
 
-frame2 = frame.reindex(['a', 'b', 'c', 'd'])  # 重建行索引
+frame2 = frame.reindex([&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;d&#39;])  # 重建行索引
 print(frame2)
 #    Ohio  Texas  California
 # a   0.0    1.0         2.0
@@ -1340,24 +540,19 @@ print(frame2)
 # c   6.0    7.0         8.0
 # d   NaN    NaN         NaN
 
-frame3 = frame2.reindex(columns=['Ohio', 'Uta', 'California'])  # 重建列索引
+frame3 = frame2.reindex(columns=[&#39;Ohio&#39;, &#39;Uta&#39;, &#39;California&#39;])  # 重建列索引
 print(frame3)
 #    Ohio  Uta  California
 # a   0.0  NaN         2.0
 # b   3.0  NaN         5.0
 # c   6.0  NaN         8.0
 # d   NaN  NaN         NaN
-</code></pre>
-<p>使用<code>loc</code>进行更为简洁的行、列标签索引。下例通过筛选行索引和列索引产生新的Dataframe。</p>
-<pre><code>frame4 = frame.loc[['a', 'b'], states]
+</code></pre></div></p> <p>使用<code>loc</code>进行更为简洁的行、列标签索引。下例通过筛选行索引和列索引产生新的Dataframe。 <div class=highlight><pre><span></span><code>frame4 = frame.loc[[&#39;a&#39;, &#39;b&#39;], states]
 print(frame4)
 #    Ohio  Texas  California
 # a     0      1           2
 # b     3      4           5
-</code></pre>
-<h3 id="_3">轴向索引删除条目</h3>
-<p><code>set_index()</code>, <code>dropna()</code>, <code>fillna()</code>, <code>reset_index()</code>, <code>drop()</code>, <code>replace()</code>这些方法的<code>inplace</code>属性设为<code>True</code>时，这些方法会修改Series或DataFrame的尺寸或形状，<em>直接</em>操作原对象而不返回新对象。</p>
-<pre><code>obj = pd.Series(np.arange(5), index=['a', 'b', 'c', 'd', 'e'])
+</code></pre></div></p> <h3 id=_3>轴向索引删除条目<a class=headerlink href=#_3 title="Permanent link"> ¶</a></h3> <p><code>set_index()</code>, <code>dropna()</code>, <code>fillna()</code>, <code>reset_index()</code>, <code>drop()</code>, <code>replace()</code>这些方法的<code>inplace</code>属性设为<code>True</code>时，这些方法会修改Series或DataFrame的尺寸或形状，*直接*操作原对象而不返回新对象。 <div class=highlight><pre><span></span><code>obj = pd.Series(np.arange(5), index=[&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;d&#39;, &#39;e&#39;])
 print(obj)
 # a    0
 # b    1
@@ -1366,22 +561,20 @@ print(obj)
 # e    4
 # dtype: int64
 
-obj1 = obj.drop('c')
+obj1 = obj.drop(&#39;c&#39;)
 print(obj1)
 # a    0
 # b    1
 # d    3
 # e    4
 # dtype: int64
-print(obj1.drop(['d', 'e']))
+print(obj1.drop([&#39;d&#39;, &#39;e&#39;]))
 # a    0
 # b    1
 # dtype: int64
-</code></pre>
-<p>对比<code>inplace=True</code>和<code>False</code>的区别。<code>inplace=False</code>时，<code>obj</code>的值没有变化。</p>
-<pre><code>obj = pd.Series(np.arange(5), index=['a', 'b', 'c', 'd', 'e'])
+</code></pre></div></p> <p>对比<code>inplace=True</code>和<code>False</code>的区别。<code>inplace=False</code>时，<code>obj</code>的值没有变化。 <div class=highlight><pre><span></span><code>obj = pd.Series(np.arange(5), index=[&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;d&#39;, &#39;e&#39;])
 
-print(obj.drop('c', inplace=False))  # 说明生成了新对象
+print(obj.drop(&#39;c&#39;, inplace=False))  # 说明生成了新对象
 # a    0
 # b    1
 # d    3
@@ -1395,12 +588,10 @@ print(obj)
 # d    3
 # e    4
 # dtype: int64
-</code></pre>
-<p><code>obj.drop('c', inplace=True)</code>输出是<code>None</code>，说明没有生成新对象，变化直接作用到<code>obj</code>上。</p>
-<pre><code>obj = pd.Series(np.arange(5), index=['a', 'b', 'c', 'd', 'e'])
+</code></pre></div></p> <p><code>obj.drop('c', inplace=True)</code>输出是<code>None</code>，说明没有生成新对象，变化直接作用到<code>obj</code>上。 <div class=highlight><pre><span></span><code>obj = pd.Series(np.arange(5), index=[&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;d&#39;, &#39;e&#39;])
 print(obj)
 
-print(obj.drop('c', inplace=True))  # 说明没有生成新对象
+print(obj.drop(&#39;c&#39;, inplace=True))  # 说明没有生成新对象
 # None
 
 print(obj)
@@ -1409,14 +600,10 @@ print(obj)
 # d    3
 # e    4
 # dtype: int64
-</code></pre>
-<p>下例演示了轴向的效果。
-如果不指定轴向axis，<code>drop()</code>会默认沿<code>axis=0</code>进行，所以，在0轴上执行<code>data.drop(['one', 'two'])</code>会报错。
-<code>axis='columns</code>与指定<code>axis=1</code>同样效果。</p>
-<pre><code>data = pd.DataFrame(
+</code></pre></div></p> <p>下例演示了轴向的效果。 如果不指定轴向axis，<code>drop()</code>会默认沿<code>axis=0</code>进行，所以，在0轴上执行<code>data.drop(['one', 'two'])</code>会报错。 <code>axis='columns</code>与指定<code>axis=1</code>同样效果。 <div class=highlight><pre><span></span><code>data = pd.DataFrame(
     np.arange(16).reshape(4, 4),
-    index=['Ohio', 'Colorado', 'Utah', 'New York'],
-    columns=['one', 'two', 'three', 'four']
+    index=[&#39;Ohio&#39;, &#39;Colorado&#39;, &#39;Utah&#39;, &#39;New York&#39;],
+    columns=[&#39;one&#39;, &#39;two&#39;, &#39;three&#39;, &#39;four&#39;]
 )
 
 print(data)
@@ -1427,35 +614,33 @@ print(data)
 # New York   12   13     14    15
 
 # 沿0轴操作，删除符合条件的行记录
-print(data.drop(['Ohio', 'Colorado']))
+print(data.drop([&#39;Ohio&#39;, &#39;Colorado&#39;]))
 #           one  two  three  four
 # Utah        8    9     10    11
 # New York   12   13     14    15
 
-print(data.drop(['one', 'two']))
-# KeyError: &quot;['one' 'two'] not found in axis&quot;
+print(data.drop([&#39;one&#39;, &#39;two&#39;]))
+# KeyError: &quot;[&#39;one&#39; &#39;two&#39;] not found in axis&quot;
 
 # 沿1轴操作，删除符合条件的列记录
-print(data.drop(['one', 'two'], axis=1))
+print(data.drop([&#39;one&#39;, &#39;two&#39;], axis=1))
 #           three  four
 # Ohio          2     3
 # Colorado      6     7
 # Utah         10    11
 # New York     14    15
 
-print(data.drop(['one', 'two'], axis='columns'))
+print(data.drop([&#39;one&#39;, &#39;two&#39;], axis=&#39;columns&#39;))
 #           three  four
 # Ohio          2     3
 # Colorado      6     7
 # Utah         10    11
 # New York     14    15
-</code></pre>
-<p>再通过下例体会一下<code>inplace</code>参数的不同效果。</p>
-<pre><code>data = pd.DataFrame(
+</code></pre></div></p> <p>再通过下例体会一下<code>inplace</code>参数的不同效果。 <div class=highlight><pre><span></span><code>data = pd.DataFrame(
     {
-        'Name': ['Shobhit', 'vaibhav', 'vimal', 'Sourabh'],
-        'class': [11, 12, 10, 9],
-        'Age': [18, 20, 21, 17]
+        &#39;Name&#39;: [&#39;Shobhit&#39;, &#39;vaibhav&#39;, &#39;vimal&#39;, &#39;Sourabh&#39;],
+        &#39;class&#39;: [11, 12, 10, 9],
+        &#39;Age&#39;: [18, 20, 21, 17]
     }
 )
 
@@ -1466,7 +651,7 @@ print(data)
 # 2    vimal     10   21
 # 3  Sourabh      9   17
 
-print(data.rename(columns={'Name': 'FirstName'}, inplace=False))
+print(data.rename(columns={&#39;Name&#39;: &#39;FirstName&#39;}, inplace=False))
 #   FirstName  class  Age
 # 0   Shobhit     11   18
 # 1   vaibhav     12   20
@@ -1480,7 +665,7 @@ print(data)
 # 2    vimal     10   21
 # 3  Sourabh      9   17
 
-print(data.rename(columns={'Name': 'FirstName'}, inplace=True))  # 没有生成新对象
+print(data.rename(columns={&#39;Name&#39;: &#39;FirstName&#39;}, inplace=True))  # 没有生成新对象
 # None
 
 print(data)
@@ -1489,17 +674,7 @@ print(data)
 # 1   vaibhav     12   20
 # 2     vimal     10   21
 # 3   Sourabh      9   17
-</code></pre>
-<h3 id="_4">索引、选择与过滤</h3>
-<p>Series的索引<code>obj[...]</code>与NumPy数组索引的功能类似，只不过Series的索引值可以不仅仅是整数。</p>
-<p>下例中：</p>
-<ul>
-<li><code>obj[1]</code>通过索引位<code>1</code>检索，输出对应Series的值。</li>
-<li><code>obj[1]</code>通过索引位<code>[1]</code>检索，输出Series。</li>
-<li><code>obj['b']</code>通过索引值<code>'b'</code>检索，输出对应Series的值。</li>
-<li><code>obj[['b']]</code>通过索引值<code>['b']</code>检索，输出Series。</li>
-</ul>
-<pre><code>obj = pd.Series(['Shobhit', 'vaibhav', 'vimal', 'Sourabh'], index=['a', 'b', 'c', 'd'])
+</code></pre></div></p> <h3 id=_4>索引、选择与过滤<a class=headerlink href=#_4 title="Permanent link"> ¶</a></h3> <p>Series的索引<code>obj[...]</code>与NumPy数组索引的功能类似，只不过Series的索引值可以不仅仅是整数。</p> <p>下例中：</p> <ul> <li><code>obj[1]</code>通过索引位<code>1</code>检索，输出对应Series的值。</li> <li><code>obj[1]</code>通过索引位<code>[1]</code>检索，输出Series。</li> <li><code>obj['b']</code>通过索引值<code>'b'</code>检索，输出对应Series的值。</li> <li><code>obj[['b']]</code>通过索引值<code>['b']</code>检索，输出Series。</li> </ul> <div class=highlight><pre><span></span><code>obj = pd.Series([&#39;Shobhit&#39;, &#39;vaibhav&#39;, &#39;vimal&#39;, &#39;Sourabh&#39;], index=[&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;d&#39;])
 
 print(obj)
 # a    Shobhit
@@ -1515,15 +690,13 @@ print(obj[[1]])
 # b    vaibhav
 # dtype: object
 
-print(obj['b'])  # 通过索引值检索，输出对应Series的值
+print(obj[&#39;b&#39;])  # 通过索引值检索，输出对应Series的值
 # vaibhav
 
-print(obj[['b']])  # 通过索引值检索，输出Series
+print(obj[[&#39;b&#39;]])  # 通过索引值检索，输出Series
 # b    vaibhav
 # dtype: object
-</code></pre>
-<p>下面一组的输出中，注意对比普通Python切片与Series的切片的差异。</p>
-<pre><code>obj = pd.Series(['Shobhit', 'vaibhav', 'vimal', 'Sourabh'], index=['a', 'b', 'c', 'd'])
+</code></pre></div> <p>下面一组的输出中，注意对比普通Python切片与Series的切片的差异。 <div class=highlight><pre><span></span><code>obj = pd.Series([&#39;Shobhit&#39;, &#39;vaibhav&#39;, &#39;vimal&#39;, &#39;Sourabh&#39;], index=[&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;d&#39;])
 
 print(obj[1])
 # vaibhav
@@ -1536,17 +709,14 @@ print(obj[1:3])
 # b    vaibhav
 # c      vimal
 # dtype: object
-print(obj['b':'d'])
+print(obj[&#39;b&#39;:&#39;d&#39;])
 # b    vaibhav
 # c      vimal
 # d    Sourabh
 # dtype: object
-</code></pre>
-<p>Series的切片的值更新。
-<code>obj['b': 'c'] = 5</code>是通过索引值进行更新，直接作用在<code>obj</code>。<code>obj[1: 3] = 6</code>是通过索引位置来更新<code>obj</code>。</p>
-<pre><code>obj = pd.Series(['Shobhit', 'vaibhav', 'vimal', 'Sourabh'], index=['a', 'b', 'c', 'd'])
+</code></pre></div></p> <p>Series的切片的值更新。 <code>obj['b': 'c'] = 5</code>是通过索引值进行更新，直接作用在<code>obj</code>。<code>obj[1: 3] = 6</code>是通过索引位置来更新<code>obj</code>。 <div class=highlight><pre><span></span><code>obj = pd.Series([&#39;Shobhit&#39;, &#39;vaibhav&#39;, &#39;vimal&#39;, &#39;Sourabh&#39;], index=[&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;d&#39;])
 
-obj['b': 'c'] = 5
+obj[&#39;b&#39;: &#39;c&#39;] = 5
 print(obj)
 # a    Shobhit
 # b          5
@@ -1561,13 +731,10 @@ print(obj)
 # c          6
 # d    Sourabh
 # dtype: object
-</code></pre>
-<p>DataFrame的索引与切片。
-<code>data[['Three', 'Two']]</code>选取指定列，注意输入列条件是列表<code>['Three', 'Two']</code>。</p>
-<pre><code>data = pd.DataFrame(
+</code></pre></div></p> <p>DataFrame的索引与切片。 <code>data[['Three', 'Two']]</code>选取指定列，注意输入列条件是列表<code>['Three', 'Two']</code>。 <div class=highlight><pre><span></span><code>data = pd.DataFrame(
     np.arange(16).reshape(4, 4),
-    index=['Ohio', 'Colorado', 'Utah', 'New York'],
-    columns=['One', 'Two', 'Three', 'Four']
+    index=[&#39;Ohio&#39;, &#39;Colorado&#39;, &#39;Utah&#39;, &#39;New York&#39;],
+    columns=[&#39;One&#39;, &#39;Two&#39;, &#39;Three&#39;, &#39;Four&#39;]
 )
 
 print(data)
@@ -1577,14 +744,14 @@ print(data)
 # Utah        8    9     10    11
 # New York   12   13     14    15
 
-print(data['Two'])
+print(data[&#39;Two&#39;])
 # Ohio         1
 # Colorado     5
 # Utah         9
 # New York    13
 # Name: Two, dtype: int64
 
-print(data[['Three', 'Two']])
+print(data[[&#39;Three&#39;, &#39;Two&#39;]])
 #           Three  Two
 # Ohio          2    1
 # Colorado      6    5
@@ -1594,26 +761,19 @@ print(data[:2])
 #           One  Two  Three  Four
 # Ohio        0    1      2     3
 # Colorado    4    5      6     7
-</code></pre>
-<p>嵌套：根据一个布尔值数组切片或选择数据。
-<code>data['Three'] &gt; 5</code>是一个布尔值序列。
-<code>data[data['Three'] &gt; 5]</code>输出条件为True的结果集。</p>
-<pre><code>print(data['Three'] &gt; 5)
+</code></pre></div></p> <p>嵌套：根据一个布尔值数组切片或选择数据。 <code>data['Three'] &gt; 5</code>是一个布尔值序列。 <code>data[data['Three'] &gt; 5]</code>输出条件为True的结果集。 <div class=highlight><pre><span></span><code>print(data[&#39;Three&#39;] &gt; 5)
 # Ohio        False
 # Colorado     True
 # Utah         True
 # New York     True
 # Name: Three, dtype: bool
 
-print(data[data['Three'] &gt; 5])
+print(data[data[&#39;Three&#39;] &gt; 5])
 #           One  Two  Three  Four
 # Colorado    4    5      6     7
 # Utah        8    9     10    11
 # New York   12   13     14    15
-</code></pre>
-<p>使用布尔值DataFrame进行索引，已经更新。
-在下面这个例子中，这种索引方式使得DataFrame在语法上更像是NumPy二维数组。</p>
-<pre><code>print(data &lt; 5)
+</code></pre></div></p> <p>使用布尔值DataFrame进行索引，已经更新。 在下面这个例子中，这种索引方式使得DataFrame在语法上更像是NumPy二维数组。 <div class=highlight><pre><span></span><code>print(data &lt; 5)
 #             One    Two  Three   Four
 # Ohio       True   True   True   True
 # Colorado   True  False  False  False
@@ -1627,13 +787,10 @@ print(data)
 # Colorado    0    5      6     7
 # Utah        8    9     10    11
 # New York   12   13     14    15
-</code></pre>
-<p>使用loc和iloc选择数据。
-使用标签名<code>loc</code>或标签位置<code>iloc</code>以NumPy风格的语法从DataFrame中选出Dataframe的行和列的子集。</p>
-<pre><code>data = pd.DataFrame(
+</code></pre></div></p> <p>使用loc和iloc选择数据。 使用标签名<code>loc</code>或标签位置<code>iloc</code>以NumPy风格的语法从DataFrame中选出Dataframe的行和列的子集。 <div class=highlight><pre><span></span><code>data = pd.DataFrame(
     np.arange(16).reshape(4, 4),
-    index=['Ohio', 'Colorado', 'Utah', 'New York'],
-    columns=['One', 'Two', 'Three', 'Four']
+    index=[&#39;Ohio&#39;, &#39;Colorado&#39;, &#39;Utah&#39;, &#39;New York&#39;],
+    columns=[&#39;One&#39;, &#39;Two&#39;, &#39;Three&#39;, &#39;Four&#39;]
 )
 
 print(data)
@@ -1642,20 +799,15 @@ print(data)
 # Colorado    4    5      6     7
 # Utah        8    9     10    11
 # New York   12   13     14    15
-</code></pre>
-<p>下例通过loc对标签名筛选行或列数据。例如，输出<code>Colorado</code>行标签的<code>Two</code>和<code>Three</code>这两列的值，以行记录的方式展现。</p>
-<pre><code>print(data.loc['Colorado', ['Two', 'Three']])  # 切片:
+</code></pre></div></p> <p>下例通过loc对标签名筛选行或列数据。例如，输出<code>Colorado</code>行标签的<code>Two</code>和<code>Three</code>这两列的值，以行记录的方式展现。 <div class=highlight><pre><span></span><code>print(data.loc[&#39;Colorado&#39;, [&#39;Two&#39;, &#39;Three&#39;]])  # 切片:
 # Two      5
 # Three    6
 # Name: Colorado, dtype: int64
 
-print(data.loc[:'Ohio', :'Two'])  # 切片: 0行，0,1列
+print(data.loc[:&#39;Ohio&#39;, :&#39;Two&#39;])  # 切片: 0行，0,1列
 #       One  Two
 # Ohio    0    1
-</code></pre>
-<p>下例通过标签位置<code>iloc</code>进行类似的数据选择。
-<code>data.iloc[:3, :2][data &gt; 4]</code>按指定条件进行行、列筛选，符合条件<code>[data &gt; 4]</code>的输出Dataframe值，不符合条件的输出NaN。</p>
-<pre><code>print(data.iloc[[0]])  # 0行
+</code></pre></div></p> <p>下例通过标签位置<code>iloc</code>进行类似的数据选择。 <code>data.iloc[:3, :2][data &gt; 4]</code>按指定条件进行行、列筛选，符合条件<code>[data &gt; 4]</code>的输出Dataframe值，不符合条件的输出NaN。 <div class=highlight><pre><span></span><code>print(data.iloc[[0]])  # 0行
 #       One  Two  Three  Four
 # Ohio    0    1      2     3
 
@@ -1678,10 +830,7 @@ print(data.iloc[:3, :2][data &gt; 4])
 # Ohio      NaN  NaN
 # Colorado  NaN  5.0
 # Utah      8.0  9.0
-</code></pre>
-<h3 id="_5">整数索引</h3>
-<p>Pandas的Series的索引值是整数索引。</p>
-<pre><code>data = np.arange(3.)
+</code></pre></div></p> <h3 id=_5>整数索引<a class=headerlink href=#_5 title="Permanent link"> ¶</a></h3> <p>Pandas的Series的索引值是整数索引。 <div class=highlight><pre><span></span><code>data = np.arange(3.)
 ser = pd.Series(data)
 
 print(ser)
@@ -1703,7 +852,7 @@ print(ser.iloc[:1])  # iloc用于标签位置
 # 0    0.0
 # dtype: float64
 
-data = ['1', 'b', 'e', 3]
+data = [&#39;1&#39;, &#39;b&#39;, &#39;e&#39;, 3]
 ser = pd.Series(data)
 
 print(ser)
@@ -1725,10 +874,7 @@ print(ser.loc[:1])
 print(ser.iloc[:1]) 
 # 0    1
 # dtype: object
-
-</code></pre>
-<p>对DataFrame的更新。</p>
-<pre><code>df1 = pd.DataFrame(np.arange(4).reshape((2, 2)), columns=list('ab'))
+</code></pre></div></p> <p>对DataFrame的更新。 <div class=highlight><pre><span></span><code>df1 = pd.DataFrame(np.arange(4).reshape((2, 2)), columns=list(&#39;ab&#39;))
 
 print(df1)
 #    a  b
@@ -1736,30 +882,20 @@ print(df1)
 # 1  2  3
 
 # 按标签名更新
-df1.loc[1, :'b'] = np.nan
+df1.loc[1, :&#39;b&#39;] = np.nan
 
 print(df1)
 #      a    b
 # 0  0.0  1.0
 # 1  NaN  NaN
-</code></pre>
-<h3 id="_6">算术和数据对齐</h3>
-<p>Pandas支持在Series或者DataFrame对象之间进行算术运算。</p>
-<p>例：两个Series做算术加法。</p>
-<ul>
-<li>返回的结果也是一个Series。</li>
-<li>返回结果的索引是每个Series的索引的并集。</li>
-<li>凡是没有在两个Series都出现的索引位置，内部数据对齐会填充缺失值NaN。缺失值会在后续的其它算术操作上产生影响。</li>
-<li>同时出现在两个Series的索引位置，Series的值做算术相加。</li>
-</ul>
-<pre><code>s1 = pd.Series(
+</code></pre></div></p> <h3 id=_6>算术和数据对齐<a class=headerlink href=#_6 title="Permanent link"> ¶</a></h3> <p>Pandas支持在Series或者DataFrame对象之间进行算术运算。</p> <p>例：两个Series做算术加法。</p> <ul> <li>返回的结果也是一个Series。</li> <li>返回结果的索引是每个Series的索引的并集。</li> <li>凡是没有在两个Series都出现的索引位置，内部数据对齐会填充缺失值NaN。缺失值会在后续的其它算术操作上产生影响。</li> <li>同时出现在两个Series的索引位置，Series的值做算术相加。 <div class=highlight><pre><span></span><code>s1 = pd.Series(
     [7.3, -2.5, 3.4, 1.5],
-    index=['a', 'c', 'd', 'e']
+    index=[&#39;a&#39;, &#39;c&#39;, &#39;d&#39;, &#39;e&#39;]
 )
 
 s2 = pd.Series(
     [-2.1, 3.6, -1.5, 4, 3.1],
-    index=['a', 'c', 'e', 'f', 'g']
+    index=[&#39;a&#39;, &#39;c&#39;, &#39;e&#39;, &#39;f&#39;, &#39;g&#39;]
 )
 
 print(s1)
@@ -1785,24 +921,16 @@ print(s1 + s2)
 # f    NaN
 # g    NaN
 # dtype: float64
-</code></pre>
-<p>例：两个Dataframe做算术加法</p>
-<ul>
-<li>返回结果也是一个Dataframe。</li>
-<li>返回结果的行列索引是每个DataFrame的行列索引的并集。</li>
-<li>凡是没有在两个DataFrame都出现的位置就会被置为NaN。</li>
-<li>两个DataFrame都出现的位置，对Dataframe的值做算术加法。</li>
-</ul>
-<pre><code>df1 = pd.DataFrame(
+</code></pre></div></li> </ul> <p>例：两个Dataframe做算术加法</p> <ul> <li>返回结果也是一个Dataframe。</li> <li>返回结果的行列索引是每个DataFrame的行列索引的并集。</li> <li>凡是没有在两个DataFrame都出现的位置就会被置为NaN。</li> <li>两个DataFrame都出现的位置，对Dataframe的值做算术加法。 <div class=highlight><pre><span></span><code>df1 = pd.DataFrame(
     np.arange(9).reshape((3, 3)),
-    columns=list('bcd'),
-    index=['Ohio', 'Texas', 'Colorado']
+    columns=list(&#39;bcd&#39;),
+    index=[&#39;Ohio&#39;, &#39;Texas&#39;, &#39;Colorado&#39;]
 )
 
 df2 = pd.DataFrame(
     np.arange(12).reshape((4, 3)),
-    columns=list('bde'),
-    index=['Utah', 'Ohio', 'Texas', 'Oregon']
+    columns=list(&#39;bde&#39;),
+    index=[&#39;Utah&#39;, &#39;Ohio&#39;, &#39;Texas&#39;, &#39;Oregon&#39;]
 )
 
 print(df1)
@@ -1825,17 +953,14 @@ print(df1 + df2)
 # Oregon    NaN NaN   NaN NaN
 # Texas     9.0 NaN  12.0 NaN
 # Utah      NaN NaN   NaN NaN
-</code></pre>
-<p>在Series或者DataFrame对象之间进行算术操作时，有时需要对缺失值指定填充值，比如当轴标签在一个对象中存在，在另一个对象中不存在时，将缺失值填充为0。也就是说，如果在两个DataFrame都缺失，那么依然还会是NaN。</p>
-<p>下例中a2是在<code>df1</code>和<code>df2</code>都缺失的位置，所以即使<code>fill_value=0</code>，a2仍然是NaN。</p>
-<pre><code>df1 = pd.DataFrame(
+</code></pre></div></li> </ul> <p>在Series或者DataFrame对象之间进行算术操作时，有时需要对缺失值指定填充值，比如当轴标签在一个对象中存在，在另一个对象中不存在时，将缺失值填充为0。也就是说，如果在两个DataFrame都缺失，那么依然还会是NaN。</p> <p>下例中a2是在<code>df1</code>和<code>df2</code>都缺失的位置，所以即使<code>fill_value=0</code>，a2仍然是NaN。 <div class=highlight><pre><span></span><code>df1 = pd.DataFrame(
     np.arange(4).reshape((2, 2)),
-    columns=list('ab')
+    columns=list(&#39;ab&#39;)
 )
 
 df2 = pd.DataFrame(
     np.arange(9).reshape((3, 3)),
-    columns=list('bcd')
+    columns=list(&#39;bcd&#39;)
 )
 
 print(df1)
@@ -1862,16 +987,14 @@ print(df1.add(df2, fill_value=0))  # df2.add(df1, fill_value=0) 返回同样的�
 # 0  0.0  1.0  1.0  2.0
 # 1  2.0  6.0  4.0  5.0
 # 2  NaN  6.0  7.0  8.0
-</code></pre>
-<p>下例中b2是在<code>df1</code>和<code>df2</code>都缺失的位置，所以即使<code>fill_value=0</code>，b2仍然是NaN。</p>
-<pre><code>df1 = pd.DataFrame(
+</code></pre></div></p> <p>下例中b2是在<code>df1</code>和<code>df2</code>都缺失的位置，所以即使<code>fill_value=0</code>，b2仍然是NaN。 <div class=highlight><pre><span></span><code>df1 = pd.DataFrame(
     np.arange(4).reshape((2, 2)),
-    columns=list('ab')
+    columns=list(&#39;ab&#39;)
 )
 
 df2 = pd.DataFrame(
     np.arange(9).reshape((3, 3)),
-    columns=list('acd')
+    columns=list(&#39;acd&#39;)
 )
 
 print(df1)
@@ -1890,16 +1013,14 @@ print(df1.add(df2, fill_value=0))
 # 0  0.0  1.0  1.0  2.0
 # 1  5.0  3.0  4.0  5.0
 # 2  6.0  NaN  7.0  8.0
-</code></pre>
-<p>下例中没有两个DataFrame共同缺失的情况。</p>
-<pre><code>df1 = pd.DataFrame(
+</code></pre></div></p> <p>下例中没有两个DataFrame共同缺失的情况。 <div class=highlight><pre><span></span><code>df1 = pd.DataFrame(
     np.arange(4).reshape((2, 2)),
-    columns=list('ab')
+    columns=list(&#39;ab&#39;)
 )
 
 df2 = pd.DataFrame(
     np.arange(9).reshape((3, 3)),
-    columns=list('abd')
+    columns=list(&#39;abd&#39;)
 )
 
 print(df1)
@@ -1918,25 +1039,14 @@ print(df1.add(df2, fill_value=0))
 # 0  0.0  2.0  2.0
 # 1  5.0  7.0  5.0
 # 2  6.0  7.0  8.0
-</code></pre>
-<p>下面是Series和DataFrame的算术方法。</p>
-<ul>
-<li>add，radd：加法(+)</li>
-<li>sub，rsub：减法(-)</li>
-<li>div，rdiv：除法(/)</li>
-<li>floordiv，rfloordiv：整除(//)</li>
-<li>mul，rmul：乘法(*)</li>
-<li>pow，rpow：幂次方(**)</li>
-</ul>
-<p>上述每个方法都有一个以r开头的副本，这些副本方法的参数是翻转的。比如，求DataFrame当中所有元素的倒数<code>1/df</code>，可以写成df.rdiv(1)。</p>
-<pre><code>df1 = pd.DataFrame(
+</code></pre></div></p> <p>下面是Series和DataFrame的算术方法。</p> <ul> <li>add，radd：加法(+)</li> <li>sub，rsub：减法(-)</li> <li>div，rdiv：除法(/)</li> <li>floordiv，rfloordiv：整除(//)</li> <li>mul，rmul：乘法(*)</li> <li>pow，rpow：幂次方(**)</li> </ul> <p>上述每个方法都有一个以r开头的副本，这些副本方法的参数是翻转的。比如，求DataFrame当中所有元素的倒数<code>1/df</code>，可以写成df.rdiv(1)。 <div class=highlight><pre><span></span><code>df1 = pd.DataFrame(
     np.arange(4).reshape((2, 2)),
-    columns=list('ab')
+    columns=list(&#39;ab&#39;)
 )
 
 df2 = pd.DataFrame(
     np.arange(9).reshape((3, 3)),
-    columns=list('abd')
+    columns=list(&#39;abd&#39;)
 )
 
 print(df1)
@@ -1985,12 +1095,7 @@ print(df1.pow(df2, fill_value=0))
 # 0  1.0   1.0  0.0
 # 1  8.0  81.0  0.0
 # 2  0.0   0.0  0.0
-</code></pre>
-<h3 id="dataframeseries">DataFrame和Series间的算术操作</h3>
-<p>DataFrame和Series间的算术操作与NumPy中不同维度数组间的操作类似。</p>
-<h4 id="numpy">不同维度NumPy数组间的算术操作</h4>
-<p>从arr中减去arr[0]时，减法沿0轴在每一行都进行了操作。这就是所谓的广播机制。</p>
-<pre><code>arr = np.arange(12).reshape((3, 4))
+</code></pre></div></p> <h3 id=dataframeseries>DataFrame和Series间的算术操作<a class=headerlink href=#dataframeseries title="Permanent link"> ¶</a></h3> <p>DataFrame和Series间的算术操作与NumPy中不同维度数组间的操作类似。</p> <h4 id=numpy>不同维度NumPy数组间的算术操作<a class=headerlink href=#numpy title="Permanent link"> ¶</a></h4> <p>从arr中减去arr[0]时，减法沿0轴在每一行都进行了操作。这就是所谓的广播机制。 <div class=highlight><pre><span></span><code>arr = np.arange(12).reshape((3, 4))
 
 print(arr)
 # [[ 0  1  2  3]
@@ -2004,14 +1109,10 @@ print(arr - arr[0])
 # [[0 0 0 0]
 #  [4 4 4 4]
 #  [8 8 8 8]]
-</code></pre>
-<h4 id="dataframeseries_1">DataFrame和Series间的算术操作</h4>
-<p>默认情况下，DataFrame和Series的数学操作中会将Series的索引和DataFrame的<em>列</em>进行匹配，并<em>广播到各行</em>.</p>
-<p>如果一个索引值不在DataFrame的列中，也不在Series的索引中，则新对象会构建并集索引。</p>
-<pre><code>frame = pd.DataFrame(
+</code></pre></div></p> <h4 id=dataframeseries_1>DataFrame和Series间的算术操作<a class=headerlink href=#dataframeseries_1 title="Permanent link"> ¶</a></h4> <p>默认情况下，DataFrame和Series的数学操作中会将Series的索引和DataFrame的*列*进行匹配，并*广播到各行*.</p> <p>如果一个索引值不在DataFrame的列中，也不在Series的索引中，则新对象会构建并集索引。 <div class=highlight><pre><span></span><code>frame = pd.DataFrame(
     np.arange(12).reshape((4, 3)),
-    columns=list('bde'),
-    index=['Utah', 'Ohio', 'Texas', 'Oregon']
+    columns=list(&#39;bde&#39;),
+    index=[&#39;Utah&#39;, &#39;Ohio&#39;, &#39;Texas&#39;, &#39;Oregon&#39;]
 )
 
 print(frame)
@@ -2032,7 +1133,7 @@ print(series)
 
 series2 = pd.Series(
     range(3),
-    index=list('bef')
+    index=list(&#39;bef&#39;)
 )
 
 print(series2)
@@ -2042,7 +1143,7 @@ print(series2)
 # dtype: int64
 
 # 截取frame的d列，行标签变成新Serise的索引。
-series3 = frame['d']
+series3 = frame[&#39;d&#39;]
 print(series3)
 # Utah       1
 # Ohio       4
@@ -2069,20 +1170,17 @@ print(frame - series2)
 # Oregon  9  10  11                                            # Oregon  9.0 NaN  10.0 NaN
 
 # 改为在列上进行广播，在行上匹配，必须作用在某种算术方法上。下例中Series的值沿DataFrame的0轴广播到各个行（按index匹配进行行操作）。
-print(frame.sub(series3, axis='index'))  # 或axis=0
+print(frame.sub(series3, axis=&#39;index&#39;))  # 或axis=0
 # frame:                       series3                         Result:
 #         b   d   e            # Utah       1                  #         b  d  e
 # Utah    0   1   2            # Ohio       4                  # Utah   -1  0  1
 # Ohio    3   4   5            # Texas      7                  # Ohio   -1  0  1
 # Texas   6   7   8            # Oregon    10                  # Texas  -1  0  1
 # Oregon  9  10  11            # Name: d, dtype: int64         # Oregon -1  0  1
-</code></pre>
-<h3 id="_7">函数应用和映射</h3>
-<p>NumPy的通用函数（逐元素数组方法）对pandas对象（DataFrame和Series）也有效。</p>
-<pre><code>frame = pd.DataFrame(
+</code></pre></div></p> <h3 id=_7>函数应用和映射<a class=headerlink href=#_7 title="Permanent link"> ¶</a></h3> <p>NumPy的通用函数（逐元素数组方法）对pandas对象（DataFrame和Series）也有效。 <div class=highlight><pre><span></span><code>frame = pd.DataFrame(
     np.random.randn(4, 3),
-    columns=list('bde'),
-    index=['Utah', 'Ohio', 'Texas', 'Oregon']
+    columns=list(&#39;bde&#39;),
+    index=[&#39;Utah&#39;, &#39;Ohio&#39;, &#39;Texas&#39;, &#39;Oregon&#39;]
 )
 
 print(frame)
@@ -2123,7 +1221,7 @@ print(frame.apply(f, axis=1))
 def f(x):
     return pd.Series(
         [x.min(), x.max()],
-        index=['min', 'max']
+        index=[&#39;min&#39;, &#39;max&#39;]
     )
 
 print(frame.apply(f))
@@ -2133,7 +1231,7 @@ print(frame.apply(f))
 
 
 # 定义函数f，使用applymap方法格式化字符，将一个逐元素的函数应用到Series上。
-f = lambda x: '%.2f' % x
+f = lambda x: &#39;%.2f&#39; % x
 print(frame.applymap(f))  # 
 #             b      d      e
 # Utah     2.74  -0.38   0.76
@@ -2141,20 +1239,15 @@ print(frame.applymap(f))  #
 # Texas   -0.91  -0.46  -1.91
 # Oregon   0.39   0.25   1.07
 
-print(frame['e'].map(f))
+print(frame[&#39;e&#39;].map(f))
 # Utah       0.76
 # Ohio      -2.19
 # Texas     -1.91
 # Oregon     1.07
 # Name: e, dtype: object
-</code></pre>
-<h2 id="_8">排序和排名</h2>
-<p>使用sort_index方法，按行或列索引进行字典型排序，返回一个新的排序好的Pandas对象。</p>
-<h3 id="series_1">Series排序</h3>
-<p>对Series进行索引排序和值排序。</p>
-<pre><code>obj = pd.Series(
+</code></pre></div></p> <h2 id=_8>排序和排名<a class=headerlink href=#_8 title="Permanent link"> ¶</a></h2> <p>使用sort_index方法，按行或列索引进行字典型排序，返回一个新的排序好的Pandas对象。</p> <h3 id=series_1>Series排序<a class=headerlink href=#series_1 title="Permanent link"> ¶</a></h3> <p>对Series进行索引排序和值排序。 <div class=highlight><pre><span></span><code>obj = pd.Series(
     range(4),
-    index=list('dabc')
+    index=list(&#39;dabc&#39;)
 )
 
 print(obj)
@@ -2177,9 +1270,7 @@ print(obj.sort_index())
 # b    2
 # c    3
 # dtype: int64
-</code></pre>
-<p>默认情况下，所有的缺失值都会被排序至Series的尾部。</p>
-<pre><code>obj = pd.Series([4, np.nan, 7, np.nan, -3, 2])
+</code></pre></div></p> <p>默认情况下，所有的缺失值都会被排序至Series的尾部。 <div class=highlight><pre><span></span><code>obj = pd.Series([4, np.nan, 7, np.nan, -3, 2])
 
 print(obj)
 # 0    4.0
@@ -2198,14 +1289,12 @@ print(obj.sort_values())
 # 1    NaN
 # 3    NaN
 # dtype: float64
-</code></pre>
-<h3 id="dataframe_3">DataFrame排序</h3>
-<pre><code>frame = pd.DataFrame(
+</code></pre></div></p> <h3 id=dataframe_3>DataFrame排序<a class=headerlink href=#dataframe_3 title="Permanent link"> ¶</a></h3> <div class=highlight><pre><span></span><code>frame = pd.DataFrame(
     [[0, 1, 10, 3],
      [4, 5, 6, 21],
      [8, 9, 2, 21]],
-    index=['three', 'one', 'five'],
-    columns=list('dabc')
+    index=[&#39;three&#39;, &#39;one&#39;, &#39;five&#39;],
+    columns=list(&#39;dabc&#39;)
 )
 
 print(frame)
@@ -2215,7 +1304,7 @@ print(frame)
 # five   8  9   2  21
 
 print(frame.index)
-# Index(['three', 'one', 'five'], dtype='object')
+# Index([&#39;three&#39;, &#39;one&#39;, &#39;five&#39;], dtype=&#39;object&#39;)
 
 # 默认0轴，所有行进行索引首字母升序
 print(frame.sort_index())
@@ -2253,38 +1342,19 @@ print(frame.sort_index(axis=1, ascending=False))
 # five   8  21   2  9
 
 # 按指定单列进行值排序（降序）
-print(frame.sort_values(by=['c'], ascending=False))
+print(frame.sort_values(by=[&#39;c&#39;], ascending=False))
 #        d  a   b   c
 # one    4  5   6  21
 # five   8  9   2  21
 # three  0  1  10   3
 
 # 按指定多列进行值排序（降序），先对b降序，再对d降序
-print(frame.sort_values(by=['c', 'd'], ascending=False)) 
+print(frame.sort_values(by=[&#39;c&#39;, &#39;d&#39;], ascending=False)) 
 #        d  a   b   c
 # five   8  9   2  21
 # one    4  5   6  21
 # three  0  1  10   3
-</code></pre>
-<h3 id="_9">排名</h3>
-<p><strong>排名</strong>是指对数组从1到有效数据点总数分配名次的操作。</p>
-<ul>
-<li>Series和DataFrame的<code>rank</code>方法是实现排名的方法，</li>
-<li><code>df.rank(ascending=False, method='max')</code>。<ul>
-<li><code>ascending</code>：排名方式，默认从低到高，<code>ascending=False</code> 表示从高到低；</li>
-<li><code>method</code>：排名方式，包括：<ul>
-<li>average:默认，在相等分组中，为各个值分配平均排名，即相同值的和除以该值的个数，即为该值的名次。</li>
-<li>min:使用整个分组的最小排名，即，对应相同值，取在顺序排名中最小的那个排名作为所有该值的排名。</li>
-<li>max:使用整个分组的最大排名，即，对应相同值，取在顺序排名中最大的那个排名作为所有该值的排名。</li>
-<li>first:按值再原始数据中出现顺序分配排名，谁出现的位置靠前，谁的排名靠前。</li>
-<li>dense:类似min方法，但排名总是在组间增加1，而不是组中相同的元素数，即相同值的排名相同，其他依次加1即可。</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>默认情况下，rank是通过“为各组分配一个平均排名”的方式破坏平级关系</li>
-</ul>
-<pre><code># 按照每个元素的大小顺序给出一个平均排名
+</code></pre></div> <h3 id=_9>排名<a class=headerlink href=#_9 title="Permanent link"> ¶</a></h3> <p>**排名**是指对数组从1到有效数据点总数分配名次的操作。</p> <ul> <li>Series和DataFrame的<code>rank</code>方法是实现排名的方法，</li> <li><code>df.rank(ascending=False, method='max')</code>。<ul> <li><code>ascending</code>：排名方式，默认从低到高，<code>ascending=False</code> 表示从高到低；</li> <li><code>method</code>：排名方式，包括：<ul> <li>average:默认，在相等分组中，为各个值分配平均排名，即相同值的和除以该值的个数，即为该值的名次。</li> <li>min:使用整个分组的最小排名，即，对应相同值，取在顺序排名中最小的那个排名作为所有该值的排名。</li> <li>max:使用整个分组的最大排名，即，对应相同值，取在顺序排名中最大的那个排名作为所有该值的排名。</li> <li>first:按值再原始数据中出现顺序分配排名，谁出现的位置靠前，谁的排名靠前。</li> <li>dense:类似min方法，但排名总是在组间增加1，而不是组中相同的元素数，即相同值的排名相同，其他依次加1即可。</li> </ul> </li> </ul> </li> <li>默认情况下，rank是通过“为各组分配一个平均排名”的方式破坏平级关系</li> </ul> <div class=highlight><pre><span></span><code># 按照每个元素的大小顺序给出一个平均排名
 obj = pd.Series([7, -5, 7, 4, 2, 0, 4])
 
 print(obj)
@@ -2318,7 +1388,7 @@ print(obj.rank())
 
 
 # 根据元素的观察顺序进行分配。元素0和2没有使用平均排名6.5，它们被设成了6和7，因为数据中标签0位于标签2的前面。
-print(obj.rank(method='first'))
+print(obj.rank(method=&#39;first&#39;))
 # 0    6.0
 # 1    1.0
 # 2    7.0
@@ -2329,8 +1399,8 @@ print(obj.rank(method='first'))
 # dtype: float64
 
 # 按照max进行升序和降序
-print(obj.rank(ascending=False, method='max'))
-print(obj.rank(ascending=True, method='max'))
+print(obj.rank(ascending=False, method=&#39;max&#39;))
+print(obj.rank(ascending=True, method=&#39;max&#39;))
 # Original Series   Max with inc         Max with dec
 # 0     7           # 0    2.0 (最小)     # 0    7.0 (最大)
 # 1    -5           # 1    7.0 (最大)     # 1    1.0 (最小)
@@ -2340,11 +1410,10 @@ print(obj.rank(ascending=True, method='max'))
 # 5     0           # 5    6.0           # 5    2.0
 # 6     4           # 6    4.0           # 6    5.0
 # dtype: float64    # dtype: float64     # dtype: float64
-</code></pre>
-<pre><code>frame = pd.DataFrame(
-    {'b': [4.3, 7, -3, 2],
-     'a': [0, 1, 0, 1],
-     'c': [-2, 5, 8, -2]}
+</code></pre></div> <div class=highlight><pre><span></span><code>frame = pd.DataFrame(
+    {&#39;b&#39;: [4.3, 7, -3, 2],
+     &#39;a&#39;: [0, 1, 0, 1],
+     &#39;c&#39;: [-2, 5, 8, -2]}
 )
 
 print(frame)
@@ -2355,18 +1424,13 @@ print(frame)
 # 3  2.0  1 -2
 
 # 沿1轴对DataFrame进行rank操作，即，每一行各元素进行rank。
-print(frame.rank(axis='columns'))  # axis=1
+print(frame.rank(axis=&#39;columns&#39;))  # axis=1
 #      b    a    c
 # 0  3.0  2.0  1.0
 # 1  3.0  1.0  2.0
 # 2  1.0  2.0  3.0
 # 3  3.0  2.0  1.0
-</code></pre>
-<h2 id="_10">含有重复标签的轴索引</h2>
-<p>尽管很多pandas函数（比如reindex）需要标签是唯一的，但这个并不是强制性的。
-索引的is_unique属性可以检查标签是否唯一。</p>
-<p>带有重复索引的情况下，一个索引标签会以序列方式返回多个条目。不重复的索引则会以标量值的形式返回单个条目，这可能会使代码更复杂。</p>
-<pre><code>obj = pd.Series(range(5), index=['a', 'b', 'a', 'c', 'b'])
+</code></pre></div> <h2 id=_10>含有重复标签的轴索引<a class=headerlink href=#_10 title="Permanent link"> ¶</a></h2> <p>尽管很多pandas函数（比如reindex）需要标签是唯一的，但这个并不是强制性的。 索引的is_unique属性可以检查标签是否唯一。</p> <p>带有重复索引的情况下，一个索引标签会以序列方式返回多个条目。不重复的索引则会以标量值的形式返回单个条目，这可能会使代码更复杂。</p> <div class=highlight><pre><span></span><code>obj = pd.Series(range(5), index=[&#39;a&#39;, &#39;b&#39;, &#39;a&#39;, &#39;c&#39;, &#39;b&#39;])
 print(obj)
 # a    0
 # b    1
@@ -2382,12 +1446,12 @@ print(obj.index.is_unique)
 # False
 
 # 返回重复索引对应值的序列。
-print(obj['a'])
+print(obj[&#39;a&#39;])
 # a    0
 # a    2
 # dtype: int64
 
-df = pd.DataFrame(np.random.randn(4, 3), index=['a', 'a', 'b', 'b'])
+df = pd.DataFrame(np.random.randn(4, 3), index=[&#39;a&#39;, &#39;a&#39;, &#39;b&#39;, &#39;b&#39;])
 print(df)
 #           0         1         2
 # a -0.726164  0.531540 -0.521611
@@ -2398,26 +1462,17 @@ print(df)
 print(df.index.is_unique)  
 # False
 
-print(df.loc['b'])
+print(df.loc[&#39;b&#39;])
 #           0         1         2
 # b -0.520008  0.052574  0.638529
 # b -1.928705 -1.099534 -1.605296
-</code></pre>
-<h2 id="_11">描述性统计概述与计算</h2>
-<p>pandas包含了一些常用数学、统计学方法。其中大部分属于归约或汇总统计的类别，这些方法从DataFrame的行或列中抽取一个Series或一系列值（如总和或平均值）。</p>
-<p>与NumPy数组中的类似方法相比，pandas内建了处理缺失值的功能。</p>
-<ul>
-<li>归约方法: sum()</li>
-<li>积累型方法: cumsun()</li>
-<li>既不是归约型方法也不是积累型方法: describe()</li>
-</ul>
-<pre><code>df = pd.DataFrame(
+</code></pre></div> <h2 id=_11>描述性统计概述与计算<a class=headerlink href=#_11 title="Permanent link"> ¶</a></h2> <p>pandas包含了一些常用数学、统计学方法。其中大部分属于归约或汇总统计的类别，这些方法从DataFrame的行或列中抽取一个Series或一系列值（如总和或平均值）。</p> <p>与NumPy数组中的类似方法相比，pandas内建了处理缺失值的功能。</p> <ul> <li>归约方法: sum()</li> <li>积累型方法: cumsun()</li> <li>既不是归约型方法也不是积累型方法: describe()</li> </ul> <div class=highlight><pre><span></span><code>df = pd.DataFrame(
     [[1.4, np.nan],
      [7.1, -4.5],
      [np.nan, np.nan],
      [0.75, -1.3]],
-    index=list('abcd'),
-    columns=['one', 'two']
+    index=list(&#39;abcd&#39;),
+    columns=[&#39;one&#39;, &#39;two&#39;]
 )
 
 print(df)
@@ -2475,9 +1530,7 @@ print(df.cumsum())
 # b  8.50 -4.5
 # c   NaN  NaN
 # d  9.25 -5.8
-</code></pre>
-<p>通过describe产生统计信息，注意，数值型和非数值型的describe的信息是不同的。</p>
-<pre><code># 一次性产生多个汇总统计
+</code></pre></div> <p>通过describe产生统计信息，注意，数值型和非数值型的describe的信息是不同的。 <div class=highlight><pre><span></span><code># 一次性产生多个汇总统计
 print(df.describe())
 #             one       two
 # count  3.000000  2.000000
@@ -2489,7 +1542,7 @@ print(df.describe())
 # 75%    4.250000 -2.100000
 # max    7.100000 -1.300000
 
-obj = pd.Series(['a', 'a', 'b', 'c'] * 4)
+obj = pd.Series([&#39;a&#39;, &#39;a&#39;, &#39;b&#39;, &#39;c&#39;] * 4)
 print(obj)
 # 0     a
 # 1     a
@@ -2516,52 +1569,22 @@ print(obj.describe())
 # top        a
 # freq       8
 # dtype: object
-</code></pre>
-<h2 id="_12">相关性和协方差</h2>
-<p>协方差与相关系数也是在时域分析时常见的两个概念，他们都是用来描述数据“像不像”的。</p>
-<p>协方差的通俗理解：</p>
-<ul>
-<li>两个变量在变化过程中是同方向变化还是反方向变化？相同或者相反程度如何？</li>
-<li>你变大，同时我变大，说明两个变量是同向变化，这时协方差就是正的。</li>
-<li>你变大，同时我变小，说明两个变量是反向变化，这时协方差就是负的。</li>
-<li>从数值看，协方差的数值越大，两个变量同向程度也就越大。反之亦然。</li>
-</ul>
-<p>相关系数的通俗理解：</p>
-<ul>
-<li>用X，Y的协方差除以X的标准差和Y的标准差。相关系数也可以看成协方差，一种提出了两个变量量纲影响、标准化后的特殊协方差。所以：也可以反映两个变量变化时是同向还是反向，如果同向变化就为正，反向变化就为负。</li>
-<li>由于是标准版后的协方差，相关系数消除了两个变量变化幅度的影响，而只是单纯反应两个变量每单位变化时的相似程度。</li>
-</ul>
-<p>总结：</p>
-<ul>
-<li>对于两个变量X、Y，</li>
-<li>当他们的相关系数为1时，说明两个变量变化时的正向相似度最大。</li>
-<li>当他们的相关系数为－1时，说明两个变量变化的反向相似度最大。</li>
-<li>随着他们相关系数减小，两个变量变化时的相似度也变小，当相关系数为0时，两个变量的变化过程没有任何相似度，也即两个变量无关。</li>
-<li>当相关系数继续变小，小于0时，两个变量开始出现反向的相似度，随着相关系数继续变小，反向相似度会逐渐变大。</li>
-</ul>
-<p>下面的例子使用 pandas-datareader：</p>
-<ul>
-<li>https://pypi.org/project/pandas-datareader/</li>
-<li>https://pydata.github.io/pandas-datareader/)</li>
-</ul>
-<p>在所有例子中，在计算相关性之前，数据点已经按标签进行了对齐。</p>
-<p>下例需要通过pandas-datareader库从Yahoo! Finance上获取的包含股价和交易量的DataFrame。</p>
-<pre><code>import pandas_datareader.data as web
+</code></pre></div></p> <h2 id=_12>相关性和协方差<a class=headerlink href=#_12 title="Permanent link"> ¶</a></h2> <p>协方差与相关系数也是在时域分析时常见的两个概念，他们都是用来描述数据“像不像”的。</p> <p>协方差的通俗理解：</p> <ul> <li>两个变量在变化过程中是同方向变化还是反方向变化？相同或者相反程度如何？</li> <li>你变大，同时我变大，说明两个变量是同向变化，这时协方差就是正的。</li> <li>你变大，同时我变小，说明两个变量是反向变化，这时协方差就是负的。</li> <li>从数值看，协方差的数值越大，两个变量同向程度也就越大。反之亦然。</li> </ul> <p>相关系数的通俗理解：</p> <ul> <li>用X，Y的协方差除以X的标准差和Y的标准差。相关系数也可以看成协方差，一种提出了两个变量量纲影响、标准化后的特殊协方差。所以：也可以反映两个变量变化时是同向还是反向，如果同向变化就为正，反向变化就为负。</li> <li>由于是标准版后的协方差，相关系数消除了两个变量变化幅度的影响，而只是单纯反应两个变量每单位变化时的相似程度。</li> </ul> <p>总结：</p> <ul> <li>对于两个变量X、Y，</li> <li>当他们的相关系数为1时，说明两个变量变化时的正向相似度最大。</li> <li>当他们的相关系数为－1时，说明两个变量变化的反向相似度最大。</li> <li>随着他们相关系数减小，两个变量变化时的相似度也变小，当相关系数为0时，两个变量的变化过程没有任何相似度，也即两个变量无关。</li> <li>当相关系数继续变小，小于0时，两个变量开始出现反向的相似度，随着相关系数继续变小，反向相似度会逐渐变大。</li> </ul> <p>下面的例子使用 pandas-datareader：</p> <ul> <li>https://pypi.org/project/pandas-datareader/</li> <li>https://pydata.github.io/pandas-datareader/)</li> </ul> <p>在所有例子中，在计算相关性之前，数据点已经按标签进行了对齐。</p> <p>下例需要通过pandas-datareader库从Yahoo! Finance上获取的包含股价和交易量的DataFrame。 <div class=highlight><pre><span></span><code>import pandas_datareader.data as web
 
 all_data = {
 
-    ticker: web.get_data_yahoo(ticker) for ticker in ['AAPL', 'IBM', 'MSFT', 'GOOG']
+    ticker: web.get_data_yahoo(ticker) for ticker in [&#39;AAPL&#39;, &#39;IBM&#39;, &#39;MSFT&#39;, &#39;GOOG&#39;]
 }
 
 price = pd.DataFrame(
     {
-        ticker: data['Adj Close'] for ticker, data in all_data.items()
+        ticker: data[&#39;Adj Close&#39;] for ticker, data in all_data.items()
     }
 )
 
 volume = pd.DataFrame(
     {
-        ticker: data['Volume'] for ticker, data in all_data.items()
+        ticker: data[&#39;Volume&#39;] for ticker, data in all_data.items()
     }
 )
 
@@ -2574,9 +1597,7 @@ print(returns.tail())
 # 2021-08-11  0.001786  0.005305  0.001781 -0.002947
 # 2021-08-12  0.020773  0.006614  0.009967  0.005084
 # 2021-08-13  0.001410  0.000769  0.010490  0.000119
-</code></pre>
-<p>Series的corr方法计算的是两个Series中重叠的、非NA的、按索引对齐的值的相关性。相应地，cov计算的是协方差</p>
-<pre><code>print(returns['MSFT'])
+</code></pre></div></p> <p>Series的corr方法计算的是两个Series中重叠的、非NA的、按索引对齐的值的相关性。相应地，cov计算的是协方差 <div class=highlight><pre><span></span><code>print(returns[&#39;MSFT&#39;])
 # Date
 # 2016-08-15         NaN
 # 2016-08-16   -0.005540
@@ -2592,7 +1613,7 @@ print(returns.tail())
 # Name: MSFT, Length: 1259, dtype: float64
 
 # Series的corr方法计算的是两个Series中重叠的、非NA的、按索引对齐的值的相关性。
-print(returns['MSFT'].corr(returns['IBM']))  
+print(returns[&#39;MSFT&#39;].corr(returns[&#39;IBM&#39;]))  
 # 0.5175237180581937
 
 # 等同写法，MSFT是一个有效的Python属性
@@ -2600,11 +1621,9 @@ print(returns.MSFT.corr(returns.IBM))
 # 0.5175237180581937
 
 # Series的cov方法计算的是两个Series中值的协方差。
-print(returns['MSFT'].cov(returns['IBM']))
+print(returns[&#39;MSFT&#39;].cov(returns[&#39;IBM&#39;]))
 # 0.0001452224236764915
-</code></pre>
-<p>DataFrame的corr和cov方法会分别以DataFrame的形式返回相关性和协方差矩阵。</p>
-<pre><code>print(returns.corr())
+</code></pre></div></p> <p>DataFrame的corr和cov方法会分别以DataFrame的形式返回相关性和协方差矩阵。 <div class=highlight><pre><span></span><code>print(returns.corr())
 #           AAPL       IBM      MSFT      GOOG
 # AAPL  1.000000  0.441111  0.735539  0.661961
 # IBM   0.441111  1.000000  0.517524  0.484230
@@ -2612,7 +1631,7 @@ print(returns['MSFT'].cov(returns['IBM']))
 # GOOG  0.661961  0.484230  0.775756  1.000000
 
 # 给corrwith方法，传入一个Series时，会返回一个含有为每列计算相关性值的Series
-print(returns.corrwith(returns['IBM']))  
+print(returns.corrwith(returns[&#39;IBM&#39;]))  
 # AAPL    0.441111
 # IBM     1.000000
 # MSFT    0.517524
@@ -2633,9 +1652,7 @@ print(returns.cov())
 # IBM   0.000137  0.000268  0.000145  0.000133
 # MSFT  0.000240  0.000145  0.000294  0.000224
 # GOOG  0.000211  0.000133  0.000224  0.000282
-</code></pre>
-<h2 id="_13">唯一值、计数和成员属性</h2>
-<pre><code>obj = pd.Series(['c', 'a', 'd', 'a', 'a', 'a', 'b', 'b', 'c', 'c'])
+</code></pre></div></p> <h2 id=_13>唯一值、计数和成员属性<a class=headerlink href=#_13 title="Permanent link"> ¶</a></h2> <div class=highlight><pre><span></span><code>obj = pd.Series([&#39;c&#39;, &#39;a&#39;, &#39;d&#39;, &#39;a&#39;, &#39;a&#39;, &#39;a&#39;, &#39;b&#39;, &#39;b&#39;, &#39;c&#39;, &#39;c&#39;])
 
 print(obj)
 # 0    c
@@ -2649,13 +1666,11 @@ print(obj)
 # 8    c
 # 9    c
 # dtype: object
-</code></pre>
-<p>函数<code>unique</code>给出Series中的唯一值。</p>
-<pre><code>print(obj.unique())
-# ['c' 'a' 'd' 'b']
+</code></pre></div> <p>函数<code>unique</code>给出Series中的唯一值。 <div class=highlight><pre><span></span><code>print(obj.unique())
+# [&#39;c&#39; &#39;a&#39; &#39;d&#39; &#39;b&#39;]
 
 print(obj.sort_values().unique())
-# ['a' 'b' 'c' 'd']
+# [&#39;a&#39; &#39;b&#39; &#39;c&#39; &#39;d&#39;]
 
 # value_counts计算Series包含的值的个数
 print(obj.value_counts())
@@ -2673,7 +1688,7 @@ print(pd.value_counts(obj.values, sort=True))
 # d    1
 # dtype: int64
 
-print(obj.isin(['b', 'c']))
+print(obj.isin([&#39;b&#39;, &#39;c&#39;]))
 # 0     True
 # 1    False
 # 2    False
@@ -2687,34 +1702,30 @@ print(obj.isin(['b', 'c']))
 # dtype: bool
 
 # 将上面的结果作为列表输入的条件，输出为True的结果
-print(obj[obj.isin(['b', 'c'])])
+print(obj[obj.isin([&#39;b&#39;, &#39;c&#39;])])
 # 0    c
 # 6    b
 # 7    b
 # 8    c
 # 9    c
 # dtype: object
-</code></pre>
-<p>参考: <a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Index.get_indexer.html">pandas.Index.get_indexer</a></p>
-<pre><code>obj1 = pd.Series(['c', 'a', 'd', 'a', 'a', 'a', 'b', 'b', 'c', 'c'])
-obj2 = pd.Series(['c', 'a', 'b'])
+</code></pre></div></p> <p>参考: <a href=https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Index.get_indexer.html>pandas.Index.get_indexer</a> <div class=highlight><pre><span></span><code>obj1 = pd.Series([&#39;c&#39;, &#39;a&#39;, &#39;d&#39;, &#39;a&#39;, &#39;a&#39;, &#39;a&#39;, &#39;b&#39;, &#39;b&#39;, &#39;c&#39;, &#39;c&#39;])
+obj2 = pd.Series([&#39;c&#39;, &#39;a&#39;, &#39;b&#39;])
 
 print(pd.Index(obj1))
-# Index(['c', 'a', 'd', 'a', 'a', 'a', 'b', 'b', 'c', 'c'], dtype='object')
+# Index([&#39;c&#39;, &#39;a&#39;, &#39;d&#39;, &#39;a&#39;, &#39;a&#39;, &#39;a&#39;, &#39;b&#39;, &#39;b&#39;, &#39;c&#39;, &#39;c&#39;], dtype=&#39;object&#39;)
 
 print(pd.Index(obj2))
-# Index(['c', 'a', 'b'], dtype='object')
+# Index([&#39;c&#39;, &#39;a&#39;, &#39;b&#39;], dtype=&#39;object&#39;)
 
 # 这里0对应obj2里面的c在job1的位置，以此类推，生成新的索引列表
 print(pd.Index(obj2).get_indexer(obj1))
 # [ 0  1 -1  1  1  1  2  2  0  0]
-</code></pre>
-<p>计算DataFrame多个相关列的直方图。</p>
-<pre><code>data = pd.DataFrame(
+</code></pre></div></p> <p>计算DataFrame多个相关列的直方图。 <div class=highlight><pre><span></span><code>data = pd.DataFrame(
     {
-        'Que1': [1, 3, 4, 3, 4],
-        'Que2': [2, 3, 1, 2, 3],
-        'Que3': [1, 5, 2, 4, 4],
+        &#39;Que1&#39;: [1, 3, 4, 3, 4],
+        &#39;Que2&#39;: [2, 3, 1, 2, 3],
+        &#39;Que3&#39;: [1, 5, 2, 4, 4],
     }
 )
 
@@ -2736,54 +1747,4 @@ print(result)
 # 3   2.0   2.0   0.0
 # 4   2.0   0.0   2.0
 # 5   0.0   0.0   1.0
-</code></pre>
-                
-              
-              
-                
-
-
-              
-            </article>
-          </div>
-        </div>
-        
-          <a href="#" class="md-top md-icon" data-md-component="top" data-md-state="hidden">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"/></svg>
-            Back to top
-          </a>
-        
-      </main>
-      
-        
-<footer class="md-footer">
-  
-  <div class="md-footer-meta md-typeset">
-    <div class="md-footer-meta__inner md-grid">
-      <div class="md-footer-copyright">
-        
-        
-          Made with
-          <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
-            Material for MkDocs
-          </a>
-        
-        
-      </div>
-      
-    </div>
-  </div>
-</footer>
-      
-    </div>
-    <div class="md-dialog" data-md-component="dialog">
-      <div class="md-dialog__inner md-typeset"></div>
-    </div>
-    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tracking", "navigation.top", "navigation.expand"], "search": "../../../assets/javascripts/workers/search.fcfe8b6d.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": null}</script>
-    
-    
-      <script src="../../../assets/javascripts/bundle.b1047164.min.js"></script>
-      
-    
-  </body>
-</html>
+</code></pre></div></p> </article> </div> </div> </main> <footer class=md-footer> <div class="md-footer-meta md-typeset"> <div class="md-footer-meta__inner md-grid"> <div class=md-footer-copyright> Made with <a href=https://squidfunk.github.io/mkdocs-material/ target=_blank rel=noopener> Material for MkDocs </a> </div> </div> </div> </footer> </div> <div class=md-dialog data-md-component=dialog> <div class="md-dialog__inner md-typeset"></div> </div> <script id=__config type=application/json>{"base": "../../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.instant", "navigation.sections"], "search": "../../../assets/javascripts/workers/search.fcfe8b6d.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": null}</script> <script src=../../../assets/javascripts/bundle.b1047164.min.js></script> </body> </html>

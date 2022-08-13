@@ -1,559 +1,26 @@
-
-<!doctype html>
-<html lang="en" class="no-js">
-  <head>
-    
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width,initial-scale=1">
-      
-      
-      
-      
-        <link rel="canonical" href="https://huyuhui001.github.io/mySite/index.html/python/Foundation/ch02/">
-      
-      <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-7.3.6">
-    
-    
-      
-        <title>Python中的打包Packing和解包Unpacking - MEMO</title>
-      
-    
-    
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.a57b2b03.min.css">
-      
-        
-        <link rel="stylesheet" href="../../../assets/stylesheets/palette.3f5d1f46.min.css">
-        
-          
-          
-          <meta name="theme-color" content="#000000">
-        
-      
-    
-    
-    
-      
-        
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
-        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
-      
-    
-    
-    
-    
-      
-
-
-    
-    
-  </head>
-  
-  
-    
-    
-    
-    
-    
-    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="black" data-md-color-accent="deep-blue">
-  
-    
-    <script>function __prefix(e){return new URL("../../..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
-    
-    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
-    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
-    <label class="md-overlay" for="__drawer"></label>
-    <div data-md-component="skip">
-      
-        
-        <a href="#pythonpackingunpacking" class="md-skip">
-          Skip to content
-        </a>
-      
-    </div>
-    <div data-md-component="announce">
-      
-    </div>
-    
-      
-
-<header class="md-header" data-md-component="header">
-  <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../../.." title="MEMO" class="md-header__button md-logo" aria-label="MEMO" data-md-component="logo">
-      
-  <img src="../../../assets/logo.jpg" alt="logo">
-
-    </a>
-    <label class="md-header__button md-icon" for="__drawer">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
-    </label>
-    <div class="md-header__title" data-md-component="header-title">
-      <div class="md-header__ellipsis">
-        <div class="md-header__topic">
-          <span class="md-ellipsis">
-            MEMO
-          </span>
-        </div>
-        <div class="md-header__topic" data-md-component="header-topic">
-          <span class="md-ellipsis">
-            
-              Python中的打包Packing和解包Unpacking
-            
-          </span>
-        </div>
-      </div>
-    </div>
-    
-    
-    
-      <label class="md-header__button md-icon" for="__search">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
-      </label>
-      
-<div class="md-search" data-md-component="search" role="dialog">
-  <label class="md-search__overlay" for="__search"></label>
-  <div class="md-search__inner" role="search">
-    <form class="md-search__form" name="search">
-      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
-      <label class="md-search__icon md-icon" for="__search">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
-      </label>
-      <nav class="md-search__options" aria-label="Search">
-        
-        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
-        </button>
-      </nav>
-      
-    </form>
-    <div class="md-search__output">
-      <div class="md-search__scrollwrap" data-md-scrollfix>
-        <div class="md-search-result" data-md-component="search-result">
-          <div class="md-search-result__meta">
-            Initializing search
-          </div>
-          <ol class="md-search-result__list"></ol>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-    
-    
-  </nav>
-  
-</header>
-    
-    <div class="md-container" data-md-component="container">
-      
-      
-        
-          
-        
-      
-      <main class="md-main" data-md-component="main">
-        <div class="md-main__inner md-grid">
-          
-            
-              
-              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
-                <div class="md-sidebar__scrollwrap">
-                  <div class="md-sidebar__inner">
-                    
-
-
-<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
-  <label class="md-nav__title" for="__drawer">
-    <a href="../../.." title="MEMO" class="md-nav__button md-logo" aria-label="MEMO" data-md-component="logo">
-      
-  <img src="../../../assets/logo.jpg" alt="logo">
-
-    </a>
-    MEMO
-  </label>
-  
-  <ul class="md-nav__list" data-md-scrollfix>
-    
-      
-      
-      
-
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1" data-md-state="indeterminate" type="checkbox" id="__nav_1" checked>
-      
-      
-      
-      
-        <label class="md-nav__link" for="__nav_1">
-          Linux
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" aria-label="Linux" data-md-level="1">
-        <label class="md-nav__title" for="__nav_1">
-          <span class="md-nav__icon md-icon"></span>
-          Linux
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../linux/Administration/linux_admin/" class="md-nav__link">
-        SUSE Linux Administration
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../linux/SES/linux_ses/" class="md-nav__link">
-        SUSE Enterprise Storage Foundation
-      </a>
-    </li>
-  
-
-            
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" data-md-state="indeterminate" type="checkbox" id="__nav_2" checked>
-      
-      
-      
-      
-        <label class="md-nav__link" for="__nav_2">
-          Python
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" aria-label="Python" data-md-level="1">
-        <label class="md-nav__title" for="__nav_2">
-          <span class="md-nav__icon md-icon"></span>
-          Python
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../python_foundation_index/" class="md-nav__link">
-        Python Foundamentals
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../DataAnalysis/python_data_analysis_index/" class="md-nav__link">
-        Data Analysis
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../Demo/python_demo_index/" class="md-nav__link">
-        Demos
-      </a>
-    </li>
-  
-
-            
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" data-md-state="indeterminate" type="checkbox" id="__nav_3" checked>
-      
-      
-      
-      
-        <label class="md-nav__link" for="__nav_3">
-          Cloud
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" aria-label="Cloud" data-md-level="1">
-        <label class="md-nav__title" for="__nav_3">
-          <span class="md-nav__icon md-icon"></span>
-          Cloud
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../cloud/MicroservicesKubernetes/" class="md-nav__link">
-        Microservices with K8s
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../cloud/KubernetesFoundationMemo/" class="md-nav__link">
-        K8s Foundamentals
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../cloud/Kubernetes-Installation/" class="md-nav__link">
-        K8s Installation
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../cloud/KubernetesTutorials-BTP-trail/" class="md-nav__link">
-        K8s Demos on Kyma@SAP BTP
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../cloud/KubernetesTutorials-Aliyun-Foundamentals/" class="md-nav__link">
-        K8s Demos on Ubuntu@Aliyun
-      </a>
-    </li>
-  
-
-            
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../about/" class="md-nav__link">
-        About
-      </a>
-    </li>
-  
-
-    
-  </ul>
-</nav>
-                  </div>
-                </div>
-              </div>
-            
-            
-              
-              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
-                <div class="md-sidebar__scrollwrap">
-                  <div class="md-sidebar__inner">
-                    
-
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#unpacking" class="md-nav__link">
-    解包Unpacking
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#packing" class="md-nav__link">
-    打包Packing
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_1" class="md-nav__link">
-    使用 * 和 ** 运算符
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#for-loops" class="md-nav__link">
-    通过 For-Loops 解包
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_2" class="md-nav__link">
-    用 * 和 ** 定义函数
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_3" class="md-nav__link">
-    使用 * 和 ** 调用函数
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_4" class="md-nav__link">
-    总结
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-                  </div>
-                </div>
-              </div>
-            
-          
-          <div class="md-content" data-md-component="content">
-            <article class="md-content__inner md-typeset">
-              
-                
-                
-                <h1 id="pythonpackingunpacking">Python中的打包Packing和解包Unpacking</h1>
-<h2 id="unpacking">解包Unpacking</h2>
-<p>Python 允许变量的元组（或列表）出现在赋值操作的左侧。</p>
-<p>元组中的每个变量都可以从赋值右侧的可迭代对象（iterable）中接收一个值（或者更多，如果我们使用 * 运算符）。 Python 中的解包是指一种操作，该操作包括在单个赋值语句中将可迭代的值分配给变量的元组（或列表）。</p>
-<p>在 Python 中，可以在赋值运算符 (=) 的左侧放置一个变量元组，在右侧放置一个值元组。 右边的值将根据它们在元组中的位置自动分配给左边的变量。 这在 Python 中通常称为元组解包。</p>
-<p>如下示例：</p>
-<pre><code>&gt;&gt;&gt; (a, b, c) = (1, 2, 3)
+<!doctype html><html lang=en class=no-js> <head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><link href=https://huyuhui001.github.io/mySite/python/Foundation/ch02/ rel=canonical><link rel=icon href=../../../assets/images/favicon.png><meta name=generator content="mkdocs-1.3.0, mkdocs-material-7.3.6"><title>Python中的打包Packing和解包Unpacking - MEMO</title><link rel=stylesheet href=../../../assets/stylesheets/main.a57b2b03.min.css><link rel=stylesheet href=../../../assets/stylesheets/palette.3f5d1f46.min.css><meta name=theme-color content=#009485><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback"><style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style><link rel=stylesheet href=../../../extra.css></head> <body dir=ltr data-md-color-scheme data-md-color-primary=teal data-md-color-accent=green> <script>function __prefix(e){return new URL("../../..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script> <input class=md-toggle data-md-toggle=drawer type=checkbox id=__drawer autocomplete=off> <input class=md-toggle data-md-toggle=search type=checkbox id=__search autocomplete=off> <label class=md-overlay for=__drawer></label> <div data-md-component=skip> <a href=#pythonpackingunpacking class=md-skip> Skip to content </a> </div> <div data-md-component=announce> </div> <header class="md-header md-header--lifted" data-md-component=header> <nav class="md-header__inner md-grid" aria-label=Header> <a href=../../.. title=MEMO class="md-header__button md-logo" aria-label=MEMO data-md-component=logo> <img src=../../../assets/logo.jpg alt=logo> </a> <label class="md-header__button md-icon" for=__drawer> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg> </label> <div class=md-header__title data-md-component=header-title> <div class=md-header__ellipsis> <div class=md-header__topic> <span class=md-ellipsis> MEMO </span> </div> <div class=md-header__topic data-md-component=header-topic> <span class=md-ellipsis> Python中的打包Packing和解包Unpacking </span> </div> </div> </div> <label class="md-header__button md-icon" for=__search> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg> </label> <div class=md-search data-md-component=search role=dialog> <label class=md-search__overlay for=__search></label> <div class=md-search__inner role=search> <form class=md-search__form name=search> <input type=text class=md-search__input name=query aria-label=Search placeholder=Search autocapitalize=off autocorrect=off autocomplete=off spellcheck=false data-md-component=search-query required> <label class="md-search__icon md-icon" for=__search> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg> </label> <nav class=md-search__options aria-label=Search> <button type=reset class="md-search__icon md-icon" aria-label=Clear tabindex=-1> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg> </button> </nav> </form> <div class=md-search__output> <div class=md-search__scrollwrap data-md-scrollfix> <div class=md-search-result data-md-component=search-result> <div class=md-search-result__meta> Initializing search </div> <ol class=md-search-result__list></ol> </div> </div> </div> </div> </div> <div class=md-header__source> <a href=https://github.com/huyuhui001/mySite title="Go to repository" class=md-source data-md-component=source> <div class="md-source__icon md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg> </div> <div class=md-source__repository> huyuhui001/mySite </div> </a> </div> </nav> <nav class=md-tabs aria-label=Tabs data-md-component=tabs> <div class="md-tabs__inner md-grid"> <ul class=md-tabs__list> <li class=md-tabs__item> <a href=../../../linux/Administration/linux_admin/ class=md-tabs__link> Linux </a> </li> <li class=md-tabs__item> <a href=../../../k8s/installation/single-local/ class=md-tabs__link> Kubernetes </a> </li> <li class=md-tabs__item> <a href=../python_foundation_index/ class=md-tabs__link> Python </a> </li> </ul> </div> </nav> </header> <div class=md-container data-md-component=container> <main class=md-main data-md-component=main> <div class="md-main__inner md-grid"> <div class="md-sidebar md-sidebar--primary" data-md-component=sidebar data-md-type=navigation> <div class=md-sidebar__scrollwrap> <div class=md-sidebar__inner> <nav class="md-nav md-nav--primary md-nav--lifted" aria-label=Navigation data-md-level=0> <label class=md-nav__title for=__drawer> <a href=../../.. title=MEMO class="md-nav__button md-logo" aria-label=MEMO data-md-component=logo> <img src=../../../assets/logo.jpg alt=logo> </a> MEMO </label> <div class=md-nav__source> <a href=https://github.com/huyuhui001/mySite title="Go to repository" class=md-source data-md-component=source> <div class="md-source__icon md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg> </div> <div class=md-source__repository> huyuhui001/mySite </div> </a> </div> <ul class=md-nav__list data-md-scrollfix> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_1 type=checkbox id=__nav_1> <label class=md-nav__link for=__nav_1> Linux <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label=Linux data-md-level=1> <label class=md-nav__title for=__nav_1> <span class="md-nav__icon md-icon"></span> Linux </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../linux/Administration/linux_admin/ class=md-nav__link> SUSE Linux Administration </a> </li> <li class=md-nav__item> <a href=../../../linux/SES/linux_ses/ class=md-nav__link> SUSE Enterprise Storage Foundation </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_2 type=checkbox id=__nav_2> <label class=md-nav__link for=__nav_2> Kubernetes <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label=Kubernetes data-md-level=1> <label class=md-nav__title for=__nav_2> <span class="md-nav__icon md-icon"></span> Kubernetes </label> <ul class=md-nav__list data-md-scrollfix> <li class="md-nav__item md-nav__item--section md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_2_1 type=checkbox id=__nav_2_1> <label class=md-nav__link for=__nav_2_1> Installation <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label=Installation data-md-level=2> <label class=md-nav__title for=__nav_2_1> <span class="md-nav__icon md-icon"></span> Installation </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../k8s/installation/single-local/ class=md-nav__link> Single Node Installation </a> </li> <li class=md-nav__item> <a href=../../../k8s/installation/multiple-local/ class=md-nav__link> Multiple Nodes Installation </a> </li> <li class=md-nav__item> <a href=../../../k8s/installation/aliyun-opensuse/ class=md-nav__link> Installation on Aliyun openSUSE </a> </li> <li class=md-nav__item> <a href=../../../k8s/installation/aliyun-ubuntu/ class=md-nav__link> Installation on Aliyun Ubuntu </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--section md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_2_2 type=checkbox id=__nav_2_2> <label class=md-nav__link for=__nav_2_2> Foundamentals <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label=Foundamentals data-md-level=2> <label class=md-nav__title for=__nav_2_2> <span class="md-nav__icon md-icon"></span> Foundamentals </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../k8s/foundamentals/memo/ class=md-nav__link> Memo </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/docker/ class=md-nav__link> Docker Fundamentals </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/overview/ class=md-nav__link> Overview </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/basics/ class=md-nav__link> kubectl basics </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/namespace/ class=md-nav__link> Namespace </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/pod/ class=md-nav__link> Work on pod </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/deployment/ class=md-nav__link> Deployment </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/statefulset/ class=md-nav__link> StatefulSet </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/daemonset/ class=md-nav__link> DaemonSet </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/job/ class=md-nav__link> Job and Cronjob </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/hpa/ class=md-nav__link> Horizontal Pod Autoscaling </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/service/ class=md-nav__link> Service </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/ingress/ class=md-nav__link> Ingress </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/persistence/ class=md-nav__link> Persistence </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/scheduling/ class=md-nav__link> Scheduling </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/policy/ class=md-nav__link> Policy </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/configuration/ class=md-nav__link> Configuration </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/rbac/ class=md-nav__link> Role Based Access Control (RBAC) </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/networkpolicy/ class=md-nav__link> Network Policy </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/clustermgt/ class=md-nav__link> Cluster Management </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/helming/ class=md-nav__link> Helming </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/troubleshooting/ class=md-nav__link> Troubleshooting </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/healthcheck/ class=md-nav__link> Health Check </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/casestudy/ class=md-nav__link> Case Study </a> </li> </ul> </nav> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_3 type=checkbox id=__nav_3> <label class=md-nav__link for=__nav_3> Python <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label=Python data-md-level=1> <label class=md-nav__title for=__nav_3> <span class="md-nav__icon md-icon"></span> Python </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../python_foundation_index/ class=md-nav__link> Python Foundamentals </a> </li> <li class=md-nav__item> <a href=../../DataAnalysis/python_data_analysis_index/ class=md-nav__link> Data Analysis </a> </li> <li class=md-nav__item> <a href=../../Demo/python_demo_index/ class=md-nav__link> Demos </a> </li> </ul> </nav> </li> </ul> </nav> </div> </div> </div> <div class="md-sidebar md-sidebar--secondary" data-md-component=sidebar data-md-type=toc> <div class=md-sidebar__scrollwrap> <div class=md-sidebar__inner> <nav class="md-nav md-nav--secondary" aria-label="Table of contents"> <label class=md-nav__title for=__toc> <span class="md-nav__icon md-icon"></span> Table of contents </label> <ul class=md-nav__list data-md-component=toc data-md-scrollfix> <li class=md-nav__item> <a href=#unpacking class=md-nav__link> 解包Unpacking </a> </li> <li class=md-nav__item> <a href=#packing class=md-nav__link> 打包Packing </a> </li> <li class=md-nav__item> <a href=#_1 class=md-nav__link> 使用 * 和 ** 运算符 </a> </li> <li class=md-nav__item> <a href=#for-loops class=md-nav__link> 通过 For-Loops 解包 </a> </li> <li class=md-nav__item> <a href=#_2 class=md-nav__link> 用 * 和 ** 定义函数 </a> </li> <li class=md-nav__item> <a href=#_3 class=md-nav__link> 使用 * 和 ** 调用函数 </a> </li> <li class=md-nav__item> <a href=#_4 class=md-nav__link> 总结 </a> </li> </ul> </nav> </div> </div> </div> <div class=md-content data-md-component=content> <article class="md-content__inner md-typeset"> <a href=https://github.com/huyuhui001/mySite/edit/main/docs/python/Foundation/ch02.md title="Edit this page" class="md-content__button md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg> </a> <h1 id=pythonpackingunpacking>Python中的打包Packing和解包Unpacking<a class=headerlink href=#pythonpackingunpacking title="Permanent link"> ¶</a></h1> <h2 id=unpacking>解包Unpacking<a class=headerlink href=#unpacking title="Permanent link"> ¶</a></h2> <p>Python 允许变量的元组（或列表）出现在赋值操作的左侧。</p> <p>元组中的每个变量都可以从赋值右侧的可迭代对象（iterable）中接收一个值（或者更多，如果我们使用 * 运算符）。 Python 中的解包是指一种操作，该操作包括在单个赋值语句中将可迭代的值分配给变量的元组（或列表）。</p> <p>在 Python 中，可以在赋值运算符 (=) 的左侧放置一个变量元组，在右侧放置一个值元组。 右边的值将根据它们在元组中的位置自动分配给左边的变量。 这在 Python 中通常称为元组解包。</p> <p>如下示例：</p> <div class=highlight><pre><span></span><code>&gt;&gt;&gt; (a, b, c) = (1, 2, 3)
 &gt;&gt;&gt; a
 1
 &gt;&gt;&gt; b
 2
 &gt;&gt;&gt; c
 3
-&gt;&gt;&gt; birthday = ('April', 5, 2001)
+&gt;&gt;&gt; birthday = (&#39;April&#39;, 5, 2001)
 &gt;&gt;&gt; month, day, year = birthday
 &gt;&gt;&gt; month
-'April'
+&#39;April&#39;
 &gt;&gt;&gt; day
 5
 &gt;&gt;&gt; year
 2001
-</code></pre>
-<p>元组解包功能在 Python 中可以扩展为适用于任何可迭代对象。 唯一的要求是可迭代的接收元组（或列表）中的每个变量恰好对应可迭代对象的一个元素（item）。</p>
-<p>下面的示例介绍了 Python 中可迭代解包的工作原理：</p>
-<pre><code>&gt;&gt;&gt; # Unpackage strings
-&gt;&gt;&gt; a, b, c = '123'
+</code></pre></div> <p>元组解包功能在 Python 中可以扩展为适用于任何可迭代对象。 唯一的要求是可迭代的接收元组（或列表）中的每个变量恰好对应可迭代对象的一个元素（item）。</p> <p>下面的示例介绍了 Python 中可迭代解包的工作原理：</p> <div class=highlight><pre><span></span><code>&gt;&gt;&gt; # Unpackage strings
+&gt;&gt;&gt; a, b, c = &#39;123&#39;
 &gt;&gt;&gt; a
-'1'
+&#39;1&#39;
 &gt;&gt;&gt; b
-'2'
+&#39;2&#39;
 &gt;&gt;&gt; c
-'3'
+&#39;3&#39;
 &gt;&gt;&gt; # Unpacking lists
 &gt;&gt;&gt; a, b, c = [1, 2, 3]
 &gt;&gt;&gt; a
@@ -572,14 +39,14 @@
 &gt;&gt;&gt; c
 4
 &gt;&gt;&gt; # Upacking dictionaries (keys, values, and items)
-&gt;&gt;&gt; my_dict = {'one': 1, 'two': 2, 'three': 3}
+&gt;&gt;&gt; my_dict = {&#39;one&#39;: 1, &#39;two&#39;: 2, &#39;three&#39;: 3}
 &gt;&gt;&gt; a, b, c = my_dict
 &gt;&gt;&gt; a
-'one'
+&#39;one&#39;
 &gt;&gt;&gt; b
-'two'
+&#39;two&#39;
 &gt;&gt;&gt; c
-'three'
+&#39;three&#39;
 &gt;&gt;&gt; a, b, c = my_dict.values()
 &gt;&gt;&gt; a
 1
@@ -589,11 +56,11 @@
 3
 &gt;&gt;&gt; a, b, c = my_dict.items()
 &gt;&gt;&gt; a
-('one', 1)
+(&#39;one&#39;, 1)
 &gt;&gt;&gt; b
-('two', 2)
+(&#39;two&#39;, 2)
 &gt;&gt;&gt; c
-('three', 3)
+(&#39;three&#39;, 3)
 &gt;&gt;&gt; # Use a tuple on the right side of assignment statement
 &gt;&gt;&gt; [a, b, c] = 1, 2, 3
 &gt;&gt;&gt; a
@@ -610,28 +77,22 @@
 1
 &gt;&gt;&gt; z
 2
-</code></pre>
-<h2 id="packing">打包Packing</h2>
-<p>打包可以理解为使用可迭代解包运算符在单个变量中收集多个值。在这种情况下， * 运算符被称为元组（或可迭代）解包运算符。 它扩展了解包功能，允许在单个变量中收集或打包多个值。</p>
-<p>在以下示例中可以看到 * 运算符将元组值打包到单个变量中： </p>
-<pre><code>&gt;&gt;&gt; # The right side is a tuple, the left side is a list
+</code></pre></div> <h2 id=packing>打包Packing<a class=headerlink href=#packing title="Permanent link"> ¶</a></h2> <p>打包可以理解为使用可迭代解包运算符在单个变量中收集多个值。在这种情况下， * 运算符被称为元组（或可迭代）解包运算符。 它扩展了解包功能，允许在单个变量中收集或打包多个值。</p> <p>在以下示例中可以看到 * 运算符将元组值打包到单个变量中： </p> <div class=highlight><pre><span></span><code>&gt;&gt;&gt; # The right side is a tuple, the left side is a list
 &gt;&gt;&gt; *a, = 1, 2
 &gt;&gt;&gt; a
 [1, 2]
 &gt;&gt;&gt; type(a)
-&lt;class 'list'&gt;
-</code></pre>
-<p>在上面的代码中，赋值的左侧必须是元组（或列表），这就是使用尾随逗号的原因。这个元组可以包含所需要的尽可能多的变量，但是，它只能包含一个星号表达式(starred expression)。 </p>
-<pre><code>&gt;&gt;&gt; # Packing trailing values
+&lt;class &#39;list&#39;&gt;
+</code></pre></div> <p>在上面的代码中，赋值的左侧必须是元组（或列表），这就是使用尾随逗号的原因。这个元组可以包含所需要的尽可能多的变量，但是，它只能包含一个星号表达式(starred expression)。 </p> <div class=highlight><pre><span></span><code>&gt;&gt;&gt; # Packing trailing values
 &gt;&gt;&gt; a, *b = 1, 2, 3
 &gt;&gt;&gt; a
 1
 &gt;&gt;&gt; b
 [2, 3]
 &gt;&gt;&gt; type(a)
-&lt;class 'int'&gt;
+&lt;class &#39;int&#39;&gt;
 &gt;&gt;&gt; type(b)
-&lt;class 'list'&gt;
+&lt;class &#39;list&#39;&gt;
 &gt;&gt;&gt; 
 &gt;&gt;&gt; *a, b, c = 1, 2, 3
 &gt;&gt;&gt; a
@@ -666,26 +127,24 @@ ValueError: not enough values to unpack (expected at least 4, got 3)
 &gt;&gt;&gt; *r, = ran
 &gt;&gt;&gt; r
 [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-</code></pre>
-<p>下面是一些打包和解包的例子。</p>
-<pre><code>&gt;&gt;&gt; employee = ['John Doe', '40', 'Software Engineer']
+</code></pre></div> <p>下面是一些打包和解包的例子。</p> <div class=highlight><pre><span></span><code>&gt;&gt;&gt; employee = [&#39;John Doe&#39;, &#39;40&#39;, &#39;Software Engineer&#39;]
 &gt;&gt;&gt; name = employee[0]
 &gt;&gt;&gt; age = employee[1]
 &gt;&gt;&gt; job = employee[2]
 &gt;&gt;&gt; name
-'John Doe'
+&#39;John Doe&#39;
 &gt;&gt;&gt; age
-'40'
+&#39;40&#39;
 &gt;&gt;&gt; job
-'Software Engineer'
+&#39;Software Engineer&#39;
 &gt;&gt;&gt; 
-&gt;&gt;&gt; name, age, job = ['John Doe', '40', 'Software Engineer']
+&gt;&gt;&gt; name, age, job = [&#39;John Doe&#39;, &#39;40&#39;, &#39;Software Engineer&#39;]
 &gt;&gt;&gt; name
-'John Doe'
+&#39;John Doe&#39;
 &gt;&gt;&gt; age
-'40'
+&#39;40&#39;
 &gt;&gt;&gt; job
-'Software Engineer'
+&#39;Software Engineer&#39;
 &gt;&gt;&gt; 
 &gt;&gt;&gt; a = 100
 &gt;&gt;&gt; b = 200
@@ -694,21 +153,14 @@ ValueError: not enough values to unpack (expected at least 4, got 3)
 200
 &gt;&gt;&gt; b
 100
-</code></pre>
-<p>使用 * 删除不需要的值。</p>
-<pre><code>&gt;&gt;&gt; a, b, *_ = 1, 2, 0, 0, 0, 0
+</code></pre></div> <p>使用 * 删除不需要的值。</p> <div class=highlight><pre><span></span><code>&gt;&gt;&gt; a, b, *_ = 1, 2, 0, 0, 0, 0
 &gt;&gt;&gt; a
 1
 &gt;&gt;&gt; b
 2
 &gt;&gt;&gt; _
 [0, 0, 0, 0]
-
-</code></pre>
-<p>在上例中，不需要的信息存储在虚拟变量 _ 中，在后续的使用中可以忽略它。</p>
-<p>默认情况下，Python 解释器使用下划线字符 _ 来存储在交互式会话中运行的语句的结果值。 因此，在这种情况下，使用这个字符来识别虚拟变量可能是模棱两可的。</p>
-<p>在函数中返回元组。</p>
-<pre><code>&gt;&gt;&gt; def powers(num):
+</code></pre></div> <p>在上例中，不需要的信息存储在虚拟变量 _ 中，在后续的使用中可以忽略它。</p> <p>默认情况下，Python 解释器使用下划线字符 _ 来存储在交互式会话中运行的语句的结果值。 因此，在这种情况下，使用这个字符来识别虚拟变量可能是模棱两可的。</p> <p>在函数中返回元组。</p> <div class=highlight><pre><span></span><code>&gt;&gt;&gt; def powers(num):
 ...     return num, num ** 2, num ** 3
 ... 
 &gt;&gt;&gt; # Packaging returned values in a tuple
@@ -726,11 +178,7 @@ ValueError: not enough values to unpack (expected at least 4, got 3)
 &gt;&gt;&gt; *_, cube = powers(3)
 &gt;&gt;&gt; cube
 27
-</code></pre>
-<h2 id="_1">使用 * 和 ** 运算符</h2>
-<p>使用 * 运算符合并迭代变量（iterables）。上面两个例子说明，这中方法也是连接迭代变量（iterables）的一种更易读和更有效的方法。</p>
-<p>这个方法 <code>(my_set) + my_list + list(my_tuple) + list(range(1, 4)) + list(my_str)</code>可以生成一个列表 ，也可以使用更简洁的方法 <code>[*my_set, *my_list, *my_tuple, *range(1, 4), *my_str]</code>。</p>
-<pre><code>&gt;&gt;&gt; my_tuple = (1, 2, 3)
+</code></pre></div> <h2 id=_1>使用 * 和 ** 运算符<a class=headerlink href=#_1 title="Permanent link"> ¶</a></h2> <p>使用 * 运算符合并迭代变量（iterables）。上面两个例子说明，这中方法也是连接迭代变量（iterables）的一种更易读和更有效的方法。</p> <p>这个方法 <code>(my_set) + my_list + list(my_tuple) + list(range(1, 4)) + list(my_str)</code>可以生成一个列表 ，也可以使用更简洁的方法 <code>[*my_set, *my_list, *my_tuple, *range(1, 4), *my_str]</code>。</p> <div class=highlight><pre><span></span><code>&gt;&gt;&gt; my_tuple = (1, 2, 3)
 &gt;&gt;&gt; (0, *my_tuple, 4)
 (0, 1, 2, 3, 4)
 &gt;&gt;&gt; my_list = [1, 2, 3]
@@ -743,57 +191,42 @@ ValueError: not enough values to unpack (expected at least 4, got 3)
 [1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3]
 &gt;&gt;&gt; my_str = &quot;123&quot;
 &gt;&gt;&gt; [*my_set, *my_list, *my_tuple, *range(1, 4), *my_str]
-[1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, '1', '2', '3']
-
-</code></pre>
-<p>使用 ** 运算符解包字典。</p>
-<pre><code>&gt;&gt;&gt; numbers = {'one': 1, 'two': 2, 'three': 3}
-&gt;&gt;&gt; letters = {'a': 'A', 'b': 'B', 'c': 'C'}
+[1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, &#39;1&#39;, &#39;2&#39;, &#39;3&#39;]
+</code></pre></div> <p>使用 ** 运算符解包字典。</p> <div class=highlight><pre><span></span><code>&gt;&gt;&gt; numbers = {&#39;one&#39;: 1, &#39;two&#39;: 2, &#39;three&#39;: 3}
+&gt;&gt;&gt; letters = {&#39;a&#39;: &#39;A&#39;, &#39;b&#39;: &#39;B&#39;, &#39;c&#39;: &#39;C&#39;}
 &gt;&gt;&gt; combination = {**numbers, **letters}
 &gt;&gt;&gt; combination
-{'one': 1, 'two': 2, 'three': 3, 'a': 'A', 'b': 'B', 'c': 'C'}
-</code></pre>
-<p>需要注意的重要一点是，如果我们合并的字典具有重复键或公共键，则最右侧字典的值将覆盖最左侧字典的值。例如:</p>
-<pre><code>&gt;&gt;&gt; letters = {'a': 'A', 'b': 'B', 'c': 'C'}
-&gt;&gt;&gt; vowels = {'a': 'a', 'e': 'e', 'i': 'i', 'o': 'o', 'u': 'u'}
+{&#39;one&#39;: 1, &#39;two&#39;: 2, &#39;three&#39;: 3, &#39;a&#39;: &#39;A&#39;, &#39;b&#39;: &#39;B&#39;, &#39;c&#39;: &#39;C&#39;}
+</code></pre></div> <p>需要注意的重要一点是，如果我们合并的字典具有重复键或公共键，则最右侧字典的值将覆盖最左侧字典的值。例如:</p> <div class=highlight><pre><span></span><code>&gt;&gt;&gt; letters = {&#39;a&#39;: &#39;A&#39;, &#39;b&#39;: &#39;B&#39;, &#39;c&#39;: &#39;C&#39;}
+&gt;&gt;&gt; vowels = {&#39;a&#39;: &#39;a&#39;, &#39;e&#39;: &#39;e&#39;, &#39;i&#39;: &#39;i&#39;, &#39;o&#39;: &#39;o&#39;, &#39;u&#39;: &#39;u&#39;}
 &gt;&gt;&gt; {**letters, **vowels}
-{'a': 'a', 'b': 'B', 'c': 'C', 'e': 'e', 'i': 'i', 'o': 'o', 'u': 'u'}
+{&#39;a&#39;: &#39;a&#39;, &#39;b&#39;: &#39;B&#39;, &#39;c&#39;: &#39;C&#39;, &#39;e&#39;: &#39;e&#39;, &#39;i&#39;: &#39;i&#39;, &#39;o&#39;: &#39;o&#39;, &#39;u&#39;: &#39;u&#39;}
 &gt;&gt;&gt; {**vowels, **letters}
-{'a': 'A', 'e': 'e', 'i': 'i', 'o': 'o', 'u': 'u', 'b': 'B', 'c': 'C'}
-</code></pre>
-<h2 id="for-loops">通过 For-Loops 解包</h2>
-<p>我们还可以在 for 循环的上下文中使用可迭代解包。 当我们运行 for 循环时，在每次循环迭代中将其可迭代对象中的一项(item)分配给目标变量。 如果要分配的项(item)是可迭代的，那么我们可以使用元组作为目标变量，通过循环将可迭代对象解包到目标变量的元组中。</p>
-<p>例如，我们可以构建一个包含两个元素的元组的列表。 每个元组将包含产品名称、价格和销售单位，我们通过 for 循环遍历每个元组元素来计算每个产品的收入。 </p>
-<pre><code>&gt;&gt;&gt; sales = [('Pencle', 0.22, 1500), ('Notebook', 1.30, 550), ('Eraser', 0.75, 1000)]
+{&#39;a&#39;: &#39;A&#39;, &#39;e&#39;: &#39;e&#39;, &#39;i&#39;: &#39;i&#39;, &#39;o&#39;: &#39;o&#39;, &#39;u&#39;: &#39;u&#39;, &#39;b&#39;: &#39;B&#39;, &#39;c&#39;: &#39;C&#39;}
+</code></pre></div> <h2 id=for-loops>通过 For-Loops 解包<a class=headerlink href=#for-loops title="Permanent link"> ¶</a></h2> <p>我们还可以在 for 循环的上下文中使用可迭代解包。 当我们运行 for 循环时，在每次循环迭代中将其可迭代对象中的一项(item)分配给目标变量。 如果要分配的项(item)是可迭代的，那么我们可以使用元组作为目标变量，通过循环将可迭代对象解包到目标变量的元组中。</p> <p>例如，我们可以构建一个包含两个元素的元组的列表。 每个元组将包含产品名称、价格和销售单位，我们通过 for 循环遍历每个元组元素来计算每个产品的收入。 </p> <div class=highlight><pre><span></span><code>&gt;&gt;&gt; sales = [(&#39;Pencle&#39;, 0.22, 1500), (&#39;Notebook&#39;, 1.30, 550), (&#39;Eraser&#39;, 0.75, 1000)]
 &gt;&gt;&gt; for items in sales:
 ...     print(f&quot;Income for {items[0]} is: {items[1] * items[2]}&quot;)
 ... 
 Income for Pencle is: 330.0
 Income for Notebook is: 715.0
 Income for Eraser is: 750.0
-</code></pre>
-<p>我们可以使用索引来访问每个元组的各个元素。下面的示例代码中，在 for 循环使用解包，这也是 Python 中解包的一种实现。 </p>
-<pre><code>&gt;&gt;&gt; sales = [('Pencle', 0.22, 1500), ('Notebook', 1.30, 550), ('Eraser', 0.75, 1000)]
+</code></pre></div> <p>我们可以使用索引来访问每个元组的各个元素。下面的示例代码中，在 for 循环使用解包，这也是 Python 中解包的一种实现。 </p> <div class=highlight><pre><span></span><code>&gt;&gt;&gt; sales = [(&#39;Pencle&#39;, 0.22, 1500), (&#39;Notebook&#39;, 1.30, 550), (&#39;Eraser&#39;, 0.75, 1000)]
 &gt;&gt;&gt; for product, price, sold_units in sales:
 ...     print(f&quot;Income for {product} is: {price * sold_units}&quot;)
 ... 
 Income for Pencle is: 330.0
 Income for Notebook is: 715.0
 Income for Eraser is: 750.0
-</code></pre>
-<p>也可以在 for 循环中使用 * 运算符将多个项打包到单个目标变量中。 在下面这个例子中，我们首先取得每个序列的第一个元素。 其余值通过 * 运算符赋给目标变量 rest。 </p>
-<pre><code>&gt;&gt;&gt; for first, *rest in [(1, 2, 3),(4, 5, 6)]:
-...     print('First: ', first)
-...     print('Rest: ', rest)
+</code></pre></div> <p>也可以在 for 循环中使用 * 运算符将多个项打包到单个目标变量中。 在下面这个例子中，我们首先取得每个序列的第一个元素。 其余值通过 * 运算符赋给目标变量 rest。 </p> <div class=highlight><pre><span></span><code>&gt;&gt;&gt; for first, *rest in [(1, 2, 3),(4, 5, 6)]:
+...     print(&#39;First: &#39;, first)
+...     print(&#39;Rest: &#39;, rest)
 ... 
 First:  1
 Rest:  [2, 3]
 First:  4
 Rest:  [5, 6]
 &gt;&gt;&gt; 
-</code></pre>
-<p>目标变量的结构必须与可迭代对象的结构一致，否则会报错。看下面的例子。</p>
-<pre><code>&gt;&gt;&gt; data = [((1, 2), 3), ((2, 3), 3)]
+</code></pre></div> <p>目标变量的结构必须与可迭代对象的结构一致，否则会报错。看下面的例子。</p> <div class=highlight><pre><span></span><code>&gt;&gt;&gt; data = [((1, 2), 3), ((2, 3), 3)]
 &gt;&gt;&gt; for (a, b), c in data:
 ...     print(a, b, c)
 ... 
@@ -805,106 +238,43 @@ Rest:  [5, 6]
 Traceback (most recent call last):
   File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
 ValueError: not enough values to unpack (expected 3, got 2)
-</code></pre>
-<h2 id="_2">用 * 和 ** 定义函数</h2>
-<p>下面例子中的函数func至少需要一个名为“required”的参数。 它也可以接受一个或多个位置参数或关键字参数。 在这种情况下， * 运算符在一个叫 <code>args</code> 的元组中收集或打包额外的位置参数，而 ** 运算符在一个叫 <code>kwargs</code> 的字典中收集或打包额外的关键字参数。 <code>args</code> 和 <code>kwargs</code> 都是可选的，并且分别自动默认为元组()和字典{}。</p>
-<p>这里 <code>args</code> 和 <code>kwargs</code> 的命名并不是必须的，语法上只需要 * 或 ** 后跟有效标识符即可，建议给变量起个有意义的名字，提高代码的可读性。 </p>
-<pre><code>&gt;&gt;&gt; def func(required, *args, **kwargs):
+</code></pre></div> <h2 id=_2>用 * 和 ** 定义函数<a class=headerlink href=#_2 title="Permanent link"> ¶</a></h2> <p>下面例子中的函数func至少需要一个名为“required”的参数。 它也可以接受一个或多个位置参数或关键字参数。 在这种情况下， * 运算符在一个叫 <code>args</code> 的元组中收集或打包额外的位置参数，而 ** 运算符在一个叫 <code>kwargs</code> 的字典中收集或打包额外的关键字参数。 <code>args</code> 和 <code>kwargs</code> 都是可选的，并且分别自动默认为元组()和字典{}。</p> <p>这里 <code>args</code> 和 <code>kwargs</code> 的命名并不是必须的，语法上只需要 * 或 ** 后跟有效标识符即可，建议给变量起个有意义的名字，提高代码的可读性。 </p> <div class=highlight><pre><span></span><code>&gt;&gt;&gt; def func(required, *args, **kwargs):
 ...     print(required)
 ...     print(args)
 ...     print(kwargs)
 ... 
-&gt;&gt;&gt; func('Welcome to ...', 1, 2, 3, site='CloudAcademy.com')
+&gt;&gt;&gt; func(&#39;Welcome to ...&#39;, 1, 2, 3, site=&#39;CloudAcademy.com&#39;)
 Welcome to ...
 (1, 2, 3)
-{'site': 'CloudAcademy.com'}
-&gt;&gt;&gt; func('Welcome to ...', 1, 2, 3, 4)
+{&#39;site&#39;: &#39;CloudAcademy.com&#39;}
+&gt;&gt;&gt; func(&#39;Welcome to ...&#39;, 1, 2, 3, 4)
 Welcome to ...
 (1, 2, 3, 4)
 {}
-&gt;&gt;&gt; func('Welcome to ...', 1, 2, 3, (1, 2))
+&gt;&gt;&gt; func(&#39;Welcome to ...&#39;, 1, 2, 3, (1, 2))
 Welcome to ...
 (1, 2, 3, (1, 2))
 {}
-&gt;&gt;&gt; func('Welcome to ...', 1, 2, 3, [1, 2])
+&gt;&gt;&gt; func(&#39;Welcome to ...&#39;, 1, 2, 3, [1, 2])
 Welcome to ...
 (1, 2, 3, [1, 2])
 {}
-&gt;&gt;&gt; func('Welcome to ...', 1, 2, 3, ([2, 3], [1, 2]))
+&gt;&gt;&gt; func(&#39;Welcome to ...&#39;, 1, 2, 3, ([2, 3], [1, 2]))
 Welcome to ...
 (1, 2, 3, ([2, 3], [1, 2]))
 {}
-</code></pre>
-<h2 id="_3">使用 * 和 ** 调用函数</h2>
-<p>调用函数时，我们还可以受益于使用 * 和 <strong> 运算符将参数集合分别解压缩为单独的位置参数或关键字参数。 这与在函数签名(signature of a function)中使用 * 和 </strong> 是相反的。 在函数签名中，运算符的意思是在一个标识符中收集或打包可变数量的参数。 在调用(calling)中，它们的意思是解包(unpack)一个可迭代对象到多个参数中。</p>
-<p>续上例，<em> 运算符将像 <code>["Welcome", "to"]</code> 这样的序列解包到位置参数中。 类似地， </em>* 运算符将字典解包为与字典的键值匹配的参数名。 </p>
-<pre><code>&gt;&gt;&gt; def func(welcome, to, site):
+</code></pre></div> <h2 id=_3>使用 * 和 ** 调用函数<a class=headerlink href=#_3 title="Permanent link"> ¶</a></h2> <p>调用函数时，我们还可以受益于使用 * 和 ** 运算符将参数集合分别解压缩为单独的位置参数或关键字参数。 这与在函数签名(signature of a function)中使用 * 和 ** 是相反的。 在函数签名中，运算符的意思是在一个标识符中收集或打包可变数量的参数。 在调用(calling)中，它们的意思是解包(unpack)一个可迭代对象到多个参数中。</p> <p>续上例，* 运算符将像 <code>["Welcome", "to"]</code> 这样的序列解包到位置参数中。 类似地， ** 运算符将字典解包为与字典的键值匹配的参数名。 </p> <div class=highlight><pre><span></span><code>&gt;&gt;&gt; def func(welcome, to, site):
 ...     print(welcome, to, site)
 ... 
-&gt;&gt;&gt; func(*['Welcome', 'to'], **{'site': 'CloudAcademy.com'})
+&gt;&gt;&gt; func(*[&#39;Welcome&#39;, &#39;to&#39;], **{&#39;site&#39;: &#39;CloudAcademy.com&#39;})
 Welcome to CloudAcademy.com
-</code></pre>
-<p>综合运用前面的方法来编写非常灵活的函数，比如，在定义和调用 Python 函数时，更灵活的使用 * 和 ** 运算符。 例如：</p>
-<pre><code>&gt;&gt;&gt; def func(required, *args, **kwargs):
+</code></pre></div> <p>综合运用前面的方法来编写非常灵活的函数，比如，在定义和调用 Python 函数时，更灵活的使用 * 和 ** 运算符。 例如：</p> <div class=highlight><pre><span></span><code>&gt;&gt;&gt; def func(required, *args, **kwargs):
 ...     print(required)
 ...     print(args)
 ...     print(kwargs)
 ... 
-&gt;&gt;&gt; func('Welcome to...', *(1, 2, 3), **{'Site': 'CloudAcademy.com'})
+&gt;&gt;&gt; func(&#39;Welcome to...&#39;, *(1, 2, 3), **{&#39;Site&#39;: &#39;CloudAcademy.com&#39;})
 Welcome to...
 (1, 2, 3)
-{'Site': 'CloudAcademy.com'}
-</code></pre>
-<h2 id="_4">总结</h2>
-<p>可迭代解包（iterable unpacking）这个特性允许我们将一个可迭代对象解包成几个变量。 另一方面，打包包括使用解包运算符 * 将多个值赋到一个变量中。</p>
-<p>可迭代解包（iterable unpacking）也可以用来进行并行赋值和变量之间的值交换，也可以用在 for 循环、函数调用和函数定义中。 </p>
-                
-              
-              
-                
-
-
-              
-            </article>
-          </div>
-        </div>
-        
-          <a href="#" class="md-top md-icon" data-md-component="top" data-md-state="hidden">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"/></svg>
-            Back to top
-          </a>
-        
-      </main>
-      
-        
-<footer class="md-footer">
-  
-  <div class="md-footer-meta md-typeset">
-    <div class="md-footer-meta__inner md-grid">
-      <div class="md-footer-copyright">
-        
-        
-          Made with
-          <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
-            Material for MkDocs
-          </a>
-        
-        
-      </div>
-      
-    </div>
-  </div>
-</footer>
-      
-    </div>
-    <div class="md-dialog" data-md-component="dialog">
-      <div class="md-dialog__inner md-typeset"></div>
-    </div>
-    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tracking", "navigation.top", "navigation.expand"], "search": "../../../assets/javascripts/workers/search.fcfe8b6d.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": null}</script>
-    
-    
-      <script src="../../../assets/javascripts/bundle.b1047164.min.js"></script>
-      
-    
-  </body>
-</html>
+{&#39;Site&#39;: &#39;CloudAcademy.com&#39;}
+</code></pre></div> <h2 id=_4>总结<a class=headerlink href=#_4 title="Permanent link"> ¶</a></h2> <p>可迭代解包（iterable unpacking）这个特性允许我们将一个可迭代对象解包成几个变量。 另一方面，打包包括使用解包运算符 * 将多个值赋到一个变量中。</p> <p>可迭代解包（iterable unpacking）也可以用来进行并行赋值和变量之间的值交换，也可以用在 for 循环、函数调用和函数定义中。 </p> </article> </div> </div> </main> <footer class=md-footer> <div class="md-footer-meta md-typeset"> <div class="md-footer-meta__inner md-grid"> <div class=md-footer-copyright> Made with <a href=https://squidfunk.github.io/mkdocs-material/ target=_blank rel=noopener> Material for MkDocs </a> </div> </div> </div> </footer> </div> <div class=md-dialog data-md-component=dialog> <div class="md-dialog__inner md-typeset"></div> </div> <script id=__config type=application/json>{"base": "../../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.instant", "navigation.sections"], "search": "../../../assets/javascripts/workers/search.fcfe8b6d.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": null}</script> <script src=../../../assets/javascripts/bundle.b1047164.min.js></script> </body> </html>

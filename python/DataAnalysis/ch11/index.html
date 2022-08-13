@@ -1,566 +1,10 @@
-
-<!doctype html>
-<html lang="en" class="no-js">
-  <head>
-    
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width,initial-scale=1">
-      
-      
-      
-      
-        <link rel="canonical" href="https://huyuhui001.github.io/mySite/index.html/python/DataAnalysis/ch11/">
-      
-      <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-7.3.6">
-    
-    
-      
-        <title>Python建模库介绍 - MEMO</title>
-      
-    
-    
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.a57b2b03.min.css">
-      
-        
-        <link rel="stylesheet" href="../../../assets/stylesheets/palette.3f5d1f46.min.css">
-        
-          
-          
-          <meta name="theme-color" content="#000000">
-        
-      
-    
-    
-    
-      
-        
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
-        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
-      
-    
-    
-    
-    
-      
-
-
-    
-    
-  </head>
-  
-  
-    
-    
-    
-    
-    
-    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="black" data-md-color-accent="deep-blue">
-  
-    
-    <script>function __prefix(e){return new URL("../../..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
-    
-    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
-    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
-    <label class="md-overlay" for="__drawer"></label>
-    <div data-md-component="skip">
-      
-        
-        <a href="#python" class="md-skip">
-          Skip to content
-        </a>
-      
-    </div>
-    <div data-md-component="announce">
-      
-    </div>
-    
-      
-
-<header class="md-header" data-md-component="header">
-  <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../../.." title="MEMO" class="md-header__button md-logo" aria-label="MEMO" data-md-component="logo">
-      
-  <img src="../../../assets/logo.jpg" alt="logo">
-
-    </a>
-    <label class="md-header__button md-icon" for="__drawer">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
-    </label>
-    <div class="md-header__title" data-md-component="header-title">
-      <div class="md-header__ellipsis">
-        <div class="md-header__topic">
-          <span class="md-ellipsis">
-            MEMO
-          </span>
-        </div>
-        <div class="md-header__topic" data-md-component="header-topic">
-          <span class="md-ellipsis">
-            
-              Python建模库介绍
-            
-          </span>
-        </div>
-      </div>
-    </div>
-    
-    
-    
-      <label class="md-header__button md-icon" for="__search">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
-      </label>
-      
-<div class="md-search" data-md-component="search" role="dialog">
-  <label class="md-search__overlay" for="__search"></label>
-  <div class="md-search__inner" role="search">
-    <form class="md-search__form" name="search">
-      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
-      <label class="md-search__icon md-icon" for="__search">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
-      </label>
-      <nav class="md-search__options" aria-label="Search">
-        
-        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
-        </button>
-      </nav>
-      
-    </form>
-    <div class="md-search__output">
-      <div class="md-search__scrollwrap" data-md-scrollfix>
-        <div class="md-search-result" data-md-component="search-result">
-          <div class="md-search-result__meta">
-            Initializing search
-          </div>
-          <ol class="md-search-result__list"></ol>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-    
-    
-  </nav>
-  
-</header>
-    
-    <div class="md-container" data-md-component="container">
-      
-      
-        
-          
-        
-      
-      <main class="md-main" data-md-component="main">
-        <div class="md-main__inner md-grid">
-          
-            
-              
-              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
-                <div class="md-sidebar__scrollwrap">
-                  <div class="md-sidebar__inner">
-                    
-
-
-<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
-  <label class="md-nav__title" for="__drawer">
-    <a href="../../.." title="MEMO" class="md-nav__button md-logo" aria-label="MEMO" data-md-component="logo">
-      
-  <img src="../../../assets/logo.jpg" alt="logo">
-
-    </a>
-    MEMO
-  </label>
-  
-  <ul class="md-nav__list" data-md-scrollfix>
-    
-      
-      
-      
-
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1" data-md-state="indeterminate" type="checkbox" id="__nav_1" checked>
-      
-      
-      
-      
-        <label class="md-nav__link" for="__nav_1">
-          Linux
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" aria-label="Linux" data-md-level="1">
-        <label class="md-nav__title" for="__nav_1">
-          <span class="md-nav__icon md-icon"></span>
-          Linux
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../linux/Administration/linux_admin/" class="md-nav__link">
-        SUSE Linux Administration
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../linux/SES/linux_ses/" class="md-nav__link">
-        SUSE Enterprise Storage Foundation
-      </a>
-    </li>
-  
-
-            
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" data-md-state="indeterminate" type="checkbox" id="__nav_2" checked>
-      
-      
-      
-      
-        <label class="md-nav__link" for="__nav_2">
-          Python
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" aria-label="Python" data-md-level="1">
-        <label class="md-nav__title" for="__nav_2">
-          <span class="md-nav__icon md-icon"></span>
-          Python
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../Foundation/python_foundation_index/" class="md-nav__link">
-        Python Foundamentals
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../python_data_analysis_index/" class="md-nav__link">
-        Data Analysis
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../Demo/python_demo_index/" class="md-nav__link">
-        Demos
-      </a>
-    </li>
-  
-
-            
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" data-md-state="indeterminate" type="checkbox" id="__nav_3" checked>
-      
-      
-      
-      
-        <label class="md-nav__link" for="__nav_3">
-          Cloud
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" aria-label="Cloud" data-md-level="1">
-        <label class="md-nav__title" for="__nav_3">
-          <span class="md-nav__icon md-icon"></span>
-          Cloud
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../cloud/MicroservicesKubernetes/" class="md-nav__link">
-        Microservices with K8s
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../cloud/KubernetesFoundationMemo/" class="md-nav__link">
-        K8s Foundamentals
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../cloud/Kubernetes-Installation/" class="md-nav__link">
-        K8s Installation
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../cloud/KubernetesTutorials-BTP-trail/" class="md-nav__link">
-        K8s Demos on Kyma@SAP BTP
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../cloud/KubernetesTutorials-Aliyun-Foundamentals/" class="md-nav__link">
-        K8s Demos on Ubuntu@Aliyun
-      </a>
-    </li>
-  
-
-            
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../about/" class="md-nav__link">
-        About
-      </a>
-    </li>
-  
-
-    
-  </ul>
-</nav>
-                  </div>
-                </div>
-              </div>
-            
-            
-              
-              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
-                <div class="md-sidebar__scrollwrap">
-                  <div class="md-sidebar__inner">
-                    
-
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#pandas" class="md-nav__link">
-    pandas与建模代码的结合
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#patsy" class="md-nav__link">
-    使用Patsy创建模型描述
-  </a>
-  
-    <nav class="md-nav" aria-label="使用Patsy创建模型描述">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#patsy_1" class="md-nav__link">
-    Patsy公式中的数据转换
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#categoricalpatsy" class="md-nav__link">
-    分类数据Categorical和Patsy
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#statsmodels" class="md-nav__link">
-    statsmodels介绍
-  </a>
-  
-    <nav class="md-nav" aria-label="statsmodels介绍">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#_1" class="md-nav__link">
-    评估线性模型
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_2" class="md-nav__link">
-    评估时间序列处理
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#sikit-learn" class="md-nav__link">
-    sikit-learn介绍
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-                  </div>
-                </div>
-              </div>
-            
-          
-          <div class="md-content" data-md-component="content">
-            <article class="md-content__inner md-typeset">
-              
-                
-                
-                <h1 id="python">Python建模库介绍</h1>
-<h2 id="pandas">pandas与建模代码的结合</h2>
-<p>介绍两个流行的建模工具包：</p>
-<ul>
-<li>[statsmodels]http://statsmodels.org）</li>
-<li>[scikit-learn]http://scikit-learn.org）</li>
-</ul>
-<pre><code>import pandas as pd
+<!doctype html><html lang=en class=no-js> <head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><link href=https://huyuhui001.github.io/mySite/python/DataAnalysis/ch11/ rel=canonical><link rel=icon href=../../../assets/images/favicon.png><meta name=generator content="mkdocs-1.3.0, mkdocs-material-7.3.6"><title>Python建模库介绍 - MEMO</title><link rel=stylesheet href=../../../assets/stylesheets/main.a57b2b03.min.css><link rel=stylesheet href=../../../assets/stylesheets/palette.3f5d1f46.min.css><meta name=theme-color content=#009485><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback"><style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style><link rel=stylesheet href=../../../extra.css></head> <body dir=ltr data-md-color-scheme data-md-color-primary=teal data-md-color-accent=green> <script>function __prefix(e){return new URL("../../..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script> <input class=md-toggle data-md-toggle=drawer type=checkbox id=__drawer autocomplete=off> <input class=md-toggle data-md-toggle=search type=checkbox id=__search autocomplete=off> <label class=md-overlay for=__drawer></label> <div data-md-component=skip> <a href=#python class=md-skip> Skip to content </a> </div> <div data-md-component=announce> </div> <header class="md-header md-header--lifted" data-md-component=header> <nav class="md-header__inner md-grid" aria-label=Header> <a href=../../.. title=MEMO class="md-header__button md-logo" aria-label=MEMO data-md-component=logo> <img src=../../../assets/logo.jpg alt=logo> </a> <label class="md-header__button md-icon" for=__drawer> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg> </label> <div class=md-header__title data-md-component=header-title> <div class=md-header__ellipsis> <div class=md-header__topic> <span class=md-ellipsis> MEMO </span> </div> <div class=md-header__topic data-md-component=header-topic> <span class=md-ellipsis> Python建模库介绍 </span> </div> </div> </div> <label class="md-header__button md-icon" for=__search> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg> </label> <div class=md-search data-md-component=search role=dialog> <label class=md-search__overlay for=__search></label> <div class=md-search__inner role=search> <form class=md-search__form name=search> <input type=text class=md-search__input name=query aria-label=Search placeholder=Search autocapitalize=off autocorrect=off autocomplete=off spellcheck=false data-md-component=search-query required> <label class="md-search__icon md-icon" for=__search> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg> </label> <nav class=md-search__options aria-label=Search> <button type=reset class="md-search__icon md-icon" aria-label=Clear tabindex=-1> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg> </button> </nav> </form> <div class=md-search__output> <div class=md-search__scrollwrap data-md-scrollfix> <div class=md-search-result data-md-component=search-result> <div class=md-search-result__meta> Initializing search </div> <ol class=md-search-result__list></ol> </div> </div> </div> </div> </div> <div class=md-header__source> <a href=https://github.com/huyuhui001/mySite title="Go to repository" class=md-source data-md-component=source> <div class="md-source__icon md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg> </div> <div class=md-source__repository> huyuhui001/mySite </div> </a> </div> </nav> <nav class=md-tabs aria-label=Tabs data-md-component=tabs> <div class="md-tabs__inner md-grid"> <ul class=md-tabs__list> <li class=md-tabs__item> <a href=../../../linux/Administration/linux_admin/ class=md-tabs__link> Linux </a> </li> <li class=md-tabs__item> <a href=../../../k8s/installation/single-local/ class=md-tabs__link> Kubernetes </a> </li> <li class=md-tabs__item> <a href=../../Foundation/python_foundation_index/ class=md-tabs__link> Python </a> </li> </ul> </div> </nav> </header> <div class=md-container data-md-component=container> <main class=md-main data-md-component=main> <div class="md-main__inner md-grid"> <div class="md-sidebar md-sidebar--primary" data-md-component=sidebar data-md-type=navigation> <div class=md-sidebar__scrollwrap> <div class=md-sidebar__inner> <nav class="md-nav md-nav--primary md-nav--lifted" aria-label=Navigation data-md-level=0> <label class=md-nav__title for=__drawer> <a href=../../.. title=MEMO class="md-nav__button md-logo" aria-label=MEMO data-md-component=logo> <img src=../../../assets/logo.jpg alt=logo> </a> MEMO </label> <div class=md-nav__source> <a href=https://github.com/huyuhui001/mySite title="Go to repository" class=md-source data-md-component=source> <div class="md-source__icon md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg> </div> <div class=md-source__repository> huyuhui001/mySite </div> </a> </div> <ul class=md-nav__list data-md-scrollfix> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_1 type=checkbox id=__nav_1> <label class=md-nav__link for=__nav_1> Linux <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label=Linux data-md-level=1> <label class=md-nav__title for=__nav_1> <span class="md-nav__icon md-icon"></span> Linux </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../linux/Administration/linux_admin/ class=md-nav__link> SUSE Linux Administration </a> </li> <li class=md-nav__item> <a href=../../../linux/SES/linux_ses/ class=md-nav__link> SUSE Enterprise Storage Foundation </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_2 type=checkbox id=__nav_2> <label class=md-nav__link for=__nav_2> Kubernetes <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label=Kubernetes data-md-level=1> <label class=md-nav__title for=__nav_2> <span class="md-nav__icon md-icon"></span> Kubernetes </label> <ul class=md-nav__list data-md-scrollfix> <li class="md-nav__item md-nav__item--section md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_2_1 type=checkbox id=__nav_2_1> <label class=md-nav__link for=__nav_2_1> Installation <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label=Installation data-md-level=2> <label class=md-nav__title for=__nav_2_1> <span class="md-nav__icon md-icon"></span> Installation </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../k8s/installation/single-local/ class=md-nav__link> Single Node Installation </a> </li> <li class=md-nav__item> <a href=../../../k8s/installation/multiple-local/ class=md-nav__link> Multiple Nodes Installation </a> </li> <li class=md-nav__item> <a href=../../../k8s/installation/aliyun-opensuse/ class=md-nav__link> Installation on Aliyun openSUSE </a> </li> <li class=md-nav__item> <a href=../../../k8s/installation/aliyun-ubuntu/ class=md-nav__link> Installation on Aliyun Ubuntu </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--section md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_2_2 type=checkbox id=__nav_2_2> <label class=md-nav__link for=__nav_2_2> Foundamentals <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label=Foundamentals data-md-level=2> <label class=md-nav__title for=__nav_2_2> <span class="md-nav__icon md-icon"></span> Foundamentals </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../k8s/foundamentals/memo/ class=md-nav__link> Memo </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/docker/ class=md-nav__link> Docker Fundamentals </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/overview/ class=md-nav__link> Overview </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/basics/ class=md-nav__link> kubectl basics </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/namespace/ class=md-nav__link> Namespace </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/pod/ class=md-nav__link> Work on pod </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/deployment/ class=md-nav__link> Deployment </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/statefulset/ class=md-nav__link> StatefulSet </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/daemonset/ class=md-nav__link> DaemonSet </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/job/ class=md-nav__link> Job and Cronjob </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/hpa/ class=md-nav__link> Horizontal Pod Autoscaling </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/service/ class=md-nav__link> Service </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/ingress/ class=md-nav__link> Ingress </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/persistence/ class=md-nav__link> Persistence </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/scheduling/ class=md-nav__link> Scheduling </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/policy/ class=md-nav__link> Policy </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/configuration/ class=md-nav__link> Configuration </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/rbac/ class=md-nav__link> Role Based Access Control (RBAC) </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/networkpolicy/ class=md-nav__link> Network Policy </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/clustermgt/ class=md-nav__link> Cluster Management </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/helming/ class=md-nav__link> Helming </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/troubleshooting/ class=md-nav__link> Troubleshooting </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/healthcheck/ class=md-nav__link> Health Check </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/casestudy/ class=md-nav__link> Case Study </a> </li> </ul> </nav> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_3 type=checkbox id=__nav_3> <label class=md-nav__link for=__nav_3> Python <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label=Python data-md-level=1> <label class=md-nav__title for=__nav_3> <span class="md-nav__icon md-icon"></span> Python </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../Foundation/python_foundation_index/ class=md-nav__link> Python Foundamentals </a> </li> <li class=md-nav__item> <a href=../python_data_analysis_index/ class=md-nav__link> Data Analysis </a> </li> <li class=md-nav__item> <a href=../../Demo/python_demo_index/ class=md-nav__link> Demos </a> </li> </ul> </nav> </li> </ul> </nav> </div> </div> </div> <div class="md-sidebar md-sidebar--secondary" data-md-component=sidebar data-md-type=toc> <div class=md-sidebar__scrollwrap> <div class=md-sidebar__inner> <nav class="md-nav md-nav--secondary" aria-label="Table of contents"> <label class=md-nav__title for=__toc> <span class="md-nav__icon md-icon"></span> Table of contents </label> <ul class=md-nav__list data-md-component=toc data-md-scrollfix> <li class=md-nav__item> <a href=#pandas class=md-nav__link> pandas与建模代码的结合 </a> </li> <li class=md-nav__item> <a href=#patsy class=md-nav__link> 使用Patsy创建模型描述 </a> <nav class=md-nav aria-label=使用Patsy创建模型描述> <ul class=md-nav__list> <li class=md-nav__item> <a href=#patsy_1 class=md-nav__link> Patsy公式中的数据转换 </a> </li> <li class=md-nav__item> <a href=#categoricalpatsy class=md-nav__link> 分类数据Categorical和Patsy </a> </li> </ul> </nav> </li> <li class=md-nav__item> <a href=#statsmodels class=md-nav__link> statsmodels介绍 </a> <nav class=md-nav aria-label=statsmodels介绍> <ul class=md-nav__list> <li class=md-nav__item> <a href=#_1 class=md-nav__link> 评估线性模型 </a> </li> <li class=md-nav__item> <a href=#_2 class=md-nav__link> 评估时间序列处理 </a> </li> <li class=md-nav__item> <a href=#sikit-learn class=md-nav__link> sikit-learn介绍 </a> </li> </ul> </nav> </li> </ul> </nav> </div> </div> </div> <div class=md-content data-md-component=content> <article class="md-content__inner md-typeset"> <a href=https://github.com/huyuhui001/mySite/edit/main/docs/python/DataAnalysis/ch11.md title="Edit this page" class="md-content__button md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg> </a> <h1 id=python>Python建模库介绍<a class=headerlink href=#python title="Permanent link"> ¶</a></h1> <h2 id=pandas>pandas与建模代码的结合<a class=headerlink href=#pandas title="Permanent link"> ¶</a></h2> <p>介绍两个流行的建模工具包：</p> <ul> <li>[statsmodels]http://statsmodels.org）</li> <li>[scikit-learn]http://scikit-learn.org）</li> </ul> <div class=highlight><pre><span></span><code>import pandas as pd
 import numpy as np
-</code></pre>
-<p>使用pandas用于数据载入和数据清洗，之后切换到模型库去建立模型是一个常见的模型开发工作流。
-在机器学习中，特征工程是模型开发的重要部分之一。
-特征工程是指从原生数据集中提取可用于模型上下文的有效信息的数据转换过程或分析。</p>
-<p>pandas和其他分析库的结合点通常是NumPy数组。
-要将DataFrame转换为NumPy数组，使用<code>.values</code>属性：</p>
-<pre><code>df = pd.DataFrame(
+</code></pre></div> <p>使用pandas用于数据载入和数据清洗，之后切换到模型库去建立模型是一个常见的模型开发工作流。 在机器学习中，特征工程是模型开发的重要部分之一。 特征工程是指从原生数据集中提取可用于模型上下文的有效信息的数据转换过程或分析。</p> <p>pandas和其他分析库的结合点通常是NumPy数组。 要将DataFrame转换为NumPy数组，使用<code>.values</code>属性： <div class=highlight><pre><span></span><code>df = pd.DataFrame(
     {
-        'x0': [1, 2, 3, 4, 5],
-        'x1': [0.01, -0.01, 0.25, -4.1, 0.],
-        'y': [-1.5, 0., 3.6, 1.3, -2.]
+        &#39;x0&#39;: [1, 2, 3, 4, 5],
+        &#39;x1&#39;: [0.01, -0.01, 0.25, -4.1, 0.],
+        &#39;y&#39;: [-1.5, 0., 3.6, 1.3, -2.]
     }
 )
 print(df)
@@ -571,16 +15,14 @@ print(df)
 # 3   4 -4.10  1.3
 # 4   5  0.00 -2.0
 print(df.columns)
-# Index(['x0', 'x1', 'y'], dtype='object')
+# Index([&#39;x0&#39;, &#39;x1&#39;, &#39;y&#39;], dtype=&#39;object&#39;)
 print(df.values)
 # [[ 1.    0.01 -1.5 ]
 #  [ 2.   -0.01  0.  ]
 #  [ 3.    0.25  3.6 ]
 #  [ 4.   -4.1   1.3 ]
 #  [ 5.    0.   -2.  ]]
-</code></pre>
-<p>将数组再转换为DataFrame：</p>
-<pre><code>df2 = pd.DataFrame(df.values, columns=['one', 'two', 'three'])  # 递一个含有列名的二维ndarray
+</code></pre></div></p> <p>将数组再转换为DataFrame： <div class=highlight><pre><span></span><code>df2 = pd.DataFrame(df.values, columns=[&#39;one&#39;, &#39;two&#39;, &#39;three&#39;])  # 递一个含有列名的二维ndarray
 print(df2)
 #    one   two  three
 # 0  1.0  0.01   -1.5
@@ -588,11 +30,8 @@ print(df2)
 # 2  3.0  0.25    3.6
 # 3  4.0 -4.10    1.3
 # 4  5.0  0.00   -2.0
-</code></pre>
-<p><code>.values</code>属性一般在数据是同构化的时候使用——例如，都是数字类型的时候。如果数据是异构化的，结果将是Python对象的 <code>ndarray</code>：</p>
-<p>添加一个非数字类型的列。</p>
-<pre><code>df3 = df.copy() 
-df3['category'] = pd.Categorical(['a', 'b', 'a', 'a', 'b'], categories=['a', 'b'])
+</code></pre></div></p> <p><code>.values</code>属性一般在数据是同构化的时候使用——例如，都是数字类型的时候。如果数据是异构化的，结果将是Python对象的 <code>ndarray</code>：</p> <p>添加一个非数字类型的列。 <div class=highlight><pre><span></span><code>df3 = df.copy() 
+df3[&#39;category&#39;] = pd.Categorical([&#39;a&#39;, &#39;b&#39;, &#39;a&#39;, &#39;a&#39;, &#39;b&#39;], categories=[&#39;a&#39;, &#39;b&#39;])
 print(df3)
 #    x0    x1    y category
 # 0   1  0.01 -1.5        a
@@ -601,14 +40,12 @@ print(df3)
 # 3   4 -4.10  1.3        a
 # 4   5  0.00 -2.0        b
 print(df3.values)
-# [[1 0.01 -1.5 'a']
-#  [2 -0.01 0.0 'b']
-#  [3 0.25 3.6 'a']
-#  [4 -4.1 1.3 'a']
-#  [5 0.0 -2.0 'b']]
-</code></pre>
-<p>通过<code>loc</code>索引和<code>values</code>使用一部分列数据。</p>
-<pre><code>model_cols = ['x0', 'x1']
+# [[1 0.01 -1.5 &#39;a&#39;]
+#  [2 -0.01 0.0 &#39;b&#39;]
+#  [3 0.25 3.6 &#39;a&#39;]
+#  [4 -4.1 1.3 &#39;a&#39;]
+#  [5 0.0 -2.0 &#39;b&#39;]]
+</code></pre></div></p> <p>通过<code>loc</code>索引和<code>values</code>使用一部分列数据。 <div class=highlight><pre><span></span><code>model_cols = [&#39;x0&#39;, &#39;x1&#39;]
 result = df.loc[:, model_cols].values
 print(result)
 # [[ 1.    0.01]
@@ -616,9 +53,7 @@ print(result)
 #  [ 3.    0.25]
 #  [ 4.   -4.1 ]
 #  [ 5.    0.  ]]
-</code></pre>
-<p>如果我使用虚拟变量替代<code>df3</code>的<code>category</code>列，先创建虚拟变量，之后删除<code>categroy</code>列，然后连接结果：</p>
-<pre><code>dummies = pd.get_dummies(df3.category, prefix='category')
+</code></pre></div></p> <p>如果我使用虚拟变量替代<code>df3</code>的<code>category</code>列，先创建虚拟变量，之后删除<code>categroy</code>列，然后连接结果： <div class=highlight><pre><span></span><code>dummies = pd.get_dummies(df3.category, prefix=&#39;category&#39;)
 print(dummies)
 #    category_a  category_b
 # 0           1           0
@@ -626,7 +61,7 @@ print(dummies)
 # 2           1           0
 # 3           1           0
 # 4           0           1
-data_with_dummies = df3.drop('category', axis=1).join(dummies)
+data_with_dummies = df3.drop(&#39;category&#39;, axis=1).join(dummies)
 print(data_with_dummies)
 #    x0    x1    y  category_a  category_b
 # 0   1  0.01 -1.5           1           0
@@ -634,30 +69,16 @@ print(data_with_dummies)
 # 2   3  0.25  3.6           1           0
 # 3   4 -4.10  1.3           1           0
 # 4   5  0.00 -2.0           0           1
-</code></pre>
-<h2 id="patsy">使用Patsy创建模型描述</h2>
-<p>样本的表示形式：</p>
-<ul>
-<li>在数据挖掘过程中，样本以特征值矩阵X和目标值向量Y的形式表示。</li>
-<li>容量为<code>n</code>，有<code>m</code>个特征的样本，其特征值矩阵X由<code>n</code>个维度为<code>m</code>的列向量组成，第<code>j</code>个列向量为样本中第<code>j</code>个个体的特征值向量；</li>
-<li>目标值向量Y的第<code>j</code>个分量为样本中第<code>j</code>个个体的目标值。</li>
-</ul>
-<p>参考：<a href="https://patsy.readthedocs.io/en/latest/formulas.html?highlight=intercept">How formulas work</a></p>
-<p>[Patsy](https://patsy.readthedocs.io/）是一个用于描述统计模型（尤其是线性模型）的Python库。
-它使用一种小型基于字符串的"公式语法"。
-Patsy能够很好地支持<code>statsmodels</code>中特定的线性模型。
-像 <code>y ~ x0 + x1</code> 这种 <code>a + b</code>的语法并不代表将<code>a</code>和<code>b</code>相加，而是代表为模型创建的设计矩阵的术语（terms in the design matrix）。
-<code>patsy.dmatrices</code>函数，取一个公式字符串和一个数据集（可以使DataFrame或dict），然后为线性模型产生设计矩阵：</p>
-<pre><code>import pandas as pd
+</code></pre></div></p> <h2 id=patsy>使用Patsy创建模型描述<a class=headerlink href=#patsy title="Permanent link"> ¶</a></h2> <p>样本的表示形式：</p> <ul> <li>在数据挖掘过程中，样本以特征值矩阵X和目标值向量Y的形式表示。</li> <li>容量为<code>n</code>，有<code>m</code>个特征的样本，其特征值矩阵X由<code>n</code>个维度为<code>m</code>的列向量组成，第<code>j</code>个列向量为样本中第<code>j</code>个个体的特征值向量；</li> <li>目标值向量Y的第<code>j</code>个分量为样本中第<code>j</code>个个体的目标值。</li> </ul> <p>参考：<a href="https://patsy.readthedocs.io/en/latest/formulas.html?highlight=intercept">How formulas work</a></p> <p>[Patsy](https://patsy.readthedocs.io/）是一个用于描述统计模型（尤其是线性模型）的Python库。 它使用一种小型基于字符串的"公式语法"。 Patsy能够很好地支持<code>statsmodels</code>中特定的线性模型。 像 <code>y ~ x0 + x1</code> 这种 <code>a + b</code>的语法并不代表将<code>a</code>和<code>b</code>相加，而是代表为模型创建的设计矩阵的术语（terms in the design matrix）。 <code>patsy.dmatrices</code>函数，取一个公式字符串和一个数据集（可以使DataFrame或dict），然后为线性模型产生设计矩阵：</p> <div class=highlight><pre><span></span><code>import pandas as pd
 import numpy as np
 import patsy
 from patsy import dmatrices, dmatrix, demo_data
 
 df = pd.DataFrame(
     {
-        'x0': [1, 2, 3, 4, 5],
-        'x1': [0.01, -0.01, 0.25, -4.1, 0.],
-        'y': [-1.5, 0., 3.6, 1.3, -2.]
+        &#39;x0&#39;: [1, 2, 3, 4, 5],
+        &#39;x1&#39;: [0.01, -0.01, 0.25, -4.1, 0.],
+        &#39;y&#39;: [-1.5, 0., 3.6, 1.3, -2.]
     }
 )
 print(df)
@@ -667,7 +88,7 @@ print(df)
 # 2   3  0.25  3.6
 # 3   4 -4.10  1.3
 # 4   5  0.00 -2.0
-y, X = patsy.dmatrices('y ~ x0 + x1', df)
+y, X = patsy.dmatrices(&#39;y ~ x0 + x1&#39;, df)
 print(y)
 # [[-1.5]
 #  [ 0. ]
@@ -692,20 +113,14 @@ print(np.asarray(X))  # Patsy的DesignMatrix实例，含有附加元数据的Num
 #  [ 1.    3.    0.25]
 #  [ 1.    4.   -4.1 ]
 #  [ 1.    5.    0.  ]]
-</code></pre>
-<p>上面X输出中的Intercept(最左边一列)是从哪里来的。
-这其实是线性模型的一个惯例，比如普通最小二乘回归法（ordinary least squares regression）。
-可以去掉这个截距（intercept），通过<code>y ~ x0 + x1 + 0</code>给模型。</p>
-<pre><code>y, X = patsy.dmatrices('y ~ x0 + x1 + 0', df)
+</code></pre></div> <p>上面X输出中的Intercept(最左边一列)是从哪里来的。 这其实是线性模型的一个惯例，比如普通最小二乘回归法（ordinary least squares regression）。 可以去掉这个截距（intercept），通过<code>y ~ x0 + x1 + 0</code>给模型。 <div class=highlight><pre><span></span><code>y, X = patsy.dmatrices(&#39;y ~ x0 + x1 + 0&#39;, df)
 print(X)
 # [[ 1.    0.01]
 #  [ 2.   -0.01]
 #  [ 3.    0.25]
 #  [ 4.   -4.1 ]
 #  [ 5.    0.  ]]
-</code></pre>
-<p>这种Patsy对象可以直接传入一个算法，比如<code>numpy.linalg.lstsq</code>，来进行普通最小二乘回归的计算</p>
-<pre><code>coef, resid, _, _ =np.linalg.lstsq(X, y, rcond=1)  # 最小二乘法
+</code></pre></div></p> <p>这种Patsy对象可以直接传入一个算法，比如<code>numpy.linalg.lstsq</code>，来进行普通最小二乘回归的计算 <div class=highlight><pre><span></span><code>coef, resid, _, _ =np.linalg.lstsq(X, y, rcond=1)  # 最小二乘法
 print(coef)
 # [[ 0.00925424]
 #  [-0.25485421]]
@@ -717,35 +132,25 @@ print(coef)
 # x0    0.009254
 # x1   -0.254854
 # dtype: float64
-</code></pre>
-<h3 id="patsy_1">Patsy公式中的数据转换</h3>
-<p>可以将Python代码混合到你的Patsy公式中，在执行公式时，Patsy库将尝试在封闭作用域中寻找你使用的函数：</p>
-<pre><code>y, X = patsy.dmatrices('y ~ x0 + np.log(np.abs(x1) +1)', df)
+</code></pre></div></p> <h3 id=patsy_1>Patsy公式中的数据转换<a class=headerlink href=#patsy_1 title="Permanent link"> ¶</a></h3> <p>可以将Python代码混合到你的Patsy公式中，在执行公式时，Patsy库将尝试在封闭作用域中寻找你使用的函数： <div class=highlight><pre><span></span><code>y, X = patsy.dmatrices(&#39;y ~ x0 + np.log(np.abs(x1) +1)&#39;, df)
 print(X)
 # [[1.         1.         0.00995033]
 #  [1.         2.         0.00995033]
 #  [1.         3.         0.22314355]
 #  [1.         4.         1.62924054]
 #  [1.         5.         0.        ]]
-</code></pre>
-<p>一些常用的变量变换，包括标准化（standardizing (平均值0，方差1）和中心化（减去平均值）。Patsy有内建的函数可以做到这些。</p>
-<pre><code>y, X = patsy.dmatrices('y ~ standardize(x0) + center(x1)', df)
+</code></pre></div></p> <p>一些常用的变量变换，包括标准化（standardizing (平均值0，方差1）和中心化（减去平均值）。Patsy有内建的函数可以做到这些。 <div class=highlight><pre><span></span><code>y, X = patsy.dmatrices(&#39;y ~ standardize(x0) + center(x1)&#39;, df)
 print(X)
 # [[ 1.         -1.41421356  0.78      ]
 #  [ 1.         -0.70710678  0.76      ]
 #  [ 1.          0.          1.02      ]
 #  [ 1.          0.70710678 -3.33      ]
 #  [ 1.          1.41421356  0.77      ]]
-</code></pre>
-<p>作为建模的一部分，我们可能会在一个数据及上训练模型，然后在另一个数据及上评价模型。
-当使用中心化或标准化这样的转换时，我们必须注意，必须用模型在新数据集上做预测。
-这叫做状态变换（stateful transformations）。
-因为我们必须用原本在训练集上得到的平均值和标准差，用在新的数据集上。</p>
-<pre><code>new_df = pd.DataFrame(
+</code></pre></div></p> <p>作为建模的一部分，我们可能会在一个数据及上训练模型，然后在另一个数据及上评价模型。 当使用中心化或标准化这样的转换时，我们必须注意，必须用模型在新数据集上做预测。 这叫做状态变换（stateful transformations）。 因为我们必须用原本在训练集上得到的平均值和标准差，用在新的数据集上。 <div class=highlight><pre><span></span><code>new_df = pd.DataFrame(
     {
-        'x0': [6, 7, 8, 9],
-        'x1': [3.1, -0.5, 0, 2.3],
-        'y': [1, 2, 3, 4]
+        &#39;x0&#39;: [6, 7, 8, 9],
+        &#39;x1&#39;: [3.1, -0.5, 0, 2.3],
+        &#39;y&#39;: [1, 2, 3, 4]
     }
 )
 new_X = patsy.build_design_matrices([X.design_info], new_df)
@@ -757,29 +162,23 @@ print(new_X)
 #         1          3.53553        0.77
 #         1          4.24264        3.07
 # Terms:
-# 'Intercept' (column 0), 'standardize(x0)' (column 1), 'center(x1)' (column 2)]
-</code></pre>
-<p>因为加号（+）在Patsy公式的上下文中并不是加法的意思，当想要对数据集中两列按列名相加时，必须将列名封装到特殊的I函数中：</p>
-<pre><code>y, X = patsy.dmatrices('y ~ I(x0 + x1)', df)
+# &#39;Intercept&#39; (column 0), &#39;standardize(x0)&#39; (column 1), &#39;center(x1)&#39; (column 2)]
+</code></pre></div></p> <p>因为加号（+）在Patsy公式的上下文中并不是加法的意思，当想要对数据集中两列按列名相加时，必须将列名封装到特殊的I函数中： <div class=highlight><pre><span></span><code>y, X = patsy.dmatrices(&#39;y ~ I(x0 + x1)&#39;, df)
 print(X)
 # [[ 1.    1.01]
 #  [ 1.    1.99]
 #  [ 1.    3.25]
 #  [ 1.   -0.1 ]
 #  [ 1.    5.  ]]
-</code></pre>
-<h3 id="categoricalpatsy">分类数据Categorical和Patsy</h3>
-<p>非数值型数据可以通过很多种方式变为一个模型设计矩阵。</p>
-<p>当我们在Patsy公式中使用非数值术语时，这些类型数据默认会被转换为哑变量。如果有截距，一个层级上的截距会被舍弃，防止出现共线性。</p>
-<pre><code>data = pd.DataFrame(
+</code></pre></div></p> <h3 id=categoricalpatsy>分类数据Categorical和Patsy<a class=headerlink href=#categoricalpatsy title="Permanent link"> ¶</a></h3> <p>非数值型数据可以通过很多种方式变为一个模型设计矩阵。</p> <p>当我们在Patsy公式中使用非数值术语时，这些类型数据默认会被转换为哑变量。如果有截距，一个层级上的截距会被舍弃，防止出现共线性。 <div class=highlight><pre><span></span><code>data = pd.DataFrame(
     {
-        'key1': ['a', 'a', 'b', 'b', 'a', 'b', 'a', 'b'],
-        'key2': [0, 1, 0, 1, 0, 1, 0, 0],
-        'v1': [1, 2, 3, 4, 5, 6, 7, 8],
-        'v2': [-1, 0, 2.5, -0.5, 4., -1.2, 0.2, -1.7]
+        &#39;key1&#39;: [&#39;a&#39;, &#39;a&#39;, &#39;b&#39;, &#39;b&#39;, &#39;a&#39;, &#39;b&#39;, &#39;a&#39;, &#39;b&#39;],
+        &#39;key2&#39;: [0, 1, 0, 1, 0, 1, 0, 0],
+        &#39;v1&#39;: [1, 2, 3, 4, 5, 6, 7, 8],
+        &#39;v2&#39;: [-1, 0, 2.5, -0.5, 4., -1.2, 0.2, -1.7]
     }
 )
-y, X = patsy.dmatrices('v2 ~ key1', data)
+y, X = patsy.dmatrices(&#39;v2 ~ key1&#39;, data)
 print(y)
 # [[-1. ]
 #  [ 0. ]
@@ -798,9 +197,7 @@ print(X)
 #  [1. 1.]
 #  [1. 0.]
 #  [1. 1.]]
-</code></pre>
-<p>如果从模型中舍弃截距，每个类型的列会被包含在模型设计矩阵中。</p>
-<pre><code>y, X = patsy.dmatrices('v2 ~ key1 + 0', data)
+</code></pre></div></p> <p>如果从模型中舍弃截距，每个类型的列会被包含在模型设计矩阵中。 <div class=highlight><pre><span></span><code>y, X = patsy.dmatrices(&#39;v2 ~ key1 + 0&#39;, data)
 print(X)
 # [[1. 0.]
 #  [1. 0.]
@@ -810,9 +207,7 @@ print(X)
 #  [0. 1.]
 #  [1. 0.]
 #  [0. 1.]]
-</code></pre>
-<p>数值型列可以通过C函数，变为类型列：</p>
-<pre><code>y, X = patsy.dmatrices('v2 ~ C(key2)', data)
+</code></pre></div></p> <p>数值型列可以通过C函数，变为类型列： <div class=highlight><pre><span></span><code>y, X = patsy.dmatrices(&#39;v2 ~ C(key2)&#39;, data)
 print(X)
 # [[1. 0.]
 #  [1. 1.]
@@ -822,10 +217,7 @@ print(X)
 #  [1. 1.]
 #  [1. 0.]
 #  [1. 0.]]
-</code></pre>
-<p>当我们在一个模型中使用多个类型术语时，会变得更复杂一些，之前用key1:key2的形式来包含有交集的术语，
-这种方法可以用于使用多个术语，例如，一个方法分析模型（analysis of variance (ANOVA) models）：</p>
-<pre><code>data['key2'] = data['key2'].map({0: 'zero', 1: 'one'})
+</code></pre></div></p> <p>当我们在一个模型中使用多个类型术语时，会变得更复杂一些，之前用key1:key2的形式来包含有交集的术语， 这种方法可以用于使用多个术语，例如，一个方法分析模型（analysis of variance (ANOVA) models）： <div class=highlight><pre><span></span><code>data[&#39;key2&#39;] = data[&#39;key2&#39;].map({0: &#39;zero&#39;, 1: &#39;one&#39;})
 print(data)
 #   key1  key2  v1   v2
 # 0    a  zero   1 -1.0
@@ -836,7 +228,7 @@ print(data)
 # 5    b   one   6 -1.2
 # 6    a  zero   7  0.2
 # 7    b  zero   8 -1.7
-y, X = patsy.dmatrices('v2 ~ key1 + key2', data)
+y, X = patsy.dmatrices(&#39;v2 ~ key1 + key2&#39;, data)
 print(X)
 # [[1. 0. 1.]
 #  [1. 0. 0.]
@@ -846,7 +238,7 @@ print(X)
 #  [1. 1. 0.]
 #  [1. 0. 1.]
 #  [1. 1. 1.]]
-y, X = patsy.dmatrices('v2 ~ key1 + key2 + key1:key2', data)
+y, X = patsy.dmatrices(&#39;v2 ~ key1 + key2 + key1:key2&#39;, data)
 print(X)
 # [[1. 0. 1. 0.]
 #  [1. 0. 0. 0.]
@@ -856,33 +248,12 @@ print(X)
 #  [1. 1. 0. 0.]
 #  [1. 0. 1. 0.]
 #  [1. 1. 1. 1.]]
-</code></pre>
-<h2 id="statsmodels">statsmodels介绍</h2>
-<p><a href="http://www.statsmodels.org">statsmodels</a>是一个Python库，用于拟合多种统计模型，执行统计测试以及数据探索和可视化。
-<code>statsmodels</code>包含更多的“经典”频率学派统计方法，而贝叶斯方法和机器学习模型可在其他库中找到。</p>
-<p>包含在statsmodels中的一些模型：</p>
-<ul>
-<li>线性模型，广义线性模型和鲁棒线性模型</li>
-<li>线性混合效应模型</li>
-<li>方差分析（ANOVA）方法</li>
-<li>时间序列过程和状态空间模型</li>
-<li>广义的矩量法</li>
-</ul>
-<pre><code>import pandas as pd
+</code></pre></div></p> <h2 id=statsmodels>statsmodels介绍<a class=headerlink href=#statsmodels title="Permanent link"> ¶</a></h2> <p><a href=http://www.statsmodels.org>statsmodels</a>是一个Python库，用于拟合多种统计模型，执行统计测试以及数据探索和可视化。 <code>statsmodels</code>包含更多的“经典”频率学派统计方法，而贝叶斯方法和机器学习模型可在其他库中找到。</p> <p>包含在statsmodels中的一些模型：</p> <ul> <li>线性模型，广义线性模型和鲁棒线性模型</li> <li>线性混合效应模型</li> <li>方差分析（ANOVA）方法</li> <li>时间序列过程和状态空间模型</li> <li>广义的矩量法</li> </ul> <div class=highlight><pre><span></span><code>import pandas as pd
 import statsmodels.api as sm
 import statsmodels.formula.api as smf
 import numpy as np
 import random
-</code></pre>
-<h3 id="_1">评估线性模型</h3>
-<p>统计模型中有几种线性回归模型，从较基本的（例如，普通最小二乘）到更复杂的（例如，迭代重新加权的最小二乘）。</p>
-<p><code>tatsmodels</code>中的线性模型有两个不同的主要接口，这些接口通过这些API模块导入来访问：</p>
-<ul>
-<li>基于数组</li>
-<li>基于公式</li>
-</ul>
-<p>下面的例子是调用已知参数beta的模型。在这种情况下，<code>dnorm</code>是用于生成具有特定均值和方差的正态分布数据的辅助函数。</p>
-<pre><code>def dnorm (mean, variance, size=1):
+</code></pre></div> <h3 id=_1>评估线性模型<a class=headerlink href=#_1 title="Permanent link"> ¶</a></h3> <p>统计模型中有几种线性回归模型，从较基本的（例如，普通最小二乘）到更复杂的（例如，迭代重新加权的最小二乘）。</p> <p><code>tatsmodels</code>中的线性模型有两个不同的主要接口，这些接口通过这些API模块导入来访问：</p> <ul> <li>基于数组</li> <li>基于公式</li> </ul> <p>下面的例子是调用已知参数beta的模型。在这种情况下，<code>dnorm</code>是用于生成具有特定均值和方差的正态分布数据的辅助函数。 <div class=highlight><pre><span></span><code>def dnorm (mean, variance, size=1):
     if isinstance(size, int):
         size = size,
     return mean + np.sqrt(variance) * np.random.randn(*size)
@@ -906,26 +277,18 @@ print(X[:5])
 #  [ 1.2432688  -0.37379916 -0.52262905]]
 print(y[:5])
 # [ 0.42786349 -0.67348041 -0.09087764 -0.48949442 -0.12894109]
-</code></pre>
-<p>线性模型通常与我们在Patsy中看到的截距项相匹配。<code>sm.add_constant</code>函数可以将截距列添加到现有矩阵：</p>
-<pre><code>X_model = sm.add_constant(X)
+</code></pre></div></p> <p>线性模型通常与我们在Patsy中看到的截距项相匹配。<code>sm.add_constant</code>函数可以将截距列添加到现有矩阵： <div class=highlight><pre><span></span><code>X_model = sm.add_constant(X)
 print(X_model[:5])
 # [[ 1.         -0.12946849 -1.21275292  0.50422488]
 #  [ 1.          0.30291036 -0.43574176 -0.25417986]
 #  [ 1.         -0.32852189 -0.02530153  0.13835097]
 #  [ 1.         -0.35147471 -0.71960511 -0.25821463]
 #  [ 1.          1.2432688  -0.37379916 -0.52262905]]
-</code></pre>
-<p><code>sm.OLS</code>类可以拟合一个最小二乘线性回归：</p>
-<pre><code>model = sm.OLS(y, X)
-</code></pre>
-<p>模型的<code>fit</code>方法返回一个回归结果对象，该对象包含了估计的模型参数和其他的诊断：</p>
-<pre><code>results = model.fit()
+</code></pre></div></p> <p><code>sm.OLS</code>类可以拟合一个最小二乘线性回归： <div class=highlight><pre><span></span><code>model = sm.OLS(y, X)
+</code></pre></div></p> <p>模型的<code>fit</code>方法返回一个回归结果对象，该对象包含了估计的模型参数和其他的诊断： <div class=highlight><pre><span></span><code>results = model.fit()
 print(results.params)
 # [0.17826108 0.22303962 0.50095093]
-</code></pre>
-<p>调用<code>summary</code>方法可以打印出一个模型的诊断细节，此处的参数名称已被赋予通用名称<code>x1</code>、<code>x2</code>等：</p>
-<pre><code>print(results.summary())
+</code></pre></div></p> <p>调用<code>summary</code>方法可以打印出一个模型的诊断细节，此处的参数名称已被赋予通用名称<code>x1</code>、<code>x2</code>等： <div class=highlight><pre><span></span><code>print(results.summary())
 #                                  OLS Regression Results
 # =======================================================================================
 # Dep. Variable:                      y   R-squared (uncentered):                   0.430
@@ -953,10 +316,8 @@ print(results.params)
 # Notes:
 # [1] R² is computed without centering (uncentered) since the model does not contain a constant.
 # [2] Standard Errors assume that the covariance matrix of the errors is correctly specified.
-</code></pre>
-<p>假设所有模型参数都在DataFrame中：</p>
-<pre><code>data = pd.DataFrame(X, columns=['col0', 'col1', 'col2'])
-data['y'] = y
+</code></pre></div></p> <p>假设所有模型参数都在DataFrame中： <div class=highlight><pre><span></span><code>data = pd.DataFrame(X, columns=[&#39;col0&#39;, &#39;col1&#39;, &#39;col2&#39;])
+data[&#39;y&#39;] = y
 print(data[:5])
 #        col0      col1      col2         y
 # 0 -0.129468 -1.212753  0.504225  0.427863
@@ -964,29 +325,21 @@ print(data[:5])
 # 2 -0.328522 -0.025302  0.138351 -0.090878
 # 3 -0.351475 -0.719605 -0.258215 -0.489494
 # 4  1.243269 -0.373799 -0.522629 -0.128941
-</code></pre>
-<p>现在可以使用<code>statsmodels</code>公式API和Patsy公式字符串。观察<code>statsmodels</code>如何将结果作为带有DataFrame列名称的Series返回。</p>
-<pre><code>results = smf.ols('y ~ col0 + col1 + col2', data=data).fit()
+</code></pre></div></p> <p>现在可以使用<code>statsmodels</code>公式API和Patsy公式字符串。观察<code>statsmodels</code>如何将结果作为带有DataFrame列名称的Series返回。 <div class=highlight><pre><span></span><code>results = smf.ols(&#39;y ~ col0 + col1 + col2&#39;, data=data).fit()
 print(results.params)
 # Intercept    0.033559
 # col0         0.176149
 # col1         0.224826
 # col2         0.514808
 # dtype: float64
-</code></pre>
-<p>给定新的样本外数据后，可以根据估计的模型参数计算预测值：</p>
-<pre><code>print(results.predict(data[:5]))
+</code></pre></div></p> <p>给定新的样本外数据后，可以根据估计的模型参数计算预测值： <div class=highlight><pre><span></span><code>print(results.predict(data[:5]))
 # 0   -0.002327
 # 1   -0.141904
 # 2    0.041226
 # 3   -0.323070
 # 4   -0.100535
 # dtype: float64
-</code></pre>
-<h3 id="_2">评估时间序列处理</h3>
-<p>statsmodels中的另一类模型用于时间序列分析。其中包括自回归过程，卡尔曼滤波和其他状态空间模型，以及多变量自回归模型。</p>
-<p>下例模拟一些具有自回归结构和噪声的时间序列数据，该数据具有参数为0.8和-0.4的AR（2）结构（两个滞后）。</p>
-<pre><code>init_x = 4
+</code></pre></div></p> <h3 id=_2>评估时间序列处理<a class=headerlink href=#_2 title="Permanent link"> ¶</a></h3> <p>statsmodels中的另一类模型用于时间序列分析。其中包括自回归过程，卡尔曼滤波和其他状态空间模型，以及多变量自回归模型。</p> <p>下例模拟一些具有自回归结构和噪声的时间序列数据，该数据具有参数为0.8和-0.4的AR（2）结构（两个滞后）。 <div class=highlight><pre><span></span><code>init_x = 4
 values = [init_x, init_x]
 N = 1000
 b0 = 0.8
@@ -996,28 +349,18 @@ noise = dnorm(0, 0.1, N)
 for i in range(N):
     new_x = values[-1] * b0 + values[-2] * b1 + noise[i]
     values.append(new_x)
-</code></pre>
-<p>当拟合一个AR模型时，你可能不知道包含的滞后项的数量，所以可以用更大的滞后数来拟合该模型：</p>
-<pre><code>MAXLAGS = 5
+</code></pre></div></p> <p>当拟合一个AR模型时，你可能不知道包含的滞后项的数量，所以可以用更大的滞后数来拟合该模型： <div class=highlight><pre><span></span><code>MAXLAGS = 5
 model = sm.tsa.AR(values)
 results = model.fit(MAXLAGS)
 
 print(results.params)
 # NotImplementedError: AR has been removed from statsmodels and replaced with statsmodels.tsa.ar_model.AutoReg.
-</code></pre>
-<h3 id="sikit-learn">sikit-learn介绍</h3>
-<p>scikit-learn（http://scikit-learn.org）是使用最广泛且最受信任的通用Python机器学习库。\
-它包含广泛的标准监督的和无监督的机器学习方法，包括用于模型选择和评估、数据转换、数据加载和模型持久化的工具。\
-这些模型可用于分类、聚类、预测和其他常见任务。\
-pandas非常适合在模型拟合前处理数据集。</p>
-<p>举个例子，用一个Kaggle竞赛的经典数据集，关于泰坦尼克号乘客的生还率。我们用pandas加载测试和训练数据集：</p>
-<pre><code>import pandas as pd
+</code></pre></div></p> <h3 id=sikit-learn>sikit-learn介绍<a class=headerlink href=#sikit-learn title="Permanent link"> ¶</a></h3> <p>scikit-learn（http://scikit-learn.org）是使用最广泛且最受信任的通用Python机器学习库。\ 它包含广泛的标准监督的和无监督的机器学习方法，包括用于模型选择和评估、数据转换、数据加载和模型持久化的工具。\ 这些模型可用于分类、聚类、预测和其他常见任务。\ pandas非常适合在模型拟合前处理数据集。</p> <p>举个例子，用一个Kaggle竞赛的经典数据集，关于泰坦尼克号乘客的生还率。我们用pandas加载测试和训练数据集： <div class=highlight><pre><span></span><code>import pandas as pd
 from sklearn.linear_model import LogisticRegression
 from sklearn.linear_model import LogisticRegressionCV
 from sklearn.model_selection import cross_val_score
-</code></pre>
-<pre><code>train = pd.read_csv('../datasets/titanic/train.csv')
-test = pd.read_csv('../datasets/titanic/test.csv')
+</code></pre></div> <div class=highlight><pre><span></span><code>train = pd.read_csv(&#39;../datasets/titanic/train.csv&#39;)
+test = pd.read_csv(&#39;../datasets/titanic/test.csv&#39;)
 
 print(train[:4])
 #    PassengerId  Survived  Pclass  ...     Fare Cabin  Embarked
@@ -1025,9 +368,7 @@ print(train[:4])
 # 1            2         1       1  ...  71.2833   C85         C
 # 2            3         1       3  ...   7.9250   NaN         S
 # 3            4         1       1  ...  53.1000  C123         S
-</code></pre>
-<p>像statsmodels和scikit-learn通常不能提供缺失数据，因此我们要检查各列，看看是否有包含缺失数据：</p>
-<pre><code>print(train.isnull().sum())
+</code></pre></div></p> <p>像statsmodels和scikit-learn通常不能提供缺失数据，因此我们要检查各列，看看是否有包含缺失数据： <div class=highlight><pre><span></span><code>print(train.isnull().sum())
 # PassengerId      0
 # Survived         0
 # Pclass           0
@@ -1054,24 +395,15 @@ print(test.isnull().sum())
 # Cabin          327
 # Embarked         0
 # dtype: int64
-</code></pre>
-<p>在像这样的统计和机器学习的例子中，一个典型的任务是根据数据中的特征来预测乘客是否能幸存下来。\
-将模型拟合到训练数据集上，然后在样本外测试数据集上进行评估。\
-如果用Age作为预测，但它缺少数据。需要进行缺失数据插补（imputation），并使用训练数据集的中间值填充两个表中的空值：</p>
-<pre><code>impute_value = train['Age'].median()
-train['Age'] = train['Age'].fillna(impute_value)
-test['Age'] = test['Age'].fillna(impute_value)
-</code></pre>
-<p>现在建立模型。\
-添加一列IsFemale作为’Sex’列的编码版本：</p>
-<pre><code>train['IsFemale'] = (train['Sex'] == 'female').astype(int)
-test['IsFemale'] = (test['Sex'] == 'female').astype(int)
-</code></pre>
-<p>确定一些模型变量并创建NumPy数组：</p>
-<pre><code>predictors = ['Pclass', 'IsFemale', 'Age']
+</code></pre></div></p> <p>在像这样的统计和机器学习的例子中，一个典型的任务是根据数据中的特征来预测乘客是否能幸存下来。\ 将模型拟合到训练数据集上，然后在样本外测试数据集上进行评估。\ 如果用Age作为预测，但它缺少数据。需要进行缺失数据插补（imputation），并使用训练数据集的中间值填充两个表中的空值： <div class=highlight><pre><span></span><code>impute_value = train[&#39;Age&#39;].median()
+train[&#39;Age&#39;] = train[&#39;Age&#39;].fillna(impute_value)
+test[&#39;Age&#39;] = test[&#39;Age&#39;].fillna(impute_value)
+</code></pre></div> 现在建立模型。\ 添加一列IsFemale作为’Sex’列的编码版本： <div class=highlight><pre><span></span><code>train[&#39;IsFemale&#39;] = (train[&#39;Sex&#39;] == &#39;female&#39;).astype(int)
+test[&#39;IsFemale&#39;] = (test[&#39;Sex&#39;] == &#39;female&#39;).astype(int)
+</code></pre></div></p> <p>确定一些模型变量并创建NumPy数组： <div class=highlight><pre><span></span><code>predictors = [&#39;Pclass&#39;, &#39;IsFemale&#39;, &#39;Age&#39;]
 X_train = train[predictors].values
 X_test = test[predictors].values
-y_train = train['Survived'].values
+y_train = train[&#39;Survived&#39;].values
 
 print(X_train[:5])
 # [[ 3.  0. 22.]
@@ -1082,86 +414,19 @@ print(X_train[:5])
 
 print(y_train[:5])
 # [0 1 1 1 0]
-</code></pre>
-<p>使用scikit-learn的LogisticRegression模型创建一个模型实例：</p>
-<pre><code>model = LogisticRegression()
-</code></pre>
-<p>与statsmodels类似，使用模型的fit方法在训练数据上拟合模型：</p>
-<pre><code>result = model.fit(X_train, y_train)
+</code></pre></div></p> <p>使用scikit-learn的LogisticRegression模型创建一个模型实例： <div class=highlight><pre><span></span><code>model = LogisticRegression()
+</code></pre></div></p> <p>与statsmodels类似，使用模型的fit方法在训练数据上拟合模型： <div class=highlight><pre><span></span><code>result = model.fit(X_train, y_train)
 print(result)
 # LogisticRegression()
-</code></pre>
-<p>使用model.predict为测试数据集形成预测：</p>
-<pre><code>y_predict = model.predict(X_test)
+</code></pre></div></p> <p>使用model.predict为测试数据集形成预测： <div class=highlight><pre><span></span><code>y_predict = model.predict(X_test)
 print(y_predict[:10])
 # [0 0 0 0 1 0 1 0 1 0]
-</code></pre>
-<p>实际上，模型训练中经常存在许多附加的复杂层次。\
-许多模型具有可以调整的参数，并且存在可用于参数调整的交叉验证等技术以避免过度拟合训练数据。\
-这通常可以在新数据上产生更好的预测性能或稳健性。交叉验证通过分割训练数据来模拟样本外预测。\
-基于像均方误差之类的模型准确度分数，可以对模型参数执行网格搜索。\
-一些模型，如逻辑回归，具有内置交叉验证的估计类。\
-例如，LogisticRegressionCV类可以与一个参数一起使用，该参数表示网格搜索在模型正则化参数C上的细致度：</p>
-<pre><code>model_cv = LogisticRegressionCV()
+</code></pre></div></p> <p>实际上，模型训练中经常存在许多附加的复杂层次。\ 许多模型具有可以调整的参数，并且存在可用于参数调整的交叉验证等技术以避免过度拟合训练数据。\ 这通常可以在新数据上产生更好的预测性能或稳健性。交叉验证通过分割训练数据来模拟样本外预测。\ 基于像均方误差之类的模型准确度分数，可以对模型参数执行网格搜索。\ 一些模型，如逻辑回归，具有内置交叉验证的估计类。\ 例如，LogisticRegressionCV类可以与一个参数一起使用，该参数表示网格搜索在模型正则化参数C上的细致度： <div class=highlight><pre><span></span><code>model_cv = LogisticRegressionCV()
 result = model_cv.fit(X_train, y_train)
 print(result)
 # LogisticRegressionCV()
-</code></pre>
-<p>要手动进行交叉验证，可以使用cross_val_score函数，该函数处理数据拆分过程。\
-例如，为了用我们的模型与训练数据的四个非重叠分割进行交叉验证，可以这样做：</p>
-<pre><code>model = LogisticRegression(C=10)
+</code></pre></div></p> <p>要手动进行交叉验证，可以使用cross_val_score函数，该函数处理数据拆分过程。\ 例如，为了用我们的模型与训练数据的四个非重叠分割进行交叉验证，可以这样做： <div class=highlight><pre><span></span><code>model = LogisticRegression(C=10)
 scores = cross_val_score(model, X_train, y_train, cv=4)
 print(scores)
 # [0.77578475 0.79820628 0.77578475 0.78828829]
-</code></pre>
-<p>默认评分指标是依赖于模型的，但可以选择明确的评分函数。经过交叉验证的模型需要更长时间的训练，但通常可以产生更好的模型性能。</p>
-                
-              
-              
-                
-
-
-              
-            </article>
-          </div>
-        </div>
-        
-          <a href="#" class="md-top md-icon" data-md-component="top" data-md-state="hidden">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"/></svg>
-            Back to top
-          </a>
-        
-      </main>
-      
-        
-<footer class="md-footer">
-  
-  <div class="md-footer-meta md-typeset">
-    <div class="md-footer-meta__inner md-grid">
-      <div class="md-footer-copyright">
-        
-        
-          Made with
-          <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
-            Material for MkDocs
-          </a>
-        
-        
-      </div>
-      
-    </div>
-  </div>
-</footer>
-      
-    </div>
-    <div class="md-dialog" data-md-component="dialog">
-      <div class="md-dialog__inner md-typeset"></div>
-    </div>
-    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tracking", "navigation.top", "navigation.expand"], "search": "../../../assets/javascripts/workers/search.fcfe8b6d.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": null}</script>
-    
-    
-      <script src="../../../assets/javascripts/bundle.b1047164.min.js"></script>
-      
-    
-  </body>
-</html>
+</code></pre></div> 默认评分指标是依赖于模型的，但可以选择明确的评分函数。经过交叉验证的模型需要更长时间的训练，但通常可以产生更好的模型性能。</p> </article> </div> </div> </main> <footer class=md-footer> <div class="md-footer-meta md-typeset"> <div class="md-footer-meta__inner md-grid"> <div class=md-footer-copyright> Made with <a href=https://squidfunk.github.io/mkdocs-material/ target=_blank rel=noopener> Material for MkDocs </a> </div> </div> </div> </footer> </div> <div class=md-dialog data-md-component=dialog> <div class="md-dialog__inner md-typeset"></div> </div> <script id=__config type=application/json>{"base": "../../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.instant", "navigation.sections"], "search": "../../../assets/javascripts/workers/search.fcfe8b6d.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": null}</script> <script src=../../../assets/javascripts/bundle.b1047164.min.js></script> </body> </html>

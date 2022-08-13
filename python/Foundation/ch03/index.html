@@ -1,648 +1,4 @@
-
-<!doctype html>
-<html lang="en" class="no-js">
-  <head>
-    
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width,initial-scale=1">
-      
-      
-      
-      
-        <link rel="canonical" href="https://huyuhui001.github.io/mySite/index.html/python/Foundation/ch03/">
-      
-      <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-7.3.6">
-    
-    
-      
-        <title>内置函数及文件 - MEMO</title>
-      
-    
-    
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.a57b2b03.min.css">
-      
-        
-        <link rel="stylesheet" href="../../../assets/stylesheets/palette.3f5d1f46.min.css">
-        
-          
-          
-          <meta name="theme-color" content="#000000">
-        
-      
-    
-    
-    
-      
-        
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
-        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
-      
-    
-    
-    
-    
-      
-
-
-    
-    
-  </head>
-  
-  
-    
-    
-    
-    
-    
-    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="black" data-md-color-accent="deep-blue">
-  
-    
-    <script>function __prefix(e){return new URL("../../..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
-    
-    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
-    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
-    <label class="md-overlay" for="__drawer"></label>
-    <div data-md-component="skip">
-      
-        
-        <a href="#_1" class="md-skip">
-          Skip to content
-        </a>
-      
-    </div>
-    <div data-md-component="announce">
-      
-    </div>
-    
-      
-
-<header class="md-header" data-md-component="header">
-  <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../../.." title="MEMO" class="md-header__button md-logo" aria-label="MEMO" data-md-component="logo">
-      
-  <img src="../../../assets/logo.jpg" alt="logo">
-
-    </a>
-    <label class="md-header__button md-icon" for="__drawer">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
-    </label>
-    <div class="md-header__title" data-md-component="header-title">
-      <div class="md-header__ellipsis">
-        <div class="md-header__topic">
-          <span class="md-ellipsis">
-            MEMO
-          </span>
-        </div>
-        <div class="md-header__topic" data-md-component="header-topic">
-          <span class="md-ellipsis">
-            
-              内置函数及文件
-            
-          </span>
-        </div>
-      </div>
-    </div>
-    
-    
-    
-      <label class="md-header__button md-icon" for="__search">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
-      </label>
-      
-<div class="md-search" data-md-component="search" role="dialog">
-  <label class="md-search__overlay" for="__search"></label>
-  <div class="md-search__inner" role="search">
-    <form class="md-search__form" name="search">
-      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
-      <label class="md-search__icon md-icon" for="__search">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
-      </label>
-      <nav class="md-search__options" aria-label="Search">
-        
-        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
-        </button>
-      </nav>
-      
-    </form>
-    <div class="md-search__output">
-      <div class="md-search__scrollwrap" data-md-scrollfix>
-        <div class="md-search-result" data-md-component="search-result">
-          <div class="md-search-result__meta">
-            Initializing search
-          </div>
-          <ol class="md-search-result__list"></ol>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-    
-    
-  </nav>
-  
-</header>
-    
-    <div class="md-container" data-md-component="container">
-      
-      
-        
-          
-        
-      
-      <main class="md-main" data-md-component="main">
-        <div class="md-main__inner md-grid">
-          
-            
-              
-              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
-                <div class="md-sidebar__scrollwrap">
-                  <div class="md-sidebar__inner">
-                    
-
-
-<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
-  <label class="md-nav__title" for="__drawer">
-    <a href="../../.." title="MEMO" class="md-nav__button md-logo" aria-label="MEMO" data-md-component="logo">
-      
-  <img src="../../../assets/logo.jpg" alt="logo">
-
-    </a>
-    MEMO
-  </label>
-  
-  <ul class="md-nav__list" data-md-scrollfix>
-    
-      
-      
-      
-
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1" data-md-state="indeterminate" type="checkbox" id="__nav_1" checked>
-      
-      
-      
-      
-        <label class="md-nav__link" for="__nav_1">
-          Linux
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" aria-label="Linux" data-md-level="1">
-        <label class="md-nav__title" for="__nav_1">
-          <span class="md-nav__icon md-icon"></span>
-          Linux
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../linux/Administration/linux_admin/" class="md-nav__link">
-        SUSE Linux Administration
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../linux/SES/linux_ses/" class="md-nav__link">
-        SUSE Enterprise Storage Foundation
-      </a>
-    </li>
-  
-
-            
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" data-md-state="indeterminate" type="checkbox" id="__nav_2" checked>
-      
-      
-      
-      
-        <label class="md-nav__link" for="__nav_2">
-          Python
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" aria-label="Python" data-md-level="1">
-        <label class="md-nav__title" for="__nav_2">
-          <span class="md-nav__icon md-icon"></span>
-          Python
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../python_foundation_index/" class="md-nav__link">
-        Python Foundamentals
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../DataAnalysis/python_data_analysis_index/" class="md-nav__link">
-        Data Analysis
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../Demo/python_demo_index/" class="md-nav__link">
-        Demos
-      </a>
-    </li>
-  
-
-            
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" data-md-state="indeterminate" type="checkbox" id="__nav_3" checked>
-      
-      
-      
-      
-        <label class="md-nav__link" for="__nav_3">
-          Cloud
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" aria-label="Cloud" data-md-level="1">
-        <label class="md-nav__title" for="__nav_3">
-          <span class="md-nav__icon md-icon"></span>
-          Cloud
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../cloud/MicroservicesKubernetes/" class="md-nav__link">
-        Microservices with K8s
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../cloud/KubernetesFoundationMemo/" class="md-nav__link">
-        K8s Foundamentals
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../cloud/Kubernetes-Installation/" class="md-nav__link">
-        K8s Installation
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../cloud/KubernetesTutorials-BTP-trail/" class="md-nav__link">
-        K8s Demos on Kyma@SAP BTP
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../cloud/KubernetesTutorials-Aliyun-Foundamentals/" class="md-nav__link">
-        K8s Demos on Ubuntu@Aliyun
-      </a>
-    </li>
-  
-
-            
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../about/" class="md-nav__link">
-        About
-      </a>
-    </li>
-  
-
-    
-  </ul>
-</nav>
-                  </div>
-                </div>
-              </div>
-            
-            
-              
-              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
-                <div class="md-sidebar__scrollwrap">
-                  <div class="md-sidebar__inner">
-                    
-
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#1-lambda" class="md-nav__link">
-    1. 匿名（Lambda）函数
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#2-enumerate" class="md-nav__link">
-    2. 内置序列函数enumerate
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#3" class="md-nav__link">
-    3. 列表、集合和字典的推导式
-  </a>
-  
-    <nav class="md-nav" aria-label="3. 列表、集合和字典的推导式">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#list-comprehension" class="md-nav__link">
-    列表推导式(list comprehension)
-  </a>
-  
-    <nav class="md-nav" aria-label="列表推导式(list comprehension)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#_2" class="md-nav__link">
-    套列表推导式
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_3" class="md-nav__link">
-    元组推导式
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_4" class="md-nav__link">
-    集合推导式
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_5" class="md-nav__link">
-    字典推导式
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#4" class="md-nav__link">
-    4. 函数声明
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#5" class="md-nav__link">
-    5. 命名空间、作用域和本地函数
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#6" class="md-nav__link">
-    6. 柯里化：部分参数应用
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#7" class="md-nav__link">
-    7. 迭代器与生成器
-  </a>
-  
-    <nav class="md-nav" aria-label="7. 迭代器与生成器">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#_6" class="md-nav__link">
-    迭代器
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_7" class="md-nav__link">
-    生成器
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#itertools" class="md-nav__link">
-    生成器：itertools模块
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#8" class="md-nav__link">
-    8. 错误和异常处理
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#9" class="md-nav__link">
-    9. 文件与操作系统
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#10" class="md-nav__link">
-    10. 装饰器
-  </a>
-  
-    <nav class="md-nav" aria-label="10. 装饰器">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#_8" class="md-nav__link">
-    闭包
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_9" class="md-nav__link">
-    装饰器
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-                  </div>
-                </div>
-              </div>
-            
-          
-          <div class="md-content" data-md-component="content">
-            <article class="md-content__inner md-typeset">
-              
-                
-                
-                <h1 id="_1">内置函数及文件</h1>
-<h2 id="1-lambda">1. 匿名（Lambda）函数</h2>
-<p>匿名函数是一种通过单个语句生成函数的方式，其结果是返回值。匿名函数使用lambda关键字定义，该关键字仅表达“我们声明一个匿名函数”的意思。</p>
-<p>lambda 函数可以接收任意多个参数 (包括可选参数) 并且返回单个表达式的值。</p>
-<p>lambda arg1,arg2,arg3… :&lt;表达式&gt;</p>
-<pre><code>f = lambda x, y: x * y
+<!doctype html><html lang=en class=no-js> <head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><link href=https://huyuhui001.github.io/mySite/python/Foundation/ch03/ rel=canonical><link rel=icon href=../../../assets/images/favicon.png><meta name=generator content="mkdocs-1.3.0, mkdocs-material-7.3.6"><title>内置函数及文件 - MEMO</title><link rel=stylesheet href=../../../assets/stylesheets/main.a57b2b03.min.css><link rel=stylesheet href=../../../assets/stylesheets/palette.3f5d1f46.min.css><meta name=theme-color content=#009485><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback"><style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style><link rel=stylesheet href=../../../extra.css></head> <body dir=ltr data-md-color-scheme data-md-color-primary=teal data-md-color-accent=green> <script>function __prefix(e){return new URL("../../..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script> <input class=md-toggle data-md-toggle=drawer type=checkbox id=__drawer autocomplete=off> <input class=md-toggle data-md-toggle=search type=checkbox id=__search autocomplete=off> <label class=md-overlay for=__drawer></label> <div data-md-component=skip> <a href=#_1 class=md-skip> Skip to content </a> </div> <div data-md-component=announce> </div> <header class="md-header md-header--lifted" data-md-component=header> <nav class="md-header__inner md-grid" aria-label=Header> <a href=../../.. title=MEMO class="md-header__button md-logo" aria-label=MEMO data-md-component=logo> <img src=../../../assets/logo.jpg alt=logo> </a> <label class="md-header__button md-icon" for=__drawer> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg> </label> <div class=md-header__title data-md-component=header-title> <div class=md-header__ellipsis> <div class=md-header__topic> <span class=md-ellipsis> MEMO </span> </div> <div class=md-header__topic data-md-component=header-topic> <span class=md-ellipsis> 内置函数及文件 </span> </div> </div> </div> <label class="md-header__button md-icon" for=__search> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg> </label> <div class=md-search data-md-component=search role=dialog> <label class=md-search__overlay for=__search></label> <div class=md-search__inner role=search> <form class=md-search__form name=search> <input type=text class=md-search__input name=query aria-label=Search placeholder=Search autocapitalize=off autocorrect=off autocomplete=off spellcheck=false data-md-component=search-query required> <label class="md-search__icon md-icon" for=__search> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg> </label> <nav class=md-search__options aria-label=Search> <button type=reset class="md-search__icon md-icon" aria-label=Clear tabindex=-1> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg> </button> </nav> </form> <div class=md-search__output> <div class=md-search__scrollwrap data-md-scrollfix> <div class=md-search-result data-md-component=search-result> <div class=md-search-result__meta> Initializing search </div> <ol class=md-search-result__list></ol> </div> </div> </div> </div> </div> <div class=md-header__source> <a href=https://github.com/huyuhui001/mySite title="Go to repository" class=md-source data-md-component=source> <div class="md-source__icon md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg> </div> <div class=md-source__repository> huyuhui001/mySite </div> </a> </div> </nav> <nav class=md-tabs aria-label=Tabs data-md-component=tabs> <div class="md-tabs__inner md-grid"> <ul class=md-tabs__list> <li class=md-tabs__item> <a href=../../../linux/Administration/linux_admin/ class=md-tabs__link> Linux </a> </li> <li class=md-tabs__item> <a href=../../../k8s/installation/single-local/ class=md-tabs__link> Kubernetes </a> </li> <li class=md-tabs__item> <a href=../python_foundation_index/ class=md-tabs__link> Python </a> </li> </ul> </div> </nav> </header> <div class=md-container data-md-component=container> <main class=md-main data-md-component=main> <div class="md-main__inner md-grid"> <div class="md-sidebar md-sidebar--primary" data-md-component=sidebar data-md-type=navigation> <div class=md-sidebar__scrollwrap> <div class=md-sidebar__inner> <nav class="md-nav md-nav--primary md-nav--lifted" aria-label=Navigation data-md-level=0> <label class=md-nav__title for=__drawer> <a href=../../.. title=MEMO class="md-nav__button md-logo" aria-label=MEMO data-md-component=logo> <img src=../../../assets/logo.jpg alt=logo> </a> MEMO </label> <div class=md-nav__source> <a href=https://github.com/huyuhui001/mySite title="Go to repository" class=md-source data-md-component=source> <div class="md-source__icon md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg> </div> <div class=md-source__repository> huyuhui001/mySite </div> </a> </div> <ul class=md-nav__list data-md-scrollfix> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_1 type=checkbox id=__nav_1> <label class=md-nav__link for=__nav_1> Linux <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label=Linux data-md-level=1> <label class=md-nav__title for=__nav_1> <span class="md-nav__icon md-icon"></span> Linux </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../linux/Administration/linux_admin/ class=md-nav__link> SUSE Linux Administration </a> </li> <li class=md-nav__item> <a href=../../../linux/SES/linux_ses/ class=md-nav__link> SUSE Enterprise Storage Foundation </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_2 type=checkbox id=__nav_2> <label class=md-nav__link for=__nav_2> Kubernetes <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label=Kubernetes data-md-level=1> <label class=md-nav__title for=__nav_2> <span class="md-nav__icon md-icon"></span> Kubernetes </label> <ul class=md-nav__list data-md-scrollfix> <li class="md-nav__item md-nav__item--section md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_2_1 type=checkbox id=__nav_2_1> <label class=md-nav__link for=__nav_2_1> Installation <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label=Installation data-md-level=2> <label class=md-nav__title for=__nav_2_1> <span class="md-nav__icon md-icon"></span> Installation </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../k8s/installation/single-local/ class=md-nav__link> Single Node Installation </a> </li> <li class=md-nav__item> <a href=../../../k8s/installation/multiple-local/ class=md-nav__link> Multiple Nodes Installation </a> </li> <li class=md-nav__item> <a href=../../../k8s/installation/aliyun-opensuse/ class=md-nav__link> Installation on Aliyun openSUSE </a> </li> <li class=md-nav__item> <a href=../../../k8s/installation/aliyun-ubuntu/ class=md-nav__link> Installation on Aliyun Ubuntu </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--section md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_2_2 type=checkbox id=__nav_2_2> <label class=md-nav__link for=__nav_2_2> Foundamentals <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label=Foundamentals data-md-level=2> <label class=md-nav__title for=__nav_2_2> <span class="md-nav__icon md-icon"></span> Foundamentals </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../k8s/foundamentals/memo/ class=md-nav__link> Memo </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/docker/ class=md-nav__link> Docker Fundamentals </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/overview/ class=md-nav__link> Overview </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/basics/ class=md-nav__link> kubectl basics </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/namespace/ class=md-nav__link> Namespace </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/pod/ class=md-nav__link> Work on pod </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/deployment/ class=md-nav__link> Deployment </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/statefulset/ class=md-nav__link> StatefulSet </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/daemonset/ class=md-nav__link> DaemonSet </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/job/ class=md-nav__link> Job and Cronjob </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/hpa/ class=md-nav__link> Horizontal Pod Autoscaling </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/service/ class=md-nav__link> Service </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/ingress/ class=md-nav__link> Ingress </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/persistence/ class=md-nav__link> Persistence </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/scheduling/ class=md-nav__link> Scheduling </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/policy/ class=md-nav__link> Policy </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/configuration/ class=md-nav__link> Configuration </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/rbac/ class=md-nav__link> Role Based Access Control (RBAC) </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/networkpolicy/ class=md-nav__link> Network Policy </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/clustermgt/ class=md-nav__link> Cluster Management </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/helming/ class=md-nav__link> Helming </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/troubleshooting/ class=md-nav__link> Troubleshooting </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/healthcheck/ class=md-nav__link> Health Check </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/casestudy/ class=md-nav__link> Case Study </a> </li> </ul> </nav> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_3 type=checkbox id=__nav_3> <label class=md-nav__link for=__nav_3> Python <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label=Python data-md-level=1> <label class=md-nav__title for=__nav_3> <span class="md-nav__icon md-icon"></span> Python </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../python_foundation_index/ class=md-nav__link> Python Foundamentals </a> </li> <li class=md-nav__item> <a href=../../DataAnalysis/python_data_analysis_index/ class=md-nav__link> Data Analysis </a> </li> <li class=md-nav__item> <a href=../../Demo/python_demo_index/ class=md-nav__link> Demos </a> </li> </ul> </nav> </li> </ul> </nav> </div> </div> </div> <div class="md-sidebar md-sidebar--secondary" data-md-component=sidebar data-md-type=toc> <div class=md-sidebar__scrollwrap> <div class=md-sidebar__inner> <nav class="md-nav md-nav--secondary" aria-label="Table of contents"> <label class=md-nav__title for=__toc> <span class="md-nav__icon md-icon"></span> Table of contents </label> <ul class=md-nav__list data-md-component=toc data-md-scrollfix> <li class=md-nav__item> <a href=#1-lambda class=md-nav__link> 1. 匿名（Lambda）函数 </a> </li> <li class=md-nav__item> <a href=#2-enumerate class=md-nav__link> 2. 内置序列函数enumerate </a> </li> <li class=md-nav__item> <a href=#3 class=md-nav__link> 3. 列表、集合和字典的推导式 </a> <nav class=md-nav aria-label="3. 列表、集合和字典的推导式"> <ul class=md-nav__list> <li class=md-nav__item> <a href=#list-comprehension class=md-nav__link> 列表推导式(list comprehension) </a> <nav class=md-nav aria-label="列表推导式(list comprehension)"> <ul class=md-nav__list> <li class=md-nav__item> <a href=#_2 class=md-nav__link> 套列表推导式 </a> </li> </ul> </nav> </li> <li class=md-nav__item> <a href=#_3 class=md-nav__link> 元组推导式 </a> </li> <li class=md-nav__item> <a href=#_4 class=md-nav__link> 集合推导式 </a> </li> <li class=md-nav__item> <a href=#_5 class=md-nav__link> 字典推导式 </a> </li> </ul> </nav> </li> <li class=md-nav__item> <a href=#4 class=md-nav__link> 4. 函数声明 </a> </li> <li class=md-nav__item> <a href=#5 class=md-nav__link> 5. 命名空间、作用域和本地函数 </a> </li> <li class=md-nav__item> <a href=#6 class=md-nav__link> 6. 柯里化：部分参数应用 </a> </li> <li class=md-nav__item> <a href=#7 class=md-nav__link> 7. 迭代器与生成器 </a> <nav class=md-nav aria-label="7. 迭代器与生成器"> <ul class=md-nav__list> <li class=md-nav__item> <a href=#_6 class=md-nav__link> 迭代器 </a> </li> <li class=md-nav__item> <a href=#_7 class=md-nav__link> 生成器 </a> </li> <li class=md-nav__item> <a href=#itertools class=md-nav__link> 生成器：itertools模块 </a> </li> </ul> </nav> </li> <li class=md-nav__item> <a href=#8 class=md-nav__link> 8. 错误和异常处理 </a> </li> <li class=md-nav__item> <a href=#9 class=md-nav__link> 9. 文件与操作系统 </a> </li> <li class=md-nav__item> <a href=#10 class=md-nav__link> 10. 装饰器 </a> <nav class=md-nav aria-label="10. 装饰器"> <ul class=md-nav__list> <li class=md-nav__item> <a href=#_8 class=md-nav__link> 闭包 </a> </li> <li class=md-nav__item> <a href=#_9 class=md-nav__link> 装饰器 </a> </li> </ul> </nav> </li> </ul> </nav> </div> </div> </div> <div class=md-content data-md-component=content> <article class="md-content__inner md-typeset"> <a href=https://github.com/huyuhui001/mySite/edit/main/docs/python/Foundation/ch03.md title="Edit this page" class="md-content__button md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg> </a> <h1 id=_1>内置函数及文件<a class=headerlink href=#_1 title="Permanent link"> ¶</a></h1> <h2 id=1-lambda>1. 匿名（Lambda）函数<a class=headerlink href=#1-lambda title="Permanent link"> ¶</a></h2> <p>匿名函数是一种通过单个语句生成函数的方式，其结果是返回值。匿名函数使用lambda关键字定义，该关键字仅表达“我们声明一个匿名函数”的意思。</p> <p>lambda 函数可以接收任意多个参数 (包括可选参数) 并且返回单个表达式的值。</p> <p>lambda arg1,arg2,arg3… :&lt;表达式&gt;</p> <div class=highlight><pre><span></span><code>f = lambda x, y: x * y
 print(f(2, 3))  
 # 6
 
@@ -655,9 +11,7 @@ print(f[1](5))  # 执行f元素第二个元素
 
 print(f[0, 1](5, 5))  
 # TypeError: list indices must be integers or slices, not tuple
-</code></pre>
-<p>示例1：</p>
-<pre><code>def short_func1(x):
+</code></pre></div> <p>示例1： <div class=highlight><pre><span></span><code>def short_func1(x):
     return x * 2
 
 short_func2 = lambda x: x * 2
@@ -666,39 +20,28 @@ print(short_func1(5))
 # 10
 print(short_func2(5))  
 # 10
-</code></pre>
-<p>示例2：</p>
-<pre><code>def apply_to_list(some_list, f):
+</code></pre></div></p> <p>示例2： <div class=highlight><pre><span></span><code>def apply_to_list(some_list, f):
     return [f(x) for x in some_list]
 
 ints = [4, 0, 1, 5, 6]
 result5 = apply_to_list(ints, lambda x: x * 2)
 print(result5)  
 # [8, 0, 2, 10, 12]
-</code></pre>
-<p>lambda: None 函数没有输入参数，输出是None。</p>
-<pre><code>print(lambda: None)
+</code></pre></div></p> <p>lambda: None 函数没有输入参数，输出是None。 <div class=highlight><pre><span></span><code>print(lambda: None)
 # &lt;function &lt;lambda&gt; at 0x7fa5c4097670&gt;
-</code></pre>
-<p>lambda **kwargs: 1 输入是任意键值对参数，输出是1。</p>
-<pre><code>print(lambda **kwargs: 1)
+</code></pre></div> lambda **kwargs: 1 输入是任意键值对参数，输出是1。 <div class=highlight><pre><span></span><code>print(lambda **kwargs: 1)
 # &lt;function &lt;lambda&gt; at 0x7fa5c4097670&gt;
-</code></pre>
-<h2 id="2-enumerate">2. 内置序列函数enumerate</h2>
-<p>当需要对数据建立索引时，一种有效的模式就是使用enumerate构造一个字典，将序列值（假设是唯一的）映射到索引位置上。</p>
-<pre><code>seasons = ['Spring', 'Summer', 'Fall', 'Winter']
+</code></pre></div></p> <h2 id=2-enumerate>2. 内置序列函数enumerate<a class=headerlink href=#2-enumerate title="Permanent link"> ¶</a></h2> <p>当需要对数据建立索引时，一种有效的模式就是使用enumerate构造一个字典，将序列值（假设是唯一的）映射到索引位置上。 <div class=highlight><pre><span></span><code>seasons = [&#39;Spring&#39;, &#39;Summer&#39;, &#39;Fall&#39;, &#39;Winter&#39;]
 
 print(list(enumerate(seasons)))  
-# [(0, 'Spring'), (1, 'Summer'), (2, 'Fall'), (3, 'Winter')]
-</code></pre>
-<p>对比下面2个循环</p>
-<pre><code>a_list = ['foo', 'bar', 'baz']
+# [(0, &#39;Spring&#39;), (1, &#39;Summer&#39;), (2, &#39;Fall&#39;), (3, &#39;Winter&#39;)]
+</code></pre></div></p> <p>对比下面2个循环 <div class=highlight><pre><span></span><code>a_list = [&#39;foo&#39;, &#39;bar&#39;, &#39;baz&#39;]
 mapping = {}
 for i, v in enumerate(a_list):  # enumerate生成索引值i和序列值v
     mapping[v] = i
 
 print(mapping)  
-# {'foo': 0, 'bar': 1, 'baz': 2}
+# {&#39;foo&#39;: 0, &#39;bar&#39;: 1, &#39;baz&#39;: 2}
 
 i = 0
 mapping = {}
@@ -708,70 +51,52 @@ for v in a_list:
     i += 1
 
 print(mapping)  
-# {'foo': 0, 'bar': 1, 'baz': 2}
-</code></pre>
-<p>利用 enumerate() 批量修改列表内的元素</p>
-<pre><code>a_list = ['01', '02', '03']
-unit_element = '1'
+# {&#39;foo&#39;: 0, &#39;bar&#39;: 1, &#39;baz&#39;: 2}
+</code></pre></div></p> <p>利用 enumerate() 批量修改列表内的元素 <div class=highlight><pre><span></span><code>a_list = [&#39;01&#39;, &#39;02&#39;, &#39;03&#39;]
+unit_element = &#39;1&#39;
 for i, element in enumerate(a_list):
     a_list[i] = unit_element + element
 
 print(a_list)  
-# ['101', '102', '103']
-</code></pre>
-<p>sorted函数返回一个根据任意序列中的元素新建的已排序列表。sorted函数接受的参数与列表的sort方法一致。</p>
-<pre><code>y = sorted([7, 1, 2, 6, 0, 3, 2])
+# [&#39;101&#39;, &#39;102&#39;, &#39;103&#39;]
+</code></pre></div></p> <p>sorted函数返回一个根据任意序列中的元素新建的已排序列表。sorted函数接受的参数与列表的sort方法一致。 <div class=highlight><pre><span></span><code>y = sorted([7, 1, 2, 6, 0, 3, 2])
 print(y)  # [0, 1, 2, 2, 3, 6, 7] 结果已排序
 
-z = sorted('Hello World')
+z = sorted(&#39;Hello World&#39;)
 print(z)  
-# [' ', 'H', 'W', 'd', 'e', 'l', 'l', 'l', 'o', 'o', 'r']
-</code></pre>
-<p>zip将列表、元组或其他序列的元素配对，新建一个元组构成的列表。</p>
-<pre><code>seq1 = ['foo', 'bar', 'baz']
-seq2 = ['one', 'two', 'three']
+# [&#39; &#39;, &#39;H&#39;, &#39;W&#39;, &#39;d&#39;, &#39;e&#39;, &#39;l&#39;, &#39;l&#39;, &#39;l&#39;, &#39;o&#39;, &#39;o&#39;, &#39;r&#39;]
+</code></pre></div></p> <p>zip将列表、元组或其他序列的元素配对，新建一个元组构成的列表。 <div class=highlight><pre><span></span><code>seq1 = [&#39;foo&#39;, &#39;bar&#39;, &#39;baz&#39;]
+seq2 = [&#39;one&#39;, &#39;two&#39;, &#39;three&#39;]
 seq3 = [False, True]
 
 zipped = zip(seq1, seq2)
 print(list(zipped))  
-# [('foo', 'one'), ('bar', 'two'), ('baz', 'three')]
+# [(&#39;foo&#39;, &#39;one&#39;), (&#39;bar&#39;, &#39;two&#39;), (&#39;baz&#39;, &#39;three&#39;)]
 
 zipped = zip(seq1, seq2, seq3)
 print(list(zipped))  
-# [('foo', 'one', False), ('bar', 'two', True)]
+# [(&#39;foo&#39;, &#39;one&#39;, False), (&#39;bar&#39;, &#39;two&#39;, True)]
 
 for i, (a, b) in enumerate(zip(seq1, seq2)):
-    print('{0}: {1}, {2}'.format(i, a, b))  # 方法1 {0}列表元素的索引, {1}元组中第一个值, {2}元组中第二个值
-    print(f'{i}: {a}, {b}') # 方法2
+    print(&#39;{0}: {1}, {2}&#39;.format(i, a, b))  # 方法1 {0}列表元素的索引, {1}元组中第一个值, {2}元组中第二个值
+    print(f&#39;{i}: {a}, {b}&#39;) # 方法2
     # 0: foo, one
     # 1: bar, two
     # 2: baz, three
-</code></pre>
-<p>给定一个已“配对”的序列时，zip函数可以去“拆分”序列。这种方式的另一种思路就是将行的列表转换为列的列表。参考Python的<a href="../ch02/">Unpacking</a></p>
-<pre><code>pitchers = [('Jack', 'Ma'), ('Tom', 'Li'), ('Jimmy', 'Zhang')]
+</code></pre></div></p> <p>给定一个已“配对”的序列时，zip函数可以去“拆分”序列。这种方式的另一种思路就是将行的列表转换为列的列表。参考Python的<a href=../ch02/ >Unpacking</a> <div class=highlight><pre><span></span><code>pitchers = [(&#39;Jack&#39;, &#39;Ma&#39;), (&#39;Tom&#39;, &#39;Li&#39;), (&#39;Jimmy&#39;, &#39;Zhang&#39;)]
 first_names, last_names = zip(*pitchers)
 
 print(first_names)  
-# ('Jack', 'Tom', 'Jimmy')
+# (&#39;Jack&#39;, &#39;Tom&#39;, &#39;Jimmy&#39;)
 print(last_names)  
-# ('Ma', 'Li', 'Zhang')
-</code></pre>
-<p>reversed函数将序列的元素倒序排列</p>
-<pre><code>print(list(reversed(range(10))))  
+# (&#39;Ma&#39;, &#39;Li&#39;, &#39;Zhang&#39;)
+</code></pre></div></p> <p>reversed函数将序列的元素倒序排列 <div class=highlight><pre><span></span><code>print(list(reversed(range(10))))  
 # [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
-</code></pre>
-<h2 id="3">3. 列表、集合和字典的推导式</h2>
-<p>推导式comprehensions（又称解析式），是Python的一种特性。使用推导式可以快速生成列表、元组、集合、字典类型的数据。推导式又分为列表推导式、元组推导式、集合推导式、字典推导式。</p>
-<h3 id="list-comprehension">列表推导式(list comprehension)</h3>
-<p>列表推导式(list comprehension)允许你过滤一个容器的元素，用一种简明的表达式转换传递给过滤器的元素，从而生成一个新的列表。</p>
-<p>列表推导式的基本形式为：[expr for val in collection if condition]，条件if-condition不是必须的，可以只保留表达式。列表推导式与下面的for循环是等价的：</p>
-<pre><code>result = []
+</code></pre></div></p> <h2 id=3>3. 列表、集合和字典的推导式<a class=headerlink href=#3 title="Permanent link"> ¶</a></h2> <p>推导式comprehensions（又称解析式），是Python的一种特性。使用推导式可以快速生成列表、元组、集合、字典类型的数据。推导式又分为列表推导式、元组推导式、集合推导式、字典推导式。</p> <h3 id=list-comprehension>列表推导式(list comprehension)<a class=headerlink href=#list-comprehension title="Permanent link"> ¶</a></h3> <p>列表推导式(list comprehension)允许你过滤一个容器的元素，用一种简明的表达式转换传递给过滤器的元素，从而生成一个新的列表。</p> <p>列表推导式的基本形式为：[expr for val in collection if condition]，条件if-condition不是必须的，可以只保留表达式。列表推导式与下面的for循环是等价的： <div class=highlight><pre><span></span><code>result = []
 for val in collection:
     if condition:
         result.append(expr)
-</code></pre>
-<p>看下面的例子：</p>
-<pre><code>data = []
+</code></pre></div></p> <p>看下面的例子： <div class=highlight><pre><span></span><code>data = []
 
 for i in range(-5, 5):
     if i &gt;= -1:
@@ -783,42 +108,37 @@ print(data)
 data = [i**2 for i in range(-5, 5) if i &gt;= -1]
 print(data)
 # [1, 0, 1, 4, 9, 16]
-</code></pre>
-<p>下面的例子是使用for去遍历一个可迭代的列表。</p>
-<pre><code>data = []
+</code></pre></div></p> <p>下面的例子是使用for去遍历一个可迭代的列表。 <div class=highlight><pre><span></span><code>data = []
 fruit = [
-    'pomegranate',
-    'cherry',
-    'apricot',
-    'date',
-    'Apple',
-    'lemon',
-    'kiwi',
-    'ORANGE',
-    'lime',
-    'Watermelon',
-    'guava',
-    'papaya',
-    'FIG',
-    'pear',
-    'banana',
-    'Tamarind',
-    'persimmon',
-    'elderberry',
-    'peach',
-    'BLUEberry',
-    'lychee',
-    'grape'
+    &#39;pomegranate&#39;,
+    &#39;cherry&#39;,
+    &#39;apricot&#39;,
+    &#39;date&#39;,
+    &#39;Apple&#39;,
+    &#39;lemon&#39;,
+    &#39;kiwi&#39;,
+    &#39;ORANGE&#39;,
+    &#39;lime&#39;,
+    &#39;Watermelon&#39;,
+    &#39;guava&#39;,
+    &#39;papaya&#39;,
+    &#39;FIG&#39;,
+    &#39;pear&#39;,
+    &#39;banana&#39;,
+    &#39;Tamarind&#39;,
+    &#39;persimmon&#39;,
+    &#39;elderberry&#39;,
+    &#39;peach&#39;,
+    &#39;BLUEberry&#39;,
+    &#39;lychee&#39;,
+    &#39;grape&#39;
 ]
 
-data = [x.upper() if x.startswith('p') else x.title() for x in fruit]
+data = [x.upper() if x.startswith(&#39;p&#39;) else x.title() for x in fruit]
 
 print(data)
-# ['POMEGRANATE', 'Cherry', 'Apricot', 'Date', 'Apple', 'Lemon', 'Kiwi', 'Orange', 'Lime', 'Watermelon', 'Guava', 'PAPAYA', 'Fig', 'PEAR', 'Banana', 'Tamarind', 'PERSIMMON', 'Elderberry', 'PEACH', 'Blueberry', 'Lychee', 'Grape']
-</code></pre>
-<h4 id="_2">套列表推导式</h4>
-<p>下面的例子是用嵌套列表推导式代替2层for循环。</p>
-<pre><code>data = []
+# [&#39;POMEGRANATE&#39;, &#39;Cherry&#39;, &#39;Apricot&#39;, &#39;Date&#39;, &#39;Apple&#39;, &#39;Lemon&#39;, &#39;Kiwi&#39;, &#39;Orange&#39;, &#39;Lime&#39;, &#39;Watermelon&#39;, &#39;Guava&#39;, &#39;PAPAYA&#39;, &#39;Fig&#39;, &#39;PEAR&#39;, &#39;Banana&#39;, &#39;Tamarind&#39;, &#39;PERSIMMON&#39;, &#39;Elderberry&#39;, &#39;PEACH&#39;, &#39;Blueberry&#39;, &#39;Lychee&#39;, &#39;Grape&#39;]
+</code></pre></div></p> <h4 id=_2>套列表推导式<a class=headerlink href=#_2 title="Permanent link"> ¶</a></h4> <p>下面的例子是用嵌套列表推导式代替2层for循环。 <div class=highlight><pre><span></span><code>data = []
 
 for i in range(1, 3):
     if i &gt;= 0:
@@ -831,28 +151,23 @@ print(data)
 data = [(i, j) for i in range(1, 3) if i &gt;= -1 for j in range(1, 3)]
 print(data)
 # [(1, 1), (1, 2), (2, 1), (2, 2)]
-</code></pre>
-<p>再举一个嵌套列表推导式的例子。</p>
-<pre><code>all_data = [
-    ['John', 'Emily', 'Michael', 'Lee', 'Steven'],
-    ['Maria', 'Juan', 'Javier', 'Natalia', 'Pilar'],
+</code></pre></div></p> <p>再举一个嵌套列表推导式的例子。 <div class=highlight><pre><span></span><code>all_data = [
+    [&#39;John&#39;, &#39;Emily&#39;, &#39;Michael&#39;, &#39;Lee&#39;, &#39;Steven&#39;],
+    [&#39;Maria&#39;, &#39;Juan&#39;, &#39;Javier&#39;, &#39;Natalia&#39;, &#39;Pilar&#39;],
 ]
 names_of_interest = []
 
 for names in all_data:
-    enough_es = [name for name in names if name.count('e') &gt;=2]
+    enough_es = [name for name in names if name.count(&#39;e&#39;) &gt;=2]
     names_of_interest.extend(enough_es)
 
 print(names_of_interest)  
-# ['Lee', 'Steven']
+# [&#39;Lee&#39;, &#39;Steven&#39;]
 
-result = [name for names in all_data for name in names if name.count('e') &gt;= 2]
+result = [name for names in all_data for name in names if name.count(&#39;e&#39;) &gt;= 2]
 print(result)  
-# ['Lee', 'Steven']
-</code></pre>
-<p>用嵌套列表推导式将矩阵扁平化。</p>
-<p>考虑下面这个3x4的矩阵，它由3个长度为4的列表组成。下面例子对比了用传统for循环将矩阵扁平化，和用嵌套列表推导式将矩阵扁平化。并且通过列表推导式中的列表推导式将扁平矩阵还原为3x4矩阵。</p>
-<pre><code>matrix = [
+# [&#39;Lee&#39;, &#39;Steven&#39;]
+</code></pre></div></p> <p>用嵌套列表推导式将矩阵扁平化。</p> <p>考虑下面这个3x4的矩阵，它由3个长度为4的列表组成。下面例子对比了用传统for循环将矩阵扁平化，和用嵌套列表推导式将矩阵扁平化。并且通过列表推导式中的列表推导式将扁平矩阵还原为3x4矩阵。 <div class=highlight><pre><span></span><code>matrix = [
     [1, 2, 3, 4],
     [5, 6, 7, 8],
     [9, 10, 11, 12],
@@ -877,32 +192,24 @@ print(flattened)
 z = [[x for x in m] for m in matrix]
 print(z)  
 # [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12]]
-</code></pre>
-<h3 id="_3">元组推导式</h3>
-<p>下面的例子生成一个包含数字1~5的元组。从结果可以看到，元组推导式生成的结果并不是一个元组，而是一个生成器对象，需要通过tuple()函数，将生成器对象转换成元组。</p>
-<pre><code>data = (x for x in range(5))
+</code></pre></div></p> <h3 id=_3>元组推导式<a class=headerlink href=#_3 title="Permanent link"> ¶</a></h3> <p>下面的例子生成一个包含数字1~5的元组。从结果可以看到，元组推导式生成的结果并不是一个元组，而是一个生成器对象，需要通过tuple()函数，将生成器对象转换成元组。 <div class=highlight><pre><span></span><code>data = (x for x in range(5))
 
 print(data)
 # &lt;generator object &lt;genexpr&gt; at 0x7f87217a8e40&gt;
 
 print(type(data))
-# &lt;class 'generator'&gt;
+# &lt;class &#39;generator&#39;&gt;
 
 print(tuple(data))
 # (0, 1, 2, 3, 4)
-</code></pre>
-<h3 id="_4">集合推导式</h3>
-<p>下面是一个简单的集合推导式例子。</p>
-<pre><code>data = {x**2 for x in range(5)}
+</code></pre></div></p> <h3 id=_4>集合推导式<a class=headerlink href=#_4 title="Permanent link"> ¶</a></h3> <p>下面是一个简单的集合推导式例子。 <div class=highlight><pre><span></span><code>data = {x**2 for x in range(5)}
 
 print(data)
 # {0, 1, 4, 9, 16}
 
 print(type(data))
-# &lt;class 'set'&gt;
-</code></pre>
-<p>集合要保证元素必须是唯一的。</p>
-<pre><code>data = (1, 1, 2, 2, 3, 3, 4, 5, 6)
+# &lt;class &#39;set&#39;&gt;
+</code></pre></div></p> <p>集合要保证元素必须是唯一的。 <div class=highlight><pre><span></span><code>data = (1, 1, 2, 2, 3, 3, 4, 5, 6)
 
 newset = {x**2 for x in data}
 
@@ -910,26 +217,18 @@ print(newset)
 # {1, 4, 36, 9, 16, 25}
 
 print(type(newset)
-# &lt;class 'set'&gt;
-</code></pre>
-<h3 id="_5">字典推导式</h3>
-<p>字典推导式: dict_comp = {key-expr : value-expr for value in collection if condition}</p>
-<p>字典推导式的简单示例：</p>
-<pre><code>strings = ['a', 'as', 'bat', 'car', 'dove', 'python']
+# &lt;class &#39;set&#39;&gt;
+</code></pre></div></p> <h3 id=_5>字典推导式<a class=headerlink href=#_5 title="Permanent link"> ¶</a></h3> <p>字典推导式: dict_comp = {key-expr : value-expr for value in collection if condition}</p> <p>字典推导式的简单示例： <div class=highlight><pre><span></span><code>strings = [&#39;a&#39;, &#39;as&#39;, &#39;bat&#39;, &#39;car&#39;, &#39;dove&#39;, &#39;python&#39;]
 
 loc_mapping = {index: val for index, val in enumerate(strings)}
 print(loc_mapping)  
-# {0: 'a', 1: 'as', 2: 'bat', 3: 'car', 4: 'dove', 5: 'python'}
+# {0: &#39;a&#39;, 1: &#39;as&#39;, 2: &#39;bat&#39;, 3: &#39;car&#39;, 4: &#39;dove&#39;, 5: &#39;python&#39;}
 
 # 交换键和值
 loc_mapping = {index: val for val, index in enumerate(strings)}
 print(loc_mapping)
-# {'a': 0, 'as': 1, 'bat': 2, 'car': 3, 'dove': 4, 'python': 5}
-</code></pre>
-<h2 id="4">4. 函数声明</h2>
-<p>如果Python达到函数的尾部时仍然没有遇到return语句，就会自动返回None。</p>
-<p>每个函数都可以有位置参数和关键字参数。关键字参数最常用于指定默认值或可选参数。关键字参数必须跟在位置参数后，可以使用关键字参数向位置参数传参。</p>
-<pre><code>import sys
+# {&#39;a&#39;: 0, &#39;as&#39;: 1, &#39;bat&#39;: 2, &#39;car&#39;: 3, &#39;dove&#39;: 4, &#39;python&#39;: 5}
+</code></pre></div></p> <h2 id=4>4. 函数声明<a class=headerlink href=#4 title="Permanent link"> ¶</a></h2> <p>如果Python达到函数的尾部时仍然没有遇到return语句，就会自动返回None。</p> <p>每个函数都可以有位置参数和关键字参数。关键字参数最常用于指定默认值或可选参数。关键字参数必须跟在位置参数后，可以使用关键字参数向位置参数传参。</p> <div class=highlight><pre><span></span><code>import sys
 
 def my_function1(x, y, z=1.5):
     if z &gt; 1:
@@ -952,10 +251,7 @@ print(result1)
 result1 = my_function1(10, 20)
 print(result1)  
 # 45.0
-</code></pre>
-<h2 id="5">5. 命名空间、作用域和本地函数</h2>
-<p>函数有两种连接变量的方式：全局、本地。</p>
-<pre><code>def func1():
+</code></pre></div> <h2 id=5>5. 命名空间、作用域和本地函数<a class=headerlink href=#5 title="Permanent link"> ¶</a></h2> <p>函数有两种连接变量的方式：全局、本地。 <div class=highlight><pre><span></span><code>def func1():
     list1 = []  # 本地变量
     for i in range(5):
         list1.append(i)
@@ -973,9 +269,7 @@ def func2():
 
 func2()
 # [0, 1, 2, 3, 4]
-</code></pre>
-<p>数据清洗示例</p>
-<pre><code>states = ['   Alabama', 'Georgia!', 'georgia', 'Georgia', 'FlOrIda', 'south    carolina##', 'West virginia? ']
+</code></pre></div></p> <p>数据清洗示例 <div class=highlight><pre><span></span><code>states = [&#39;   Alabama&#39;, &#39;Georgia!&#39;, &#39;georgia&#39;, &#39;Georgia&#39;, &#39;FlOrIda&#39;, &#39;south    carolina##&#39;, &#39;West virginia? &#39;]
 
 # 方法1
 import re
@@ -984,18 +278,18 @@ def clean_string1(strings):
     result2 = []
     for value in strings:
         value = value.strip()
-        value = re.sub('[! #? ]', '', value)
+        value = re.sub(&#39;[! #? ]&#39;, &#39;&#39;, value)
         value = value.title()
         result2.append(value)
     return result2
 
 print(clean_string1((states)))
-# ['Alabama', 'Georgia', 'Georgia', 'Georgia', 'Florida', 'Southcarolina', 'Westvirginia']
+# [&#39;Alabama&#39;, &#39;Georgia&#39;, &#39;Georgia&#39;, &#39;Georgia&#39;, &#39;Florida&#39;, &#39;Southcarolina&#39;, &#39;Westvirginia&#39;]
 
 
 # 方法2
 def remove_punctuaion(value):
-    return re.sub('[! #? ]', '', value)
+    return re.sub(&#39;[! #? ]&#39;, &#39;&#39;, value)
 
 clean_ops = [str.strip, remove_punctuaion, str.title]
 
@@ -1010,7 +304,7 @@ def clean_string2(strings, ops):
 result4 = clean_string2(states, clean_ops)
 
 print(result4)
-# ['Alabama', 'Georgia', 'Georgia', 'Georgia', 'Florida', 'Southcarolina', 'Westvirginia']
+# [&#39;Alabama&#39;, &#39;Georgia&#39;, &#39;Georgia&#39;, &#39;Georgia&#39;, &#39;Florida&#39;, &#39;Southcarolina&#39;, &#39;Westvirginia&#39;]
 
 
 # 可以将函数作为一个参数传给其他的函数。
@@ -1023,26 +317,7 @@ for x in map(remove_punctuaion, states):
     # FlOrIda
     # southcarolina
     # Westvirginia
-</code></pre>
-<h2 id="6">6. 柯里化：部分参数应用</h2>
-<p>柯里化是计算机科学术语（以数学家Haskell Curry命名），它表示通过部分参数应用的方式从已有的函数中衍生出新的函数。柯里化是一种将多参数函数转化为单参数高阶函数的技术，如果你固定某些参数，你将得到接受余下参数的一个函数。</p>
-<ul>
-<li>
-<p>定义一：
-柯里化：一个函数中有个多个参数，想固定其中某个或者几个参数的值，而只接受另外几个还未固定的参数，这样函数演变成新的函数。</p>
-</li>
-<li>
-<p>定义二：
-函数柯里化（currying）又称部分求值。一个 currying 的函数首先会接受一些参数，接受了这些参数之后，该函数并不会立即求值，而是继续返回另外一个函数，刚才传入的参数在函数形成的闭包中被保存起来。待到函数被真正需要求值的时候，之前传入的所有参数都会被一次性用于求值。</p>
-</li>
-<li>
-<p>定义三：
-一些函数式语言的工作原理是将多参数函数语法转化为单参数函数集合，这一过程称为柯里化，它是以逻辑学家Haskell Curry的名字命名的。Haskell Curry从早期概念中发展出了该理论。其形式相当于将z=f(x, y)转换成z=f(x)(y)的形式，原函数由两个参数，现在变为两个接受单参数的函数，</p>
-</li>
-</ul>
-<p>示例1：柯里化的过程就是把原来带两个参数的函数add(x, y)，变成了一个嵌套函数，在add_currying函数内，又定义了一个_add函数，并且_add函数又引用了外部函数add_currying的变量x，这就是一个闭包。</p>
-<p>闭包，一句话说就是在函数中再嵌套一个函数，并且引用外部函数的变量。</p>
-<pre><code># 普通写法
+</code></pre></div></p> <h2 id=6>6. 柯里化：部分参数应用<a class=headerlink href=#6 title="Permanent link"> ¶</a></h2> <p>柯里化是计算机科学术语（以数学家Haskell Curry命名），它表示通过部分参数应用的方式从已有的函数中衍生出新的函数。柯里化是一种将多参数函数转化为单参数高阶函数的技术，如果你固定某些参数，你将得到接受余下参数的一个函数。</p> <ul> <li> <p>定义一： 柯里化：一个函数中有个多个参数，想固定其中某个或者几个参数的值，而只接受另外几个还未固定的参数，这样函数演变成新的函数。</p> </li> <li> <p>定义二： 函数柯里化（currying）又称部分求值。一个 currying 的函数首先会接受一些参数，接受了这些参数之后，该函数并不会立即求值，而是继续返回另外一个函数，刚才传入的参数在函数形成的闭包中被保存起来。待到函数被真正需要求值的时候，之前传入的所有参数都会被一次性用于求值。</p> </li> <li> <p>定义三： 一些函数式语言的工作原理是将多参数函数语法转化为单参数函数集合，这一过程称为柯里化，它是以逻辑学家Haskell Curry的名字命名的。Haskell Curry从早期概念中发展出了该理论。其形式相当于将z=f(x, y)转换成z=f(x)(y)的形式，原函数由两个参数，现在变为两个接受单参数的函数，</p> </li> </ul> <p>示例1：柯里化的过程就是把原来带两个参数的函数add(x, y)，变成了一个嵌套函数，在add_currying函数内，又定义了一个_add函数，并且_add函数又引用了外部函数add_currying的变量x，这就是一个闭包。</p> <p>闭包，一句话说就是在函数中再嵌套一个函数，并且引用外部函数的变量。</p> <div class=highlight><pre><span></span><code># 普通写法
 def add(x, y):
     return x + y
 
@@ -1057,9 +332,7 @@ def add_currying(x):
 
 print(add_currying(1)(2))  
 # 3
-</code></pre>
-<p>示例2，通过固定其中的第二个参数不变来实现柯里化。</p>
-<pre><code>def add2(a, b):
+</code></pre></div> <p>示例2，通过固定其中的第二个参数不变来实现柯里化。 <div class=highlight><pre><span></span><code>def add2(a, b):
     def add1(a, b, c):
         return a + b + c
 
@@ -1071,9 +344,7 @@ print(result6)
 
 result6 = add2(12, 555, 13)
 # TypeError: add2() takes 2 positional arguments but 3 were given
-</code></pre>
-<p>示例3，通过functools提供的偏函数来实现柯里化。</p>
-<pre><code>from functools import partial
+</code></pre></div></p> <p>示例3，通过functools提供的偏函数来实现柯里化。 <div class=highlight><pre><span></span><code>from functools import partial
 
 def add1(a, b, c):
     return a + b + c
@@ -1084,9 +355,7 @@ result7 = add3(a=12, c=13)
 
 print(result7)  
 # 691
-</code></pre>
-<p>示例4，通过lambda表达式来实现柯里化。</p>
-<pre><code>def add1(a, b, c):
+</code></pre></div></p> <p>示例4，通过lambda表达式来实现柯里化。 <div class=highlight><pre><span></span><code>def add1(a, b, c):
     return a + b + c
 
 add4 = lambda x, y: add1(x, 666, y)
@@ -1095,9 +364,7 @@ result8 = add4(12, 13)
 
 print(result8)  
 # 691
-</code></pre>
-<p>示例5，通过python的装饰器来实现柯里化</p>
-<pre><code>def add1(a, b, c):
+</code></pre></div></p> <p>示例5，通过python的装饰器来实现柯里化 <div class=highlight><pre><span></span><code>def add1(a, b, c):
     return a + b + c
 
 def currying_add(func):
@@ -1109,9 +376,7 @@ result9 = currying_add(add1)(12, 13)
 
 print(result9)  
 # 691
-</code></pre>
-<p>示例6，通过python的装饰器符号@来实现柯里化</p>
-<pre><code>def currying_add(func):
+</code></pre></div></p> <p>示例6，通过python的装饰器符号@来实现柯里化 <div class=highlight><pre><span></span><code>def currying_add(func):
     def wrapper(a, c, b=666):
         return func(a, b, c)
     return wrapper
@@ -1124,14 +389,7 @@ result10 = add5(12, 13)
 
 print(result10)
 # 691
-</code></pre>
-<h2 id="7">7. 迭代器与生成器</h2>
-<h3 id="_6">迭代器</h3>
-<p>迭代是Python最强大的功能之一，是访问集合元素的一种方式。迭代器是一个可以记住遍历的位置的对象。</p>
-<p>迭代器对象从集合的第一个元素开始访问，直到所有的元素被访问完结束。迭代器只能往前不会后退。</p>
-<p>迭代器有两个基本的方法：iter() 和 next()。</p>
-<p>迭代器示例：</p>
-<pre><code>list_a = [1, 2, 3, 4]
+</code></pre></div></p> <h2 id=7>7. 迭代器与生成器<a class=headerlink href=#7 title="Permanent link"> ¶</a></h2> <h3 id=_6>迭代器<a class=headerlink href=#_6 title="Permanent link"> ¶</a></h3> <p>迭代是Python最强大的功能之一，是访问集合元素的一种方式。迭代器是一个可以记住遍历的位置的对象。</p> <p>迭代器对象从集合的第一个元素开始访问，直到所有的元素被访问完结束。迭代器只能往前不会后退。</p> <p>迭代器有两个基本的方法：iter() 和 next()。</p> <p>迭代器示例： <div class=highlight><pre><span></span><code>list_a = [1, 2, 3, 4]
 it = iter(list_a)  # 创建迭代器对象
 
 print(next(it))  # 输出迭代器的下一个元素
@@ -1139,9 +397,7 @@ print(next(it))  # 输出迭代器的下一个元素
 
 print(next(it))  # 输出迭代器的下一个元素
 # 2
-</code></pre>
-<p>迭代器对象可以使用常规for语句进行遍历。</p>
-<pre><code>list_a = [1, 2, 3, 4]
+</code></pre></div></p> <p>迭代器对象可以使用常规for语句进行遍历。 <div class=highlight><pre><span></span><code>list_a = [1, 2, 3, 4]
 it = iter(list_a)  # 创建迭代器对象
 
 for x in it:
@@ -1149,13 +405,7 @@ for x in it:
 
 print(end=&quot;\n&quot;)
 # 1 2 3 4
-</code></pre>
-<h3 id="_7">生成器</h3>
-<p>在 Python 中，使用了 yield 的函数被称为生成器（generator）。跟普通函数不同的是，生成器是一个返回迭代器的函数，只能用于迭代操作，生成器就是一个迭代器。 </p>
-<p>在调用生成器运行的过程中，每次遇到 yield 时函数会暂停并保存当前所有的运行信息，返回 yield 的值, 并在下一次执行 next() 方法时从当前位置继续运行。</p>
-<p>调用一个生成器函数，返回的是一个迭代器对象。</p>
-<p>示例, 斐波那契数列：</p>
-<pre><code>def fibonacci(n):
+</code></pre></div></p> <h3 id=_7>生成器<a class=headerlink href=#_7 title="Permanent link"> ¶</a></h3> <p>在 Python 中，使用了 yield 的函数被称为生成器（generator）。跟普通函数不同的是，生成器是一个返回迭代器的函数，只能用于迭代操作，生成器就是一个迭代器。 </p> <p>在调用生成器运行的过程中，每次遇到 yield 时函数会暂停并保存当前所有的运行信息，返回 yield 的值, 并在下一次执行 next() 方法时从当前位置继续运行。</p> <p>调用一个生成器函数，返回的是一个迭代器对象。</p> <p>示例, 斐波那契数列： <div class=highlight><pre><span></span><code>def fibonacci(n):
     a, b, counter = 0, 1, 0
 
     while True:
@@ -1176,25 +426,18 @@ for x in f:  # 请求生成器中的元素时，它才会执行它的代码
     print(x, end=&quot; &quot;)
 print(end=&quot;\n&quot;)
 # 0 1 1 2 3 5 8 13 21 34 55
-</code></pre>
-<p>生成器表达式：</p>
-<p>用生成器表达式来创建生成器更为简单。生成器表达式与列表、字典、集合的推导式很类似，创建一个生成器表达式，只需要将列表推导式的中括号替换为小括号即可。</p>
-<pre><code>gen1 = (x ** 2 for x in range(100))
+</code></pre></div></p> <p>生成器表达式：</p> <p>用生成器表达式来创建生成器更为简单。生成器表达式与列表、字典、集合的推导式很类似，创建一个生成器表达式，只需要将列表推导式的中括号替换为小括号即可。 <div class=highlight><pre><span></span><code>gen1 = (x ** 2 for x in range(100))
 
 print(gen1)  
 # &lt;generator object &lt;genexpr&gt; at 0x7fd3f30c9580&gt;
-</code></pre>
-<p>上面的代码与下面的生成器是等价的</p>
-<pre><code>def _make_gen():
+</code></pre></div></p> <p>上面的代码与下面的生成器是等价的 <div class=highlight><pre><span></span><code>def _make_gen():
     for x in range(100):
         yield x ** 2
 
 gen2 = _make_gen()
 print(gen2)  
 # &lt;generator object _make_gen at 0x7fceb69ed580&gt;
-</code></pre>
-<p>生成器表达式可以作为函数参数用于替代列表推导式。对比下面2个例子。</p>
-<pre><code># 示例1
+</code></pre></div></p> <p>生成器表达式可以作为函数参数用于替代列表推导式。对比下面2个例子。 <div class=highlight><pre><span></span><code># 示例1
 result11 = sum(x ** 2 for x in range(100))
 print(result11)  
 # 328350
@@ -1213,13 +456,10 @@ gen2 = ((i, i ** 2) for i in range(5))
 result12 = dict(gen2)
 print(result12)  
 # {0: 0, 1: 1, 2: 4, 3: 9, 4: 16}
-</code></pre>
-<h3 id="itertools">生成器：itertools模块</h3>
-<p>标准库中的itertools模块是适用于大多数数据算法的生成器集合。</p>
-<pre><code>import itertools
+</code></pre></div></p> <h3 id=itertools>生成器：itertools模块<a class=headerlink href=#itertools title="Permanent link"> ¶</a></h3> <p>标准库中的itertools模块是适用于大多数数据算法的生成器集合。 <div class=highlight><pre><span></span><code>import itertools
 
 first_letter = lambda x: x[0]
-names = ['Alan', 'Adam', 'Wes', 'Will', 'Albert', 'Steven']
+names = [&#39;Alan&#39;, &#39;Adam&#39;, &#39;Wes&#39;, &#39;Will&#39;, &#39;Albert&#39;, &#39;Steven&#39;]
 
 for letter, names in itertools.groupby(names, first_letter):
     print(letter)
@@ -1228,51 +468,40 @@ for letter, names in itertools.groupby(names, first_letter):
 
 # A
 # &lt;function &lt;lambda&gt; at 0x7fa598a7a0d0&gt;
-# A ['Alan', 'Adam']
+# A [&#39;Alan&#39;, &#39;Adam&#39;]
 # W
 # &lt;function &lt;lambda&gt; at 0x7fa598a7a0d0&gt;
-# W ['Wes', 'Will']
+# W [&#39;Wes&#39;, &#39;Will&#39;]
 # A
 # &lt;function &lt;lambda&gt; at 0x7fa598a7a0d0&gt;
-# A ['Albert']
+# A [&#39;Albert&#39;]
 # S
 # &lt;function &lt;lambda&gt; at 0x7fa598a7a0d0&gt;
-# S ['Steven']
-</code></pre>
-<h2 id="8">8. 错误和异常处理</h2>
-<p>Python用异常对象(exception object)来表示异常情况。遇到错误后，会引发异常。如果异常对象并未被处理或捕捉，程序就会用所谓的回溯(traceback， 一种错误信息)终止执行。</p>
-<p>异常和语法错误是有区别的。
-* 错误：是指代码不符合解释器或者编译器语法。
-* 异常：是指不完整、不合法输入，或者计算出现错误。</p>
-<p>python里用try...except...语句来处理异常情况。</p>
-<pre><code>def attempt_float(x):
+# S [&#39;Steven&#39;]
+</code></pre></div></p> <h2 id=8>8. 错误和异常处理<a class=headerlink href=#8 title="Permanent link"> ¶</a></h2> <p>Python用异常对象(exception object)来表示异常情况。遇到错误后，会引发异常。如果异常对象并未被处理或捕捉，程序就会用所谓的回溯(traceback， 一种错误信息)终止执行。</p> <p>异常和语法错误是有区别的。 * 错误：是指代码不符合解释器或者编译器语法。 * 异常：是指不完整、不合法输入，或者计算出现错误。</p> <p>python里用try...except...语句来处理异常情况。</p> <div class=highlight><pre><span></span><code>def attempt_float(x):
     try:
         return float(x)
     except (TypeError, ValueError):
         return &quot;Type error, not numbers&quot;
 
-r1 = attempt_float('1.2256')
+r1 = attempt_float(&#39;1.2256&#39;)
 print(r1)  
 # 1.2256
 
-r1 = attempt_float('friends')
+r1 = attempt_float(&#39;friends&#39;)
 print(r1)  
 # Type error, not numbers
-</code></pre>
-<h2 id="9">9. 文件与操作系统</h2>
-<p>f=open(path, 'w')，一个新的文件会在path指定的路径被创建，并在同一路径下覆盖同名文件。（请小心！）
-f=open(path, 'x')，一个新的文件会在path指定的路径被创建，如果给定路径下已经存在同名文件就会创建失败。</p>
-<pre><code>import os
+</code></pre></div> <h2 id=9>9. 文件与操作系统<a class=headerlink href=#9 title="Permanent link"> ¶</a></h2> <p>f=open(path, 'w')，一个新的文件会在path指定的路径被创建，并在同一路径下覆盖同名文件。（请小心！） f=open(path, 'x')，一个新的文件会在path指定的路径被创建，如果给定路径下已经存在同名文件就会创建失败。</p> <div class=highlight><pre><span></span><code>import os
 
 # 查看当前路径
 os.getcwd()
-# '/opt/myMemo'
+# &#39;/opt/myMemo&#39;
 
 # 更改文件读取默认路径
-os.chdir('/opt/myMemo/python/datasets/examples')
+os.chdir(&#39;/opt/myMemo/python/datasets/examples&#39;)
 
 # 指定文件名
-path = 'file01.txt'
+path = &#39;file01.txt&#39;
 
 # 打开文件
 f = open(path)
@@ -1285,19 +514,17 @@ print(lines)
 
 # 关闭文件会将资源释放回操作系统
 f.close()  
-</code></pre>
-<p>另一种更简单的关闭文件的方式</p>
-<pre><code>import os
+</code></pre></div> <p>另一种更简单的关闭文件的方式 <div class=highlight><pre><span></span><code>import os
 
 # 查看当前路径
 os.getcwd()
-# '/opt/myMemo'
+# &#39;/opt/myMemo&#39;
 
 # 更改文件读取默认路径
-os.chdir('/opt/myMemo/python/datasets/examples')
+os.chdir(&#39;/opt/myMemo/python/datasets/examples&#39;)
 
 # 指定文件名
-path = 'file01.txt'
+path = &#39;file01.txt&#39;
 
 # 打开文件
 f = open(path)
@@ -1308,19 +535,17 @@ with open(path) as f:
 
 # 输出：文件每一行作为列表一个元素
 print(lines)
-</code></pre>
-<p>在打开文件时使用seek读取文件内容要当心。如果文件的句柄位置恰好在一个Unicode符号的字节中间时，后续的读取会导致错误。</p>
-<pre><code>import os
+</code></pre></div></p> <p>在打开文件时使用seek读取文件内容要当心。如果文件的句柄位置恰好在一个Unicode符号的字节中间时，后续的读取会导致错误。 <div class=highlight><pre><span></span><code>import os
 
 # 查看当前路径
 os.getcwd()
-# '/opt/myMemo'
+# &#39;/opt/myMemo&#39;
 
 # 更改文件读取默认路径
-os.chdir('/opt/myMemo/python/datasets/examples')
+os.chdir(&#39;/opt/myMemo/python/datasets/examples&#39;)
 
 # 指定文件名
-path = 'file01.txt'
+path = &#39;file01.txt&#39;
 
 # 打开文件
 f = open(path)
@@ -1337,62 +562,51 @@ print(f.read(1))  # 从第7个字节开始，输出1个字节
 
 # 关闭文件会将资源释放回操作系统
 f.close()
-</code></pre>
-<p>如果使用二进制方式打开文件，则：</p>
-<pre><code>import os
+</code></pre></div></p> <p>如果使用二进制方式打开文件，则： <div class=highlight><pre><span></span><code>import os
 
 # 查看当前路径
 os.getcwd()
-# '/opt/myMemo'
+# &#39;/opt/myMemo&#39;
 
 # 更改文件读取默认路径
-os.chdir('/opt/myMemo/python/datasets/examples')
+os.chdir(&#39;/opt/myMemo/python/datasets/examples&#39;)
 
 # 指定文件名
-path = 'file01.txt'
+path = &#39;file01.txt&#39;
 
 # 打开文件
-f2 = open(path, 'rb')  # 二进制模式
+f2 = open(path, &#39;rb&#39;)  # 二进制模式
 
 # 读取文件
 print(f2.read(5))  # 第一个b代表二进制格式
-# b'I Thi'  
+# b&#39;I Thi&#39;  
 print(f2.tell())  
 # 5
 print(f2.seek(6))  
 # 6
 print(f2.read(2))  # 从第7个字节开始，输出2个字节
-# b'k '  
+# b&#39;k &#39;  
 
 # 关闭文件会将资源释放回操作系统
 f2.close()
-</code></pre>
-<p>将本文写入文件，可以使用文件对象的write或wirtelines方法。</p>
-<pre><code>import os
+</code></pre></div></p> <p>将本文写入文件，可以使用文件对象的write或wirtelines方法。 <div class=highlight><pre><span></span><code>import os
 
 # 查看当前路径
 os.getcwd()
-# '/opt/myMemo'
+# &#39;/opt/myMemo&#39;
 
 # 更改文件读取默认路径
-os.chdir('/opt/myMemo/python/datasets/examples')
+os.chdir(&#39;/opt/myMemo/python/datasets/examples&#39;)
 
 # 指定文件名
-path1 = 'file01.txt'
-path2 = 'file02.txt'  # file02.txt是一个空文件
+path1 = &#39;file01.txt&#39;
+path2 = &#39;file02.txt&#39;  # file02.txt是一个空文件
 
-with open(path2, 'r+', encoding='utf-8') as f:
-    f.writelines(x for x in open(path1, 'r', encoding='utf-8') if len(x) &gt; 1)  # 把file01.txt的内容写入file02.txt
+with open(path2, &#39;r+&#39;, encoding=&#39;utf-8&#39;) as f:
+    f.writelines(x for x in open(path1, &#39;r&#39;, encoding=&#39;utf-8&#39;) if len(x) &gt; 1)  # 把file01.txt的内容写入file02.txt
     lines = f.readlines()
     print(lines)
-</code></pre>
-<h2 id="10">10. 装饰器</h2>
-<h3 id="_8">闭包</h3>
-<p>维基百科中的解释：<strong>闭包（Closure）</strong>，又称词法闭包（Lexical Closure）或函数闭包（function closures），是引用了自由变量的函数。这个被引用的自由变量将和这个函数一同存在，即使已经离开了创造它的环境也不例外。</p>
-<p>闭包延伸了作用域的函数，其中包含函数定义体中引用、但是不在定义体中定义的非全局变量。函数是不是匿名的没有关系，关键是它能访问定义体之外定义的非全局变量。</p>
-<p>例一，计算移动平均值。</p>
-<p>下面是是传统类实现方式，Avg的实例是可调用的对象。</p>
-<pre><code>class Avg():
+</code></pre></div></p> <h2 id=10>10. 装饰器<a class=headerlink href=#10 title="Permanent link"> ¶</a></h2> <h3 id=_8>闭包<a class=headerlink href=#_8 title="Permanent link"> ¶</a></h3> <p>维基百科中的解释：<strong>闭包（Closure）</strong>，又称词法闭包（Lexical Closure）或函数闭包（function closures），是引用了自由变量的函数。这个被引用的自由变量将和这个函数一同存在，即使已经离开了创造它的环境也不例外。</p> <p>闭包延伸了作用域的函数，其中包含函数定义体中引用、但是不在定义体中定义的非全局变量。函数是不是匿名的没有关系，关键是它能访问定义体之外定义的非全局变量。</p> <p>例一，计算移动平均值。</p> <p>下面是是传统类实现方式，Avg的实例是可调用的对象。 <div class=highlight><pre><span></span><code>class Avg():
 
     def __init__(self):
         self.mylist = []
@@ -1411,9 +625,7 @@ avg(20)
 # 15.0
 avg(30)
 # 20.0
-</code></pre>
-<p>下面是高阶函数实现方式。调用<code>make_avg</code>时，返回一个<code>my_avg</code>函数对象。每次调用<code>my_avg</code>时，它会把参数添加到系列值中，然后计算当前平均值。</p>
-<pre><code>def make_avg():
+</code></pre></div></p> <p>下面是高阶函数实现方式。调用<code>make_avg</code>时，返回一个<code>my_avg</code>函数对象。每次调用<code>my_avg</code>时，它会把参数添加到系列值中，然后计算当前平均值。 <div class=highlight><pre><span></span><code>def make_avg():
 
     my_list = []
 
@@ -1434,28 +646,17 @@ my_avg(30)
 # 20.0
 
 my_avg.__code__.co_varnames
-# ('newValue', 'total')
+# (&#39;newValue&#39;, &#39;total&#39;)
 
 my_avg.__code__.co_freevars
-# ('my_list',)
+# (&#39;my_list&#39;,)
 
 my_avg.__closure__
 # (&lt;cell at 0x7fe93d347468: list object at 0x7fe93d0e2f48&gt;,)
 
 my_avg.__closure__[0].cell_contents
 # [10, 20, 30]
-</code></pre>
-<p>这两个示例有共通之处：调用<code>Avg()</code>或<code>make_avg()</code>得到一个可调用对象<code>avg</code>，它会更新历史值，然后计算当前均值。
-在类实现中，<code>avg</code>是<code>Avg</code>的实例；在高阶函数实现中是内部函数<code>avg</code>。</p>
-<p>两种实现方式中，我们都只需调用<code>avg(n)</code>，把<code>n</code>放入系列值中，然后重新计算均值。</p>
-<p>第一个例子中，<code>Avg</code>类的实例<code>avg</code>在<code>self.series</code>实例属性中存储历史值。</p>
-<p>第二个例子中的<code>my_list</code>是函数<code>make_avg()</code>的局部变量，也称为该函数的<strong>自由变量（free variable）</strong>，指未在本地作用域中绑定的变量。
-<code>avg()</code>函数的闭包延伸到函数的作用域之外，包含了<code>make_avg()</code>的自由变量<code>my_list</code>的绑定。</p>
-<p>对于返回的<code>my_avg</code>对象，其<code>__code__</code>属性（表示编译后的函数定义体）中保存了局部变量和自由变量的名称，即<code>my_avg.__code__.co_varnames</code>返回了局部变量<code>('newValue', 'total')</code>和<code>my_avg.__code__.co_freevars</code>返回了自由变量<code>('my_list',)</code>。</p>
-<p>自由变量<code>my_list</code>绑定在返回的<code>my_avg</code>的<code>__closure__</code>的属性中，<code>my_avg.__closure__</code>中的各个元素对应了<code>my_avg.__code__.co_freevars</code>中的一个名称。这些元素是<code>cell</code>对象，有个<code>cell_contents</code>属性，如：<code>my_avg.__closure__</code>返回<code>(&lt;cell at 0x7fe93d347468: list object at 0x7fe93d0e2f48&gt;,)</code>，里面保存着真正的值，如<code>my_avg.__closure__[0].cell_contents</code>里面保存每次调用的真实值<code>[10, 20, 30]</code>。</p>
-<p>上面<code>my_list</code>是一个可变类型，如果用不可变类型改写，并实现闭包，可以使用<code>nolocal</code>进行声明。它的作用是把变量标记为自由变量，即使在函数中为变量赋予新值了，也会变成自由变量。如果为nonlocal声明的变量赋予新值，闭包中保存的绑定会更新。</p>
-<p><code>my_avg.__code__.co_freevars</code>返回了2个自由变量<code>('count', 'total')</code>，并在<code>my_avg.__closure__[0].cell_contents</code>和<code>my_avg.__closure__[1].cell_contents</code>里面保存了最后一次执行的真实值。</p>
-<pre><code>def make_avg():
+</code></pre></div></p> <p>这两个示例有共通之处：调用<code>Avg()</code>或<code>make_avg()</code>得到一个可调用对象<code>avg</code>，它会更新历史值，然后计算当前均值。 在类实现中，<code>avg</code>是<code>Avg</code>的实例；在高阶函数实现中是内部函数<code>avg</code>。</p> <p>两种实现方式中，我们都只需调用<code>avg(n)</code>，把<code>n</code>放入系列值中，然后重新计算均值。</p> <p>第一个例子中，<code>Avg</code>类的实例<code>avg</code>在<code>self.series</code>实例属性中存储历史值。</p> <p>第二个例子中的<code>my_list</code>是函数<code>make_avg()</code>的局部变量，也称为该函数的**自由变量（free variable）**，指未在本地作用域中绑定的变量。 <code>avg()</code>函数的闭包延伸到函数的作用域之外，包含了<code>make_avg()</code>的自由变量<code>my_list</code>的绑定。</p> <p>对于返回的<code>my_avg</code>对象，其<code>__code__</code>属性（表示编译后的函数定义体）中保存了局部变量和自由变量的名称，即<code>my_avg.__code__.co_varnames</code>返回了局部变量<code>('newValue', 'total')</code>和<code>my_avg.__code__.co_freevars</code>返回了自由变量<code>('my_list',)</code>。</p> <p>自由变量<code>my_list</code>绑定在返回的<code>my_avg</code>的<code>__closure__</code>的属性中，<code>my_avg.__closure__</code>中的各个元素对应了<code>my_avg.__code__.co_freevars</code>中的一个名称。这些元素是<code>cell</code>对象，有个<code>cell_contents</code>属性，如：<code>my_avg.__closure__</code>返回<code>(&lt;cell at 0x7fe93d347468: list object at 0x7fe93d0e2f48&gt;,)</code>，里面保存着真正的值，如<code>my_avg.__closure__[0].cell_contents</code>里面保存每次调用的真实值<code>[10, 20, 30]</code>。</p> <p>上面<code>my_list</code>是一个可变类型，如果用不可变类型改写，并实现闭包，可以使用<code>nolocal</code>进行声明。它的作用是把变量标记为自由变量，即使在函数中为变量赋予新值了，也会变成自由变量。如果为nonlocal声明的变量赋予新值，闭包中保存的绑定会更新。</p> <p><code>my_avg.__code__.co_freevars</code>返回了2个自由变量<code>('count', 'total')</code>，并在<code>my_avg.__closure__[0].cell_contents</code>和<code>my_avg.__closure__[1].cell_contents</code>里面保存了最后一次执行的真实值。</p> <div class=highlight><pre><span></span><code>def make_avg():
     count = 0
     total = 0
 
@@ -1478,10 +679,10 @@ my_avg(30)
 # 20.0
 
 my_avg.__code__.co_varnames
-# ('newValue',)
+# (&#39;newValue&#39;,)
 
 my_avg.__code__.co_freevars
-# ('count', 'total')
+# (&#39;count&#39;, &#39;total&#39;)
 
 my_avg.__closure__
 # (&lt;cell at 0x7fe93d3474c8: int object at 0x7fe93e865240&gt;, &lt;cell at 0x7fe93d347318: int object at 0x7fe93e865960&gt;)
@@ -1490,13 +691,7 @@ my_avg.__closure__[0].cell_contents
 # 3
 my_avg.__closure__[1].cell_contents
 # 60
-</code></pre>
-<p>例二：
-<code>money</code>是一个局部变量，在<code>get_money</code>是外围函数，函数执行之后应该就不会存在了。
-但是嵌套函数<code>work</code>引用了<code>money</code>这个自由变量，将这个局部变量封闭在了嵌套函数<code>work</code>中，这样就形成了一个闭包。
-<code>closure = get_money()</code>获得的就是一个闭包。<code>closure()</code>输出闭包，即，执行了<code>work()</code>，打印输出<code>money</code>的值。</p>
-<p>本地函数通过global声明对全局变量进行引用修改，那么对于内嵌函数<code>work()</code>作用域中的变量进行修改，就要使用<code>nonlocal</code>进行声明。</p>
-<pre><code>def get_money():
+</code></pre></div> <p>例二： <code>money</code>是一个局部变量，在<code>get_money</code>是外围函数，函数执行之后应该就不会存在了。 但是嵌套函数<code>work</code>引用了<code>money</code>这个自由变量，将这个局部变量封闭在了嵌套函数<code>work</code>中，这样就形成了一个闭包。 <code>closure = get_money()</code>获得的就是一个闭包。<code>closure()</code>输出闭包，即，执行了<code>work()</code>，打印输出<code>money</code>的值。</p> <p>本地函数通过global声明对全局变量进行引用修改，那么对于内嵌函数<code>work()</code>作用域中的变量进行修改，就要使用<code>nonlocal</code>进行声明。 <div class=highlight><pre><span></span><code>def get_money():
     money = 0
 
     def work():
@@ -1515,11 +710,7 @@ closure()
 # 200
 closure()
 # 300
-</code></pre>
-<p>例三：</p>
-<p>函数<code>maker</code>中定义了函数<code>action</code>，<code>action</code>引用了<code>maker</code>嵌套作用域内的变量<code>k</code>，并且，<code>maker</code>将函数<code>action</code>作为返回对象进行返回。</p>
-<p>这样，我们通过执行<code>f = maker(2)</code>，<code>f</code>获取了返回对象<code>action</code>，虽然此时<code>maker</code>函数以及结束退出了，但对象<code>f</code>仍然记住了函数<code>maker</code>嵌套作用域内的变量<code>k</code>和<code>n</code>，并在执行<code>f(3)</code>时，将<code>x=3</code>以及之前记住的<code>k</code>和<code>n</code>，一并传入<code>action()</code>，计算并返回<code>x + n + k</code>值。<code>make</code>也称为<strong>工厂函数</strong>。</p>
-<pre><code>def maker(n):
+</code></pre></div></p> <p>例三：</p> <p>函数<code>maker</code>中定义了函数<code>action</code>，<code>action</code>引用了<code>maker</code>嵌套作用域内的变量<code>k</code>，并且，<code>maker</code>将函数<code>action</code>作为返回对象进行返回。</p> <p>这样，我们通过执行<code>f = maker(2)</code>，<code>f</code>获取了返回对象<code>action</code>，虽然此时<code>maker</code>函数以及结束退出了，但对象<code>f</code>仍然记住了函数<code>maker</code>嵌套作用域内的变量<code>k</code>和<code>n</code>，并在执行<code>f(3)</code>时，将<code>x=3</code>以及之前记住的<code>k</code>和<code>n</code>，一并传入<code>action()</code>，计算并返回<code>x + n + k</code>值。<code>make</code>也称为**工厂函数**。</p> <div class=highlight><pre><span></span><code>def maker(n):
     k = 8
 
     def action(x):
@@ -1536,11 +727,7 @@ print(f(4))
 # 14
 print(f(5))
 # 15
-</code></pre>
-<p>结合前面2个例子再看上面的解释，闭包就是引用了自由变量的函数，这个函数保存了执行的上下文，可以脱离原本的作用域独立存在。</p>
-<h3 id="_9">装饰器</h3>
-<p>看下面例子，将函数作为参数传给另一个函数，函数<code>my_decorator</code>的传入参数正好是其嵌套函数<code>myFunc</code>。</p>
-<pre><code>def my_decorator(nestedFunc):
+</code></pre></div> <p>结合前面2个例子再看上面的解释，闭包就是引用了自由变量的函数，这个函数保存了执行的上下文，可以脱离原本的作用域独立存在。</p> <h3 id=_9>装饰器<a class=headerlink href=#_9 title="Permanent link"> ¶</a></h3> <p>看下面例子，将函数作为参数传给另一个函数，函数<code>my_decorator</code>的传入参数正好是其嵌套函数<code>myFunc</code>。</p> <div class=highlight><pre><span></span><code>def my_decorator(nestedFunc):
 
     def myFunc():
         print(&quot;Before executing nestedFunc()&quot;)
@@ -1565,10 +752,7 @@ nestedFunc()
 # Before executing nestedFunc()
 # Decoration - executing nestedFunc()
 # After executing nestedFunc()
-</code></pre>
-<p>装饰器只是个方法，使用时用了<code>@</code>语法。<code>@</code>语法只是将函数<code>nestedFunc</code>传入装饰器函数<code>my_decorator</code>。
-<code>@my_decorator</code>是<code>nestedFunc = my_decorator(nestedFunc)</code>的快捷表达方式，</p>
-<pre><code>@my_decorator
+</code></pre></div> <p>装饰器只是个方法，使用时用了<code>@</code>语法。<code>@</code>语法只是将函数<code>nestedFunc</code>传入装饰器函数<code>my_decorator</code>。 <code>@my_decorator</code>是<code>nestedFunc = my_decorator(nestedFunc)</code>的快捷表达方式，</p> <div class=highlight><pre><span></span><code>@my_decorator
 def nestedFunc():
     print(&quot;New added to decoration - executing nestedFunc()&quot;)
 
@@ -1580,10 +764,7 @@ nestedFunc()
 
 print(nestedFunc.__name__)
 # myFunc
-</code></pre>
-<p>但上例最后的输出不是我们想要的，我们希望输出<code>nestedFunc</code>，但却被<code>myFunc</code>替代了，它重写了我们函数的名字和注释文档(docstring)。</p>
-<p>下面使用<code>functools.wraps</code>来修正上面的问题。</p>
-<pre><code>from functools import wraps
+</code></pre></div> <p>但上例最后的输出不是我们想要的，我们希望输出<code>nestedFunc</code>，但却被<code>myFunc</code>替代了，它重写了我们函数的名字和注释文档(docstring)。</p> <p>下面使用<code>functools.wraps</code>来修正上面的问题。</p> <div class=highlight><pre><span></span><code>from functools import wraps
 
 
 def my_decorator(nestedFunc):
@@ -1615,9 +796,7 @@ nestedFunc()
 
 print(nestedFunc.__name__)
 # nestedFunc
-</code></pre>
-<p>下面是装饰器的蓝本规范。</p>
-<pre><code>from functools import wraps
+</code></pre></div> <p>下面是装饰器的蓝本规范。</p> <div class=highlight><pre><span></span><code>from functools import wraps
 
 
 def decorator_name(f):
@@ -1643,96 +822,38 @@ print(func())
 can_run = False
 print(func())
 # Output: Function will not run
-</code></pre>
-<p>下面还是一个装饰器的例子。把下面的代码段保存到文件<code>test.py</code>。</p>
-<pre><code>registry = []
+</code></pre></div> <p>下面还是一个装饰器的例子。把下面的代码段保存到文件<code>test.py</code>。 <div class=highlight><pre><span></span><code>registry = []
 
 def register(func):
-    print(f'running register {func}')
+    print(f&#39;running register {func}&#39;)
     registry.append(func)
     return func
 
 @register
 def f1():
-    print('running f1()')
+    print(&#39;running f1()&#39;)
 
 @register
 def f2():
-    print('running f2()')
+    print(&#39;running f2()&#39;)
 
 def f3():
-    print('running f3()')
+    print(&#39;running f3()&#39;)
 
 def main():
-    print('runnning main()')
-    print(f'registry--&gt; {registry}')
+    print(&#39;runnning main()&#39;)
+    print(f&#39;registry--&gt; {registry}&#39;)
     f1()
     f2()
     f3()
 
-if __name__ == '__main__':
+if __name__ == &#39;__main__&#39;:
     main()
-</code></pre>
-<p>执行上述代码段<code>python3 test.py</code>，得到下面的结果。</p>
-<pre><code>running register &lt;function f1 at 0x7f70847bec80&gt;
+</code></pre></div></p> <p>执行上述代码段<code>python3 test.py</code>，得到下面的结果。</p> <div class=highlight><pre><span></span><code>running register &lt;function f1 at 0x7f70847bec80&gt;
 running register &lt;function f2 at 0x7f70705aa9d8&gt;
 runnning main()
 registry--&gt; [&lt;function f1 at 0x7f70847bec80&gt;, &lt;function f2 at 0x7f70705aa9d8&gt;]
 running f1()
 running f2()
 running f3()
-</code></pre>
-<p><code>register</code>在模块中其他函数之前运行（两次）。调用<code>register</code>时，传给它的参数是被装饰的函数，例如<code>function f1 at 0x7f70847bec80&gt;</code>。加载模块后，<code>registry</code>中有两个被装饰函数的引用：<code>f1</code>和<code>f2</code>。这两个函数，以及<code>f3</code>，只在<code>main</code>明确调用它们时才执行。</p>
-<p>由此得，函数装饰器在导入模块时立即执行，而被装饰的函数只在明确调用时运行，即Python中提到的<strong>导入时</strong>和<strong>运行时</strong>之间的区别。</p>
-<p>上面例子中装饰器函数与被装饰的函数在同一个模块中定义。实际应用中，装饰器通常在一个模块中定义，然后应用到其他模块中的函数上。</p>
-<p>上面例子中<code>register</code>装饰器返回的函数与通过参数传入的相同。实际应用中，大多数装饰器会在内部定义一个函数，然后将其返回。</p>
-                
-              
-              
-                
-
-
-              
-            </article>
-          </div>
-        </div>
-        
-          <a href="#" class="md-top md-icon" data-md-component="top" data-md-state="hidden">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"/></svg>
-            Back to top
-          </a>
-        
-      </main>
-      
-        
-<footer class="md-footer">
-  
-  <div class="md-footer-meta md-typeset">
-    <div class="md-footer-meta__inner md-grid">
-      <div class="md-footer-copyright">
-        
-        
-          Made with
-          <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
-            Material for MkDocs
-          </a>
-        
-        
-      </div>
-      
-    </div>
-  </div>
-</footer>
-      
-    </div>
-    <div class="md-dialog" data-md-component="dialog">
-      <div class="md-dialog__inner md-typeset"></div>
-    </div>
-    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tracking", "navigation.top", "navigation.expand"], "search": "../../../assets/javascripts/workers/search.fcfe8b6d.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": null}</script>
-    
-    
-      <script src="../../../assets/javascripts/bundle.b1047164.min.js"></script>
-      
-    
-  </body>
-</html>
+</code></pre></div> <p><code>register</code>在模块中其他函数之前运行（两次）。调用<code>register</code>时，传给它的参数是被装饰的函数，例如<code>function f1 at 0x7f70847bec80&gt;</code>。加载模块后，<code>registry</code>中有两个被装饰函数的引用：<code>f1</code>和<code>f2</code>。这两个函数，以及<code>f3</code>，只在<code>main</code>明确调用它们时才执行。</p> <p>由此得，函数装饰器在导入模块时立即执行，而被装饰的函数只在明确调用时运行，即Python中提到的**导入时**和**运行时**之间的区别。</p> <p>上面例子中装饰器函数与被装饰的函数在同一个模块中定义。实际应用中，装饰器通常在一个模块中定义，然后应用到其他模块中的函数上。</p> <p>上面例子中<code>register</code>装饰器返回的函数与通过参数传入的相同。实际应用中，大多数装饰器会在内部定义一个函数，然后将其返回。</p> </article> </div> </div> </main> <footer class=md-footer> <div class="md-footer-meta md-typeset"> <div class="md-footer-meta__inner md-grid"> <div class=md-footer-copyright> Made with <a href=https://squidfunk.github.io/mkdocs-material/ target=_blank rel=noopener> Material for MkDocs </a> </div> </div> </div> </footer> </div> <div class=md-dialog data-md-component=dialog> <div class="md-dialog__inner md-typeset"></div> </div> <script id=__config type=application/json>{"base": "../../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.instant", "navigation.sections"], "search": "../../../assets/javascripts/workers/search.fcfe8b6d.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": null}</script> <script src=../../../assets/javascripts/bundle.b1047164.min.js></script> </body> </html>

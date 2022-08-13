@@ -1,628 +1,6 @@
-
-<!doctype html>
-<html lang="en" class="no-js">
-  <head>
-    
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width,initial-scale=1">
-      
-      
-      
-      
-        <link rel="canonical" href="https://huyuhui001.github.io/mySite/index.html/python/DataAnalysis/ch09/">
-      
-      <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-7.3.6">
-    
-    
-      
-        <title>高阶pandas - MEMO</title>
-      
-    
-    
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.a57b2b03.min.css">
-      
-        
-        <link rel="stylesheet" href="../../../assets/stylesheets/palette.3f5d1f46.min.css">
-        
-          
-          
-          <meta name="theme-color" content="#000000">
-        
-      
-    
-    
-    
-      
-        
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
-        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
-      
-    
-    
-    
-    
-      
-
-
-    
-    
-  </head>
-  
-  
-    
-    
-    
-    
-    
-    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="black" data-md-color-accent="deep-blue">
-  
-    
-    <script>function __prefix(e){return new URL("../../..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
-    
-    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
-    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
-    <label class="md-overlay" for="__drawer"></label>
-    <div data-md-component="skip">
-      
-        
-        <a href="#pandas" class="md-skip">
-          Skip to content
-        </a>
-      
-    </div>
-    <div data-md-component="announce">
-      
-    </div>
-    
-      
-
-<header class="md-header" data-md-component="header">
-  <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../../.." title="MEMO" class="md-header__button md-logo" aria-label="MEMO" data-md-component="logo">
-      
-  <img src="../../../assets/logo.jpg" alt="logo">
-
-    </a>
-    <label class="md-header__button md-icon" for="__drawer">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
-    </label>
-    <div class="md-header__title" data-md-component="header-title">
-      <div class="md-header__ellipsis">
-        <div class="md-header__topic">
-          <span class="md-ellipsis">
-            MEMO
-          </span>
-        </div>
-        <div class="md-header__topic" data-md-component="header-topic">
-          <span class="md-ellipsis">
-            
-              高阶pandas
-            
-          </span>
-        </div>
-      </div>
-    </div>
-    
-    
-    
-      <label class="md-header__button md-icon" for="__search">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
-      </label>
-      
-<div class="md-search" data-md-component="search" role="dialog">
-  <label class="md-search__overlay" for="__search"></label>
-  <div class="md-search__inner" role="search">
-    <form class="md-search__form" name="search">
-      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
-      <label class="md-search__icon md-icon" for="__search">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
-      </label>
-      <nav class="md-search__options" aria-label="Search">
-        
-        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
-        </button>
-      </nav>
-      
-    </form>
-    <div class="md-search__output">
-      <div class="md-search__scrollwrap" data-md-scrollfix>
-        <div class="md-search-result" data-md-component="search-result">
-          <div class="md-search-result__meta">
-            Initializing search
-          </div>
-          <ol class="md-search-result__list"></ol>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-    
-    
-  </nav>
-  
-</header>
-    
-    <div class="md-container" data-md-component="container">
-      
-      
-        
-          
-        
-      
-      <main class="md-main" data-md-component="main">
-        <div class="md-main__inner md-grid">
-          
-            
-              
-              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
-                <div class="md-sidebar__scrollwrap">
-                  <div class="md-sidebar__inner">
-                    
-
-
-<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
-  <label class="md-nav__title" for="__drawer">
-    <a href="../../.." title="MEMO" class="md-nav__button md-logo" aria-label="MEMO" data-md-component="logo">
-      
-  <img src="../../../assets/logo.jpg" alt="logo">
-
-    </a>
-    MEMO
-  </label>
-  
-  <ul class="md-nav__list" data-md-scrollfix>
-    
-      
-      
-      
-
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1" data-md-state="indeterminate" type="checkbox" id="__nav_1" checked>
-      
-      
-      
-      
-        <label class="md-nav__link" for="__nav_1">
-          Linux
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" aria-label="Linux" data-md-level="1">
-        <label class="md-nav__title" for="__nav_1">
-          <span class="md-nav__icon md-icon"></span>
-          Linux
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../linux/Administration/linux_admin/" class="md-nav__link">
-        SUSE Linux Administration
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../linux/SES/linux_ses/" class="md-nav__link">
-        SUSE Enterprise Storage Foundation
-      </a>
-    </li>
-  
-
-            
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" data-md-state="indeterminate" type="checkbox" id="__nav_2" checked>
-      
-      
-      
-      
-        <label class="md-nav__link" for="__nav_2">
-          Python
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" aria-label="Python" data-md-level="1">
-        <label class="md-nav__title" for="__nav_2">
-          <span class="md-nav__icon md-icon"></span>
-          Python
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../Foundation/python_foundation_index/" class="md-nav__link">
-        Python Foundamentals
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../python_data_analysis_index/" class="md-nav__link">
-        Data Analysis
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../Demo/python_demo_index/" class="md-nav__link">
-        Demos
-      </a>
-    </li>
-  
-
-            
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" data-md-state="indeterminate" type="checkbox" id="__nav_3" checked>
-      
-      
-      
-      
-        <label class="md-nav__link" for="__nav_3">
-          Cloud
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" aria-label="Cloud" data-md-level="1">
-        <label class="md-nav__title" for="__nav_3">
-          <span class="md-nav__icon md-icon"></span>
-          Cloud
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../cloud/MicroservicesKubernetes/" class="md-nav__link">
-        Microservices with K8s
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../cloud/KubernetesFoundationMemo/" class="md-nav__link">
-        K8s Foundamentals
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../cloud/Kubernetes-Installation/" class="md-nav__link">
-        K8s Installation
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../cloud/KubernetesTutorials-BTP-trail/" class="md-nav__link">
-        K8s Demos on Kyma@SAP BTP
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../cloud/KubernetesTutorials-Aliyun-Foundamentals/" class="md-nav__link">
-        K8s Demos on Ubuntu@Aliyun
-      </a>
-    </li>
-  
-
-            
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../about/" class="md-nav__link">
-        About
-      </a>
-    </li>
-  
-
-    
-  </ul>
-</nav>
-                  </div>
-                </div>
-              </div>
-            
-            
-              
-              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
-                <div class="md-sidebar__scrollwrap">
-                  <div class="md-sidebar__inner">
-                    
-
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#_1" class="md-nav__link">
-    分类数据
-  </a>
-  
-    <nav class="md-nav" aria-label="分类数据">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#_2" class="md-nav__link">
-    背景和目标
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#pandascategorical" class="md-nav__link">
-    pandas中的Categorical类型
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#categorical" class="md-nav__link">
-    使用Categorical对象进行计算
-  </a>
-  
-    <nav class="md-nav" aria-label="使用Categorical对象进行计算">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#_3" class="md-nav__link">
-    使用分类获得更高性能
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_4" class="md-nav__link">
-    分类方法
-  </a>
-  
-    <nav class="md-nav" aria-label="分类方法">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#_5" class="md-nav__link">
-    创建用于建模的虚拟变量
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#groupby" class="md-nav__link">
-    高阶GroupBy应用
-  </a>
-  
-    <nav class="md-nav" aria-label="高阶GroupBy应用">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#groupby_1" class="md-nav__link">
-    分组转换和“展开”GroupBy
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_6" class="md-nav__link">
-    分组的时间重新采样
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_7" class="md-nav__link">
-    方法链技术
-  </a>
-  
-    <nav class="md-nav" aria-label="方法链技术">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#pipe" class="md-nav__link">
-    pipe方法
-  </a>
-  
-    <nav class="md-nav" aria-label="pipe方法">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#dataframe" class="md-nav__link">
-    DataFrame示例：
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#series" class="md-nav__link">
-    Series 示例：
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#groupby_2" class="md-nav__link">
-    GroupBy 示例：
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-                  </div>
-                </div>
-              </div>
-            
-          
-          <div class="md-content" data-md-component="content">
-            <article class="md-content__inner md-typeset">
-              
-                
-                
-                <h1 id="pandas">高阶pandas</h1>
-<h2 id="_1">分类数据</h2>
-<pre><code>import numpy as np
+<!doctype html><html lang=en class=no-js> <head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><link href=https://huyuhui001.github.io/mySite/python/DataAnalysis/ch09/ rel=canonical><link rel=icon href=../../../assets/images/favicon.png><meta name=generator content="mkdocs-1.3.0, mkdocs-material-7.3.6"><title>高阶pandas - MEMO</title><link rel=stylesheet href=../../../assets/stylesheets/main.a57b2b03.min.css><link rel=stylesheet href=../../../assets/stylesheets/palette.3f5d1f46.min.css><meta name=theme-color content=#009485><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback"><style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style><link rel=stylesheet href=../../../extra.css></head> <body dir=ltr data-md-color-scheme data-md-color-primary=teal data-md-color-accent=green> <script>function __prefix(e){return new URL("../../..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script> <input class=md-toggle data-md-toggle=drawer type=checkbox id=__drawer autocomplete=off> <input class=md-toggle data-md-toggle=search type=checkbox id=__search autocomplete=off> <label class=md-overlay for=__drawer></label> <div data-md-component=skip> <a href=#pandas class=md-skip> Skip to content </a> </div> <div data-md-component=announce> </div> <header class="md-header md-header--lifted" data-md-component=header> <nav class="md-header__inner md-grid" aria-label=Header> <a href=../../.. title=MEMO class="md-header__button md-logo" aria-label=MEMO data-md-component=logo> <img src=../../../assets/logo.jpg alt=logo> </a> <label class="md-header__button md-icon" for=__drawer> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg> </label> <div class=md-header__title data-md-component=header-title> <div class=md-header__ellipsis> <div class=md-header__topic> <span class=md-ellipsis> MEMO </span> </div> <div class=md-header__topic data-md-component=header-topic> <span class=md-ellipsis> 高阶pandas </span> </div> </div> </div> <label class="md-header__button md-icon" for=__search> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg> </label> <div class=md-search data-md-component=search role=dialog> <label class=md-search__overlay for=__search></label> <div class=md-search__inner role=search> <form class=md-search__form name=search> <input type=text class=md-search__input name=query aria-label=Search placeholder=Search autocapitalize=off autocorrect=off autocomplete=off spellcheck=false data-md-component=search-query required> <label class="md-search__icon md-icon" for=__search> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg> </label> <nav class=md-search__options aria-label=Search> <button type=reset class="md-search__icon md-icon" aria-label=Clear tabindex=-1> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg> </button> </nav> </form> <div class=md-search__output> <div class=md-search__scrollwrap data-md-scrollfix> <div class=md-search-result data-md-component=search-result> <div class=md-search-result__meta> Initializing search </div> <ol class=md-search-result__list></ol> </div> </div> </div> </div> </div> <div class=md-header__source> <a href=https://github.com/huyuhui001/mySite title="Go to repository" class=md-source data-md-component=source> <div class="md-source__icon md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg> </div> <div class=md-source__repository> huyuhui001/mySite </div> </a> </div> </nav> <nav class=md-tabs aria-label=Tabs data-md-component=tabs> <div class="md-tabs__inner md-grid"> <ul class=md-tabs__list> <li class=md-tabs__item> <a href=../../../linux/Administration/linux_admin/ class=md-tabs__link> Linux </a> </li> <li class=md-tabs__item> <a href=../../../k8s/installation/single-local/ class=md-tabs__link> Kubernetes </a> </li> <li class=md-tabs__item> <a href=../../Foundation/python_foundation_index/ class=md-tabs__link> Python </a> </li> </ul> </div> </nav> </header> <div class=md-container data-md-component=container> <main class=md-main data-md-component=main> <div class="md-main__inner md-grid"> <div class="md-sidebar md-sidebar--primary" data-md-component=sidebar data-md-type=navigation> <div class=md-sidebar__scrollwrap> <div class=md-sidebar__inner> <nav class="md-nav md-nav--primary md-nav--lifted" aria-label=Navigation data-md-level=0> <label class=md-nav__title for=__drawer> <a href=../../.. title=MEMO class="md-nav__button md-logo" aria-label=MEMO data-md-component=logo> <img src=../../../assets/logo.jpg alt=logo> </a> MEMO </label> <div class=md-nav__source> <a href=https://github.com/huyuhui001/mySite title="Go to repository" class=md-source data-md-component=source> <div class="md-source__icon md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg> </div> <div class=md-source__repository> huyuhui001/mySite </div> </a> </div> <ul class=md-nav__list data-md-scrollfix> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_1 type=checkbox id=__nav_1> <label class=md-nav__link for=__nav_1> Linux <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label=Linux data-md-level=1> <label class=md-nav__title for=__nav_1> <span class="md-nav__icon md-icon"></span> Linux </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../linux/Administration/linux_admin/ class=md-nav__link> SUSE Linux Administration </a> </li> <li class=md-nav__item> <a href=../../../linux/SES/linux_ses/ class=md-nav__link> SUSE Enterprise Storage Foundation </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_2 type=checkbox id=__nav_2> <label class=md-nav__link for=__nav_2> Kubernetes <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label=Kubernetes data-md-level=1> <label class=md-nav__title for=__nav_2> <span class="md-nav__icon md-icon"></span> Kubernetes </label> <ul class=md-nav__list data-md-scrollfix> <li class="md-nav__item md-nav__item--section md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_2_1 type=checkbox id=__nav_2_1> <label class=md-nav__link for=__nav_2_1> Installation <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label=Installation data-md-level=2> <label class=md-nav__title for=__nav_2_1> <span class="md-nav__icon md-icon"></span> Installation </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../k8s/installation/single-local/ class=md-nav__link> Single Node Installation </a> </li> <li class=md-nav__item> <a href=../../../k8s/installation/multiple-local/ class=md-nav__link> Multiple Nodes Installation </a> </li> <li class=md-nav__item> <a href=../../../k8s/installation/aliyun-opensuse/ class=md-nav__link> Installation on Aliyun openSUSE </a> </li> <li class=md-nav__item> <a href=../../../k8s/installation/aliyun-ubuntu/ class=md-nav__link> Installation on Aliyun Ubuntu </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--section md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_2_2 type=checkbox id=__nav_2_2> <label class=md-nav__link for=__nav_2_2> Foundamentals <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label=Foundamentals data-md-level=2> <label class=md-nav__title for=__nav_2_2> <span class="md-nav__icon md-icon"></span> Foundamentals </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../k8s/foundamentals/memo/ class=md-nav__link> Memo </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/docker/ class=md-nav__link> Docker Fundamentals </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/overview/ class=md-nav__link> Overview </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/basics/ class=md-nav__link> kubectl basics </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/namespace/ class=md-nav__link> Namespace </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/pod/ class=md-nav__link> Work on pod </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/deployment/ class=md-nav__link> Deployment </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/statefulset/ class=md-nav__link> StatefulSet </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/daemonset/ class=md-nav__link> DaemonSet </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/job/ class=md-nav__link> Job and Cronjob </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/hpa/ class=md-nav__link> Horizontal Pod Autoscaling </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/service/ class=md-nav__link> Service </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/ingress/ class=md-nav__link> Ingress </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/persistence/ class=md-nav__link> Persistence </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/scheduling/ class=md-nav__link> Scheduling </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/policy/ class=md-nav__link> Policy </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/configuration/ class=md-nav__link> Configuration </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/rbac/ class=md-nav__link> Role Based Access Control (RBAC) </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/networkpolicy/ class=md-nav__link> Network Policy </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/clustermgt/ class=md-nav__link> Cluster Management </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/helming/ class=md-nav__link> Helming </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/troubleshooting/ class=md-nav__link> Troubleshooting </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/healthcheck/ class=md-nav__link> Health Check </a> </li> <li class=md-nav__item> <a href=../../../k8s/foundamentals/casestudy/ class=md-nav__link> Case Study </a> </li> </ul> </nav> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_3 type=checkbox id=__nav_3> <label class=md-nav__link for=__nav_3> Python <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label=Python data-md-level=1> <label class=md-nav__title for=__nav_3> <span class="md-nav__icon md-icon"></span> Python </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../Foundation/python_foundation_index/ class=md-nav__link> Python Foundamentals </a> </li> <li class=md-nav__item> <a href=../python_data_analysis_index/ class=md-nav__link> Data Analysis </a> </li> <li class=md-nav__item> <a href=../../Demo/python_demo_index/ class=md-nav__link> Demos </a> </li> </ul> </nav> </li> </ul> </nav> </div> </div> </div> <div class="md-sidebar md-sidebar--secondary" data-md-component=sidebar data-md-type=toc> <div class=md-sidebar__scrollwrap> <div class=md-sidebar__inner> <nav class="md-nav md-nav--secondary" aria-label="Table of contents"> <label class=md-nav__title for=__toc> <span class="md-nav__icon md-icon"></span> Table of contents </label> <ul class=md-nav__list data-md-component=toc data-md-scrollfix> <li class=md-nav__item> <a href=#_1 class=md-nav__link> 分类数据 </a> <nav class=md-nav aria-label=分类数据> <ul class=md-nav__list> <li class=md-nav__item> <a href=#_2 class=md-nav__link> 背景和目标 </a> </li> <li class=md-nav__item> <a href=#pandascategorical class=md-nav__link> pandas中的Categorical类型 </a> </li> <li class=md-nav__item> <a href=#categorical class=md-nav__link> 使用Categorical对象进行计算 </a> <nav class=md-nav aria-label=使用Categorical对象进行计算> <ul class=md-nav__list> <li class=md-nav__item> <a href=#_3 class=md-nav__link> 使用分类获得更高性能 </a> </li> </ul> </nav> </li> <li class=md-nav__item> <a href=#_4 class=md-nav__link> 分类方法 </a> <nav class=md-nav aria-label=分类方法> <ul class=md-nav__list> <li class=md-nav__item> <a href=#_5 class=md-nav__link> 创建用于建模的虚拟变量 </a> </li> </ul> </nav> </li> </ul> </nav> </li> <li class=md-nav__item> <a href=#groupby class=md-nav__link> 高阶GroupBy应用 </a> <nav class=md-nav aria-label=高阶GroupBy应用> <ul class=md-nav__list> <li class=md-nav__item> <a href=#groupby_1 class=md-nav__link> 分组转换和“展开”GroupBy </a> </li> <li class=md-nav__item> <a href=#_6 class=md-nav__link> 分组的时间重新采样 </a> </li> </ul> </nav> </li> <li class=md-nav__item> <a href=#_7 class=md-nav__link> 方法链技术 </a> <nav class=md-nav aria-label=方法链技术> <ul class=md-nav__list> <li class=md-nav__item> <a href=#pipe class=md-nav__link> pipe方法 </a> <nav class=md-nav aria-label=pipe方法> <ul class=md-nav__list> <li class=md-nav__item> <a href=#dataframe class=md-nav__link> DataFrame示例： </a> </li> <li class=md-nav__item> <a href=#series class=md-nav__link> Series 示例： </a> </li> <li class=md-nav__item> <a href=#groupby_2 class=md-nav__link> GroupBy 示例： </a> </li> </ul> </nav> </li> </ul> </nav> </li> </ul> </nav> </div> </div> </div> <div class=md-content data-md-component=content> <article class="md-content__inner md-typeset"> <a href=https://github.com/huyuhui001/mySite/edit/main/docs/python/DataAnalysis/ch09.md title="Edit this page" class="md-content__button md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg> </a> <h1 id=pandas>高阶pandas<a class=headerlink href=#pandas title="Permanent link"> ¶</a></h1> <h2 id=_1>分类数据<a class=headerlink href=#_1 title="Permanent link"> ¶</a></h2> <div class=highlight><pre><span></span><code>import numpy as np
 import pandas as pd
-</code></pre>
-<h3 id="_2">背景和目标</h3>
-<p>一个列经常会包含重复值，这些重复值是一个小型的不同值的集合。
-<code>unique</code>和<code>value_counts</code>这样的函数允许我们从一个数组中提取不同值并分别计算这些不同值的频率：</p>
-<pre><code>values = pd.Series(['apple', 'orange', 'apple', 'apple'] * 2)
+</code></pre></div> <h3 id=_2>背景和目标<a class=headerlink href=#_2 title="Permanent link"> ¶</a></h3> <p>一个列经常会包含重复值，这些重复值是一个小型的不同值的集合。 <code>unique</code>和<code>value_counts</code>这样的函数允许我们从一个数组中提取不同值并分别计算这些不同值的频率： <div class=highlight><pre><span></span><code>values = pd.Series([&#39;apple&#39;, &#39;orange&#39;, &#39;apple&#39;, &#39;apple&#39;] * 2)
 print(values)
 # 0     apple
 # 1    orange
@@ -635,20 +13,15 @@ print(values)
 # dtype: object
 
 print(pd.unique(values))
-# ['apple' 'orange']
+# [&#39;apple&#39; &#39;orange&#39;]
 
 print(pd.value_counts(values))
 # apple     6
 # orange    2
 # dtype: int64
-</code></pre>
-<p>在数据入库的操作中，使用维度表是一种最佳实践，维度表包含了不同值，并将主要观测值存储为引用维度表的整数键：</p>
-<pre><code>values = pd.Series([0, 1, 0, 0] * 2)
-dim = pd.Series(['apple', 'oragne'])
-</code></pre>
-<p>使用<code>take</code>方法来恢复原来的字符串Series。（0对应到apple)。
-这种按照整数展现的方式被称为分类或字典编码展现。不同值的数组可以被称为数据的类别、字典或层级。</p>
-<pre><code>print(dim.take(values))
+</code></pre></div></p> <p>在数据入库的操作中，使用维度表是一种最佳实践，维度表包含了不同值，并将主要观测值存储为引用维度表的整数键： <div class=highlight><pre><span></span><code>values = pd.Series([0, 1, 0, 0] * 2)
+dim = pd.Series([&#39;apple&#39;, &#39;oragne&#39;])
+</code></pre></div></p> <p>使用<code>take</code>方法来恢复原来的字符串Series。（0对应到apple)。 这种按照整数展现的方式被称为分类或字典编码展现。不同值的数组可以被称为数据的类别、字典或层级。 <div class=highlight><pre><span></span><code>print(dim.take(values))
 # 0     apple
 # 1    oragne
 # 0     apple
@@ -658,25 +31,16 @@ dim = pd.Series(['apple', 'oragne'])
 # 0     apple
 # 0     apple
 # dtype: object
-</code></pre>
-<p>在做数据分析时，分类展示会产生显著的性能提升。可以在类别上进行转换同时不改变代码。</p>
-<p>以下是一些相对低开销的转换示例：</p>
-<ul>
-<li>重命名类别</li>
-<li>在不改变已有的类别顺序的情况下添加一个新的类别</li>
-</ul>
-<h3 id="pandascategorical">pandas中的Categorical类型</h3>
-<p>pandas拥有特殊的<code>Categorical</code>类型，用于承载基于整数的类别展示或编码的数据。</p>
-<pre><code>fruits = ['apple', 'orange', 'apple', 'apple'] * 2
+</code></pre></div></p> <p>在做数据分析时，分类展示会产生显著的性能提升。可以在类别上进行转换同时不改变代码。</p> <p>以下是一些相对低开销的转换示例：</p> <ul> <li>重命名类别</li> <li>在不改变已有的类别顺序的情况下添加一个新的类别</li> </ul> <h3 id=pandascategorical>pandas中的Categorical类型<a class=headerlink href=#pandascategorical title="Permanent link"> ¶</a></h3> <p>pandas拥有特殊的<code>Categorical</code>类型，用于承载基于整数的类别展示或编码的数据。 <div class=highlight><pre><span></span><code>fruits = [&#39;apple&#39;, &#39;orange&#39;, &#39;apple&#39;, &#39;apple&#39;] * 2
 N = len(fruits)
 df = pd.DataFrame(
     {
-        'fruit': fruits,
-        'basket_id': np.arange(N),
-        'count': np.random.randint(3, 15, size=N),
-        'weight': np.random.uniform(0, 4, size=N)
+        &#39;fruit&#39;: fruits,
+        &#39;basket_id&#39;: np.arange(N),
+        &#39;count&#39;: np.random.randint(3, 15, size=N),
+        &#39;weight&#39;: np.random.uniform(0, 4, size=N)
     },
-    columns=['basket_id', 'fruit', 'count', 'weight']
+    columns=[&#39;basket_id&#39;, &#39;fruit&#39;, &#39;count&#39;, &#39;weight&#39;]
 )
 print(df)
 #    basket_id   fruit  count    weight
@@ -688,9 +52,7 @@ print(df)
 # 5          5  orange     10  0.918739
 # 6          6   apple      4  0.784816
 # 7          7   apple     10  3.140607
-</code></pre>
-<p><code>df['fruit']</code>是一个Python字符串对象组成的数组。可以通过调用函数将它转换为<code>Categorical</code>对象：</p>
-<pre><code>fruit_cat = df['fruit'].astype('category')
+</code></pre></div></p> <p><code>df['fruit']</code>是一个Python字符串对象组成的数组。可以通过调用函数将它转换为<code>Categorical</code>对象： <div class=highlight><pre><span></span><code>fruit_cat = df[&#39;fruit&#39;].astype(&#39;category&#39;)
 print(fruit_cat)
 # 0     apple
 # 1    orange
@@ -701,24 +63,18 @@ print(fruit_cat)
 # 6     apple
 # 7     apple
 # Name: fruit, dtype: category
-# Categories (2, object): ['apple', 'orange']
-</code></pre>
-<p><code>fruit_cat</code>的值并不是NumPy数组，而是<code>pandas.Categorical</code>的实例：</p>
-<pre><code>c = fruit_cat.values
+# Categories (2, object): [&#39;apple&#39;, &#39;orange&#39;]
+</code></pre></div></p> <p><code>fruit_cat</code>的值并不是NumPy数组，而是<code>pandas.Categorical</code>的实例： <div class=highlight><pre><span></span><code>c = fruit_cat.values
 print(type(c))
-# &lt;class 'pandas.core.arrays.categorical.Categorical'&gt;
+# &lt;class &#39;pandas.core.arrays.categorical.Categorical&#39;&gt;
 print(c)
-# ['apple', 'orange', 'apple', 'apple', 'apple', 'orange', 'apple', 'apple']
-# Categories (2, object): ['apple', 'orange']
-</code></pre>
-<p><code>Categorical</code>对象拥有<code>categories</code>和<code>codes</code>属性：</p>
-<pre><code>print(c.categories)
-# Index(['apple', 'orange'], dtype='object')
+# [&#39;apple&#39;, &#39;orange&#39;, &#39;apple&#39;, &#39;apple&#39;, &#39;apple&#39;, &#39;orange&#39;, &#39;apple&#39;, &#39;apple&#39;]
+# Categories (2, object): [&#39;apple&#39;, &#39;orange&#39;]
+</code></pre></div></p> <p><code>Categorical</code>对象拥有<code>categories</code>和<code>codes</code>属性： <div class=highlight><pre><span></span><code>print(c.categories)
+# Index([&#39;apple&#39;, &#39;orange&#39;], dtype=&#39;object&#39;)
 print(c.codes)
 # [0 1 0 0 0 1 0 0]
-</code></pre>
-<p>通过分配已转换的结果将DataFrame的一列转换为<code>Categorical</code>对象：</p>
-<pre><code>print(df['fruit'])
+</code></pre></div></p> <p>通过分配已转换的结果将DataFrame的一列转换为<code>Categorical</code>对象： <div class=highlight><pre><span></span><code>print(df[&#39;fruit&#39;])
 # 0     apple
 # 1    orange
 # 2     apple
@@ -728,8 +84,8 @@ print(c.codes)
 # 6     apple
 # 7     apple
 # Name: fruit, dtype: object
-df['fruit'] = df['fruit'].astype('category')
-print(df['fruit'])
+df[&#39;fruit&#39;] = df[&#39;fruit&#39;].astype(&#39;category&#39;)
+print(df[&#39;fruit&#39;])
 # 0     apple
 # 1    orange
 # 2     apple
@@ -739,99 +95,65 @@ print(df['fruit'])
 # 6     apple
 # 7     apple
 # Name: fruit, dtype: category
-# Categories (2, object): ['apple', 'orange']
-</code></pre>
-<p>也可以从其他Python序列类型直接生成<code>pandas.Categorical</code>：</p>
-<pre><code>my_categories = pd.Categorical(['foo', 'bar', 'baz', 'foo', 'bar'])
+# Categories (2, object): [&#39;apple&#39;, &#39;orange&#39;]
+</code></pre></div></p> <p>也可以从其他Python序列类型直接生成<code>pandas.Categorical</code>： <div class=highlight><pre><span></span><code>my_categories = pd.Categorical([&#39;foo&#39;, &#39;bar&#39;, &#39;baz&#39;, &#39;foo&#39;, &#39;bar&#39;])
 print(my_categories)
-# ['foo', 'bar', 'baz', 'foo', 'bar']
-# Categories (3, object): ['bar', 'baz', 'foo']
-</code></pre>
-<p>也可以使用<code>from_codes</code>构造函数来转换其他数据源的分类编码数据：</p>
-<pre><code>categories = ['foo', 'bar', 'baz']
+# [&#39;foo&#39;, &#39;bar&#39;, &#39;baz&#39;, &#39;foo&#39;, &#39;bar&#39;]
+# Categories (3, object): [&#39;bar&#39;, &#39;baz&#39;, &#39;foo&#39;]
+</code></pre></div></p> <p>也可以使用<code>from_codes</code>构造函数来转换其他数据源的分类编码数据： <div class=highlight><pre><span></span><code>categories = [&#39;foo&#39;, &#39;bar&#39;, &#39;baz&#39;]
 codes = [0, 1, 2, 0, 0, 1]
 my_cats_2 = pd.Categorical.from_codes(codes, categories)
 print(my_cats_2)
-# ['foo', 'bar', 'baz', 'foo', 'foo', 'bar']
-# Categories (3, object): ['foo', 'bar', 'baz']
-</code></pre>
-<p>这个未排序的分类实例可以使用<code>as_ordered</code>进行排序：</p>
-<pre><code>print(my_cats_2.as_ordered())
-# ['foo', 'bar', 'baz', 'foo', 'foo', 'bar']
-# Categories (3, object): ['foo' &lt; 'bar' &lt; 'baz']
-</code></pre>
-<p>除非显式地指定，分类转换是不会指定类别的顺序的。因此<code>categories</code>数组可能会与输入数据的顺序不同。
-当使用<code>from_codes</code>或其他任意构造函数时，可以为类别指定一个有意义的顺序：输出的<code>[foo&lt;bar&lt;baz]</code>表明<code>foo</code>的顺序在<code>bar</code>之前，以此类推。</p>
-<pre><code>my_categories_ordered = pd.Categorical.from_codes(codes=codes, categories=categories, ordered=True)
+# [&#39;foo&#39;, &#39;bar&#39;, &#39;baz&#39;, &#39;foo&#39;, &#39;foo&#39;, &#39;bar&#39;]
+# Categories (3, object): [&#39;foo&#39;, &#39;bar&#39;, &#39;baz&#39;]
+</code></pre></div></p> <p>这个未排序的分类实例可以使用<code>as_ordered</code>进行排序： <div class=highlight><pre><span></span><code>print(my_cats_2.as_ordered())
+# [&#39;foo&#39;, &#39;bar&#39;, &#39;baz&#39;, &#39;foo&#39;, &#39;foo&#39;, &#39;bar&#39;]
+# Categories (3, object): [&#39;foo&#39; &lt; &#39;bar&#39; &lt; &#39;baz&#39;]
+</code></pre></div></p> <p>除非显式地指定，分类转换是不会指定类别的顺序的。因此<code>categories</code>数组可能会与输入数据的顺序不同。 当使用<code>from_codes</code>或其他任意构造函数时，可以为类别指定一个有意义的顺序：输出的<code>[foo&lt;bar&lt;baz]</code>表明<code>foo</code>的顺序在<code>bar</code>之前，以此类推。 <div class=highlight><pre><span></span><code>my_categories_ordered = pd.Categorical.from_codes(codes=codes, categories=categories, ordered=True)
 print(my_categories_ordered)
-# ['foo', 'bar', 'baz', 'foo', 'foo', 'bar']
-# Categories (3, object): ['foo' &lt; 'bar' &lt; 'baz']
-</code></pre>
-<p>分类数据可以不是字符串，尽管举的例子都是字符串例子。一个分类数组可以包含任一不可变的值类型。</p>
-<h3 id="categorical">使用Categorical对象进行计算</h3>
-<p>在pandas中使用<code>Categorical</code>与非编码版本相比（例如字符串数组）整体上是一致的。
-pandas中的某些部分，比如<code>groupby</code>函数，在与<code>Categorical</code>对象协同工作时性能更好。
-还有一些函数可以利用ordered标识。
-下面考虑一些随机数字数据，并使用<code>pandas.qcut</code>分箱函数。结果会返回<code>pandas.Categorical</code>；
-在前面章节使用过<code>pandas.cut</code>，但当时没有分析分类是如何工作的细节。</p>
-<pre><code>np.random.seed(12345)
+# [&#39;foo&#39;, &#39;bar&#39;, &#39;baz&#39;, &#39;foo&#39;, &#39;foo&#39;, &#39;bar&#39;]
+# Categories (3, object): [&#39;foo&#39; &lt; &#39;bar&#39; &lt; &#39;baz&#39;]
+</code></pre></div></p> <p>分类数据可以不是字符串，尽管举的例子都是字符串例子。一个分类数组可以包含任一不可变的值类型。</p> <h3 id=categorical>使用Categorical对象进行计算<a class=headerlink href=#categorical title="Permanent link"> ¶</a></h3> <p>在pandas中使用<code>Categorical</code>与非编码版本相比（例如字符串数组）整体上是一致的。 pandas中的某些部分，比如<code>groupby</code>函数，在与<code>Categorical</code>对象协同工作时性能更好。 还有一些函数可以利用ordered标识。 下面考虑一些随机数字数据，并使用<code>pandas.qcut</code>分箱函数。结果会返回<code>pandas.Categorical</code>； 在前面章节使用过<code>pandas.cut</code>，但当时没有分析分类是如何工作的细节。 <div class=highlight><pre><span></span><code>np.random.seed(12345)
 draws = np.random.randn(1000)
 print(draws[:5])
 # [-0.20470766  0.47894334 -0.51943872 -0.5557303   1.96578057]
-</code></pre>
-<p>计算上面数据的四分位分箱，并提取一些统计值：</p>
-<pre><code>bins = pd.qcut(draws, 4)
+</code></pre></div></p> <p>计算上面数据的四分位分箱，并提取一些统计值： <div class=highlight><pre><span></span><code>bins = pd.qcut(draws, 4)
 print(bins)
 # [(-0.684, -0.0101], (-0.0101, 0.63], (-0.684, -0.0101], (-0.684, -0.0101], (0.63, 3.928], ..., (-0.0101, 0.63], (-0.684, -0.0101], (-2.9499999999999997, -0.684], (-0.0101, 0.63], (0.63, 3.928]]
 # Length: 1000
 # Categories (4, interval[float64, right]): [(-2.9499999999999997, -0.684] &lt; (-0.684, -0.0101] &lt; (-0.0101, 0.63] &lt; (0.63, 3.928]]
-</code></pre>
-<p>通过在<code>qcut</code>函数中使用<code>labels</code>参数来四分位数名称：</p>
-<pre><code>bins = pd.qcut(draws, 4, labels=['Q1', 'Q2', 'Q3', 'Q4'])
+</code></pre></div></p> <p>通过在<code>qcut</code>函数中使用<code>labels</code>参数来四分位数名称： <div class=highlight><pre><span></span><code>bins = pd.qcut(draws, 4, labels=[&#39;Q1&#39;, &#39;Q2&#39;, &#39;Q3&#39;, &#39;Q4&#39;])
 print(bins)
-# ['Q2', 'Q3', 'Q2', 'Q2', 'Q4', ..., 'Q3', 'Q2', 'Q1', 'Q3', 'Q4']
+# [&#39;Q2&#39;, &#39;Q3&#39;, &#39;Q2&#39;, &#39;Q2&#39;, &#39;Q4&#39;, ..., &#39;Q3&#39;, &#39;Q2&#39;, &#39;Q1&#39;, &#39;Q3&#39;, &#39;Q4&#39;]
 # Length: 1000
-# Categories (4, object): ['Q1' &lt; 'Q2' &lt; 'Q3' &lt; 'Q4']
+# Categories (4, object): [&#39;Q1&#39; &lt; &#39;Q2&#39; &lt; &#39;Q3&#39; &lt; &#39;Q4&#39;]
 print(bins.codes[:10])
 # [1 2 1 1 3 3 2 2 3 3]
-</code></pre>
-<p>被标记的<code>bins</code>分类数据并不包含数据中箱体边界的相关信息，因此可以使用<code>groupby</code>来提取一些汇总统计值：</p>
-<pre><code>bins = pd.Series(bins, name='quartile')
-result = (pd.Series(draws).groupby(bins).agg(['count', 'min', 'max']).reset_index())
+</code></pre></div></p> <p>被标记的<code>bins</code>分类数据并不包含数据中箱体边界的相关信息，因此可以使用<code>groupby</code>来提取一些汇总统计值： <div class=highlight><pre><span></span><code>bins = pd.Series(bins, name=&#39;quartile&#39;)
+result = (pd.Series(draws).groupby(bins).agg([&#39;count&#39;, &#39;min&#39;, &#39;max&#39;]).reset_index())
 print(result)
 #   quartile  count       min       max
 # 0       Q1    250 -2.949343 -0.685484
 # 1       Q2    250 -0.683066 -0.010115
 # 2       Q3    250 -0.010032  0.628894
 # 3       Q4    250  0.634238  3.927528
-</code></pre>
-<p>结果中的<code>quartile</code>列保留了<code>bins</code>中原始的分类信息，包括顺序：</p>
-<pre><code>print(result['quartile'])
+</code></pre></div></p> <p>结果中的<code>quartile</code>列保留了<code>bins</code>中原始的分类信息，包括顺序： <div class=highlight><pre><span></span><code>print(result[&#39;quartile&#39;])
 # 0    Q1
 # 1    Q2
 # 2    Q3
 # 3    Q4
 # Name: quartile, dtype: category
-# Categories (4, object): ['Q1' &lt; 'Q2' &lt; 'Q3' &lt; 'Q4']
-</code></pre>
-<h4 id="_3">使用分类获得更高性能</h4>
-<p>如果对特定的数据集上做了大量的分析，将数据转换为分类数据可以产生大幅的性能提升。DateFrame中一列的分类版本通常也会明显使用更少内存。</p>
-<p>下面的例子含有一千万元素的Series以及少量的不同类别：</p>
-<pre><code>N = 10000000
+# Categories (4, object): [&#39;Q1&#39; &lt; &#39;Q2&#39; &lt; &#39;Q3&#39; &lt; &#39;Q4&#39;]
+</code></pre></div></p> <h4 id=_3>使用分类获得更高性能<a class=headerlink href=#_3 title="Permanent link"> ¶</a></h4> <p>如果对特定的数据集上做了大量的分析，将数据转换为分类数据可以产生大幅的性能提升。DateFrame中一列的分类版本通常也会明显使用更少内存。</p> <p>下面的例子含有一千万元素的Series以及少量的不同类别： <div class=highlight><pre><span></span><code>N = 10000000
 draws = pd.Series(np.random.randn(N))
-labels = pd.Series(['foo', 'bar', 'baz', 'qux'] * (N // 4))
-</code></pre>
-<p>现在将<code>labels</code>转换为<code>Categorical</code>对象：</p>
-<pre><code>categories = labels.astype('category')
+labels = pd.Series([&#39;foo&#39;, &#39;bar&#39;, &#39;baz&#39;, &#39;qux&#39;] * (N // 4))
+</code></pre></div></p> <p>现在将<code>labels</code>转换为<code>Categorical</code>对象： <div class=highlight><pre><span></span><code>categories = labels.astype(&#39;category&#39;)
 print(labels.memory_usage())  # labels比categories使用了明显更多的内存
 # 80000128
 print(categories.memory_usage())
 # 10000332
-</code></pre>
-<h3 id="_4">分类方法</h3>
-<p>Series包含的分类数据拥有一些特殊方法，这些方法类似于Series.str的特殊字符串方法。这些方法提供了快捷访问类别和代码的方式。</p>
-<pre><code>s = pd.Series(['a', 'b', 'c', 'd'] * 2)
-cat_s = s.astype('category')
+</code></pre></div></p> <h3 id=_4>分类方法<a class=headerlink href=#_4 title="Permanent link"> ¶</a></h3> <p>Series包含的分类数据拥有一些特殊方法，这些方法类似于Series.str的特殊字符串方法。这些方法提供了快捷访问类别和代码的方式。 <div class=highlight><pre><span></span><code>s = pd.Series([&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;d&#39;] * 2)
+cat_s = s.astype(&#39;category&#39;)
 print(cat_s)
 # 0    a
 # 1    b
@@ -842,10 +164,8 @@ print(cat_s)
 # 6    c
 # 7    d
 # dtype: category
-# Categories (4, object): ['a', 'b', 'c', 'd']
-</code></pre>
-<p>特殊属性<code>cat</code>提供了对分类方法的访问：</p>
-<pre><code>print(cat_s.cat.codes)
+# Categories (4, object): [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;d&#39;]
+</code></pre></div></p> <p>特殊属性<code>cat</code>提供了对分类方法的访问： <div class=highlight><pre><span></span><code>print(cat_s.cat.codes)
 # 0    0
 # 1    1
 # 2    2
@@ -856,10 +176,8 @@ print(cat_s)
 # 7    3
 # dtype: int8
 print(cat_s.cat.categories)
-# Index(['a', 'b', 'c', 'd'], dtype='object')
-</code></pre>
-<p>假设数据的实际类别集合超出了数据中观察到的四个值，可以使用<code>set_categories</code>方法来改变类别：</p>
-<pre><code>actual_categories = ['a', 'b', 'c', 'd', 'e']
+# Index([&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;d&#39;], dtype=&#39;object&#39;)
+</code></pre></div></p> <p>假设数据的实际类别集合超出了数据中观察到的四个值，可以使用<code>set_categories</code>方法来改变类别： <div class=highlight><pre><span></span><code>actual_categories = [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;d&#39;, &#39;e&#39;]
 cat_s2 = cat_s.cat.set_categories(actual_categories)
 print(cat_s2)
 # 0    a
@@ -871,10 +189,8 @@ print(cat_s2)
 # 6    c
 # 7    d
 # dtype: category
-# Categories (5, object): ['a', 'b', 'c', 'd', 'e']
-</code></pre>
-<p>虽然看起来数据并未改变，但新类别将反映在使用它们的操作中。例如，<code>value_counts</code>将遵循新的类别（如果存在）：</p>
-<pre><code>print(cat_s.value_counts())
+# Categories (5, object): [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;d&#39;, &#39;e&#39;]
+</code></pre></div></p> <p>虽然看起来数据并未改变，但新类别将反映在使用它们的操作中。例如，<code>value_counts</code>将遵循新的类别（如果存在）： <div class=highlight><pre><span></span><code>print(cat_s.value_counts())
 # a    2
 # b    2
 # c    2
@@ -887,18 +203,14 @@ print(cat_s2.value_counts())
 # d    2
 # e    0
 # dtype: int64
-</code></pre>
-<p>大型数据集中，分类数据经常被用于节省内存和更高性能的便捷工具。
-在过滤了一个大型DataFrame或Series之后，很多类别将不会出现在数据中。
-可以使用<code>remove_unused_categories</code>方法来去除未观察到的类别：</p>
-<pre><code>cat_s3 = cat_s[cat_s.isin(['a', 'b'])]
+</code></pre></div></p> <p>大型数据集中，分类数据经常被用于节省内存和更高性能的便捷工具。 在过滤了一个大型DataFrame或Series之后，很多类别将不会出现在数据中。 可以使用<code>remove_unused_categories</code>方法来去除未观察到的类别： <div class=highlight><pre><span></span><code>cat_s3 = cat_s[cat_s.isin([&#39;a&#39;, &#39;b&#39;])]
 print(cat_s3)
 # 0    a
 # 1    b
 # 4    a
 # 5    b
 # dtype: category
-# Categories (4, object): ['a', 'b', 'c', 'd']
+# Categories (4, object): [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;d&#39;]
 
 print(cat_s3.cat.remove_unused_categories())
 # 0    a
@@ -906,15 +218,9 @@ print(cat_s3.cat.remove_unused_categories())
 # 4    a
 # 5    b
 # dtype: category
-# Categories (2, object): ['a', 'b']
-</code></pre>
-<h4 id="_5">创建用于建模的虚拟变量</h4>
-<p>当使用统计数据或机器学习工具时，通常会将分类数据转换为虚拟变量，也称为one-hot编码。
-这会产生一个DataFrame，每个不同的类别都是它的一列。这些列包含一个特定类别的出现次数，否则为0。</p>
-<pre><code>cat_s = pd.Series(['a', 'b', 'c', 'd'] * 2, dtype='category')
-</code></pre>
-<p>使用<code>pandas.get_dummies</code>函数将一维的分类数据转换为一个包含虚拟变量的DataFrame：</p>
-<pre><code>print(pd.get_dummies(cat_s))
+# Categories (2, object): [&#39;a&#39;, &#39;b&#39;]
+</code></pre></div></p> <h4 id=_5>创建用于建模的虚拟变量<a class=headerlink href=#_5 title="Permanent link"> ¶</a></h4> <p>当使用统计数据或机器学习工具时，通常会将分类数据转换为虚拟变量，也称为one-hot编码。 这会产生一个DataFrame，每个不同的类别都是它的一列。这些列包含一个特定类别的出现次数，否则为0。 <div class=highlight><pre><span></span><code>cat_s = pd.Series([&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;d&#39;] * 2, dtype=&#39;category&#39;)
+</code></pre></div></p> <p>使用<code>pandas.get_dummies</code>函数将一维的分类数据转换为一个包含虚拟变量的DataFrame： <div class=highlight><pre><span></span><code>print(pd.get_dummies(cat_s))
 #    a  b  c  d
 # 0  1  0  0  0
 # 1  0  1  0  0
@@ -924,22 +230,12 @@ print(cat_s3.cat.remove_unused_categories())
 # 5  0  1  0  0
 # 6  0  0  1  0
 # 7  0  0  0  1
-</code></pre>
-<h2 id="groupby">高阶GroupBy应用</h2>
-<pre><code>import numpy as np
+</code></pre></div></p> <h2 id=groupby>高阶GroupBy应用<a class=headerlink href=#groupby title="Permanent link"> ¶</a></h2> <div class=highlight><pre><span></span><code>import numpy as np
 import pandas as pd
-</code></pre>
-<h3 id="groupby_1">分组转换和“展开”GroupBy</h3>
-<p>在分组操作中可以使用apply方法实现转换操作。还有另一个内建方法transform，与apply方法类似但是可以对使用的函数加上更多的限制：</p>
-<ul>
-<li>transform可以产生一个标量值，并广播到各分组的尺寸数据中。</li>
-<li>transform可以产生一个与输入分组尺寸相同的对象。</li>
-<li>transform不可改变它的输入。</li>
-</ul>
-<pre><code>df = pd.DataFrame(
+</code></pre></div> <h3 id=groupby_1>分组转换和“展开”GroupBy<a class=headerlink href=#groupby_1 title="Permanent link"> ¶</a></h3> <p>在分组操作中可以使用apply方法实现转换操作。还有另一个内建方法transform，与apply方法类似但是可以对使用的函数加上更多的限制：</p> <ul> <li>transform可以产生一个标量值，并广播到各分组的尺寸数据中。</li> <li>transform可以产生一个与输入分组尺寸相同的对象。</li> <li>transform不可改变它的输入。</li> </ul> <div class=highlight><pre><span></span><code>df = pd.DataFrame(
     {
-        'key': ['a', 'b', 'c'] * 4,
-        'value': np.arange(12)
+        &#39;key&#39;: [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;] * 4,
+        &#39;value&#39;: np.arange(12)
     }
 )
 print(df)
@@ -956,19 +252,14 @@ print(df)
 # 9    a      9
 # 10   b     10
 # 11   c     11
-</code></pre>
-<p>按<code>key</code>分组的均值：</p>
-<pre><code>g = df.groupby('key').value
+</code></pre></div> <p>按<code>key</code>分组的均值： <div class=highlight><pre><span></span><code>g = df.groupby(&#39;key&#39;).value
 print(g.mean())
 # key
 # a    4.5
 # b    5.5
 # c    6.5
 # Name: value, dtype: float64
-</code></pre>
-<p>假设要产生一个Series，它的尺寸和<code>df['value']</code>一样，但值都被按<code>key</code>分组的均值替代。
-可以向<code>transfrom</code>传递匿名函数<code>lambda x: x.mean()</code>：</p>
-<pre><code>result = g.transform(lambda x: x.mean())
+</code></pre></div></p> <p>假设要产生一个Series，它的尺寸和<code>df['value']</code>一样，但值都被按<code>key</code>分组的均值替代。 可以向<code>transfrom</code>传递匿名函数<code>lambda x: x.mean()</code>： <div class=highlight><pre><span></span><code>result = g.transform(lambda x: x.mean())
 print(result)
 # 0     4.5
 # 1     5.5
@@ -983,9 +274,7 @@ print(result)
 # 10    5.5
 # 11    6.5
 # Name: value, dtype: float64
-</code></pre>
-<p>对于内建的聚合函数，可以像<code>GroupBy</code>的<code>agg</code>方法一样传递一个字符串别名：</p>
-<pre><code>result = g.transform('mean')
+</code></pre></div></p> <p>对于内建的聚合函数，可以像<code>GroupBy</code>的<code>agg</code>方法一样传递一个字符串别名： <div class=highlight><pre><span></span><code>result = g.transform(&#39;mean&#39;)
 print(result)
 # 0     4.5
 # 1     5.5
@@ -1000,10 +289,7 @@ print(result)
 # 10    5.5
 # 11    6.5
 # Name: value, dtype: float64
-</code></pre>
-<p>与<code>apply</code>类似，<code>transform</code>可以与返回<code>Series</code>的函数一起使用，但结果必须和输入有相同的大小。</p>
-<p>例如，可以使用<code>lambda</code>函数给每个组乘以2：</p>
-<pre><code>result = g.transform(lambda x: x * 2)
+</code></pre></div></p> <p>与<code>apply</code>类似，<code>transform</code>可以与返回<code>Series</code>的函数一起使用，但结果必须和输入有相同的大小。</p> <p>例如，可以使用<code>lambda</code>函数给每个组乘以2： <div class=highlight><pre><span></span><code>result = g.transform(lambda x: x * 2)
 print(result)
 # 0      0
 # 1      2
@@ -1018,9 +304,7 @@ print(result)
 # 10    20
 # 11    22
 # Name: value, dtype: int64
-</code></pre>
-<p>更复杂一些，可以按照每个组的降序计算排名：</p>
-<pre><code>result = g.transform(lambda x: x.rank(ascending=False))
+</code></pre></div></p> <p>更复杂一些，可以按照每个组的降序计算排名： <div class=highlight><pre><span></span><code>result = g.transform(lambda x: x.rank(ascending=False))
 print(result)
 # 0     4.0
 # 1     4.0
@@ -1035,13 +319,9 @@ print(result)
 # 10    1.0
 # 11    1.0
 # Name: value, dtype: float64
-</code></pre>
-<p>考虑一个由简单聚合构成的分组转换函数：</p>
-<pre><code>def normalize(x):
+</code></pre></div></p> <p>考虑一个由简单聚合构成的分组转换函数： <div class=highlight><pre><span></span><code>def normalize(x):
     return (x - x.mean()) / x.std()
-</code></pre>
-<p>使用<code>transform</code>或<code>apply</code>可以获得等价的结果：</p>
-<pre><code>result = g.transform(normalize)
+</code></pre></div></p> <p>使用<code>transform</code>或<code>apply</code>可以获得等价的结果： <div class=highlight><pre><span></span><code>result = g.transform(normalize)
 print(result)
 # 0    -1.161895
 # 1    -1.161895
@@ -1072,12 +352,7 @@ print(result)
 # 10    1.161895
 # 11    1.161895
 # Name: value, dtype: float64
-</code></pre>
-<p>内建的聚合函数如<code>mean</code>或<code>sum</code>通常会比<code>apply</code>函数更快。
-这些函数在与<code>transform</code>一起使用时也会存在一个"快速通过"。
-这允许我们执行一个所谓的展开分组操作。
-一个展开分组操作可能会包含多个分组聚合，矢量化操作的整体优势往往超过了这一点。</p>
-<pre><code>result = g.transform('mean')
+</code></pre></div></p> <p>内建的聚合函数如<code>mean</code>或<code>sum</code>通常会比<code>apply</code>函数更快。 这些函数在与<code>transform</code>一起使用时也会存在一个"快速通过"。 这允许我们执行一个所谓的展开分组操作。 一个展开分组操作可能会包含多个分组聚合，矢量化操作的整体优势往往超过了这一点。 <div class=highlight><pre><span></span><code>result = g.transform(&#39;mean&#39;)
 print(result)
 # 0     4.5
 # 1     5.5
@@ -1093,7 +368,7 @@ print(result)
 # 11    6.5
 # Name: value, dtype: float64
 
-normalized = (df['value'] - g.transform('mean')) / g.transform('std')
+normalized = (df[&#39;value&#39;] - g.transform(&#39;mean&#39;)) / g.transform(&#39;std&#39;)
 print(normalized)
 # 0    -1.161895
 # 1    -1.161895
@@ -1108,15 +383,12 @@ print(normalized)
 # 10    1.161895
 # 11    1.161895
 # Name: value, dtype: float64
-</code></pre>
-<h3 id="_6">分组的时间重新采样</h3>
-<p>对于时间序列数据，<code>resample</code>方法在语义上是一种基于时间分段的分组操作。</p>
-<pre><code>N = 15
-times = pd.date_range('2020-5-20 00:00', freq='1min', periods=N)
+</code></pre></div></p> <h3 id=_6>分组的时间重新采样<a class=headerlink href=#_6 title="Permanent link"> ¶</a></h3> <p>对于时间序列数据，<code>resample</code>方法在语义上是一种基于时间分段的分组操作。 <div class=highlight><pre><span></span><code>N = 15
+times = pd.date_range(&#39;2020-5-20 00:00&#39;, freq=&#39;1min&#39;, periods=N)
 df = pd.DataFrame(
     {
-        'time': times,
-        'value': np.arange(N)
+        &#39;time&#39;: times,
+        &#39;value&#39;: np.arange(N)
     }
 )
 
@@ -1137,22 +409,18 @@ print(df)
 # 12 2020-05-20 00:12:00     12
 # 13 2020-05-20 00:13:00     13
 # 14 2020-05-20 00:14:00     14
-</code></pre>
-<p>这里，可以按<code>time</code>进行索引，然后重新采样：</p>
-<pre><code>result = df.set_index('time').resample('5min').count()
+</code></pre></div></p> <p>这里，可以按<code>time</code>进行索引，然后重新采样： <div class=highlight><pre><span></span><code>result = df.set_index(&#39;time&#39;).resample(&#39;5min&#39;).count()
 print(result)
 #                      value
 # time
 # 2020-05-20 00:00:00      5
 # 2020-05-20 00:05:00      5
 # 2020-05-20 00:10:00      5
-</code></pre>
-<p>假设DataFrame包含多个时间序列，并按一个附加的分组键列进行了标记：</p>
-<pre><code>df2 = pd.DataFrame(
+</code></pre></div></p> <p>假设DataFrame包含多个时间序列，并按一个附加的分组键列进行了标记： <div class=highlight><pre><span></span><code>df2 = pd.DataFrame(
     {
-        'time': times.repeat(3),
-        'key': np.tile(['a', 'b', 'c'], N),
-        'value': np.arange((N * 3))
+        &#39;time&#39;: times.repeat(3),
+        &#39;key&#39;: np.tile([&#39;a&#39;, &#39;b&#39;, &#39;c&#39;], N),
+        &#39;value&#39;: np.arange((N * 3))
     }
 )
 print(df2)
@@ -1164,11 +432,7 @@ print(df2)
 # ......
 # 43 2020-05-20 00:14:00   b     43
 # 44 2020-05-20 00:14:00   c     44
-</code></pre>
-<p>使用<code>pandas.TimeGrouper</code>对象，每个<code>key</code>的值进行相同的重新采样：
-pd.TimeGrouper() was formally deprecated in pandas v0.21.0 in favor of pd.Grouper().</p>
-<h2 id="_7">方法链技术</h2>
-<pre><code>import numpy as np
+</code></pre></div></p> <p>使用<code>pandas.TimeGrouper</code>对象，每个<code>key</code>的值进行相同的重新采样： pd.TimeGrouper() was formally deprecated in pandas v0.21.0 in favor of pd.Grouper().</p> <h2 id=_7>方法链技术<a class=headerlink href=#_7 title="Permanent link"> ¶</a></h2> <div class=highlight><pre><span></span><code>import numpy as np
 import pandas as pd
 from numpy import nan as NA
 
@@ -1178,59 +442,36 @@ df = pd.DataFrame(
      [NA, NA, NA],
      [NA, 2., 3.]]
 )
-v = ['a', 'b', 'c', 'd']
+v = [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;d&#39;]
 print(df)
 #      0    1    2
 # 0  1.0  2.0  3.0
 # 1  1.0  NaN  NaN
 # 2  NaN  NaN  NaN
 # 3  NaN  2.0  3.0
-</code></pre>
-<p>非函数赋值的方式。</p>
-<pre><code>df2 = df.copy()
-df2['k'] = v
+</code></pre></div> <p>非函数赋值的方式。 <div class=highlight><pre><span></span><code>df2 = df.copy()
+df2[&#39;k&#39;] = v
 print(df2)
 #      0    1    2  k
 # 0  1.0  2.0  3.0  a
 # 1  1.0  NaN  NaN  b
 # 2  NaN  NaN  NaN  c
 # 3  NaN  2.0  3.0  d
-</code></pre>
-<p>函数赋值的方式。
-<code>DataFrame.assign</code>方法是对<code>df[k] = v</code>的赋值方式的一种功能替代。它返回的是一个按指定修改的新的DataFrame，而不是在原对象上进行修改。</p>
-<pre><code>df2 = df.assign(k=v)
+</code></pre></div></p> <p>函数赋值的方式。 <code>DataFrame.assign</code>方法是对<code>df[k] = v</code>的赋值方式的一种功能替代。它返回的是一个按指定修改的新的DataFrame，而不是在原对象上进行修改。 <div class=highlight><pre><span></span><code>df2 = df.assign(k=v)
 print(df2)
 #      0    1    2  k
 # 0  1.0  2.0  3.0  a
 # 1  1.0  NaN  NaN  b
 # 2  NaN  NaN  NaN  c
 # 3  NaN  2.0  3.0  d
-</code></pre>
-<h3 id="pipe">pipe方法</h3>
-<p>对数据连续操作形成方法链（多个方法连续调用对数据进行处理）。
-<code>Series.pipe</code>，<code>DataFrame.pipe</code>意味着 <code>x.pipe(f, *args, **kwargs)</code> 和 <code>f(x, *args, **kwargs)</code> 效果相同。换句话说，该函数应用于整个数据。</p>
-<p>以 DataFrame 为例：</p>
-<ul>
-<li>语法: <code>DataFrame.pipe(func, *args, **kwargs)</code></li>
-<li>参数：<ul>
-<li>func：函数，应用于系列/数据帧的函数。args 和 kwargs 被传递到 func。或者是一个（callable，data_keyword）元组，其中 data_keyword 是一个字符串，表示需要Series/DataFrame 的 callable 关键字</li>
-<li>args：可迭代对象, 可选，函数的位置参数</li>
-<li>kwargs：mapping, 可选，传入 func 的关键字参数字典</li>
-</ul>
-</li>
-<li>返回：object：func 处理后的任意数据类型</li>
-</ul>
-<h4 id="dataframe">DataFrame示例：</h4>
-<pre><code>df = pd.DataFrame(
+</code></pre></div></p> <h3 id=pipe>pipe方法<a class=headerlink href=#pipe title="Permanent link"> ¶</a></h3> <p>对数据连续操作形成方法链（多个方法连续调用对数据进行处理）。 <code>Series.pipe</code>，<code>DataFrame.pipe</code>意味着 <code>x.pipe(f, *args, **kwargs)</code> 和 <code>f(x, *args, **kwargs)</code> 效果相同。换句话说，该函数应用于整个数据。</p> <p>以 DataFrame 为例：</p> <ul> <li>语法: <code>DataFrame.pipe(func, *args, **kwargs)</code></li> <li>参数：<ul> <li>func：函数，应用于系列/数据帧的函数。args 和 kwargs 被传递到 func。或者是一个（callable，data_keyword）元组，其中 data_keyword 是一个字符串，表示需要Series/DataFrame 的 callable 关键字</li> <li>args：可迭代对象, 可选，函数的位置参数</li> <li>kwargs：mapping, 可选，传入 func 的关键字参数字典</li> </ul> </li> <li>返回：object：func 处理后的任意数据类型</li> </ul> <h4 id=dataframe>DataFrame示例：<a class=headerlink href=#dataframe title="Permanent link"> ¶</a></h4> <div class=highlight><pre><span></span><code>df = pd.DataFrame(
     [[1., 2., 3.],
      [1., NA, NA],
      [NA, NA, NA],
      [NA, 2., 3.]]
 )
-</code></pre>
-<p>被传递的类型是调用的实例。</p>
-<pre><code>df.pipe(type)  # 传递的是type实例
-# &lt;class 'pandas.core.frame.DataFrame'&gt;
+</code></pre></div> <p>被传递的类型是调用的实例。 <div class=highlight><pre><span></span><code>df.pipe(type)  # 传递的是type实例
+# &lt;class &#39;pandas.core.frame.DataFrame&#39;&gt;
 
 df.pipe(len)  # 传递的是len实例
 # 4
@@ -1254,43 +495,37 @@ df.pipe(fun)  # 传递的是fun函数
 def fun2(x, df):  # 数据是第二个参数
     return df * 3
 
-df.pipe((fun2, 'df'), 2)  # 注意传值
+df.pipe((fun2, &#39;df&#39;), 2)  # 注意传值
 #      0    1    2
 # 0  3.0  6.0  9.0
 # 1  3.0  NaN  NaN
 # 2  NaN  NaN  NaN
 # 3  NaN  6.0  9.0
-</code></pre>
-<h4 id="series">Series 示例：</h4>
-<pre><code>s = pd.Series([1, 2, 3, 4, 5])
+</code></pre></div></p> <h4 id=series>Series 示例：<a class=headerlink href=#series title="Permanent link"> ¶</a></h4> <div class=highlight><pre><span></span><code>s = pd.Series([1, 2, 3, 4, 5])
 
 s.pipe(type)
-# &lt;class 'pandas.core.series.Series'&gt;
+# &lt;class &#39;pandas.core.series.Series&#39;&gt;
 s.pipe(len)
 # 5
 
 def fun3(x, ss):
     return ss * 3
 
-s.pipe((fun3, 'ss'), 2)
+s.pipe((fun3, &#39;ss&#39;), 2)
 # 0     3
 # 1     6
 # 2     9
 # 3    12
 # 4    15
 # dtype: int64
-</code></pre>
-<h4 id="groupby_2">GroupBy 示例：</h4>
-<pre><code>df = pd.DataFrame({'A': 'a b a b'.split(), 'B': [1, 2, 3, 4]})
+</code></pre></div> <h4 id=groupby_2>GroupBy 示例：<a class=headerlink href=#groupby_2 title="Permanent link"> ¶</a></h4> <div class=highlight><pre><span></span><code>df = pd.DataFrame({&#39;A&#39;: &#39;a b a b&#39;.split(), &#39;B&#39;: [1, 2, 3, 4]})
 print(df)
 #    A  B
 # 0  a  1
 # 1  b  2
 # 2  a  3
 # 3  b  4
-</code></pre>
-<p>求每组最大值和最小值之间的差异。</p>
-<pre><code>df.groupby('A').pipe(lambda x: x.max() - x.min())
+</code></pre></div> <p>求每组最大值和最小值之间的差异。 <div class=highlight><pre><span></span><code>df.groupby(&#39;A&#39;).pipe(lambda x: x.max() - x.min())
 #    B
 # A
 # a  2
@@ -1299,59 +534,9 @@ print(df)
 def mean1(groupby):
     return groupby.mean()
 
-df.groupby(['A']).pipe(mean1)
+df.groupby([&#39;A&#39;]).pipe(mean1)
 #      B
 # A
 # a  2.0
 # b  3.0
-</code></pre>
-                
-              
-              
-                
-
-
-              
-            </article>
-          </div>
-        </div>
-        
-          <a href="#" class="md-top md-icon" data-md-component="top" data-md-state="hidden">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"/></svg>
-            Back to top
-          </a>
-        
-      </main>
-      
-        
-<footer class="md-footer">
-  
-  <div class="md-footer-meta md-typeset">
-    <div class="md-footer-meta__inner md-grid">
-      <div class="md-footer-copyright">
-        
-        
-          Made with
-          <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
-            Material for MkDocs
-          </a>
-        
-        
-      </div>
-      
-    </div>
-  </div>
-</footer>
-      
-    </div>
-    <div class="md-dialog" data-md-component="dialog">
-      <div class="md-dialog__inner md-typeset"></div>
-    </div>
-    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tracking", "navigation.top", "navigation.expand"], "search": "../../../assets/javascripts/workers/search.fcfe8b6d.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": null}</script>
-    
-    
-      <script src="../../../assets/javascripts/bundle.b1047164.min.js"></script>
-      
-    
-  </body>
-</html>
+</code></pre></div></p> </article> </div> </div> </main> <footer class=md-footer> <div class="md-footer-meta md-typeset"> <div class="md-footer-meta__inner md-grid"> <div class=md-footer-copyright> Made with <a href=https://squidfunk.github.io/mkdocs-material/ target=_blank rel=noopener> Material for MkDocs </a> </div> </div> </div> </footer> </div> <div class=md-dialog data-md-component=dialog> <div class="md-dialog__inner md-typeset"></div> </div> <script id=__config type=application/json>{"base": "../../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.instant", "navigation.sections"], "search": "../../../assets/javascripts/workers/search.fcfe8b6d.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": null}</script> <script src=../../../assets/javascripts/bundle.b1047164.min.js></script> </body> </html>

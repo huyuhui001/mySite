@@ -1,0 +1,281 @@
+<!doctype html><html lang=en class=no-js> <head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><link href=https://huyuhui001.github.io/mySite/k8s/foundamentals/docker/ rel=canonical><link rel=icon href=../../../assets/images/favicon.png><meta name=generator content="mkdocs-1.3.0, mkdocs-material-7.3.6"><title>Docker Fundamentals - MEMO</title><link rel=stylesheet href=../../../assets/stylesheets/main.a57b2b03.min.css><link rel=stylesheet href=../../../assets/stylesheets/palette.3f5d1f46.min.css><meta name=theme-color content=#009485><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback"><style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style><link rel=stylesheet href=../../../extra.css></head> <body dir=ltr data-md-color-scheme data-md-color-primary=teal data-md-color-accent=green> <script>function __prefix(e){return new URL("../../..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script> <input class=md-toggle data-md-toggle=drawer type=checkbox id=__drawer autocomplete=off> <input class=md-toggle data-md-toggle=search type=checkbox id=__search autocomplete=off> <label class=md-overlay for=__drawer></label> <div data-md-component=skip> <a href=#docker-fundamentals class=md-skip> Skip to content </a> </div> <div data-md-component=announce> </div> <header class="md-header md-header--lifted" data-md-component=header> <nav class="md-header__inner md-grid" aria-label=Header> <a href=../../.. title=MEMO class="md-header__button md-logo" aria-label=MEMO data-md-component=logo> <img src=../../../assets/logo.jpg alt=logo> </a> <label class="md-header__button md-icon" for=__drawer> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg> </label> <div class=md-header__title data-md-component=header-title> <div class=md-header__ellipsis> <div class=md-header__topic> <span class=md-ellipsis> MEMO </span> </div> <div class=md-header__topic data-md-component=header-topic> <span class=md-ellipsis> Docker Fundamentals </span> </div> </div> </div> <label class="md-header__button md-icon" for=__search> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg> </label> <div class=md-search data-md-component=search role=dialog> <label class=md-search__overlay for=__search></label> <div class=md-search__inner role=search> <form class=md-search__form name=search> <input type=text class=md-search__input name=query aria-label=Search placeholder=Search autocapitalize=off autocorrect=off autocomplete=off spellcheck=false data-md-component=search-query required> <label class="md-search__icon md-icon" for=__search> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg> </label> <nav class=md-search__options aria-label=Search> <button type=reset class="md-search__icon md-icon" aria-label=Clear tabindex=-1> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg> </button> </nav> </form> <div class=md-search__output> <div class=md-search__scrollwrap data-md-scrollfix> <div class=md-search-result data-md-component=search-result> <div class=md-search-result__meta> Initializing search </div> <ol class=md-search-result__list></ol> </div> </div> </div> </div> </div> <div class=md-header__source> <a href=https://github.com/huyuhui001/mySite title="Go to repository" class=md-source data-md-component=source> <div class="md-source__icon md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg> </div> <div class=md-source__repository> huyuhui001/mySite </div> </a> </div> </nav> <nav class=md-tabs aria-label=Tabs data-md-component=tabs> <div class="md-tabs__inner md-grid"> <ul class=md-tabs__list> <li class=md-tabs__item> <a href=../../../linux/Administration/linux_admin/ class=md-tabs__link> Linux </a> </li> <li class=md-tabs__item> <a href=../../installation/single-local/ class="md-tabs__link md-tabs__link--active"> Kubernetes </a> </li> <li class=md-tabs__item> <a href=../../../python/Foundation/python_foundation_index/ class=md-tabs__link> Python </a> </li> </ul> </div> </nav> </header> <div class=md-container data-md-component=container> <main class=md-main data-md-component=main> <div class="md-main__inner md-grid"> <div class="md-sidebar md-sidebar--primary" data-md-component=sidebar data-md-type=navigation> <div class=md-sidebar__scrollwrap> <div class=md-sidebar__inner> <nav class="md-nav md-nav--primary md-nav--lifted" aria-label=Navigation data-md-level=0> <label class=md-nav__title for=__drawer> <a href=../../.. title=MEMO class="md-nav__button md-logo" aria-label=MEMO data-md-component=logo> <img src=../../../assets/logo.jpg alt=logo> </a> MEMO </label> <div class=md-nav__source> <a href=https://github.com/huyuhui001/mySite title="Go to repository" class=md-source data-md-component=source> <div class="md-source__icon md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg> </div> <div class=md-source__repository> huyuhui001/mySite </div> </a> </div> <ul class=md-nav__list data-md-scrollfix> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_1 type=checkbox id=__nav_1> <label class=md-nav__link for=__nav_1> Linux <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label=Linux data-md-level=1> <label class=md-nav__title for=__nav_1> <span class="md-nav__icon md-icon"></span> Linux </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../linux/Administration/linux_admin/ class=md-nav__link> SUSE Linux Administration </a> </li> <li class=md-nav__item> <a href=../../../linux/SES/linux_ses/ class=md-nav__link> SUSE Enterprise Storage Foundation </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--active md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_2 type=checkbox id=__nav_2 checked> <label class=md-nav__link for=__nav_2> Kubernetes <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label=Kubernetes data-md-level=1> <label class=md-nav__title for=__nav_2> <span class="md-nav__icon md-icon"></span> Kubernetes </label> <ul class=md-nav__list data-md-scrollfix> <li class="md-nav__item md-nav__item--section md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_2_1 type=checkbox id=__nav_2_1> <label class=md-nav__link for=__nav_2_1> Installation <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label=Installation data-md-level=2> <label class=md-nav__title for=__nav_2_1> <span class="md-nav__icon md-icon"></span> Installation </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../installation/single-local/ class=md-nav__link> Single Node Installation </a> </li> <li class=md-nav__item> <a href=../../installation/multiple-local/ class=md-nav__link> Multiple Nodes Installation </a> </li> <li class=md-nav__item> <a href=../../installation/aliyun-opensuse/ class=md-nav__link> Installation on Aliyun openSUSE </a> </li> <li class=md-nav__item> <a href=../../installation/aliyun-ubuntu/ class=md-nav__link> Installation on Aliyun Ubuntu </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_2_2 type=checkbox id=__nav_2_2 checked> <label class=md-nav__link for=__nav_2_2> Foundamentals <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label=Foundamentals data-md-level=2> <label class=md-nav__title for=__nav_2_2> <span class="md-nav__icon md-icon"></span> Foundamentals </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../memo/ class=md-nav__link> Memo </a> </li> <li class="md-nav__item md-nav__item--active"> <input class="md-nav__toggle md-toggle" data-md-toggle=toc type=checkbox id=__toc> <label class="md-nav__link md-nav__link--active" for=__toc> Docker Fundamentals <span class="md-nav__icon md-icon"></span> </label> <a href=./ class="md-nav__link md-nav__link--active"> Docker Fundamentals </a> <nav class="md-nav md-nav--secondary" aria-label="Table of contents"> <label class=md-nav__title for=__toc> <span class="md-nav__icon md-icon"></span> Table of contents </label> <ul class=md-nav__list data-md-component=toc data-md-scrollfix> <li class=md-nav__item> <a href=#demo-environment class=md-nav__link> Demo environment </a> </li> <li class=md-nav__item> <a href=#linux-primitives class=md-nav__link> Linux Primitives </a> </li> <li class=md-nav__item> <a href=#installing-docker class=md-nav__link> Installing Docker </a> </li> <li class=md-nav__item> <a href=#container-lifecycle class=md-nav__link> Container lifecycle </a> <nav class=md-nav aria-label="Container lifecycle"> <ul class=md-nav__list> <li class=md-nav__item> <a href=#overview class=md-nav__link> Overview </a> </li> <li class=md-nav__item> <a href=#ports-and-volumes class=md-nav__link> Ports and volumes </a> </li> <li class=md-nav__item> <a href=#dockerfile class=md-nav__link> Dockerfile </a> </li> <li class=md-nav__item> <a href=#multi-stage-dockerfile class=md-nav__link> Multi-stage Dockerfile </a> </li> </ul> </nav> </li> </ul> </nav> </li> <li class=md-nav__item> <a href=../overview/ class=md-nav__link> Overview </a> </li> <li class=md-nav__item> <a href=../basics/ class=md-nav__link> kubectl basics </a> </li> <li class=md-nav__item> <a href=../namespace/ class=md-nav__link> Namespace </a> </li> <li class=md-nav__item> <a href=../pod/ class=md-nav__link> Work on pod </a> </li> <li class=md-nav__item> <a href=../deployment/ class=md-nav__link> Deployment </a> </li> <li class=md-nav__item> <a href=../statefulset/ class=md-nav__link> StatefulSet </a> </li> <li class=md-nav__item> <a href=../daemonset/ class=md-nav__link> DaemonSet </a> </li> <li class=md-nav__item> <a href=../job/ class=md-nav__link> Job and Cronjob </a> </li> <li class=md-nav__item> <a href=../hpa/ class=md-nav__link> Horizontal Pod Autoscaling </a> </li> <li class=md-nav__item> <a href=../service/ class=md-nav__link> Service </a> </li> <li class=md-nav__item> <a href=../ingress/ class=md-nav__link> Ingress </a> </li> <li class=md-nav__item> <a href=../persistence/ class=md-nav__link> Persistence </a> </li> <li class=md-nav__item> <a href=../scheduling/ class=md-nav__link> Scheduling </a> </li> <li class=md-nav__item> <a href=../policy/ class=md-nav__link> Policy </a> </li> <li class=md-nav__item> <a href=../configuration/ class=md-nav__link> Configuration </a> </li> <li class=md-nav__item> <a href=../rbac/ class=md-nav__link> Role Based Access Control (RBAC) </a> </li> <li class=md-nav__item> <a href=../networkpolicy/ class=md-nav__link> Network Policy </a> </li> <li class=md-nav__item> <a href=../clustermgt/ class=md-nav__link> Cluster Management </a> </li> <li class=md-nav__item> <a href=../helming/ class=md-nav__link> Helming </a> </li> <li class=md-nav__item> <a href=../troubleshooting/ class=md-nav__link> Troubleshooting </a> </li> <li class=md-nav__item> <a href=../healthcheck/ class=md-nav__link> Health Check </a> </li> <li class=md-nav__item> <a href=../casestudy/ class=md-nav__link> Case Study </a> </li> </ul> </nav> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_3 type=checkbox id=__nav_3> <label class=md-nav__link for=__nav_3> Python <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label=Python data-md-level=1> <label class=md-nav__title for=__nav_3> <span class="md-nav__icon md-icon"></span> Python </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../python/Foundation/python_foundation_index/ class=md-nav__link> Python Foundamentals </a> </li> <li class=md-nav__item> <a href=../../../python/DataAnalysis/python_data_analysis_index/ class=md-nav__link> Data Analysis </a> </li> <li class=md-nav__item> <a href=../../../python/Demo/python_demo_index/ class=md-nav__link> Demos </a> </li> </ul> </nav> </li> </ul> </nav> </div> </div> </div> <div class="md-sidebar md-sidebar--secondary" data-md-component=sidebar data-md-type=toc> <div class=md-sidebar__scrollwrap> <div class=md-sidebar__inner> <nav class="md-nav md-nav--secondary" aria-label="Table of contents"> <label class=md-nav__title for=__toc> <span class="md-nav__icon md-icon"></span> Table of contents </label> <ul class=md-nav__list data-md-component=toc data-md-scrollfix> <li class=md-nav__item> <a href=#demo-environment class=md-nav__link> Demo environment </a> </li> <li class=md-nav__item> <a href=#linux-primitives class=md-nav__link> Linux Primitives </a> </li> <li class=md-nav__item> <a href=#installing-docker class=md-nav__link> Installing Docker </a> </li> <li class=md-nav__item> <a href=#container-lifecycle class=md-nav__link> Container lifecycle </a> <nav class=md-nav aria-label="Container lifecycle"> <ul class=md-nav__list> <li class=md-nav__item> <a href=#overview class=md-nav__link> Overview </a> </li> <li class=md-nav__item> <a href=#ports-and-volumes class=md-nav__link> Ports and volumes </a> </li> <li class=md-nav__item> <a href=#dockerfile class=md-nav__link> Dockerfile </a> </li> <li class=md-nav__item> <a href=#multi-stage-dockerfile class=md-nav__link> Multi-stage Dockerfile </a> </li> </ul> </nav> </li> </ul> </nav> </div> </div> </div> <div class=md-content data-md-component=content> <article class="md-content__inner md-typeset"> <a href=https://github.com/huyuhui001/mySite/edit/main/docs/k8s/foundamentals/docker.md title="Edit this page" class="md-content__button md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg> </a> <h1 id=docker-fundamentals>Docker Fundamentals<a class=headerlink href=#docker-fundamentals title="Permanent link"> ¶</a></h1> <h2 id=demo-environment>Demo environment<a class=headerlink href=#demo-environment title="Permanent link"> ¶</a></h2> <p>Linux: openSUSE 15.3 <div class=highlight><pre><span></span><code><span class=go>cat /etc/os-release</span>
+</code></pre></div> Output <div class=highlight><pre><span></span><code>NAME=&quot;openSUSE Leap&quot;
+VERSION=&quot;15.3&quot;
+ID=&quot;opensuse-leap&quot;
+ID_LIKE=&quot;suse opensuse&quot;
+VERSION_ID=&quot;15.3&quot;
+PRETTY_NAME=&quot;openSUSE Leap 15.3&quot;
+ANSI_COLOR=&quot;0;32&quot;
+CPE_NAME=&quot;cpe:/o:opensuse:leap:15.3&quot;
+BUG_REPORT_URL=&quot;https://bugs.opensuse.org&quot;
+HOME_URL=&quot;https://www.opensuse.org/&quot;
+</code></pre></div></p> <h2 id=linux-primitives>Linux Primitives<a class=headerlink href=#linux-primitives title="Permanent link"> ¶</a></h2> <p>chroot(using pivot_root)</p> <ul> <li>Changes the root directory for a process to any given directory</li> </ul> <p>namespaces</p> <ul> <li>Different processes see different environments even though they are on the same host/OS<ul> <li>mnt (mount points)</li> <li>pid (process tree)</li> <li>net (network interfaces and connectivity)</li> <li>ipc (interprocess communication framework)</li> <li>uts (unix timesharing - domain name, hostname, etc.)</li> <li>uid (user IDs and mappings)</li> </ul> </li> </ul> <p>cgroups(control groups)</p> <ul> <li>manage/limit resource allocation to individual processes</li> <li>Prioritization of processes</li> </ul> <p>Apparmor and SELinux profiles - Security profiles to govern access to resources</p> <p>Kernel capabilities</p> <ul> <li>without capabilities: root can do everything, everybody else may do nothing</li> <li>38 granular facilities to control privileges</li> </ul> <p>seccomp policies</p> <ul> <li>Limitation of allowed kernel syscalls</li> <li>Unallowed syscalls lead to process termination</li> </ul> <p>Netlink - A Linux kernel interface used for inter-process communication (IPC) between both the kernel and userspace processes, and between different userspace processes. </p> <p>Netfilter</p> <ul> <li>A framework provided by the Linux kernel that allows various networking-related operations</li> <li>Packet filtering, network address translation, and port translation(iptables/nftables)</li> <li>used to direct network packages to individual containers</li> </ul> <p>More inforamtion could refer to <a href=https://linuxcontainers.org/ >LXC/LXD</a></p> <p>Let's download an image <code>alpine</code> to simulate an root file system under <code>/opt/test</code> folder. <div class=highlight><pre><span></span><code><span class=go>mkdir test</span>
+<span class=go>cd test</span>
+<span class=go>wget https://dl-cdn.alpinelinux.org/alpine/v3.13/releases/x86_64/alpine-minirootfs-3.13.4-x86_64.tar.gz</span>
+<span class=go>tar zxvf alpine-minirootfs-3.13.4-x86_64.tar.gz -C alpine-minirootfs/</span>
+</code></pre></div></p> <p>Current directory structure. <div class=highlight><pre><span></span><code><span class=go>tree ./test -L 1</span>
+</code></pre></div> Output <div class=highlight><pre><span></span><code>./test
+├── alpine-minirootfs-3.13.4-x86_64.tar.gz
+├── bin
+├── dev
+├── etc
+├── home
+├── lib
+├── media
+├── mnt
+├── opt
+├── proc
+├── root
+├── run
+├── sbin
+├── srv
+├── sys
+├── tmp
+├── usr
+└── var
+</code></pre></div></p> <p>Mount folder <code>/opt/test/proc</code> to a file and use command <code>unshare</code> to build a guest system. <div class=highlight><pre><span></span><code><span class=go>sudo mount -t tmpfs tmpfs /opt/test/proc</span>
+</code></pre></div> <div class=highlight><pre><span></span><code><span class=go>sudo unshare --pid --mount-proc=$PWD/test/proc --fork chroot ./test/ /bin/sh</span>
+<span class=go>/ # ps -ef</span>
+<span class=go>PID   USER     TIME  COMMAND</span>
+<span class=go>    1 root      0:00 /bin/sh</span>
+<span class=go>    2 root      0:00 ps -ef</span>
+<span class=go>/ # touch 123</span>
+<span class=go>/ # ls 123</span>
+<span class=go>123</span>
+</code></pre></div></p> <p>The file <code>123</code> created in guest system is accessable and writable from host system. <div class=highlight><pre><span></span><code><span class=go>su -</span>
+<span class=go>ls 123</span>
+<span class=go>echo hello &gt; 123</span>
+</code></pre></div></p> <p>We will see above change in guest system. <div class=highlight><pre><span></span><code><span class=go>/ # cat 123</span>
+<span class=go>hello</span>
+</code></pre></div></p> <p>Let's create two folders <code>/opt/test-1</code> and <code>/opt/test-2</code>. <div class=highlight><pre><span></span><code><span class=go>mkdir test-1</span>
+<span class=go>mkdir test-2</span>
+</code></pre></div></p> <p>Create two guests system. Mount <code>/opt/test/home/</code> to different folders for different guests. <div class=highlight><pre><span></span><code><span class=go>sudo mount --bind /opt/test-1 /opt/test/home/</span>
+<span class=go>sudo unshare --pid --mount-proc=$PWD/test/proc --fork chroot ./test/ /bin/sh</span>
+<span class=go>/ # cd /home</span>
+<span class=go>/home # echo &quot;test-1&quot; &gt; 123.1</span>
+<span class=go>/home # cat 123.1</span>
+<span class=go>test-1</span>
+</code></pre></div> <div class=highlight><pre><span></span><code><span class=go>sudo mount --bind /opt/test-2 /opt/test/home/</span>
+<span class=go>sudo unshare --pid --mount-proc=$PWD/test/proc --fork chroot ./test/ /bin/sh</span>
+<span class=go>/ # cd /home</span>
+<span class=go>/home # echo &quot;test-2&quot; &gt; 123.2</span>
+<span class=go>/home # cat 123.2</span>
+<span class=go>test-2</span>
+</code></pre></div> <div class=highlight><pre><span></span><code><span class=go>ll test/home</span>
+<span class=go>ll test-1/</span>
+<span class=go>ll test-2/</span>
+</code></pre></div></p> <p>With above demo, the conclusion is that two guests share same home folder on host system and will impact each other.</p> <h2 id=installing-docker>Installing Docker<a class=headerlink href=#installing-docker title="Permanent link"> ¶</a></h2> <p>Install Docker engine by referring the <a href=https://docs.docker.com/engine/ >guide</a>, and Docker Desktop by referring the <a href=https://docs.docker.com/desktop/ >guide</a>.</p> <p>Install engine via openSUSE repository automatically. <div class=highlight><pre><span></span><code><span class=go>sudo zypper in docker</span>
+</code></pre></div></p> <p>The docker group is automatically created at package installation time. The user can communicate with the local Docker daemon upon its next login. The Docker daemon listens on a local socket which is accessible only by the root user and by the members of the docker group. </p> <p>Add current user to <code>docker</code> group. <div class=highlight><pre><span></span><code><span class=go>sudo usermod -aG docker $USER</span>
+</code></pre></div></p> <p>Enable and start Docker engine. <div class=highlight><pre><span></span><code><span class=go>sudo systemctl enable docker.service </span>
+<span class=go>sudo systemctl start docker.service </span>
+<span class=go>sudo systemctl status docker.service</span>
+</code></pre></div></p> <h2 id=container-lifecycle>Container lifecycle<a class=headerlink href=#container-lifecycle title="Permanent link"> ¶</a></h2> <h3 id=overview>Overview<a class=headerlink href=#overview title="Permanent link"> ¶</a></h3> <p>Pull down below images in advance. <div class=highlight><pre><span></span><code><span class=go>docker image pull busybox</span>
+<span class=go>docker image pull nginx</span>
+<span class=go>docker image pull alpine</span>
+<span class=go>docker image pull jenkins/jenkins:lts</span>
+<span class=go>docker image pull golang:1.12-alpine</span>
+<span class=go>docker image pull golang</span>
+</code></pre></div></p> <p>Download some docker images. Create and run a new busybox container interactively and connect a pseudo terminal to it. Inside the container, use the top command to find out that <code>/bin/sh</code> is running as process with the PID 1 and <code>top</code> process is also running. After that, just exit. <div class=highlight><pre><span></span><code><span class=go>docker image ls</span>
+<span class=go>docker run -d -it --name busybox_v1 -v /opt/test:/docker busybox:latest /bin/sh</span>
+<span class=go>docker container ps -a</span>
+<span class=go>docker exec -it 185efe490507 /bin/sh</span>
+<span class=go>/ # top</span>
+<span class=go>Mem: 3627396K used, 12731512K free, 10080K shrd, 2920K buff, 2999340K cached</span>
+<span class=go>CPU:  0.0% usr  0.1% sys  0.0% nic 99.8% idle  0.0% io  0.0% irq  0.0% sirq</span>
+<span class=go>Load average: 0.38 1.09 1.29 2/277 14</span>
+<span class=go>  PID  PPID USER     STAT   VSZ %VSZ CPU %CPU COMMAND</span>
+<span class=go>    1     0 root     S     1332  0.0   1  0.0 /bin/sh</span>
+<span class=go>    8     0 root     S     1332  0.0   2  0.0 /bin/sh</span>
+<span class=go>   14     8 root     R     1328  0.0   1  0.0 top</span>
+<span class=go>/ # exitbuild </span>
+</code></pre></div></p> <p>Start a new nginx container in detached mode. Use the <code>docker exec</code> command to start another shell (<code>/bin/sh</code>) in the nginx container. Use ps to find out that <code>sh</code> and <code>ps</code> commands are running in your container. <div class=highlight><pre><span></span><code><span class=go>docker run -d -it --name nginx_v1 -v /opt/test:/docker nginx:latest /bin/sh</span>
+<span class=go>docker container ps -a</span>
+<span class=go>docker exec -it edb640127a0d /bin/sh</span>
+<span class=gp># </span>ps
+<span class=go>/bin/sh: 2: ps: not found</span>
+<span class=gp># </span>apt-get update <span class=o>&amp;&amp;</span> apt-get install -y procps
+<span class=gp># </span>ps
+<span class=go>   PID TTY          TIME CMD</span>
+<span class=go>     8 pts/1    00:00:00 sh</span>
+<span class=go>   351 pts/1    00:00:00 ps</span>
+<span class=gp># </span><span class=nb>exit</span>
+</code></pre></div></p> <p>Now we have two running containers below. <div class=highlight><pre><span></span><code><span class=go>docker container ps -a</span>
+</code></pre></div></p> <p>Let's use <code>docker logs</code> to display the logs of the container we just exited from. The option <code>--since 35m</code> means display log in last 35 minutes. <div class=highlight><pre><span></span><code><span class=go>docker logs nginx_v1 --details --since 35m</span>
+<span class=go>docker logs busybox_v1 --details --since 35m</span>
+</code></pre></div> Let's make use of this to create a new stage:</p> <p>Use the <code>docker stop</code> command to end your nginx container. <div class=highlight><pre><span></span><code><span class=go>docker stop busybox_v1</span>
+<span class=go>docker stop nginx_v1 </span>
+<span class=go>docker container ps -a</span>
+</code></pre></div></p> <p>With above command <code>docker container ps -a</code>, we get a list of all running and exited containers. Remove them with docker rm. Use <code>docker rm $(docker ps -aq)</code> to clean up all containers on your host. Use it with caution! <div class=highlight><pre><span></span><code><span class=go>docker rm busybox_v1</span>
+<span class=go>docker container ps -a</span>
+</code></pre></div></p> <h3 id=ports-and-volumes>Ports and volumes<a class=headerlink href=#ports-and-volumes title="Permanent link"> ¶</a></h3> <p>Now, let's run an nginx webserver in a container and serve a website to the outside world.</p> <p>Start a new nginx container and export the port of the nginx webserver to a random port that is chosen by Docker. </p> <p>Use command <code>docker ps</code> to find you which port the webserver is forwarded. Access the docker with the forwarded port number on host <code>http://localhost:&lt;port#&gt;</code>. <div class=highlight><pre><span></span><code><span class=go>docker container ps -a</span>
+<span class=go>docker run -d -P --name nginx_v2 nginx:latest</span>
+<span class=go>docker container ps -a</span>
+</code></pre></div></p> <p>Start another nginx container and expose port to <code>1080</code> on host as an example via <code>http://localhost:1080</code>. <div class=highlight><pre><span></span><code><span class=go>docker run -d -p 1080:80 --name nginx_v3 nginx:latest</span>
+<span class=go>docker container ps -a</span>
+</code></pre></div> Let's make use of this to create a new stage:</p> <p>Use command <code>docker inspect</code> to find out which port is exposed by the image. Network information (ip, gateway, ports, etc.) is part of the output JSON format. <div class=highlight><pre><span></span><code><span class=go>docker inspect nginx_v3 </span>
+</code></pre></div></p> <p>Create a file <code>index.html</code> in folder <code>/opt/test</code> with below sample content. </p> <div class=highlight><pre><span></span><code>&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Sample Website from my container&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;This is a custom website.&lt;/h1&gt;
+    &lt;p&gt;This website is served from my &lt;a href=&quot;http://www.docker.com&quot; target=&quot;_blank&quot;&gt;Docker&lt;/a&gt; container.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre></div> <p>Start a new container that bind-mounts host directory <code>/opt/test</code> to container directory <code>/usr/share/nginx/html</code> as a volume, so that NGINX will publish the HTML file wee just created instead of its default message via <code>http://localhost:49159/</code> below. <div class=highlight><pre><span></span><code><span class=go>docker run -d -P --mount type=bind,source=/opt/test/,target=/usr/share/nginx/html --name nginx_v3-1 nginx:latest</span>
+<span class=go>docker container ps -a</span>
+</code></pre></div></p> <p>Check nginx config file on where is the html home page stored in container. <div class=highlight><pre><span></span><code><span class=go>docker exec -it nginx_v3-1 /bin/sh</span>
+<span class=gp># </span><span class=nb>cd</span> /etc/nginx/conf.d
+<span class=gp># </span>ls
+<span class=go>default.conf</span>
+<span class=gp># </span>cat default.conf
+<span class=go>server {</span>
+<span class=go>    listen       80;</span>
+<span class=go>    listen  [::]:80;</span>
+<span class=go>    server_name  localhost;</span>
+
+<span class=gp>    #</span>access_log  /var/log/nginx/host.access.log  main<span class=p>;</span>
+
+<span class=go>    location / {</span>
+<span class=go>        root   /usr/share/nginx/html;  &lt;--</span>
+<span class=go>        index  index.html index.htm;</span>
+<span class=go>    }</span>
+
+<span class=gp>    #</span>error_page  <span class=m>404</span>              /404.html<span class=p>;</span>
+
+<span class=gp>    # </span>redirect server error pages to the static page /50x.html
+<span class=gp>    #</span>
+<span class=go>    error_page   500 502 503 504  /50x.html;</span>
+<span class=go>    location = /50x.html {</span>
+<span class=go>        root   /usr/share/nginx/html;</span>
+<span class=go>    }</span>
+
+<span class=gp>    # </span>proxy the PHP scripts to Apache listening on <span class=m>127</span>.0.0.1:80
+<span class=gp>    #</span>
+<span class=gp>    #</span>location ~ <span class=se>\.</span>php$ <span class=o>{</span>
+<span class=gp>    #    </span>proxy_pass   http://127.0.0.1<span class=p>;</span>
+<span class=gp>    #</span><span class=o>}</span>
+
+<span class=gp>    # </span>pass the PHP scripts to FastCGI server listening on <span class=m>127</span>.0.0.1:9000
+<span class=gp>    #</span>
+<span class=gp>    #</span>location ~ <span class=se>\.</span>php$ <span class=o>{</span>
+<span class=gp>    #    </span>root           html<span class=p>;</span>
+<span class=gp>    #    </span>fastcgi_pass   <span class=m>127</span>.0.0.1:9000<span class=p>;</span>
+<span class=gp>    #    </span>fastcgi_index  index.php<span class=p>;</span>
+<span class=gp>    #    </span>fastcgi_param  SCRIPT_FILENAME  /scripts<span class=nv>$fastcgi_script_name</span><span class=p>;</span>
+<span class=gp>    #    </span>include        fastcgi_params<span class=p>;</span>
+<span class=gp>    #</span><span class=o>}</span>
+
+<span class=gp>    # </span>deny access to .htaccess files, <span class=k>if</span> Apache<span class=s1>&#39;s document root</span>
+<span class=gp>    # </span><span class=s1>concurs with nginx&#39;</span>s one
+<span class=gp>    #</span>
+<span class=gp>    #</span>location ~ /<span class=se>\.</span>ht <span class=o>{</span>
+<span class=gp>    #    </span>deny  all<span class=p>;</span>
+<span class=gp>    #</span><span class=o>}</span>
+<span class=go>}</span>
+<span class=gp># </span><span class=nb>cd</span> /usr/share/nginx/html
+<span class=gp># </span>cat index.html              
+<span class=go>  &lt;html&gt;</span>
+<span class=go>  &lt;head&gt;</span>
+<span class=go>      &lt;title&gt;Sample Website from my container&lt;/title&gt;</span>
+<span class=go>  &lt;/head&gt;</span>
+<span class=go>  &lt;body&gt;</span>
+<span class=go>      &lt;h1&gt;This is a custom website.&lt;/h1&gt;</span>
+<span class=go>      &lt;p&gt;This website is served from my &lt;a href=&quot;http://www.docker.com&quot; target=&quot;_blank&quot;&gt;Docker&lt;/a&gt; container.&lt;/p&gt;</span>
+<span class=go>  &lt;/body&gt;</span>
+<span class=go>  &lt;/html&gt;</span>
+<span class=gp># </span>
+</code></pre></div></p> <p>It's recommendable to add a persistence with volumes API, instead of storing data in a docker container. Docker supports 2 ways of mount:</p> <ul> <li>Bind mounts: <ul> <li>mount a local host directory onto a certain path in the container. </li> <li>Everything that was present before in the target directory is hidden (nature of the bind mount). </li> <li>For example, if you have some configuration you want to inject, write your config file, store it on your docker host at <code>/home/container/config</code> and mount the content of this directory to <code>/usr/application/config</code> (assuming the application reads config from there). </li> <li>Command: <code>docker run --mount type=bind,source=&lt;source path&gt;,target=&lt;container path&gt; …</code></li> </ul> </li> <li>Named volumes: <ul> <li>docker can create a separated storage volume. </li> <li>Its lifecycle is independent from the container but still managed by docker. </li> <li>Upon creation, the content of the mount target is merged into the volume. </li> <li>Command: <code>docker run --mount source=&lt;vol name&gt;,target=&lt;container path&gt; …</code></li> </ul> </li> </ul> <p>How to differentiate between bind mountbuild s and named volumes? </p> <ul> <li>When specifying an absolute path, docker assumes a bind mount. </li> <li>When you just give a name (like in a relative path “config”), it will assume a named volume and create a volume “config”.</li> <li>Note: Persistent storage is 'provided' by the host. It can be a part of the file system on the host directly but also an NFS mount. </li> </ul> <h3 id=dockerfile>Dockerfile<a class=headerlink href=#dockerfile title="Permanent link"> ¶</a></h3> <p>Let's build an image with a Dockerfile,build tag it and upload it to a registry. </p> <p>Get docker image build history. <div class=highlight><pre><span></span><code><span class=go>docker image history nginx:latest </span>
+</code></pre></div></p> <p>Create an empty directory <code>/opt/tmp-1</code>, change to the directory and create an sample <code>index.html</code> file in <code>/opt/tmp-1</code>. <div class=highlight><pre><span></span><code><span class=go>/opt/tmp-1&gt; cat index.html </span>
+<span class=go>  &lt;html&gt;</span>
+<span class=go>  &lt;head&gt;</span>
+<span class=go>      &lt;title&gt;Sample Website from my container&lt;/title&gt;</span>
+<span class=go>  &lt;/head&gt;</span>
+<span class=go>  &lt;body&gt;</span>
+<span class=go>      &lt;h1&gt;This is a custom website.&lt;/h1&gt;</span>
+<span class=go>      &lt;p&gt;This website is served from my &lt;a href=&quot;http://www.docker.com&quot; target=&quot;_blank&quot;&gt;Docker&lt;/a&gt; container.&lt;/p&gt;</span>
+<span class=go>  &lt;/body&gt;</span>
+<span class=go>  &lt;/html&gt;</span>
+</code></pre></div></p> <p>Use <code>FROM</code> to extend an existing image, specify the release number.</p> <p>Use <code>COPY</code> to copy a new default website into the image, e.g., <code>/usr/share/nginx/html</code></p> <p>Create SSL configuration <code>/opt/tmp-1/ssl.conf</code> for nginx.</p> <div class=highlight><pre><span></span><code>server {
+    listen       443 ssl;
+    server_name  localhost;
+
+    ssl_certificate /etc/nginx/ssl/nginx.crt;
+    ssl_certificate_key /etc/nginx/ssl/nginx.key;
+
+    location / {
+        root   /usr/share/nginx/html;
+        index  index.html index.htm;
+    }
+}
+</code></pre></div> <p>Use OpenSSL to create a self-signed certificate so SSL/TLS to work would work.</p> <p>Use the following command to create an encryption key and a certificate. <div class=highlight><pre><span></span><code><span class=go>openssl req -x509 -nodes -newkey rsa:4096 -keyout nginx.key -out nginx.crt -days 365 -subj &quot;/CN=$(hostname)&quot;</span>
+</code></pre></div></p> <p>To enable encrypted HTTPS, we need to expose port 443 with the EXPOSE directive. The default nginx image only exposes port 80 for unencrypted HTTP.</p> <p>In summary, we create below Dockerfile in foder <code>/opt/tmp-1</code>. <div class=highlight><pre><span></span><code><span class=go>cat Dockerfile</span>
+</code></pre></div> Output <div class=highlight><pre><span></span><code>FROM nginx:latest
+
+# copy the custom website into the image
+COPY index.html /usr/share/nginx/html
+
+# copy the SSL configuration file into the image
+COPY ssl.conf /etc/nginx/conf.d/ssl.conf
+
+# download the SSL key and certificate into the image
+COPY nginx.key /etc/nginx/ssl/
+COPY nginx.crt /etc/nginx/ssl/
+
+# expose the HTTPS port
+EXPOSE 443
+</code></pre></div></p> <p>We have five files in foder <code>/opt/tmp-1</code> till now. <div class=highlight><pre><span></span><code><span class=go>ls /opt/tmp-1</span>
+</code></pre></div> Output <div class=highlight><pre><span></span><code>Dockerfile  index.html  nginx.crt  nginx.key  ssl.conf
+</code></pre></div></p> <p>Now let's use the <code>docker build</code> command to build the image, forward the containers ports 80 and 443. <div class=highlight><pre><span></span><code><span class=go>docker build -t nginx:my1 /opt/tmp-1/</span>
+<span class=go>docker image ls</span>
+
+<span class=go>docker run -d -p 1086:80 -p 1088:443 --name nginx_v5 nginx:my1</span>
+
+<span class=go>docker container ps -a</span>
+</code></pre></div></p> <p>Above changes can be validated via below links:</p> <div class=highlight><pre><span></span><code>http://localhost:1086/
+https://localhost:1088/
+</code></pre></div> <p>Register an account in <a href=https://hub.docker.com/ >DockerHub</a> and enable access token in Docker Hub for CLI client authentication. <div class=highlight><pre><span></span><code><span class=go>docker login</span>
+</code></pre></div></p> <p>Input username and password. <div class=highlight><pre><span></span><code>Username: &lt;your account id&gt;
+Password: &lt;token&gt;
+</code></pre></div></p> <p>Tag the image to give image a nice name and a release number as tag, e.g., name is <code>secure_nginx_0001</code>, tag is <code>v1</code>. <div class=highlight><pre><span></span><code><span class=go>docker tag nginx:my1 &lt;your account id&gt;secure_nginx_0001:v1</span>
+<span class=go>docker push &lt;your account id&gt;secure_nginx_0001:v1</span>
+<span class=go>docker image ls</span>
+</code></pre></div></p> <h3 id=multi-stage-dockerfile>Multi-stage Dockerfile<a class=headerlink href=#multi-stage-dockerfile title="Permanent link"> ¶</a></h3> <p>Let's show an example of multi-stage build. The multi-stage in the context of Docker means, we can have more than one line with a FROM keyword. </p> <p>Create folder <code>/opt/tmp-2</code> and <code>/opt/tmp-2/tmpl</code>. </p> <p>Create files <a href=../../assets/edit.html>edit.html</a>, <a href=../../assets/view.html>view.html</a>, <a href=../../assets/wiki.go>wiki.go</a> and structure likes below. <div class=highlight><pre><span></span><code>tree -l /opt/tmp-2
+</code></pre></div> <div class=highlight><pre><span></span><code>.
+├── tmpl
+│   ├── edit.html
+│   └── view.html
+└── wiki.go
+</code></pre></div></p> <p>Create an new Dockerfile that starts <div class=highlight><pre><span></span><code><span class=go>cat Dockerfile</span>
+</code></pre></div> <div class=highlight><pre><span></span><code># app builder stage
+FROM golang:1.12-alpine as builder
+
+## copy the go source code over and build the binary
+WORKDIR /go/src
+COPY wiki.go /go/src/wiki.go
+RUN go build wiki.go
+
+# app exec stage
+# separate &amp; new image starts here!#
+FROM alpine:3.9
+
+# prepare file system etc
+RUN mkdir -p /app/data /app/tmpl &amp;&amp; adduser -S -D -H -h /app appuser
+COPY tmpl/* /app/tmpl/
+
+# get the compiled binary from the previous stage
+COPY --from=builder /go/src/wiki /app/wiki
+
+# prepare runtime env
+RUN chown -R appuser /app
+USER appuser
+WORKDIR /app
+
+# expose app port &amp; set default command
+EXPOSE 8080
+CMD [&quot;/app/wiki&quot;]
+</code></pre></div></p> <p>Build the images by Dockerfile we created above. <div class=highlight><pre><span></span><code><span class=go>docker build -t lizard/golang:my1 /opt/tmp-2/</span>
+</code></pre></div></p> <p>Run the image in detached mode, create a port forwarding from port 8080 in the container to port 1090 on the host. <div class=highlight><pre><span></span><code><span class=go>docker run -d -p 1090:8080 --name golan_v1 lizard/golang:my1</span>
+</code></pre></div></p> <p>Access the container via link http://localhost:1090</p> <p>Tab the golang image we created and push it to DockerHub. <div class=highlight><pre><span></span><code><span class=go>docker tag lizard/golang:my1 &lt;your acccount id&gt;/golang_0001:v1</span>
+<span class=go>docker push &lt;your acccount id&gt;/golang_0001:v1</span>
+</code></pre></div></p> </article> </div> </div> </main> <footer class=md-footer> <nav class="md-footer__inner md-grid" aria-label=Footer> <a href=../memo/ class="md-footer__link md-footer__link--prev" aria-label="Previous: Memo" rel=prev> <div class="md-footer__button md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg> </div> <div class=md-footer__title> <div class=md-ellipsis> <span class=md-footer__direction> Previous </span> Memo </div> </div> </a> <a href=../overview/ class="md-footer__link md-footer__link--next" aria-label="Next: Overview" rel=next> <div class=md-footer__title> <div class=md-ellipsis> <span class=md-footer__direction> Next </span> Overview </div> </div> <div class="md-footer__button md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg> </div> </a> </nav> <div class="md-footer-meta md-typeset"> <div class="md-footer-meta__inner md-grid"> <div class=md-footer-copyright> Made with <a href=https://squidfunk.github.io/mkdocs-material/ target=_blank rel=noopener> Material for MkDocs </a> </div> </div> </div> </footer> </div> <div class=md-dialog data-md-component=dialog> <div class="md-dialog__inner md-typeset"></div> </div> <script id=__config type=application/json>{"base": "../../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.instant", "navigation.sections"], "search": "../../../assets/javascripts/workers/search.fcfe8b6d.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": null}</script> <script src=../../../assets/javascripts/bundle.b1047164.min.js></script> </body> </html>
