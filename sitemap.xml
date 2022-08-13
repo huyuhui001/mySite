@@ -16,7 +16,17 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://huyuhui001.github.io/mySite/k8s/foundamentals/casestudy/</loc>
+         <loc>https://huyuhui001.github.io/mySite/k8s/foundamentals/casestudy-calico/</loc>
+         <lastmod>2022-08-13</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://huyuhui001.github.io/mySite/k8s/foundamentals/casestudy-health-check/</loc>
+         <lastmod>2022-08-13</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://huyuhui001.github.io/mySite/k8s/foundamentals/casestudy-operation-resources/</loc>
          <lastmod>2022-08-13</lastmod>
          <changefreq>daily</changefreq>
     </url>
@@ -112,6 +122,11 @@
     </url>
     <url>
          <loc>https://huyuhui001.github.io/mySite/k8s/foundamentals/scheduling/</loc>
+         <lastmod>2022-08-13</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://huyuhui001.github.io/mySite/k8s/foundamentals/secrets/</loc>
          <lastmod>2022-08-13</lastmod>
          <changefreq>daily</changefreq>
     </url>
