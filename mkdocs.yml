@@ -110,7 +110,6 @@ nav:
     - Operations on Resources: k8s/foundamentals/casestudy-operation-resources.md
     - Health Check: k8s/foundamentals/casestudy-health-check.md
     - Calico Installation: k8s/foundamentals/casestudy-calico.md
-
 - Python:
   - Python Foundamentals: python/Foundation/python_foundation_index.md
   - Data Analysis: python/DataAnalysis/python_data_analysis_index.md
