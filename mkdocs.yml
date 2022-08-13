@@ -87,11 +87,16 @@ nav:
         - Job and Cronjob: k8s/foundamentals/job.md
         - Horizontal Pod Autoscaling: k8s/foundamentals/hpa.md
         - Service: k8s/foundamentals/service.md
-        - Persistence: k8s/foundamentals/persistence.md
-        - ConfigMaps and Secrets: k8s/foundamentals/configmaps.md
         - Ingress: k8s/foundamentals/ingress.md
+        - Persistence: k8s/foundamentals/persistence.md
+        - Scheduling: k8s/foundamentals/scheduling.md
+        - Policy: k8s/foundamentals/policy.md
+        - Configuration: k8s/foundamentals/configuration.md
+        - Role Based Access Control (RBAC): k8s/foundamentals/rbac.md
         - Network Policy: k8s/foundamentals/networkpolicy.md
+        - Cluster Management: k8s/foundamentals/clustermgt.md
         - Helming: k8s/foundamentals/helming.md
+        - Troubleshooting: k8s/foundamentals/troubleshooting.md
         - Health Check: k8s/foundamentals/healthcheck.md
         - Case Study: k8s/foundamentals/casestudy.md
 - Python:
