@@ -82,26 +82,35 @@ nav:
     - Memo: k8s/foundamentals/memo.md
     - Overview: k8s/foundamentals/overview.md
     - kubectl basics: k8s/foundamentals/basics.md
-    - Namespace: k8s/foundamentals/namespace.md
+  - Core Kubernetes:
     - Pod: k8s/foundamentals/pod.md
     - Deployment: k8s/foundamentals/deployment.md
+    - Service: k8s/foundamentals/service.md
+  - Application Modelling:
+    - Namespace: k8s/foundamentals/namespace.md
+    - Configuration: k8s/foundamentals/configuration.md
+    - Secrets: k8s/foundamentals/secrets.md
+    - Persistence: k8s/foundamentals/persistence.md
+    - Role Based Access Control (RBAC): k8s/foundamentals/rbac.md
     - StatefulSet: k8s/foundamentals/statefulset.md
     - DaemonSet: k8s/foundamentals/daemonset.md
     - Job and Cronjob: k8s/foundamentals/job.md
-    - Horizontal Pod Autoscaling: k8s/foundamentals/hpa.md
-    - Service: k8s/foundamentals/service.md
     - Ingress: k8s/foundamentals/ingress.md
-    - Persistence: k8s/foundamentals/persistence.md
+  - Advanced Kubernetes:
     - Scheduling: k8s/foundamentals/scheduling.md
+    - Horizontal Pod Autoscaling: k8s/foundamentals/hpa.md
     - Policy: k8s/foundamentals/policy.md
-    - Configuration: k8s/foundamentals/configuration.md
-    - Role Based Access Control (RBAC): k8s/foundamentals/rbac.md
     - Network Policy: k8s/foundamentals/networkpolicy.md
     - Cluster Management: k8s/foundamentals/clustermgt.md
-    - Helming: k8s/foundamentals/helming.md
+  - Operating Kubernetes:
     - Troubleshooting: k8s/foundamentals/troubleshooting.md
     - Health Check: k8s/foundamentals/healthcheck.md
-    - Case Study: k8s/foundamentals/casestudy.md
+    - Helming: k8s/foundamentals/helming.md
+  - Case Study:
+    - Operations on Resources: k8s/foundamentals/casestudy-operation-resources.md
+    - Health Check: k8s/foundamentals/casestudy-health-check.md
+    - Calico Installation: k8s/foundamentals/casestudy-calico.md
+
 - Python:
   - Python Foundamentals: python/Foundation/python_foundation_index.md
   - Data Analysis: python/DataAnalysis/python_data_analysis_index.md
