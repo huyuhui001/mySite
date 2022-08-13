@@ -67,9 +67,6 @@ plugins:
 extra_css: [extra.css]
 
 nav:
-- Linux:
-    - SUSE Linux Administration: linux/Administration/linux_admin.md
-    - SUSE Enterprise Storage Foundation: linux/SES/linux_ses.md
 - Kubernetes:
   - Installation:
     - Single Node Installation: k8s/installation/single-local.md
@@ -110,6 +107,9 @@ nav:
     - Operations on Resources: k8s/foundamentals/casestudy-operation-resources.md
     - Health Check: k8s/foundamentals/casestudy-health-check.md
     - Calico Installation: k8s/foundamentals/casestudy-calico.md
+- Linux:
+    - SUSE Linux Administration: linux/Administration/linux_admin.md
+    - SUSE Enterprise Storage Foundation: linux/SES/linux_ses.md
 - Python:
   - Python Foundamentals: python/Foundation/python_foundation_index.md
   - Data Analysis: python/DataAnalysis/python_data_analysis_index.md
