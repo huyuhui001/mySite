@@ -151,7 +151,7 @@ br_netfilter
 EOF
 ```
 
-Effect changes above.
+Load to kernel.
 ```
 sudo modprobe overlay
 sudo modprobe br_netfilter
@@ -173,8 +173,35 @@ sudo sysctl --system
 
 !!! Attention
     Reboot the VM.
-    All tasks below will use account `vagrant`.
 
+
+!!! Attention
+    Log onto the VM with account `vagrant` to verify if above changes were updated as expected.
+
+    * IP address.
+    ```
+    ip addr list
+    ```
+    * Hostname.
+    ```
+    cat /etc/machine-info
+    cat /etc/hostname
+    hostname
+    ```
+    * Firewall.
+    ```
+    sudo ufw status verbose
+    ```
+    * Kernel setting.
+    ```
+    lsmod | grep -i overlay
+    lsmod | grep -i br_netfilter
+    ```
+    * Network setting.
+    ```
+    sudo sysctl -a | grep -i net.bridge.bridge-nf-call-ip*
+    sudo sysctl -a | grep -i net.ipv4.ip_forward
+    ```
 
 
 ## Install Containerd
