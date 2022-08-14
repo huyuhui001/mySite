@@ -10,73 +10,90 @@ VMWare Setting.
 Create guest machine with VMWare Player.
 
 * 4 GB RAM
-* 2 CPUs with 2 Cores
+* 1 CPUs with 2 Cores
 * Ubuntu Server 22.04
 * NAT
 
-
-Kubernetes running on Containerd.
+!!! info
+    Kubernetes running on Containerd.
 
 
 ## Ubuntu Post Installation
 
-Create user `james` on all guests.
-```
-sudo adduser james
-sudo usermod -aG adm,sudo,syslog,cdrom,dip,plugdev,lxd james
-sudo passwd james
+!!! info
+    Log onto each VM with the account created during Ubuntu installation, and perform below tasks on every VM. 
+
+
+Create user `vagrant` on all guests.
+```console
+sudo adduser vagrant
+sudo usermod -aG adm,sudo,syslog,cdrom,dip,plugdev,lxd vagrant
+sudo passwd vagrant
 ```
 
 Set password for `root` on all guests.
-```
+```console
 sudo passwd root
 ```
 
-Update all guests' hostname, `ubu01`,`ubu02`,`ubu03`,`ubu04`. 
+Enable root ssh logon.
+```console
+sudo vi /etc/ssh/sshd_config
 ```
-sudo hostnamectl set-hostname ubu01
-sudo hostnamectl set-hostname ubu01 --pretty
+
+Update parameter `PermitRootLogin` from `prohibit-password` to `yes`.
 ```
-Verify if the hostname is set to expected name, e.g., `ubu01`.
+PermitRootLogin yes
+#PermitRootLogin prohibit-password
 ```
+
+Restart the sshd service.
+```console
+sudo systemctl restart sshd
+```
+
+Change host name, e.g., `ubu1`.
+```console
+sudo hostnamectl set-hostname ubu1
+sudo hostnamectl set-hostname ubu1 --pretty
+```
+
+Verify if the hostname is set to expected name, e.g., `ubu1`.
+```console
 cat /etc/machine-info
 ```
-Verify if the hostname is set to expected name, e.g., `ubu01`.
-```
+
+Verify if the hostname is set to expected name, e.g., `ubu1`.
+```console
 cat /etc/hostname
 ```
-Verify if the hostname of `127.0.1.1` is set to expected name, e.g., `ubu01`. And add all nodes  into the file `/etc/hosts`.
-```
-cat /etc/hosts
-```
-```
-127.0.0.1 localhost
-127.0.1.1 ubu01
 
-11.0.1.131 ubu01
-11.0.1.132 ubu02
-11.0.1.133 ubu03
-11.0.1.134 ubu04
-
-# The following lines are desirable for IPv6 capable hosts
-::1     ip6-localhost ip6-loopback
-fe00::0 ip6-localnet
-ff00::0 ip6-mcastprefix
-ff02::1 ip6-allnodes
-ff02::2 ip6-allrouters
+Verify if the hostname of `127.0.1.1` is set to expected name, e.g., `ubu1`. And add all nodes into the file `/etc/hosts`.
+```console
+sudo vi /etc/hosts
+```
+Related setting looks like below.
+```
+127.0.1.1 ubu1
+11.0.1.129 ubu1
+11.0.1.130 ubu2
+11.0.1.131 ubu3
+11.0.1.132 ubu4
 ```
 
-Set all guests with fixed IP, e.g, `11.0.1.131`.
+Create file `/etc/netplan/00-installer-config.yaml`.
+```console
+sudo vi /etc/netplan/00-installer-config.yaml
 ```
-sudo vi 00-installer-config.yaml
-```
+
+Update it with information below to set VM with fixed IP with actual IP address, e.g, `11.0.1.129`.
 ```
 network:
   ethernets:
     ens33:
       dhcp4: false
       addresses:
-      - 11.0.1.131/24
+      - 11.0.1.129/24
       nameservers:
         addresses:
         - 11.0.1.2
@@ -85,45 +102,62 @@ network:
         via: 11.0.1.2
   version: 2
 ```
-```
+
+Effect above change.
+```console
 sudo netplan apply
 ```
 
+!!! Attention
+    The current ssh connection will be broken due to network setting change.
+
+
 Disable swap and firewall on all nodes.
-```
+```console
 sudo swapoff -a
 sudo ufw disable
 sudo ufw status verbose
 ```
 And comment the last line of swap setting in file `/etc/fstab`. Need *reboot* guest here.
+```console
+sudo vi /etc/fstab
+```
+Result likes below.
 ```
 /dev/disk/by-uuid/df370d2a-83e5-4895-8c7f-633f2545e3fe / ext4 defaults 0 1
 # /swap.img     none    swap    sw      0       0
 ```
 
 Setup timezone on all nodes
-```
+```console
 sudo ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
-sudo echo 'LANG="en_US.UTF-8"' >> /etc/profile
+
+sudo cp /etc/profile /etc/profile.bak
+echo 'LANG="en_US.UTF-8"' | sudo tee -a /etc/profile
+
 source /etc/profile
 ```
+
 Something like this after execute command `ll /etc/localtime`
 ```
 lrwxrwxrwx 1 root root 33 Jul 15 22:00 /etc/localtime -> /usr/share/zoneinfo/Asia/Shanghai
 ```
 
-
-Kernel setting on all nodes.
+Kernel setting.
 ```
 cat <<EOF | sudo tee /etc/modules-load.d/containerd.conf
 overlay
 br_netfilter
 EOF
 ```
+
+Effect changes above.
 ```
 sudo modprobe overlay
 sudo modprobe br_netfilter
 ```
+
+Network setting.
 ```
 cat <<EOF | sudo tee /etc/sysctl.d/99-kubernetes-cri.conf
 net.bridge.bridge-nf-call-iptables  = 1
@@ -131,9 +165,15 @@ net.ipv4.ip_forward                 = 1
 net.bridge.bridge-nf-call-ip6tables = 1
 EOF
 ```
+
+Effect changes above.
 ```
 sudo sysctl --system
 ```
+
+!!! Attention
+    Reboot the VM.
+    All tasks below will use account `vagrant`.
 
 
 
