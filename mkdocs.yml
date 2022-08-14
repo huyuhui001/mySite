@@ -71,8 +71,7 @@ nav:
   - Installation:
     - Single Node Installation: k8s/installation/single-local.md
     - Multiple Nodes Installation: k8s/installation/multiple-local.md
-    - Installation on Aliyun openSUSE: k8s/installation/aliyun-opensuse.md
-    - Installation on Aliyun Ubuntu: k8s/installation/aliyun-ubuntu.md
+    - Installation on Aliyun ECS: k8s/installation/aliyun-ubuntu.md
   - Docker:
     - Fundamentals: k8s/foundamentals/docker.md
   - Foundamentals:
