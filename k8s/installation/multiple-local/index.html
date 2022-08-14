@@ -48,7 +48,7 @@
 overlay
 br_netfilter
 EOF
-</code></pre></div></p> <p>Effect changes above. <div class=highlight><pre><span></span><code>sudo modprobe overlay
+</code></pre></div></p> <p>Load to kernel. <div class=highlight><pre><span></span><code>sudo modprobe overlay
 sudo modprobe br_netfilter
 </code></pre></div></p> <p>Network setting. <div class=highlight><pre><span></span><code>cat &lt;&lt;EOF | sudo tee /etc/sysctl.d/99-kubernetes-cri.conf
 net.bridge.bridge-nf-call-iptables  = 1
@@ -56,7 +56,16 @@ net.ipv4.ip_forward                 = 1
 net.bridge.bridge-nf-call-ip6tables = 1
 EOF
 </code></pre></div></p> <p>Effect changes above. <div class=highlight><pre><span></span><code>sudo sysctl --system
-</code></pre></div></p> <div class="admonition attention"> <p class=admonition-title>Attention</p> <p>Reboot the VM. All tasks below will use account <code>vagrant</code>.</p> </div> <h2 id=install-containerd>Install Containerd<a class=headerlink href=#install-containerd title="Permanent link"> ¶</a></h2> <p>Install Containerd sevice on all nodes.</p> <p>Backup source file. <div class=highlight><pre><span></span><code>sudo cp /etc/apt/sources.list /etc/apt/sources.list.bak
+</code></pre></div></p> <div class="admonition attention"> <p class=admonition-title>Attention</p> <p>Reboot the VM.</p> </div> <div class="admonition attention"> <p class=admonition-title>Attention</p> <p>Log onto the VM with account <code>vagrant</code> to verify if above changes were updated as expected.</p> <ul> <li>IP address. <div class=highlight><pre><span></span><code>ip addr list
+</code></pre></div></li> <li>Hostname. <div class=highlight><pre><span></span><code>cat /etc/machine-info
+cat /etc/hostname
+hostname
+</code></pre></div></li> <li>Firewall. <div class=highlight><pre><span></span><code>sudo ufw status verbose
+</code></pre></div></li> <li>Kernel setting. <div class=highlight><pre><span></span><code>lsmod | grep -i overlay
+lsmod | grep -i br_netfilter
+</code></pre></div></li> <li>Network setting. <div class=highlight><pre><span></span><code>sudo sysctl -a | grep -i net.bridge.bridge-nf-call-ip*
+sudo sysctl -a | grep -i net.ipv4.ip_forward
+</code></pre></div></li> </ul> </div> <h2 id=install-containerd>Install Containerd<a class=headerlink href=#install-containerd title="Permanent link"> ¶</a></h2> <p>Install Containerd sevice on all nodes.</p> <p>Backup source file. <div class=highlight><pre><span></span><code>sudo cp /etc/apt/sources.list /etc/apt/sources.list.bak
 </code></pre></div></p> <p>Install Containered. <div class=highlight><pre><span></span><code>sudo apt-get update &amp;&amp; sudo apt-get install -y containerd
 </code></pre></div></p> <p>Configure Containerd. Modify file <code>/etc/containerd/config.toml</code>. <div class=highlight><pre><span></span><code>sudo mkdir -p /etc/containerd
 containerd config default | sudo tee /etc/containerd/config.toml
