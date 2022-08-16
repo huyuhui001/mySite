@@ -706,7 +706,7 @@ helm installed into /usr/local/bin/helm
 
 
 !!! Reference
-    [Helming development](k8s/foundamentals/helming.md)
+    [Helming development](../foundamentals/helming.md)
 
 
 
