@@ -67,6 +67,7 @@ plugins:
 extra_css: [extra.css]
 
 nav:
+- Welcome: index.md
 - Kubernetes:
   - Installation:
     - Single Node Installation: k8s/installation/single-local.md
@@ -107,10 +108,33 @@ nav:
     - Health Check: k8s/foundamentals/casestudy-health-check.md
     - Calico Installation: k8s/foundamentals/casestudy-calico.md
 - Linux:
-    - SUSE Linux Administration: linux/Administration/linux_admin.md
-    - SUSE Enterprise Storage Foundation: linux/SES/linux_ses.md
+    - SUSE Linux Administration: 
+      - Linux File System Overview: linux/Administration/01.md
+      - Useful Commands: linux/Administration/02.md
+      - Shell: linux/Administration/03.md
+    - SUSE Enterprise Storage Foundation: 
+      - SUSE Enterprise Storage Foundation: linux/SES/linux_ses_memo.md
+      - SUSE Enterprise Storage Basic Operation: linux/SES/linux_ses_demo.md
 - Python:
-  - Python Foundamentals: python/Foundation/python_foundation_index.md
-  - Data Analysis: python/DataAnalysis/python_data_analysis_index.md
-  - Demos: python/Demo/python_demo_index.md
+  - Python基础:
+    - 安装: python/Foundation/ch00.md
+    - 语言基础: python/Foundation/ch01.md
+    - 打包Packing和拆包Unpacking: python/Foundation/ch02.md
+    - 函数及文件: python/Foundation/ch03.md
+    - 面向对象概念: python/Foundation/ch04.md
+    - 面向对象特性: python/Foundation/ch05.md
+  - Python数据分析基础:
+    - NumPy基础: python/DataAnalysis/ch01.md
+    - NumPy进阶: python/DataAnalysis/ch10.md
+    - Pandas入门: python/DataAnalysis/ch02.md
+    - 数据载入、存储及文件格式: python/DataAnalysis/ch03.md
+    - 数据清洗与准备: python/DataAnalysis/ch04.md
+    - 数据规整：连接、联合与重塑: python/DataAnalysis/ch05.md
+    - 绘图与可视化: python/DataAnalysis/ch06.md
+    - 数据聚合与分组操作: python/DataAnalysis/ch07.md
+    - 时间序列: python/DataAnalysis/ch08.md
+    - 高阶pandas: python/DataAnalysis/ch09.md
+    - Python建模库介绍: python/DataAnalysis/ch11.md
+  - Demos:
+    - 选课系统: python/Demo/CourseSystem.md
 
