@@ -6,11 +6,6 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://huyuhui001.github.io/mySite/about/</loc>
-         <lastmod>2022-08-16</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
          <loc>https://huyuhui001.github.io/mySite/k8s/foundamentals/basics/</loc>
          <lastmod>2022-08-16</lastmod>
          <changefreq>daily</changefreq>
@@ -146,11 +141,6 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://huyuhui001.github.io/mySite/k8s/installation/aliyun-opensuse/</loc>
-         <lastmod>2022-08-16</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
          <loc>https://huyuhui001.github.io/mySite/k8s/installation/aliyun-ubuntu/</loc>
          <lastmod>2022-08-16</lastmod>
          <changefreq>daily</changefreq>
@@ -177,16 +167,6 @@
     </url>
     <url>
          <loc>https://huyuhui001.github.io/mySite/linux/Administration/03/</loc>
-         <lastmod>2022-08-16</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://huyuhui001.github.io/mySite/linux/Administration/linux_admin/</loc>
-         <lastmod>2022-08-16</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://huyuhui001.github.io/mySite/linux/SES/linux_ses/</loc>
          <lastmod>2022-08-16</lastmod>
          <changefreq>daily</changefreq>
     </url>
@@ -256,17 +236,7 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://huyuhui001.github.io/mySite/python/DataAnalysis/python_data_analysis_index/</loc>
-         <lastmod>2022-08-16</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
          <loc>https://huyuhui001.github.io/mySite/python/Demo/CourseSystem/</loc>
-         <lastmod>2022-08-16</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://huyuhui001.github.io/mySite/python/Demo/python_demo_index/</loc>
          <lastmod>2022-08-16</lastmod>
          <changefreq>daily</changefreq>
     </url>
@@ -297,16 +267,6 @@
     </url>
     <url>
          <loc>https://huyuhui001.github.io/mySite/python/Foundation/ch05/</loc>
-         <lastmod>2022-08-16</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://huyuhui001.github.io/mySite/python/Foundation/ch06/</loc>
-         <lastmod>2022-08-16</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://huyuhui001.github.io/mySite/python/Foundation/python_foundation_index/</loc>
          <lastmod>2022-08-16</lastmod>
          <changefreq>daily</changefreq>
     </url>
