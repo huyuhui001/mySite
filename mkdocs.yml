@@ -67,7 +67,9 @@ plugins:
 extra_css: [extra.css]
 
 nav:
-- Welcome: index.md
+- Welcome: 
+  - Content: index.md
+  - About: about.md
 - Kubernetes:
   - Installation:
     - Single Node Installation: k8s/installation/single-local.md
