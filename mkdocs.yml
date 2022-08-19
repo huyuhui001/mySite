@@ -109,6 +109,7 @@ nav:
     - Operations on Resources: k8s/foundamentals/casestudy-operation-resources.md
     - Health Check: k8s/foundamentals/casestudy-health-check.md
     - Calico Installation: k8s/foundamentals/casestudy-calico.md
+    - Kyma: k8s/foundamentals/kyma.md
 - Linux:
     - SUSE Linux Administration: 
       - Linux File System Overview: linux/Administration/01.md
