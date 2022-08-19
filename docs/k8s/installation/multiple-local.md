@@ -27,7 +27,7 @@ Create guest machine with VMWare Player.
 Create user `vagrant` on all guests.
 ```console
 sudo adduser vagrant
-sudo usermod -aG adm,sudo,syslog,cdrom,dip,plugdev,lxd vagrant
+sudo usermod -aG adm,sudo,syslog,cdrom,dip,plugdev,lxd,root vagrant
 sudo passwd vagrant
 ```
 
