@@ -50,3 +50,15 @@ Delete namespace `cka`. All resources in the namespaces will be gone.
 ```
 kubectl delete ns cka
 ```
+
+!!! Tip
+
+    Kubernetes Namespaces stuck in Terminating status.
+
+    ```
+    kubectl get namespace $NAMESPACE -o json | sed -e 's/"kubernetes"//' | kubectl replace --raw "/api/v1/namespaces/$NAMESPACE/finalize" -f -
+    ```
+
+
+
+
