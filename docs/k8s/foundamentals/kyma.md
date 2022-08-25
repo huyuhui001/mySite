@@ -1,5 +1,7 @@
 # Kyma
 
+Deploy Kyma on control plane node.
+
 ## Install Kyma CLI
 
 Install Kyma CLI on Linux, run:

@@ -190,6 +190,11 @@ sysctl net.ipv4.ip_forward
 
 Install Containerd sevice for all VMs.
 
+!!! Info
+    [containerd for Ops and Admins](https://github.com/containerd/containerd/blob/main/docs/ops.md)
+
+
+
 Backup source file.
 ```
 sudo cp /etc/apt/sources.list /etc/apt/sources.list.bak
@@ -294,7 +299,7 @@ nerdctl -n k8s.io ps
 
 Update `apt-transport-https`,  `ca-certificates`, and `curl`.
 ```
-apt-get update && sudo apt-get install -y apt-transport-https ca-certificates curl
+sudo apt-get update && sudo apt-get install -y apt-transport-https ca-certificates curl
 ```
 
 Install gpg certificate. 
@@ -420,6 +425,11 @@ sudo kubeadm init \
   --service-cidr 11.244.0.0/16 \
   --image-repository=registry.aliyuncs.com/google_containers \
   --kubernetes-version=v1.24.0
+
+sudo kubeadm init \
+  --pod-network-cidr=10.244.0.0/16 \
+  --service-cidr 11.244.0.0/16 \
+  --kubernetes-version=v1.24.0
 ```
 
 
@@ -507,7 +517,7 @@ kubectl get node -o wide
 
 ## Install Calico or Flannel
 
-Choose Calico or Flannel. 
+Choose Calico or Flannel on control plane node. 
 
 For NetworkPolicy purpose, choose Calico.
 
@@ -516,7 +526,7 @@ For NetworkPolicy purpose, choose Calico.
 
 [Flannel](https://github.com/flannel-io/flannel) is a simple and easy way to configure a layer 3 network fabric designed for Kubernetes.
 
-Deploy Flannel on master node.
+Deploy Flannel.
 
 In the kube-flannel.yml we can get the default network setting of Flannel, which is same with `--pod-network-cidr=10.244.0.0/16` we defined before when we initiated `kubeadm`.
 ```
