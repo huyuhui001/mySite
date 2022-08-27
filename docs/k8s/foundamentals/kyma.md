@@ -59,8 +59,6 @@ components:
     namespace: "kyma-integration"
 ```
 
-
-
 !!! Reference    
     By default, Kyma is installed with the default chart values defined in the values.yaml files. You can also control the allocation of resources, such as memory and CPU, that the components consume by installing Kyma with the following pre-defined profiles:
     
