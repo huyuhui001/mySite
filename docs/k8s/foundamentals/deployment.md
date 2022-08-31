@@ -73,10 +73,10 @@ Containers:
 
 
 !!! Info
-    Some key fields of deployment (use `kubectl explain deployment.`)
-    * `.spec.revisionHistoryLimit`: The number of old ReplicaSets to retain to allow rollback. This is a pointer to distinguish between explicit zero and not specified. Defaults to `10`.
-    * `.spec.strategy.type`: Type of deployment. Can be `Recreate` or `RollingUpdate`. Default is `RollingUpdate`.
-        - `Recreate` Kill all existing pods before creating new ones.
-        - `RollingUpdate` Replace the old ReplicaSets by new one using rolling update i.e gradually scale down the old ReplicaSets and scale up the new one.
-
-
+    Some key fields of deployment (use `kubectl explain`):
+    
+    * `deployment.spec.revisionHistoryLimit`: The number of old ReplicaSets to retain to allow rollback. Defaults to `10`.
+    * `deployment.spec.strategy.type`: Type of deployment. Can be `Recreate` or `RollingUpdate`. Default is `RollingUpdate`.
+    * `deployment.spec.strategy.rollingUpdate.maxUnavailable`: The maximum number of pods that can be unavailable during the update. Defaults to 25%.
+    * `deployment.spec.strategy.rollingUpdate.maxSurge`: The maximum number of pods that can be scheduled above the desired number of pods. Defaults to 25%. This can not be 0 if MaxUnavailable is 0.
+    * `deployment.spec.minReadySeconds`: Minimum number of seconds for which a newly created pod should be ready without any of its container crashing, for it to be considered available. Defaults to 0 (pod will be considered available as soon as it is ready).
