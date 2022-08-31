@@ -72,6 +72,11 @@ Containers:
 ```
 
 
-
+!!! Info
+    Some key fields of deployment (use `kubectl explain deployment.`)
+    * `.spec.revisionHistoryLimit`: The number of old ReplicaSets to retain to allow rollback. This is a pointer to distinguish between explicit zero and not specified. Defaults to `10`.
+    * `.spec.strategy.type`: Type of deployment. Can be `Recreate` or `RollingUpdate`. Default is `RollingUpdate`.
+        - `Recreate` Kill all existing pods before creating new ones.
+        - `RollingUpdate` Replace the old ReplicaSets by new one using rolling update i.e gradually scale down the old ReplicaSets and scale up the new one.
 
 
