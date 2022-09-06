@@ -73,6 +73,14 @@ Scale StatefulSet `web` to `5` Replicas.
 kubectl scale sts web --replicas=5
 ```
 
+!!! Info
+    Partition indicates the ordinal at which the StatefulSet should be partitioned for updates. During a rolling update, all pods from ordinal Replicas-1 to Partition are updated. All pods from ordinal Partition-1 to 0 remain untouched. 
+    This is helpful in being able to do a canary based deployment. 
+    The default value is 0.
+    
+    Command: `kubectl explain statefulsets.spec.updateStrategy.rollingUpdate.partition`
+
+
 
 Clean up.
 ```console
