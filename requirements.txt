@@ -13,7 +13,6 @@ pandas-datareader==0.10.0
 lxml==4.9.0
 beautifulsoup4==4.11.1
 html5lib==1.1
-tables==3.7.0
 openpyxl==3.0.10
 SQLAlchemy==1.4.38
 statsmodels==0.12.2
