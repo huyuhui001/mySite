@@ -1,4 +1,4 @@
-# Deploy Your CAP Application on SAP BTP Kyma Runtime
+# Build CAP Application on Kyma
 
 This is the memo of self-practice following the tutorials from [Deploy Your CAP Application on SAP BTP Kyma Runtime](https://developers.sap.com/mission.btp-deploy-cap-kyma.html).
 
