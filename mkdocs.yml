@@ -110,6 +110,8 @@ nav:
     - Health Check: k8s/foundamentals/casestudy-health-check.md
     - Calico Installation: k8s/foundamentals/casestudy-calico.md
     - Kyma: k8s/foundamentals/kyma.md
+  - Demos:
+    - Build your application on Kyma: k8s/demo/cap_on_kyma.md
 - Linux:
     - SUSE Linux Administration: 
       - Linux File System Overview: linux/Administration/01.md
