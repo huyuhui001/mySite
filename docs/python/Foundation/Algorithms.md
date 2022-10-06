@@ -1,5 +1,10 @@
 # 数据结构和算法
 
+!!! Reference
+    参考书目："Problem Solving with Algorithms and Data Structures Using Python (Second Edition)" by Bradley N.Miller and David L.Ranum.
+
+
+
 ## 大O记法
 
 算法分析是一种独立于实现的算法度量方法。
@@ -141,6 +146,8 @@ allotropyWord_3('hello', 'olleh')
 栈的反转特性。
 
 栈的实现方法1:
+
+`append()`和`pop()`的时间复杂度都是O(1)，所以不论栈中有多少个元素，`push`操作和`pop`操作都会在恒定的时间内完成。
 ```
 class Stack():
     def __init__(self) -> None:
@@ -153,7 +160,7 @@ class Stack():
         self.items.append(item)
     
     def pop(self):
-        self.items.pop()
+        return self.items.pop()
     
     def peek(self):
         return self.items[len(self.items) - 1]
@@ -161,7 +168,32 @@ class Stack():
     def size(self):
         return len(self.items)
 ```
-验证：
+
+栈的实现方法2:
+
+`insert(0)`和`pop(0)`的时间复杂度都是O(n)，元素越多就越慢，性能则受制于栈中的元素个数。
+```
+class Stack():
+    def __init__(self) -> None:
+        self.items = []
+
+    def isEmpty(self):
+        return self.items == []
+
+    def push(self, item):
+        self.items.insert(0, item)
+    
+    def pop(self):
+        return self.items.pop(0)
+    
+    def peek(self):
+        return self.items[0]
+    
+    def size(self):
+        return len(self.items)
+```
+
+对上面的实现，可以通过下面进行分别验证：
 ```
 s = Stack()
 s.isEmpty()
@@ -175,7 +207,100 @@ s.pop()
 s.size()
 ```
 
-栈的实现方法2:
+栈的应用：判断括号是否匹配。
+
+```
+#!/usr/bin/python3
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+
+class Stack():
+    def __init__(self):
+        self.items = []
+
+    def isEmpty(self):
+        return self.items == []
+
+    def push(self, item):
+        self.items.append(item)
+    
+    def pop(self):
+        return self.items.pop()
+    
+    def peek(self):
+        return self.items[len(self.items) - 1]
+    
+    def size(self):
+        return len(self.items)
+
+
+# 关联左右括号
+def matches(open, close):
+    opens = "([{"
+    closers = ")]}"
+    # 符合关联的，返回True
+    return opens.index(open) == closers.index(close)
+
+
+def parChecker(symbolString):
+    s = Stack()
+
+    matched = True
+    index = 0
+    
+    # 读取输入字串每个字符
+    while index < len(symbolString) and matched:
+        symbol = symbolString[index]
+        
+        if symbol in "([{":  # 左括号入栈
+            s.push(symbol)
+        else:
+            if s.isEmpty():  # 遇到非左括号字符，如为空，则退出循环
+                matched = False
+            else:
+                top = s.pop()  # 遇到非左括号字符，如不为空，则出栈，并判断是否未为对应的右括号
+                if not matches(top, symbol):  # 否则退出循环
+                    matched = False
+        
+        index = index + 1
+    
+    # 完成每个字符的出入栈检查，当前栈为空，且都匹配，则返回True
+    if matched and s.isEmpty():
+        return True
+    else:
+        return False
+
+
+if __name__ == '__main__':
+    parChecker("([[{}])")
+    parChecker("([{}])")
+
+```
+
+执行结果如下，符合预期。
+```
+False
+True
+```
+
+
+栈的应用：十进制数转换成二进制数。
+
+使用“除以2”的算法，利用栈来保存二进制结果的每一位。
+
+“除以2”算法假设待处理的整数大于0。
+它用一个简单的循环不停地将十进制数除以2，并且记录余数。
+第一次除以2的结果能够用于区分偶数和奇数。
+如果是偶数，则余数为0，因此个位上的数字为0；
+如果是奇数，则余数为1，因此个位上的数字为1。
+可以将要构建的二进制数看成一系列数字；计算出的第一个余数是最后一位。
+这体现了反转特性，因此适用栈来处理。
+
+
+
+
+
 
 
 
