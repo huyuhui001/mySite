@@ -128,6 +128,75 @@ allotropyWord_3('hello', 'olleh')
 
 
 
+## 线性数据结构
+
+真正区分线性数据结构的是元素的添加方式和移除方式，尤其是添加操作和移除操作发生的位置。
+
+### 栈
+
+栈有时也被称作“下推栈”。它是有序集合，添加操作和移除操作总发生在同一端，即“顶端”，另一端则被称为“底端”。
+
+最新添加的元素将被最先移除。这种排序原则被称作LIFO（last-in first-out），即后进先出。
+
+栈的反转特性。
+
+栈的实现方法1:
+```
+class Stack():
+    def __init__(self) -> None:
+        self.items = []
+
+    def isEmpty(self):
+        return self.items == []
+
+    def push(self, item):
+        self.items.append(item)
+    
+    def pop(self):
+        self.items.pop()
+    
+    def peek(self):
+        return self.items[len(self.items) - 1]
+    
+    def size(self):
+        return len(self.items)
+```
+验证：
+```
+s = Stack()
+s.isEmpty()
+s.push(3)
+s.push('dog')
+s.peek()
+s.size()
+s.isEmpty()
+s.push(6.6)
+s.pop()
+s.size()
+```
+
+栈的实现方法2:
+
+
+
+
+
+
+
+### 队列
+
+
+
+
+### 双端队列
+
+
+
+
+### 列表
+
+
+
 
 
 
