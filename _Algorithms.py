@@ -4,7 +4,7 @@
 
 
 class Stack():
-    def __init__(self) -> None:
+    def __init__(self):
         self.items = []
 
     def isEmpty(self):
@@ -14,7 +14,7 @@ class Stack():
         self.items.append(item)
     
     def pop(self):
-        self.items.pop()
+        return self.items.pop()
     
     def peek(self):
         return self.items[len(self.items) - 1]
@@ -22,17 +22,42 @@ class Stack():
     def size(self):
         return len(self.items)
 
-s = Stack()
-s.isEmpty()
-s.push(4)
-s.push('dog')
-s.peek()
-s.size()
-s.isEmpty()
-s.push(6.6)
-s.pop()
-s.size()
+
+def matches(open, close):
+    opens = "([{"
+    closers = ")]}"
+
+    return opens.index(open) == closers.index(close)
 
 
+def parChecker(symbolString):
+    s = Stack()
 
+    matched = True
+    index = 0
+
+    while index < len(symbolString) and matched:
+        symbol = symbolString[index]
+
+        if symbol in "([{":
+            s.push(symbol)
+        else:
+            if s.isEmpty():
+                matched = False
+            else:
+                top = s.pop()
+                if not matches(top, symbol):
+                    matched = False
+        
+        index = index + 1
+
+    if matched and s.isEmpty():
+        return True, f"{symbolString}"
+    else:
+        return False
+
+
+if __name__ == '__main__':
+    parChecker("([[{}])")
+    parChecker("([{}])")
 
