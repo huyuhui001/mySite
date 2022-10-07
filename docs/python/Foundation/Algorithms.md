@@ -13,7 +13,7 @@
 
 大O记法使得算法可以根据随问题规模增长而起主导作用的部分进行归类。
 
-### 异序词检测问题。
+### 异序词检测问题
 
 如果一个字符串只是重排了另一个字符串的字符，那么这个字符串就是另一个的异序词。
 
@@ -207,7 +207,7 @@ s.pop()
 s.size()
 ```
 
-栈的应用：判断括号是否匹配。
+#### 括号匹配问题
 
 ```
 #!/usr/bin/python3
@@ -285,7 +285,7 @@ True
 ```
 
 
-栈的应用：进制数转换。
+#### 进制转换问题
 
 例如，使用“除以2”的算法，十进制数转换成二进制数，利用栈来保存二进制结果的每一位。
 
@@ -399,9 +399,55 @@ False
 ```
 
 
-对列的应用：传土豆游戏(约瑟夫斯问题)。
+#### 约瑟夫斯问题
+
+通过模拟实现传土豆游戏来解释约瑟夫斯问题。
+
+```
+class Queue():
+    def __init__(self):
+        self.items = []
+    
+    def isEmpty(self):
+        return self.items == []
+    
+    def enqueue(self, item):
+        return self.items.insert(0, item)
+    
+    def dequeue(self):
+        return self.items.pop()
+    
+    def size(self):
+        return len(self.items)
 
 
+def hotPotato(namelist, num):
+    simqueue = Queue()
+
+    for name in namelist:
+        simqueue.enqueue(name)
+    
+    while simqueue.size() > 1:
+        for i in range(num):
+            simqueue.enqueue(simqueue.dequeue())
+        
+        simqueue.dequeue()
+
+    return simqueue.dequeue()
+
+
+if __name__ == '__main__':
+    hotPotato(["Bill", "David", "Susan", "Jane", "Ken", "Brad"], 7)
+
+ ```
+ 运行结果如下，最后只剩Susan。设定不同的num（这里是7）会得到不同的结果。
+ ```
+'Susan'
+ ```
+
+
+
+#### 打印任务
 
 
 
