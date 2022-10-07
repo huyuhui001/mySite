@@ -20,17 +20,24 @@ class Queue():
         return len(self.items)
 
 
+def hotPotato(namelist, num):
+    simqueue = Queue()
+
+    for name in namelist:
+        simqueue.enqueue(name)
+    
+    while simqueue.size() > 1:
+        for i in range(num):
+            simqueue.enqueue(simqueue.dequeue())
+        
+        simqueue.dequeue()
+
+    return simqueue.dequeue()
+
+
 if __name__ == '__main__':
-    q = Queue()
-    q.isEmpty()
-    q.enqueue(2)
-    q.enqueue('h')
-    q.size()
-    q.isEmpty()
-    q.dequeue()
-    q.size()
+    hotPotato(["Bill", "David", "Susan", "Jane", "Ken", "Brad"], 7)
 
  
  
-print("hello\r123")
 
