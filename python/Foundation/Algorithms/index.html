@@ -182,4 +182,81 @@ if __name__ == &#39;__main__&#39;:
     parChecker(&quot;([{}])&quot;)
 </code></pre></div> <p>执行结果如下，符合预期。 <div class=highlight><pre><span></span><code>False
 True
-</code></pre></div></p> <p>栈的应用：十进制数转换成二进制数。</p> <p>使用“除以2”的算法，利用栈来保存二进制结果的每一位。</p> <p>“除以2”算法假设待处理的整数大于0。 它用一个简单的循环不停地将十进制数除以2，并且记录余数。 第一次除以2的结果能够用于区分偶数和奇数。 如果是偶数，则余数为0，因此个位上的数字为0； 如果是奇数，则余数为1，因此个位上的数字为1。 可以将要构建的二进制数看成一系列数字；计算出的第一个余数是最后一位。 这体现了反转特性，因此适用栈来处理。</p> <h3 id=_5>队列<a class=headerlink href=#_5 title="Permanent link"> ¶</a></h3> <h3 id=_6>双端队列<a class=headerlink href=#_6 title="Permanent link"> ¶</a></h3> <h3 id=_7>列表<a class=headerlink href=#_7 title="Permanent link"> ¶</a></h3> </article> </div> </div> <a href=# class="md-top md-icon" data-md-component=top data-md-state=hidden> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"/></svg> Back to top </a> </main> <footer class=md-footer> <nav class="md-footer__inner md-grid" aria-label=Footer> <a href=../ch05/ class="md-footer__link md-footer__link--prev" aria-label="Previous: 面向对象特性" rel=prev> <div class="md-footer__button md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg> </div> <div class=md-footer__title> <div class=md-ellipsis> <span class=md-footer__direction> Previous </span> 面向对象特性 </div> </div> </a> <a href=../../DataAnalysis/ch01/ class="md-footer__link md-footer__link--next" aria-label="Next: NumPy基础" rel=next> <div class=md-footer__title> <div class=md-ellipsis> <span class=md-footer__direction> Next </span> NumPy基础 </div> </div> <div class="md-footer__button md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg> </div> </a> </nav> <div class="md-footer-meta md-typeset"> <div class="md-footer-meta__inner md-grid"> <div class=md-footer-copyright> Made with <a href=https://squidfunk.github.io/mkdocs-material/ target=_blank rel=noopener> Material for MkDocs </a> </div> </div> </div> </footer> </div> <div class=md-dialog data-md-component=dialog> <div class="md-dialog__inner md-typeset"></div> </div> <script id=__config type=application/json>{"base": "../../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.instant", "navigation.top"], "search": "../../../assets/javascripts/workers/search.fcfe8b6d.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": null}</script> <script src=../../../assets/javascripts/bundle.b1047164.min.js></script> </body> </html>
+</code></pre></div></p> <p>栈的应用：进制数转换。</p> <p>例如，使用“除以2”的算法，十进制数转换成二进制数，利用栈来保存二进制结果的每一位。</p> <p>“除以2”算法假设待处理的整数大于0。 它用一个简单的循环不停地将十进制数除以2，并且记录余数。 第一次除以2的结果能够用于区分偶数和奇数。 如果是偶数，则余数为0，因此个位上的数字为0； 如果是奇数，则余数为1，因此个位上的数字为1。 可以将要构建的二进制数看成一系列数字；计算出的第一个余数是最后一位。 这体现了反转特性，因此适用栈来处理。</p> <p><div class=highlight><pre><span></span><code>class Stack():
+    def __init__(self):
+        self.items = []
+
+    def isEmpty(self):
+        return self.items == []
+
+    def push(self, item):
+        self.items.append(item)
+
+    def pop(self):
+        return self.items.pop()
+
+    def peek(self):
+        return self.items[len(self.items) - 1]
+
+    def size(self):
+        return len(self.items)
+
+
+def decConverter(decNumber, baseNumber):
+    remstack = Stack()
+    digits = &quot;0123456789ABCDEF&quot;
+
+    while decNumber &gt; 0:
+        rem = decNumber % baseNumber
+        remstack.push(rem)
+        decNumber = decNumber // baseNumber
+
+    newString = &quot;&quot;
+
+    while not remstack.isEmpty():
+        newString = newString + digits[remstack.pop()]
+
+    return newString
+
+
+if __name__ == &#39;__main__&#39;:
+    decConverter(233, 2)
+    decConverter(233, 8)
+    decConverter(233, 10)
+    decConverter(233, 16)
+</code></pre></div> 运行结果： <div class=highlight><pre><span></span><code>&#39;11101001&#39;
+&#39;351&#39;
+&#39;233&#39;
+&#39;E9&#39;
+</code></pre></div></p> <h3 id=_5>队列<a class=headerlink href=#_5 title="Permanent link"> ¶</a></h3> <p>使用<code>insert()</code>向队列的尾部添加新元素，时间复杂度是O(n)。 使用<code>pop()</code>移除队列头部的元素（列表中的最后一个元素），时间复杂度是O(1)。</p> <p><div class=highlight><pre><span></span><code>class Queue():
+    def __init__(self):
+        self.items = []
+
+    def isEmpty(self):
+        return self.items == []
+
+    def enqueue(self, item):
+        return self.items.insert(0, item)
+
+    def dequeue(self):
+        return self.items.pop()
+
+    def size(self):
+        return len(self.items)
+
+
+if __name__ == &#39;__main__&#39;:
+    q = Queue()
+    q.isEmpty()
+    q.enqueue(2)
+    q.enqueue(&#39;h&#39;)
+    q.size()
+    q.isEmpty()
+    q.dequeue()
+    q.size()
+</code></pre></div> 运行结果: <div class=highlight><pre><span></span><code>True
+2
+False
+2
+1
+</code></pre></div></p> <p>对列的应用：传土豆游戏(约瑟夫斯问题)。</p> <h3 id=_6>双端队列<a class=headerlink href=#_6 title="Permanent link"> ¶</a></h3> <h3 id=_7>列表<a class=headerlink href=#_7 title="Permanent link"> ¶</a></h3> </article> </div> </div> <a href=# class="md-top md-icon" data-md-component=top data-md-state=hidden> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"/></svg> Back to top </a> </main> <footer class=md-footer> <nav class="md-footer__inner md-grid" aria-label=Footer> <a href=../ch05/ class="md-footer__link md-footer__link--prev" aria-label="Previous: 面向对象特性" rel=prev> <div class="md-footer__button md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg> </div> <div class=md-footer__title> <div class=md-ellipsis> <span class=md-footer__direction> Previous </span> 面向对象特性 </div> </div> </a> <a href=../../DataAnalysis/ch01/ class="md-footer__link md-footer__link--next" aria-label="Next: NumPy基础" rel=next> <div class=md-footer__title> <div class=md-ellipsis> <span class=md-footer__direction> Next </span> NumPy基础 </div> </div> <div class="md-footer__button md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg> </div> </a> </nav> <div class="md-footer-meta md-typeset"> <div class="md-footer-meta__inner md-grid"> <div class=md-footer-copyright> Made with <a href=https://squidfunk.github.io/mkdocs-material/ target=_blank rel=noopener> Material for MkDocs </a> </div> </div> </div> </footer> </div> <div class=md-dialog data-md-component=dialog> <div class="md-dialog__inner md-typeset"></div> </div> <script id=__config type=application/json>{"base": "../../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.instant", "navigation.top"], "search": "../../../assets/javascripts/workers/search.fcfe8b6d.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": null}</script> <script src=../../../assets/javascripts/bundle.b1047164.min.js></script> </body> </html>
