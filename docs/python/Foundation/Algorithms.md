@@ -285,9 +285,9 @@ True
 ```
 
 
-栈的应用：十进制数转换成二进制数。
+栈的应用：进制数转换。
 
-使用“除以2”的算法，利用栈来保存二进制结果的每一位。
+例如，使用“除以2”的算法，十进制数转换成二进制数，利用栈来保存二进制结果的每一位。
 
 “除以2”算法假设待处理的整数大于0。
 它用一个简单的循环不停地将十进制数除以2，并且记录余数。
@@ -298,10 +298,57 @@ True
 这体现了反转特性，因此适用栈来处理。
 
 
+```
+class Stack():
+    def __init__(self):
+        self.items = []
+
+    def isEmpty(self):
+        return self.items == []
+
+    def push(self, item):
+        self.items.append(item)
+    
+    def pop(self):
+        return self.items.pop()
+    
+    def peek(self):
+        return self.items[len(self.items) - 1]
+    
+    def size(self):
+        return len(self.items)
 
 
+def decConverter(decNumber, baseNumber):
+    remstack = Stack()
+    digits = "0123456789ABCDEF"
+
+    while decNumber > 0:
+        rem = decNumber % baseNumber
+        remstack.push(rem)
+        decNumber = decNumber // baseNumber
+    
+    newString = ""
+
+    while not remstack.isEmpty():
+        newString = newString + digits[remstack.pop()]
+    
+    return newString
 
 
+if __name__ == '__main__':
+    decConverter(233, 2)
+    decConverter(233, 8)
+    decConverter(233, 10)
+    decConverter(233, 16)
+```
+运行结果：
+```
+'11101001'
+'351'
+'233'
+'E9'
+```
 
 
 
@@ -309,6 +356,53 @@ True
 
 
 ### 队列
+
+
+使用`insert()`向队列的尾部添加新元素，时间复杂度是O(n)。
+使用`pop()`移除队列头部的元素（列表中的最后一个元素），时间复杂度是O(1)。
+
+```
+class Queue():
+    def __init__(self):
+        self.items = []
+    
+    def isEmpty(self):
+        return self.items == []
+    
+    def enqueue(self, item):
+        return self.items.insert(0, item)
+    
+    def dequeue(self):
+        return self.items.pop()
+    
+    def size(self):
+        return len(self.items)
+
+
+if __name__ == '__main__':
+    q = Queue()
+    q.isEmpty()
+    q.enqueue(2)
+    q.enqueue('h')
+    q.size()
+    q.isEmpty()
+    q.dequeue()
+    q.size()
+```
+运行结果:
+```
+True
+2
+False
+2
+1
+```
+
+
+对列的应用：传土豆游戏(约瑟夫斯问题)。
+
+
+
 
 
 
