@@ -12,6 +12,7 @@ Linux
 
 * SUSE Linux Administration
 * SUSE Enterprise Storage Foundation and Basic Operation
+* Linux SRE
 
 Python
 
