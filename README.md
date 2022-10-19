@@ -1,8 +1,8 @@
-# MEMO
+# UPSkilling
 
 ## Introduction
 
-This is my learning memo. 
+Just a learning memo. 
 The [website](https://huyuhui001.github.io/mySite/) provide same contents with easy reading style.
 
 Kubernetes
@@ -12,6 +12,7 @@ Kubernetes
 Linux
 * SUSE Linux Administration
 * SUSE Enterprise Storage Foundation and Basic Operation
+* Linux SRE
 
 Python
 * Foundation
