@@ -1,7 +1,4 @@
-# Contents
-
-This is my learning memo. 
-The [website](https://huyuhui001.github.io/mySite/) provide same contents with easy reading style.
+Just a learning memo.
 
 Kubernetes
 
