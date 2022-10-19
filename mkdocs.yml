@@ -1,4 +1,4 @@
-site_name: MEMO
+site_name: UPSkilling
 site_url: https://huyuhui001.github.io/mySite/
 repo_name: "huyuhui001/mySite"
 repo_url: https://github.com/huyuhui001/mySite
@@ -67,9 +67,18 @@ plugins:
 extra_css: [extra.css]
 
 nav:
-- Welcome: 
-  - Content: index.md
-  - About: about.md
+- UPSkilling: 
+  - Welcome: index.md
+- Linux:
+    - SUSE Linux Administration: 
+      - Linux File System Overview: linux/Administration/01.md
+      - Useful Commands: linux/Administration/02.md
+      - Shell: linux/Administration/03.md
+    - SUSE Enterprise Storage Foundation: 
+      - SUSE Enterprise Storage Foundation: linux/SES/linux_ses_memo.md
+      - SUSE Enterprise Storage Basic Operation: linux/SES/linux_ses_demo.md
+    - Linux SRE:
+      - Linux Fundamentals: linux/SRE/01-fundamentals.md
 - Kubernetes:
   - Installation:
     - Single Node Installation: k8s/installation/single-local.md
@@ -112,14 +121,6 @@ nav:
     - Kyma: k8s/foundamentals/kyma.md
   - Demos:
     - Build CAP application on Kyma: k8s/demo/cap_on_kyma.md
-- Linux:
-    - SUSE Linux Administration: 
-      - Linux File System Overview: linux/Administration/01.md
-      - Useful Commands: linux/Administration/02.md
-      - Shell: linux/Administration/03.md
-    - SUSE Enterprise Storage Foundation: 
-      - SUSE Enterprise Storage Foundation: linux/SES/linux_ses_memo.md
-      - SUSE Enterprise Storage Basic Operation: linux/SES/linux_ses_demo.md
 - Python:
   - Python基础:
     - 安装: python/Foundation/ch00.md
