@@ -69,6 +69,7 @@ extra_css: [extra.css]
 nav:
 - UPSkilling: 
   - Welcome: index.md
+  - About: about.md
 - Linux:
     - SUSE Linux Administration: 
       - Linux File System Overview: linux/Administration/01.md
