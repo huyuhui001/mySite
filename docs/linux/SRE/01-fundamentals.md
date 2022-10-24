@@ -516,3 +516,34 @@ sudo yum install util-linux
 ### 用户登录信息
 
 
+* `whoami`：当前登录用户
+* `who`：系统当前所有的登录会话
+* `w`：系统当前所有的登录会话及所作的操作
+
+MOTD is the abbreviation of "Message Of The Day", and it is used to display a message when a remote user login to the Linux Operating system using SSH. Linux administrators often need to display different messages on the login of the user, like displaying custom information about the server or any necessary information. 
+
+编辑文件`/etc/motd`可以自定义"Message Of The Day"的信息。
+
+Ubuntu 2204新安装后没有这个文件，需要自己创建。
+openSUSE新安装后有预定义的信息。
+Rocky9 新安装后有该文件，空白文件无内容。
+
+
+### 会话管理工具
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
