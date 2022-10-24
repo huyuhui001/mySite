@@ -300,6 +300,219 @@ whereis cd
 
 
 
+### CPU信息
 
+```
+lscpu
+cat /proc/cpuinfo
+```
+
+### 内存使用状态
+
+```
+free
+cat /proc/meminfo
+```
+
+### 硬盘和分区情况
+
+```
+lsblk
+```
+
+openSUSE在VMWare默认安装的状态：
+```
+NAME   MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTS
+sda      8:0    0  200G  0 disk 
+├─sda1   8:1    0    8M  0 part 
+├─sda2   8:2    0  198G  0 part /home
+│                               /var
+│                               /opt
+│                               /usr/local
+│                               /root
+│                               /tmp
+│                               /srv
+│                               /boot/grub2/x86_64-efi
+│                               /boot/grub2/i386-pc
+│                               /.snapshots
+│                               /
+└─sda3   8:3    0    2G  0 part [SWAP]
+sr0     11:0    1  3.8G  0 rom 
+```
+
+Ubuntu在VMWare默认安装的状态：
+```
+NAME                      MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTS
+loop0                       7:0    0 61.9M  1 loop /snap/core20/1405
+loop1                       7:1    0 63.2M  1 loop /snap/core20/1623
+loop2                       7:2    0 79.9M  1 loop /snap/lxd/22923
+loop3                       7:3    0   48M  1 loop /snap/snapd/17029
+loop4                       7:4    0  103M  1 loop /snap/lxd/23541
+loop5                       7:5    0   48M  1 loop /snap/snapd/17336
+sda                         8:0    0   50G  0 disk 
+├─sda1                      8:1    0    1M  0 part 
+├─sda2                      8:2    0    2G  0 part /boot
+└─sda3                      8:3    0   48G  0 part 
+  └─ubuntu--vg-ubuntu--lv 253:0    0   24G  0 lvm  /
+sr0                        11:0    1  1.4G  0 rom 
+```
+
+Rocky在VMWare默认安装的状态：
+```
+NAME        MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTS
+sda           8:0    0   50G  0 disk 
+├─sda1        8:1    0    1G  0 part /boot
+└─sda2        8:2    0   49G  0 part 
+  ├─rl-root 253:0    0 45.1G  0 lvm  /
+  └─rl-swap 253:1    0  3.9G  0 lvm  [SWAP]
+sr0          11:0    1  7.9G  0 rom
+```
+
+
+### 系统架构信息
+
+```
+arch
+```
+openSUSE，Ubuntu和Rocky的返回结果都是`x86_64`。
+
+
+### 内核版本
+
+```
+uname -r
+```
+三个发行版返回的结果不尽相同：
+```
+# openSUSE
+5.14.21-150400.24.21-default
+
+# Ubuntu
+5.15.0-52-generic
+
+# Rocky
+5.14.0-70.17.1.el9_0.x86_64
+```
+
+
+### 操作系统版本
+
+```
+cat /etc/os-release
+cat /etc/issue
+
+# Rocky 9
+sudo cat /etc/redhat-release
+```
+```
+lsb-release -a
+lsb_release -cs
+lsb_release -is
+lsb_release -rs
+```
+
+在openSUSE中，需要安装`lsb-release`包。执行`lsb-release -a`和`lsb_release -a`返回的结果是一样的。
+```
+sudo zypper in lsb-release
+```
+
+在Ubuntu中，需要安装`lsb-release`包。只能执行`lsb_release -a`。
+```
+sudo apt install lsb-release
+```
+
+在Rocky 9中，找不到`lsb-release`相关的包。
+
+
+### 日期和时间
+
+显示默认格式的当前日期。
+```
+date
+```
+三个系统的默认日期格式略有不同。
+```
+# openSUSE
+Mon 24 Oct 2022 09:28:06 AM CST
+
+# Ubuntu
+Mon Oct 24 01:28:09 AM UTC 2022
+
+# Rocky
+Mon Oct 24 09:24:01 AM CST 2022
+```
+
+显示自1970-01-01 00:00:00 UTC到当前的秒数。
+```
+date +%s
+```
+
+将上一命令中的描述转换为系统默认日期格式。
+```
+date -d @`date +%s`
+date --date=@'1666575347'
+```
+
+
+显示硬件时钟。
+
+`hwclock` 也被称为 Real Time Clock (RTC)。
+
+在Rocky9中，`clock`有一个软连接指向`hwclock`：`/usr/sbin/clock -> hwclock`。在openSUSE和Ubuntu中只有`hwclock`。
+```
+ll /usr/sbin/clock
+ll /usr/sbin/hwclock
+```
+
+读取RTC时间。
+```
+sudo hwclock --get
+sudo hwclock -r
+```
+
+校准时间：
+
+* `-s, –hctosys` : 以RTC硬件时间来校准系统时间。
+* `-w, –systohoc` : 以系统时间来校准RTC硬件时间。
+
+
+显示当前系统时区。
+```
+ll /etc/localtime
+```
+系统可能会返回不同结果，例如：
+```
+/etc/localtime -> /usr/share/zoneinfo/Asia/Shanghai
+/etc/localtime -> /usr/share/zoneinfo/Etc/UTC
+```
+
+显示当前可以时区列表。
+```
+timedatectl list-timezones
+timedatectl list-timezones | grep -i Asia
+```
+
+修改当前系统时区。
+```
+sudo timedatectl set-timezone Asia/Shanghai
+```
+
+显示日历。
+```
+cal -y
+```
+openSUSE和Rocky中，使用`cal`命令需要安装`util-linux`包。
+Ubuntu中，使用`cal`命令需要安装`ncal`包。
+
+```
+sudo apt install ncal
+
+sudo zypper se util-linux
+sudo yum install util-linux
+```
+
+
+
+### 用户登录信息
 
 
