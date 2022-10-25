@@ -531,19 +531,38 @@ Rocky9 新安装后有该文件，空白文件无内容。
 
 ### 会话管理工具
 
+`screen`工具
+
+* `screen -S <your_name>`  (Create new screen session)
+* `screen -ls`             (list current screen sessions)
+* `screen -x <your_name>`  (Attach to existing screeen session, sync between both)
+* `screen -r <your_name>`  (Reattach existing screen session)
 
 
+`tmux`工具
 
+`tmux` 是指 *Terminal Multiplexer*.
 
+安装`tmux`工具。
+```
+# Rocky
+sudo yum install tmux
 
+# Ubuntu
+sudo apt install tmux
 
+# openSUSE
+sudo zypper in tmux
+```
 
+常用方法：
 
-
-
-
-
-
-
-
-
+* `tmux new -s <your_name>`     (Create new session)
+* `tmux detach`                 (Detach current session)
+* `tmux ls`                     (list current sessions)
+* `tmux attach -t <your_name>`  (Reattach existing session)
+* `tmux switch -t <your_name>`  (Switch to another session)
+* `tmux kill-session -t <your_name>`  (Kill existing session)
+* `tmux list-keys`              (List all short keys)
+* `tmux list-commands`          (List commands and parameters)
+* `tmux info`                   
