@@ -565,4 +565,87 @@ sudo zypper in tmux
 * `tmux kill-session -t <your_name>`  (Kill existing session)
 * `tmux list-keys`              (List all short keys)
 * `tmux list-commands`          (List commands and parameters)
-* `tmux info`                   
+* `tmux info`                   (List all sessions info)
+* `tmux split-window`           (Split window)
+
+
+
+### `echo`命令
+
+`echo`命令中可以输出变量，如果变量是用是单引号引起来，表示这个变量不用IFS替换！！
+
+* `echo "Home=$HOME"`的输出结果是`Home=/home/vagrant`
+* `echo 'Home=$HOME'`的输出结果是`Home=$HOME`
+
+
+`echo -e`启用`\`字符的解释功能，比如：
+* `echo -e "a\x0Ab"`，输出字符`a`和`b`，中间`\x0A`代表十六进制`OA`（即回车）
+* `echo -e "\x4A \x41 \x4D \x45 \x53"`，输出结果是`J A M E S`
+
+!!! Tips
+    可以通过man 7 ascii来查看各进制的含义。
+
+
+
+`echo -e`输出带颜色字符。
+
+示例：
+
+```
+echo -e "\e[35m 紫色 \e[0m"
+echo -e "\e[43m 黄底 \e[0m"
+echo -e "\e[93m 黑底黄字 \e[0m"
+```
+
+
+!!! Reference
+    字体颜色：
+
+    * `\e[30m`： 黑色
+    * `\e[31m`： 红色
+    * `\e[32m`： 绿色
+    * `\e[33m`： 黄色
+    * `\e[34m`： 蓝色
+    * `\e[35m`： 紫色
+    * `\e[36m`： 青色
+    * `\e[37m`： 白色
+    * `\e[40m`： 黑底
+    * `\e[41m`： 红底
+    * `\e[42m`： 绿底
+    * `\e[43m`： 黄底
+    * `\e[44m`： 蓝底
+    * `\e[45m`： 紫底
+    * `\e[46m`： 青底
+    * `\e[47m`： 白底
+
+    背景颜色：
+
+    * `\e[90m`： 黑底黑字
+    * `\e[91m`： 黑底红字
+    * `\e[92m`： 黑底绿字
+    * `\e[93m`： 黑底黄字
+    * `\e[94m`： 黑底蓝字
+    * `\e[95m`： 黑底紫字
+    * `\e[96m`： 黑底青字
+    * `\e[97m`： 黑底白字
+
+    控制属性：
+
+    * `\e[0m` 关闭所有属性
+    * `\e[1m` 设置高亮度
+    * `\e[4m` 下划线
+    * `\e[5m` 闪烁
+    * `\e[7m` 反显，撞色显示，显示为白字黑底，或者显示为黑底白字
+    * `\e[8m` 消影，字符颜色将会与背景颜色相同
+    * `\e[nA` 光标上移 n 行
+    * `\e[nB` 光标下移 n 行
+    * `\e[nC` 光标右移 n 行
+    * `\e[nD` 光标左移 n 行
+    * `\e[y;xH` 设置光标位置
+    * `\e[2J` 清屏
+    * `\e[K` 清除从光标到行尾的内容
+    * `\e[s` 保存光标位置
+    * `\e[u` 恢复光标位置
+    * `\e[?25` 隐藏光标
+    * `\e[?25h` 显示光标
+
