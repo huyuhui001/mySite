@@ -649,3 +649,274 @@ echo -e "\e[93m 黑底黄字 \e[0m"
     * `\e[?25` 隐藏光标
     * `\e[?25h` 显示光标
 
+
+### `man`命令
+
+安装包：
+```
+# openSUSE
+sudo zypper install man-pages man-pages-zh_CN man-pages-posix
+
+# Rocky
+sudo yum install man-pages
+
+# Ubuntu
+sudo apt install man-db manpages-posix manpages manpages-zh
+sudo apt install manpages-dev manpages-posix-dev
+```
+
+更新mandb
+```
+mandb
+```
+
+查找某个命令的man信息，例如查找`crontab`命令的信息。
+```
+# 精确查找
+man -f crontab
+whatis crontab
+
+# 模糊查询
+man -k crontab
+apropos crontab
+```
+输出结果如下：
+```
+crontab (5)          - files used to schedule the execution of programs
+crontab (1)          - maintains crontab files for individual users
+crontab (1p)         - schedule periodic background work
+```
+查找crontab第5章的内容，则可以执行：
+```
+man 5 crontab
+```
+
+常用快捷键示例s：
+
+* `1G` : go to the 1st line
+* `10G` : go to the 10th line
+* `G` : go to the end of the page
+* `/^SELinux` : search the word SELinux
+* `/section OPTIONS` : go to the section OPTIONS
+
+
+
+
+### 语言环境LANG
+
+安装语言包。
+```
+# Ubuntu
+sudo apt install locales-all
+
+# Rocky
+sudo yum install glibc-langpack-zh.x86_64
+
+# openSUSE
+sudo zypper install glibc-locale glibc-locale-32bit glibc-locale-base
+```
+
+查看当前语言设置：
+```
+echo $LANG
+
+locale -a
+locale -k LC_TIME
+
+localectl status
+localectl list-locales
+```
+
+全局locale配置(Global locale settings)。
+```
+# openSUSE & Rocky
+sudo cat /etc/locale.conf
+
+# Ubuntu
+sudo cat /etc/default/locale
+```
+
+临时修改当前session的locale。
+```
+LANG="zh_CN.utf8" 
+```
+
+永久修改locale设置。
+```
+sudo localectl set-locale LANG=zh_CN.utf8
+```
+
+修改回原设置。
+```
+sudo localectl set-locale LANG=en_US.utf8
+```
+
+
+### 符号`$`
+
+符号`$`的用法：
+
+* `$`，获取变零值。
+```
+x=1
+echo $x
+echo "$x"
+```
+
+建议使用"$x"，以避免shell编程中产生歧义。如下例：
+```
+s="this is a string"
+echo $s
+echo "this is a string"
+```
+执行`[ $s == "this is a string" ]`会报错，这是实际生成的比较式`this is a string == "this is a string"`。
+我们预期的是`"this is a string" == "this is a string"`，所以需要改成`[ "$s" == "this is a string" ]`。
+
+
+* `$0`, `$1`, `$n`, `$#`：
+
+生成一个测试脚本。
+```
+echo 'echo $0 $1 $2 $#' > test.sh
+chmod 755 test.sh
+```
+
+验证各个参数位置。
+```
+./test.sh a b c d e
+```
+输出结果：
+```
+./test.sh a b 5
+```
+
+结论：
+
+* `$0`输出脚本文件名；
+* `$1`输出第一个参数；
+* `$2`输出第二个参数；
+* `$#`输出参数个数。
+
+
+* `${}`
+
+`${}`用于区分变量的边界。
+
+下面例子中，`$abc`无结果输出，`${a}bc`输出结果`stringbc`，通过{}指定了某个字符属于变量。
+```
+a="string"
+echo ${a}bc
+echo $abc
+```
+
+
+* `${#}`
+
+`${#}`是返回变量值的长度。
+```
+s='this is a string'
+echo "$s"
+echo "${#s}"
+```
+命令`echo "${#s}"`输出结果是字串`this is a string`的长度`16`。
+
+
+* `$?`
+
+`$?`是返回上一命令是否成功的状态，`0`代表成功，非零代表失败。
+
+`ls`是一个命令，所以返回值是`0`。`tom`是一个不存在的命令，则返回`127`。
+```
+ls
+echo $?
+
+tom
+echo $?
+```
+
+* `$()`
+
+`$()`等同于反引号。`echo $(ls)`等同于执行`ls`命令。
+
+`$()`的弊端是，不是所有的类unix系统都支持，反引号是肯定支持的。
+
+`$()`的优势是直观，在转移处理时，比反引号直观容易些。
+```
+echo $(ls)
+# test.sh
+
+echo $(cat $(ls))
+# echo $0 $1 $2 $#
+```
+上述嵌套格式中，ls命令的输出，是cat命令的输入，可以进行多层嵌套，内层命令的输出是外层命令的输入。
+
+
+* `$[]`
+
+`$[]`是表达式计算。
+```
+echo $[3 + 2]
+```
+
+* `$-`
+
+`$-`显示shell当前所使用的选项。
+
+执行`echo $-`，输出结果`himBHs`。himBH每一个字符是一个shell的选项。
+
+
+* `$!`
+
+`$!`获取最后一个运行的后台进程的pid。
+
+比如执行`cat test.sh &`，结果中会包含一个pid号，马上着执行`echo $!`，如果2个命令间隔之间没有其他后台进程执行，则可以得到和前面一致的pid号。
+
+* `!$`
+
+`!$`返回上一条命令的最后一个参数。
+
+执行`./test.sh a b c iamhere`，得到结果`./test.sh a b 4`。
+执行`echo !$`，得到2个结果，`echo iamhere`和`iamhere`。
+
+
+* `!!`
+
+`!!`输出上一条命令，并执行。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
