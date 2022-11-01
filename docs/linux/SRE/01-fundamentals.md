@@ -948,6 +948,7 @@ a b 3 5 d
 
 * `/bin` - 用户基本程序。
     * 包含未挂载其他文件系统时所需的可执行文件。 例如，系统启动、处理文件和配置所需的程序。
+    * 不能关联到独立分区，操作系统启动即会调用的程序。
     * `/bin/bash` - `bash`脚本处理
     * `/bin/cat` - 显示文件内容
     * `/bin/cp` - 拷贝文件
@@ -959,30 +960,31 @@ a b 3 5 d
 * `/sbin` - 系统基本程序。
 	* 包含基本系统管理的程序。
 	* 默认是root用户有权限执行，因此它不在常规用户路径中。 
+    * 不能关联到独立分区，操作系统启动即会调用的程序
 	* 一些重要管理程序：
-	    * `/sbin/fdisk*` - 管理硬盘分区
-	    * `/sbin/fsck*` - 文件系统检查。不能在运行的系统上面直接执行`fsck`，损坏根文件系统，执行前需要`umount`。
-	    * `/sbin/mkfs` - 创建文件系统
-	    * `/sbin/shutdown` - 关闭系统
+	    - `/sbin/fdisk*` - 管理硬盘分区
+	    - `/sbin/fsck*` - 文件系统检查。不能在运行的系统上面直接执行`fsck`，损坏根文件系统，执行前需要`umount`。
+	    - `/sbin/mkfs` - 创建文件系统
+	    - `/sbin/shutdown` - 关闭系统
 * `/dev` - 设备文件
 	* 以太网卡是内核模块，其他硬件都以设备dev的方式展现。
 	* 应用程序读取和写入这些文件以操作使用硬件组件。
 	* 两种类型设备文件：
-		* 字符设备（Character-oriented）– 序列设备（打印机，磁带机，鼠标等） 
-		* 块设备（Block-oriented）– 硬盘，DVD等 
+		- 字符设备（Character-oriented）– 序列设备（打印机，磁带机，鼠标等） 
+		- 块设备（Block-oriented）– 硬盘，DVD等 
 	* 与设备驱动程序的连接通过内核中称为主设备号的通道实现。
 	* 过去，这些文件是使用`mknod`命令手动创建的。 现在当内核发现设备时，它们会由`udev`自动创建。
 	* 一些重要的设备文件：
-		* Null设备: - `/dev/null`
-		* Zero设备: - `/dev/zero`
-		* 系统终端: - `/dev/console`
-		* 虚拟终端: - `/dev/tty1`
-		* 串行端口 - `/dev/ttyS0`
-		* 并行端口: - `/dev/lp0`
-		* 软盘驱动器: - `/dev/fd0`
-		* 硬盘驱动器: - `/dev/sda`
-		* 硬盘分区: - `/dev/sda1`
-		* CD-ROM驱动器: - `/dev/scd0`
+		- Null设备: - `/dev/null`
+		- Zero设备: - `/dev/zero`
+		- 系统终端: - `/dev/console`
+		- 虚拟终端: - `/dev/tty1`
+		- 串行端口 - `/dev/ttyS0`
+		- 并行端口: - `/dev/lp0`
+		- 软盘驱动器: - `/dev/fd0`
+		- 硬盘驱动器: - `/dev/sda`
+		- 硬盘分区: - `/dev/sda1`
+		- CD-ROM驱动器: - `/dev/scd0`
 * `/etc` - 配置文件
 	* 存放系统和服务的配置文件。
 	* 大部分都是ASCII文件
@@ -990,18 +992,18 @@ a b 3 5 d
 	* 根据FHS标准，此处不能放置任何可执行文件，但子目录可能包含shell脚本。
 	* 几乎每个已安装的服务在`/etc`或其子目录中至少有一个配置文件。
 	* 一些重要的配置文件:
-	    * `/etc/os-release` - 系统版本信息
-	    * `/etc/DIR_COLORS` - `ls`命令中的颜色配置信息（openSUSE和Rocky）
-	    * `/etc/fstab` - 配置要挂载的文件系统
-	    * `/etc/profile` - Shell登录脚本
-	    * `/etc/passwd` - 用户信息集合（不含密码）
-	    * `/etc/shadow` - 密码和相关信息
-	    * `/etc/group` - 用户组信息集合
-	    * `/etc/cups/*` - 用于CUPS打印系统（CUPS=Common UNIX Printing System）
-	    * `/etc/hosts` - 主机名机器IP地址
-	    * `/etc/motd` - 登录后显示的欢迎信息
-	    * `/etc/issue` - 登录前显示的欢迎信息
-	    * `/etc/sysconfig/*` - 系统配置文件
+	    - `/etc/os-release` - 系统版本信息
+	    - `/etc/DIR_COLORS` - `ls`命令中的颜色配置信息（openSUSE和Rocky）
+	    - `/etc/fstab` - 配置要挂载的文件系统
+	    - `/etc/profile` - Shell登录脚本
+	    - `/etc/passwd` - 用户信息集合（不含密码）
+	    - `/etc/shadow` - 密码和相关信息
+	    - `/etc/group` - 用户组信息集合
+	    - `/etc/cups/*` - 用于CUPS打印系统（CUPS=Common UNIX Printing System）
+	    - `/etc/hosts` - 主机名机器IP地址
+	    - `/etc/motd` - 登录后显示的欢迎信息
+	    - `/etc/issue` - 登录前显示的欢迎信息
+	    - `/etc/sysconfig/*` - 系统配置文件
 * `/lib` - 库（Libraries）
 	* 许多程序都具有一些通用功能。 这些通用功能可以保存在共享库中。
 	* 共享库中文件的扩展名是`.so`。 
@@ -1016,21 +1018,25 @@ a b 3 5 d
 	* `/usr/X11R6/` - X Window 系统文件
 	* `/usr/bin/` - 几乎包含所有可执行文件
 	* `/usr/lib/` - 包含库和应用程序
+    * `/usr/lib64/` - 包含64位库和应用程序
+    * `/usr/include/` - 包含C程序的头文件（head file）
 	* `/usr/local/` - 包含本地安装程序。这个目录下的内容不会被系统升级所覆盖。下面3个目录在初始安装后是空的。
-		* `/usr/local/bin`- 
-		* `/usr/local/sbin`- 
-		* `/usr/local/lib`- 
+		- `/usr/local/bin`- 
+		- `/usr/local/sbin`- 
+		- `/usr/local/lib`- 
 	* `/usr/sbin/` - 系统管理程序
-	* `/usr/share/doc/` - 文档
 	* `/usr/src/` - 内核和应用程序的源代码
-		* `/usr/src/linux`- 
-	* `/usr/share/man/` - `man`命令使用的内容
-* `/opt` - 可选应用程序目录
-	* 各发行版包含的应用程序一般存储在目录`/usr/lib/`，各发行版可选程序，或第三方应用程序则存储在目录`/opt`. 
+		- `/usr/src/linux`- 
+    * `/usr/share/` - 结构化独立数据
+        - `/usr/share/doc/` - 文档
+	    - `/usr/share/man/` - `man`命令使用的内容
+* `/opt` - 第三方应用程序目录
+	* 各发行版包含的应用程序一般存储在目录`/usr/lib/`。
+    * 各发行版可选程序，或第三方应用程序则存储在目录`/opt`。
 	* 在安装时，会为每个应用程序的文件创建一个目录，其中包含应用程序的名称。比如：
-	    * `/opt/novell`- 
+	    - `/opt/novell`- 
 * `/boot` - 引导目录
-	* `/boot/grub2` - 包含 GRUB2 的静态引导加载程序文件。（GRUB = Grand Unified Boot Loader）
+	* `/boot/grub2` - 包含GRUB2的静态引导加载程序文件（GRUB = Grand Unified Boot Loader）。
 	* 包含以链接 vmlinuz 和 initrd 标识的内核和 initrd 文件。
 * `/root` - 管理员的主目录（home directory）。
 	* `root`用户的主目录。其他用户的主目录是在目录`/home`下。
@@ -1039,59 +1045,62 @@ a b 3 5 d
 	* 每个系统用户都有一个分配的文件区域，该文件区域在登录后成为当前工作目录。 默认情况下，它们存在于`/home`中。
 	* `/home`中的文件和目录可以位于单独的分区中，也可以位于网络上的另一台计算机上。
 	* 用户配置信息和配置文件（user profile and configuration files）主要有：
-	    * .profile - 用户私有登录脚本
-	    * .bashrc - `bash`的配置文件
-	    * .bash_history - `bash`环境下保持命令历史记录
-* `/run/media/<user>/*` - 可移动设备的挂载点，例如：
-	  * `/run/media/media_name/`
-	  * `/run/media/cdrom/`- 
-	  * `/run/media/dvd/`- 
-	  * `/run/media/usbdisk/`- 
+	    - .profile - 用户私有登录脚本
+	    - .bashrc - `bash`的配置文件
+	    - .bash_history - `bash`环境下保持命令历史记录
+* `run` - 应用程序状态文件
+    * 为应用程序提供了一个标准位置来存储它们需要的临时文件，例如套接字和进程ID。 这些文件不能存储在`/tmp`中，因为`/tmp`中的文件可能会被删除。
+    * `/run/media/<user>/*` - 可移动设备的挂载点，例如：
+	    - `/run/media/media_name/`
+	    - `/run/media/cdrom/`- 
+	    - `/run/media/dvd/`- 
+	    - `/run/media/usbdisk/`- 
 * `/mnt` - 文件系统临时挂载点
 	* 用于挂载临时使用的文件系统的目录。
 	* 文件系统使用 mount 命令挂载，使用 umount 命令删除。
 	* 子目录默认不存在，也不会自动创建。
 * `/srv` - 服务数据目录
 	* 存放各种服务的数据，比如：
-	    * `/srv/www` - 用于存放 Apache Web Server 的数据
-	    * `/srv/ftp` - 用于存放 FTP server 的数据
+	    - `/srv/www` - 用于存放 Apache Web Server 的数据
+	    - `/srv/ftp` - 用于存放 FTP server 的数据
 * `/var` - 可变文件（Variable Files）
 	* 在系统运行过程中会被修改的文件
 	* Important subdirectories:
-	    * `/var/lib/` - 可变库文件
-	    * `/var/log/` - 日志文件
-	    * `/var/run/` - 运行中的线程的信息
-	    * `/var/spool/` - 对列（打印机，邮件）
+	    - `/var/lib/` - 可变库文件，应用程序状态信息数据
+	    - `/var/log/` - 日志文件
+	    - `/var/run/` - 运行中的进程的信息
+	    - `/var/lock/` - 多用户访问时的锁文件
+	    - `/var/cache`- 应用程序缓存数据目录
+        - `/var/opt` - 专为`/opt`下的应用程序存储可变数据
+	    - `/var/mail`- 
+        - `/var/spool/` - 应用程序数据池，比如：打印机，邮件
 	    	* `/var/spool/mail`- 
 	    	* `/var/spool/cron`- 
-	    * `/var/lock/` - 多用户访问锁文件
-	    * `/var/cache`- 
-	    * `/var/mail`- 
 * `/tmp` - 临时文件
 	* 程序在运行时创建临时文件的位置
 * `/proc` - 进程文件
 	* 虚拟文件系统，不占空间，大小始终为零，保持当前进程的状态信息
-	* 包含有关各个进程的信息的目录，根据进程的 PID 号命名。
+	* 包含有关各个进程的信息的目录，根据进程的 PID 号命名
 	* 有些值可以临时在线更改生效，但重启后丢失
-	    * `/proc/cpuinfo/` - Processor information
-	    * `/proc/dma/` - Use of DMA ports
-	    * `/proc/interrupts/` - Use of interrupts
-	    * `/proc/ioports/` - Use of I/O ports
-	    * `/proc/filesystems/` - File system formats the kernel knows
-	    * `/proc/modules/` - Active modules
-	    * `/proc/mounts/` - Mounted file systems
-	    * `/proc/net/*` - Network information and statistics
-	    * `/proc/partitions/` - Existing partitions
-	    * `/proc/bus/pci/` - Connected PCI devices
-	    * `/proc/bus/scsi/` - Connected SCSI devices
-	    * `/proc/sys/*` - System and kernel information
-	    * `/proc/version` - Kernel version
+	    - `/proc/cpuinfo/` - Processor information
+	    - `/proc/dma/` - Use of DMA ports
+	    - `/proc/interrupts/` - Use of interrupts
+	    - `/proc/ioports/` - Use of I/O ports
+	    - `/proc/filesystems/` - File system formats the kernel knows
+	    - `/proc/modules/` - Active modules
+	    - `/proc/mounts/` - Mounted file systems
+	    - `/proc/net/*` - Network information and statistics
+	    - `/proc/partitions/` - Existing partitions
+	    - `/proc/bus/pci/` - Connected PCI devices
+	    - `/proc/bus/scsi/` - Connected SCSI devices
+	    - `/proc/sys/*` - System and kernel information
+	    - `/proc/version` - Kernel version
 * `/sys` - 系统信息目录
 	* 虚拟文件系统，仅存在于内存中，文件大小为零。主要提供如下信息：
-	  - 硬件总线（hardware buses）
-	  - 硬件设备（hardware devices）
-	  - 有源设备（active devices）
-	  - 驱动程序（drivers）
+	    - 硬件总线（hardware buses）
+	    - 硬件设备（hardware devices）
+	    - 有源设备（active devices）
+	    - 驱动程序（drivers）
 
 
 ### 七种不同类型的文件
@@ -1118,6 +1127,7 @@ a b 3 5 d
 * 管道（Pipes）(FIFOs) - 用于从一个进程到另一个进程的单向通信。
 * 块设备（Block Devices）
 * 字符设备（Character Devices）
+
 
 
 #### 链接类型 
@@ -1159,7 +1169,18 @@ a b 3 5 d
 
 #### 练习
 
-以Rocky 9为例。
+!!! 目标
+
+    以Rocky 9为例。
+
+    * 查看软/硬链接文件的特征。
+    * 查看目录结构。
+
+
+可以通过下面命令得到当前系统的2级目录的结构。
+```
+tree -L 2 -d /
+```
 
 创建练习目录。
 ```
@@ -1183,9 +1204,8 @@ lrwxrwxrwx. 1 vagrant wheel  4 Nov  1 10:43 symlinkfile1 -> file
 lrwxrwxrwx. 1 vagrant wheel  4 Nov  1 10:43 symlinkfile2 -> file
 ```
 
-创建硬链接。
+创建另外一个硬链接。
 ```
-ln file hardlinkfile1
 ln file hardlinkfile2
 ```
 执行`ls -l`命令可以得到下面的结果：
@@ -1288,6 +1308,306 @@ tree -f ./data
 ├── ./data/symlinkfile2 -> file
 └── ./data/typelink
 ```
+
+### 文件属性解释
+
+执行命令`ls -ihl`，可以得到下面的输出结果（Rocky 9）。
+```
+67274680 -rw-r--r--. 3 vagrant wheel 31 Nov  1 11:14 file
+67274680 -rw-r--r--. 3 vagrant wheel 31 Nov  1 11:14 hardlinkfile1
+67274680 -rw-r--r--. 3 vagrant wheel 31 Nov  1 11:14 hardlinkfile2
+67274681 lrwxrwxrwx. 1 vagrant wheel  4 Nov  1 10:43 symlinkfile1 -> file
+67274683 lrwxrwxrwx. 1 vagrant wheel 12 Nov  1 11:20 symlinkfile1-1 -> symlinkfile1
+67274682 lrwxrwxrwx. 1 vagrant wheel  4 Nov  1 10:43 symlinkfile2 -> file
+33555262 drwxr-xr-x. 2 vagrant wheel  6 Nov  1 11:30 typelink
+```
+
+以`67274680 -rw-r--r--. 3 vagrant wheel 31 Nov  1 11:14 file`为例：
+
+* `67274680`: inode 索引节点编号。
+* `-rw-r--r--`：文件类型及权限
+  * `-`：文件类型，例子中出现了三种，`-`，`l`和`d`。
+    * `-`：普通文件
+    * `d`：目录
+    * `l`：符号链接文件（link）
+    * `b`：块设备（block）
+    * `c`：字符设备（character）
+    * `p`：管道文件（pipe）
+    * `s`：套接字文件（socket）
+  * `rw-r--r--`：文件权限，从左到右依次为：
+    * `rw-`：文件属主权限，例子中是`vagrant`。
+    * `r--`：文件属组的权限，例子中是`wheel`。
+    * `r--`：其他组的权限。
+* `.`：这个点表示文件带有SELinux的安全上下文（SELinux Contexts）。关闭SELinux，新创建的文件就不会再有这个点了。但是，以前创建的文件本来有这个点的还会显示这个点（虽然SELinux不起作用了）。
+* `3`：硬链接数，例子中`file`和`hardlinkfile1`和`hardlinkfile2`之间是硬链接，所以这三个文件的硬链接数都是`3`。
+* `vagrant`：文件属主
+* `wheel`：文件属组
+* `31`：文件或目录的大小
+* `Nov  1 11:14`：文件或目录的创建日期和时间
+* `file`：文件或目录名称
+
+
+下面是命令`ls -ihl`在openSUSE和Ubuntu上的显示结果。
+```
+233647 -rw-r--r-- 3 vagrant wheel 31 Nov  1 15:52 file
+233647 -rw-r--r-- 3 vagrant wheel 31 Nov  1 15:52 hardlinkfile1
+233647 -rw-r--r-- 3 vagrant wheel 31 Nov  1 15:52 hardlinkfile2
+233648 lrwxrwxrwx 1 vagrant wheel  4 Nov  1 15:52 symlinkfile1 -> file
+233650 lrwxrwxrwx 1 vagrant wheel 12 Nov  1 15:52 symlinkfile1-1 -> symlinkfile1
+233649 lrwxrwxrwx 1 vagrant wheel  4 Nov  1 15:52 symlinkfile2 -> file
+233646 drwxr-xr-x 1 vagrant wheel  0 Nov  1 15:51 typelink
+```
+
+
+#### SELinux & ACL
+
+Security-Enhanced Linux (SELinux) 是一种Linux系统的安全架构，它允许管理员更好地控制谁可以访问系统。 
+SELinux于2000年向开源社区发布，并于2003年集成到上游 Linux 内核中。
+
+SELinux为系统上的应用程序、进程和文件定义了访问控制。 它使用安全策略（一组规则告诉SELinux什么可以访问或不可以访问）来强制执行策略允许的访问。
+
+当称为主体（subject）的应用程序或进程请求访问对象（如文件）时，SELinux会检查访问向量缓存(AVC, Access Vector Cache)，其中缓存了主体和对象的权限。
+
+如果 SELinux 无法根据缓存的权限做出访问决定，它会将请求发送到安全服务器。安全服务器检查应用程序或进程和文件的安全上下文。从SELinux策略数据库应用安全上下文（Security context），然后授予或拒绝许可。如果权限被拒绝，`avc: denied`消息将在`/var/log.messages`中体现。
+
+传统上，Linux和UNIX系统都使用DAC（Discretionary Access Control）。 SELinux是Linux的MAC（Mandatory Access Control）系统的一个示例。
+
+在DAC方式下，文件和进程有自己的属主（所有者）。 用户可以拥有一个文件，一个组也可以拥有一个文件，或者其他人。 用户可以更改自己文件的权限。`root`用户对DAC系统具有完全访问控制权。 
+
+但是在像SELinux这样的MAC系统上，对于访问的管理是通过设置策略来实现的。即使用户主目录上的DAC设置发生更改，用于防止其他用户或进程访问该目录的SELinux策略也将继续确保系统安全。
+
+MAC方式是控制一个进程对具体文件系统上面的文件或目录是否拥有访问权限。判断进程是否可以访问文件或目录的依据，取决于SELinux中设定的很多策略规则。
+
+可以通过编辑 `/etc/selinux/config` 并设置 `SELINUX=permissive` 来启用 SElinux。
+
+访问控制列表 (ACL，Access Control List) 为文件系统提供了一种额外的、更灵活的权限机制。 它旨在协助 UNIX 文件权限。ACL允许授予任何用户或组对任何磁盘资源的权限。ACL适用于在不使某个用户成为组成员的情况下，仍旧授予一些读或写访问权限。
+
+下面示例对比说明了SELinux和ACL在文件属性展现上的特点。
+
+* `-rwxr-xr--  vagrant wheel` ：没有selinux上下文，没有ACL
+* `-rwx--xr-x+ vagrant wheel` ：只有ACL，没有selinux上下文
+* `-rw-r--r--. vagrant wheel` ：只有selinux上下文，没有ACL
+* `-rwxrwxr--+ vagrant wheel` ：有selinux上下文，有ACL
+
+
+### 文件操作命令
+
+#### 显示当前工作目录
+
+pwd命令（print working directory）:
+
+* -L: 显示链接路径
+* -P：显示真实物理路径
+
+
+#### 相对和绝对路径
+
+对于绝对路径`/etc/firewalld/policies`，可以通过下面命令得到该路径的基名`policies`和目录名`/etc/firewalld`。
+```
+basename /etc/firewalld/policies
+dirname /etc/firewalld/policies
+```
+
+#### 更改目录
+
+`.`指当前目录，即`pwd`命令所返回的目录。
+
+`..`指当前目录的上一级目录，及当前目录的父目录。
+
+* 切换至父目录：`cd ..`
+* 切换至当前用户主目录：`cd ~`
+* 切换至上次工作目录：`cd -`
+
+* `echo $PWD`：当前工作目录
+* `echo $OLDPWD`：上次工作目录
+
+
+#### 列出目录内容
+
+`ls`命令：
+
+* `-a` 显示所有文件及目录 (. 开头的隐藏文件也会列出)
+* `-A` 同 `-a` ，但不列出 `.` (目前目录) 及 `..` (父目录)
+* `-l` 除文件名称外，亦将文件型态、权限、拥有者、文件大小等资讯详细列出
+* `-r` 将文件以相反次序显示(原定依英文字母次序)
+* `-t` 将文件依建立时间之先后次序列出
+* `-F` 在列出的文件名称后加一符号；例如可执行档则加 "*", 目录则加 "/"
+* `-R` 递归列出子目录
+* `-S` 按文件大小排序，从大到小
+* `-1` 按一个文件一行列出
+* `-t` 按文件时间排序，最新的在前
+* `-U` 不排序输出，按目录存放顺序列出
+* `-u` 配合`-lt`，按访问时间排序并显示；配合`-l`，显示访问时间并按名称排序； 否则按访问时间排序，最新的在前
+* `-X` 按文件扩展名字母顺序排序输出
+* `-F` 对不同类型文件显示时附加不同的符号，`* / = > @ |`之一
+
+`ls`命令查看不同文件是的颜色，由`/etc/DIR_COLORS`和变量`@LS_COLORS`定义。
+
+
+#### 文件状态stat
+
+每个文件有三个时间戳：
+
+* 访问时间 Access Time `atime` : 读取文件内容。
+* 修改时间 Modify Time `mtime` : 改变文件内容（数据）。
+* 改变时间 Change Time `ctime` : 元数据发生改变。
+
+读取三个时间戳的命令`stat`：
+```
+stat /etc/fstab
+```
+输出结果：
+```
+  File: /etc/fstab
+  Size: 927             Blocks: 8          IO Block: 4096   regular file
+Device: 30h/48d Inode: 263         Links: 1
+Access: (0644/-rw-r--r--)  Uid: (    0/    root)   Gid: (    0/    root)
+Access: 2022-10-31 10:26:34.987466959 +0800
+Modify: 2022-06-24 14:50:24.387992912 +0800
+Change: 2022-06-24 14:50:24.387992912 +0800
+ Birth: 2022-06-24 14:50:23.755992937 +0800
+```
+
+
+#### 确定文件类型
+
+命令`file`检查文件类型。
+
+* `-b`：列出辨识结果时，不显示文件名称。
+* `-c`：详细显示指令执行过程，便于排错或分析程序执行的情形。
+* `-f <名称文件>`：指定名称文件，其内容有一个或多个文件名称时，让file依序辨识这些文件，格式为每列一个文件名称。
+* `-L`： 直接显示符号连接所指向的文件的类别。
+* `-v`： 显示版本信息。
+* `-z`： 尝试去解读压缩文件的内容。
+
+编辑文件`list.txt`包含一下内容：
+```
+/etc/
+/bin
+/etc/issue
+```
+运行命令`file -f list.txt`，结果如下：
+```
+/etc/:      directory
+/bin:       directory
+/etc/issue: symbolic link to ../run/issue
+```
+
+
+
+#### 文件编码转换
+
+`iconv`命令用于将一种编码中的某些文本转换为另一种编码。 如果没有提供输入文件，则它从标准输入中读取。 同样，如果没有给出输出文件，那么它会写入标准输出。 如果没有提供 `from-encoding` 或 `to-encoding`，则它使用当前本地的字符编码。
+
+
+将文本从 ISO 8859-15 字符编码转换为 UTF-8，读入`input.txt`，输出`output.txt`。
+```
+iconv -f ISO-8859-15 -t UTF-8 < input.txt > output.txt
+```
+
+从 UTF-8 转换为 ASCII，尽可能进行音译（transliterating）：
+```
+echo abc ß α € àḃç | iconv -f UTF-8 -t ASCII//TRANSLIT
+```
+运行结果：
+```
+abc ss ? EUR abc
+```
+
+
+
+#### 通配符
+
+通配符，指包含这些字符的字符串
+
+* `?`  ：表示任意一个字符
+* `*`  ：表示任意长度的任意字符
+* `[]` ：匹配指定范围内任意一个字符
+  * `[abcd]`：匹配abcd中的任何一个字符
+  * `[a-z]`：匹配范围a到z内任意一个字符
+  * `[!abcd]`：不匹配括号里面任何一个字符
+* `{}` ：表示生成序列，以逗号分割，不能有空格
+
+示例：
+```
+$ touch {a..z}
+
+$ ls
+a  b  c  d  e  f  g  h  i  j  k  l  m  n  o  p  q  r  s  t  u  v  w  x  y  z
+
+$ ls [a..d]
+a  d
+
+$ ls [a-d]
+a  b  c  d
+
+$ ls [!d-e]
+a  b  c  f  g  h  i  j  k  l  m  n  o  p  q  r  s  t  u  v  w  x  y  z
+```
+
+比较有无`*`的区别：
+```
+$ ls -a *
+a  b  c  d  e  f  g  h  i  j  k  l  m  n  o  p  q  r  s  t  u  v  w  x  y  z
+
+$ ls -a
+.  ..  a  b  c  d  e  f  g  h  i  j  k  l  m  n  o  p  q  r  s  t  u  v  w  x  y  z
+```
+
+
+字符集表示方法
+
+* [:alpha:] 表示所有的字母（不区分大小写），效果同[a-z]
+* [:digit:] 表示任意单个数字，效果同[0-9]
+* [:lower:] 表示任意单个小写字母
+* [:upper:] 表示任意单个大写字母
+* [:alnum:] 表示任意单个字母或数字
+
+
+举例：
+
+* `ls -d [[:alpha:]]`即`ls -d [a-Z]`：显示当前目录下所有单个字母的目录和文件
+* `ls -d *[[:digit:]]`即`ls -d *[0-9]`：显示当前目录下所有以数字结尾的目录和文件
+* `ls [[:lower:]].txt`：显示当前目录下所有以单个小写字母为名的.txt格式的文件
+* `ls -d [[:alnum:]]`：显示当前目录下所有单个字母（不区分大小写）或数字为名的目录或文件
+
+
+
+
+
+
+#### 特殊符号
+
+* `|`   ：管道符，或者（正则）
+* `>`   ：输出重定向
+* `>>`  ：输出追加重定向
+* `<`   ：输入重定向
+* `<<`  ：追加输入重定向
+* `~`   ：当前用户家目录
+* `$()` ：引用命令被执行后的结果
+* `$`   ：以...结尾（正则）
+* `^`   ：以...开头（正则）
+* `*`   ：匹配全部字符，通配符
+* `?`   ：任意一个字符，通配符
+* `#`   ：注释
+* `&`   ：让程序或脚本切换到后台执行
+* `&&`  ：并且，同时成立
+* `[]`  ：表示一个范围（正则，通配符）
+* `{}`  ：产生一个序列（通配符）
+* `.`   ：当前目录的硬链接
+* `..`  ：上级目录的硬链接
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
