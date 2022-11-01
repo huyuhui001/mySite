@@ -935,6 +935,359 @@ a b 3 5 d
 
 
 
+## 文件系统
+
+文件系统层次标准（Filesystem Hierarchy Standard, FHS），它是Linux 标准库（Linux Standards Base, LSB）规范的一部分。
+
+根目录`/`指文件系统树的最高层。 根分区在系统启动时首先挂载。
+系统启动时运行的所有程序都必须在此分区中。
+
+### 主要目录
+
+以下目录必须在根分区中：
+
+* `/bin` - 用户基本程序。
+    * 包含未挂载其他文件系统时所需的可执行文件。 例如，系统启动、处理文件和配置所需的程序。
+    * `/bin/bash` - `bash`脚本处理
+    * `/bin/cat` - 显示文件内容
+    * `/bin/cp` - 拷贝文件
+    * `/bin/dd` - 拷贝文件（基于字节byte）
+    * `/bin/gzip` - 压缩文件
+    * `/bin/mount` - 挂载文件系统
+    * `/bin/rm` - 删除文件
+    * `/bin/vi` - 文件编辑
+* `/sbin` - 系统基本程序。
+	* 包含基本系统管理的程序。
+	* 默认是root用户有权限执行，因此它不在常规用户路径中。 
+	* 一些重要管理程序：
+	    * `/sbin/fdisk*` - 管理硬盘分区
+	    * `/sbin/fsck*` - 文件系统检查。不能在运行的系统上面直接执行`fsck`，损坏根文件系统，执行前需要`umount`。
+	    * `/sbin/mkfs` - 创建文件系统
+	    * `/sbin/shutdown` - 关闭系统
+* `/dev` - 设备文件
+	* 以太网卡是内核模块，其他硬件都以设备dev的方式展现。
+	* 应用程序读取和写入这些文件以操作使用硬件组件。
+	* 两种类型设备文件：
+		* 字符设备（Character-oriented）– 序列设备（打印机，磁带机，鼠标等） 
+		* 块设备（Block-oriented）– 硬盘，DVD等 
+	* 与设备驱动程序的连接通过内核中称为主设备号的通道实现。
+	* 过去，这些文件是使用`mknod`命令手动创建的。 现在当内核发现设备时，它们会由`udev`自动创建。
+	* 一些重要的设备文件：
+		* Null设备: - `/dev/null`
+		* Zero设备: - `/dev/zero`
+		* 系统终端: - `/dev/console`
+		* 虚拟终端: - `/dev/tty1`
+		* 串行端口 - `/dev/ttyS0`
+		* 并行端口: - `/dev/lp0`
+		* 软盘驱动器: - `/dev/fd0`
+		* 硬盘驱动器: - `/dev/sda`
+		* 硬盘分区: - `/dev/sda1`
+		* CD-ROM驱动器: - `/dev/scd0`
+* `/etc` - 配置文件
+	* 存放系统和服务的配置文件。
+	* 大部分都是ASCII文件
+	* 普通用户可以默认读取其中的大部分内容。 这会带来一个潜在的全问题，因为其中一些文件包含密码，因此重要的是要确保这些文件只能由root用户读取。
+	* 根据FHS标准，此处不能放置任何可执行文件，但子目录可能包含shell脚本。
+	* 几乎每个已安装的服务在`/etc`或其子目录中至少有一个配置文件。
+	* 一些重要的配置文件:
+	    * `/etc/os-release` - 系统版本信息
+	    * `/etc/DIR_COLORS` - `ls`命令中的颜色配置信息（openSUSE和Rocky）
+	    * `/etc/fstab` - 配置要挂载的文件系统
+	    * `/etc/profile` - Shell登录脚本
+	    * `/etc/passwd` - 用户信息集合（不含密码）
+	    * `/etc/shadow` - 密码和相关信息
+	    * `/etc/group` - 用户组信息集合
+	    * `/etc/cups/*` - 用于CUPS打印系统（CUPS=Common UNIX Printing System）
+	    * `/etc/hosts` - 主机名机器IP地址
+	    * `/etc/motd` - 登录后显示的欢迎信息
+	    * `/etc/issue` - 登录前显示的欢迎信息
+	    * `/etc/sysconfig/*` - 系统配置文件
+* `/lib` - 库（Libraries）
+	* 许多程序都具有一些通用功能。 这些通用功能可以保存在共享库中。
+	* 共享库中文件的扩展名是`.so`。 
+	* 目录`/lib`包含的共享库文件主要是被`/bin`和`/sbin`目录包含的程序所调用。 
+	* 目录`/lib`的子目录包含一些额外需要的共享库。 
+	* 内核模块存储在目录`/lib/modules`。
+* `/lib64` - 64位共享库（64-Bit Libraries），类似目录`/lib`。 
+	* 这个目录因系统架构不同而不同。 
+	* 一些系统支持不同的二进制格式并保留同一个共享库的不同版本。
+* `/usr` - 包含应用程序、图形界面文件、库、本地程序、文档等。
+	* `/usr` 即 Unix System Resources. 例如：
+	* `/usr/X11R6/` - X Window 系统文件
+	* `/usr/bin/` - 几乎包含所有可执行文件
+	* `/usr/lib/` - 包含库和应用程序
+	* `/usr/local/` - 包含本地安装程序。这个目录下的内容不会被系统升级所覆盖。下面3个目录在初始安装后是空的。
+		* `/usr/local/bin`- 
+		* `/usr/local/sbin`- 
+		* `/usr/local/lib`- 
+	* `/usr/sbin/` - 系统管理程序
+	* `/usr/share/doc/` - 文档
+	* `/usr/src/` - 内核和应用程序的源代码
+		* `/usr/src/linux`- 
+	* `/usr/share/man/` - `man`命令使用的内容
+* `/opt` - 可选应用程序目录
+	* 各发行版包含的应用程序一般存储在目录`/usr/lib/`，各发行版可选程序，或第三方应用程序则存储在目录`/opt`. 
+	* 在安装时，会为每个应用程序的文件创建一个目录，其中包含应用程序的名称。比如：
+	    * `/opt/novell`- 
+* `/boot` - 引导目录
+	* `/boot/grub2` - 包含 GRUB2 的静态引导加载程序文件。（GRUB = Grand Unified Boot Loader）
+	* 包含以链接 vmlinuz 和 initrd 标识的内核和 initrd 文件。
+* `/root` - 管理员的主目录（home directory）。
+	* `root`用户的主目录。其他用户的主目录是在目录`/home`下。
+	* `root`用户的登录环境配置保存至`/root`分区中。
+* `/home` - 用户主目录
+	* 每个系统用户都有一个分配的文件区域，该文件区域在登录后成为当前工作目录。 默认情况下，它们存在于`/home`中。
+	* `/home`中的文件和目录可以位于单独的分区中，也可以位于网络上的另一台计算机上。
+	* 用户配置信息和配置文件（user profile and configuration files）主要有：
+	    * .profile - 用户私有登录脚本
+	    * .bashrc - `bash`的配置文件
+	    * .bash_history - `bash`环境下保持命令历史记录
+* `/run/media/<user>/*` - 可移动设备的挂载点，例如：
+	  * `/run/media/media_name/`
+	  * `/run/media/cdrom/`- 
+	  * `/run/media/dvd/`- 
+	  * `/run/media/usbdisk/`- 
+* `/mnt` - 文件系统临时挂载点
+	* 用于挂载临时使用的文件系统的目录。
+	* 文件系统使用 mount 命令挂载，使用 umount 命令删除。
+	* 子目录默认不存在，也不会自动创建。
+* `/srv` - 服务数据目录
+	* 存放各种服务的数据，比如：
+	    * `/srv/www` - 用于存放 Apache Web Server 的数据
+	    * `/srv/ftp` - 用于存放 FTP server 的数据
+* `/var` - 可变文件（Variable Files）
+	* 在系统运行过程中会被修改的文件
+	* Important subdirectories:
+	    * `/var/lib/` - 可变库文件
+	    * `/var/log/` - 日志文件
+	    * `/var/run/` - 运行中的线程的信息
+	    * `/var/spool/` - 对列（打印机，邮件）
+	    	* `/var/spool/mail`- 
+	    	* `/var/spool/cron`- 
+	    * `/var/lock/` - 多用户访问锁文件
+	    * `/var/cache`- 
+	    * `/var/mail`- 
+* `/tmp` - 临时文件
+	* 程序在运行时创建临时文件的位置
+* `/proc` - 进程文件
+	* 虚拟文件系统，不占空间，大小始终为零，保持当前进程的状态信息
+	* 包含有关各个进程的信息的目录，根据进程的 PID 号命名。
+	* 有些值可以临时在线更改生效，但重启后丢失
+	    * `/proc/cpuinfo/` - Processor information
+	    * `/proc/dma/` - Use of DMA ports
+	    * `/proc/interrupts/` - Use of interrupts
+	    * `/proc/ioports/` - Use of I/O ports
+	    * `/proc/filesystems/` - File system formats the kernel knows
+	    * `/proc/modules/` - Active modules
+	    * `/proc/mounts/` - Mounted file systems
+	    * `/proc/net/*` - Network information and statistics
+	    * `/proc/partitions/` - Existing partitions
+	    * `/proc/bus/pci/` - Connected PCI devices
+	    * `/proc/bus/scsi/` - Connected SCSI devices
+	    * `/proc/sys/*` - System and kernel information
+	    * `/proc/version` - Kernel version
+* `/sys` - 系统信息目录
+	* 虚拟文件系统，仅存在于内存中，文件大小为零。主要提供如下信息：
+	  - 硬件总线（hardware buses）
+	  - 硬件设备（hardware devices）
+	  - 有源设备（active devices）
+	  - 驱动程序（drivers）
+
+
+### 七种不同类型的文件
+
+* 普通文件（Normal Files）
+  * ASCII 文本文件
+  * 可执行文件
+  * 图形文件
+* 目录（Directories）
+  * 组织规划磁盘上的文件
+  * 包含文件和子目录
+  * 实现分层文件系统
+* 链接（Links）
+  * 硬链接（Hard links）
+       * 磁盘上文件的辅助文件名
+       * 多个文件名引用单个`inode`
+       * 引用的文件必须存在于同一个文件系统中
+  * 符号链接（Symbolic links）
+       * 对磁盘上其他文件的引用
+       * `inode`包含对另一个文件名的引用
+       * 被引用的文件可以存在于同一个文件系统中，也可以存在于其他文件系统中
+       * 符号链接可以引用不存在的文件（断开的链接）
+* 套接字Sockets - 用于进程之间的双向通信。
+* 管道（Pipes）(FIFOs) - 用于从一个进程到另一个进程的单向通信。
+* 块设备（Block Devices）
+* 字符设备（Character Devices）
+
+
+#### 链接类型 
+
+**硬链接**（Hard links）硬链接是存储卷上文件的目录引用或指针。 文件名是存储在目录结构中的标签，目录结构指向文件数据。 因此，可以将多个文件名与同一文件关联。 通过不同的文件名访问时，所做的任何更改都是针对源文件数据。
+
+**符合链接**（Symbolic links）: 符号链接包含一个文本字符串，操作系统将其解释并作为另一个文件或目录的路径。 它本身就是一个文件，可以独立于目标而存在。 如果删除了符号链接，则其目标文件或目录不受影响。 如果移动，重命名或删除目标文件或目录，则用于指向它的任何符号链接将继续存在，但指向的是现在不存在的文件。
+
+仅当文件和链接文件位于同一文件系统（在同一分区上）时，才能使用硬链接，因为inode编号在同一文件系统中仅是唯一的。 可以使用`ln`命令创建硬链接，`ln`命令指向已存在文件的inode。 以后可以在文件的名称和链接的名称下访问文件，并且无法再识别首先存在的名称或原始文件和链接的不同之处。 
+
+可以使用`ln`命令和`-s`选项创建符号链接。 一个符号链接被分配了它自己的inode，一个链接指向一个文件，所以总是可以区分链接和实际文件。 
+ 
+文件系统本质上是一个用于跟踪分区卷中的文件的数据库。 对于普通文件，分配数据块以存储文件的数据，分配inode以指向数据块以及存储关于文件的元数据，然后将文件名分配给inode。 硬链接是与现有inode关联的辅助文件名。 对于符号链接，将为新的inode分配一个与之关联的新文件名，但inode引用另一个文件名而不是引用数据块。
+
+查看文件名和inode之间关系的一个方法是使用`ls -il`命令。inode的典型大小为128位，数据块的大小范围可以是1k，2k，4k或更大，具体取决于文件系统类型。
+
+软连接可以针对目录，硬连接只能针对文件。
+	
+硬链接相当于增加了一个登记项，使得原来的文件多了一个名字，至于inode都没变。所谓的登记项其实是目录文件中的一个条目(目录项)，使用hard link 是让多个不同的目录项指向同一个文件的inode，没有多余的内容需要存储在磁盘扇区中，所以hardlink不占用额外的空间。
+
+符号链接有单独的inode，在inode中存放另一个文件的路径而不是文件数据，所以符号链接会占用额外的空间。
+
+
+#### 设备文件
+
+**设备文件**（Device File）表示硬件（网卡除外）。 每个硬件都由一个设备文件表示。 网卡是接口。
+
+设备文件把内核驱动和物理硬件设备连接起来。
+内核驱动程序通过对设备文件进行读写（正确的格式）来实现对硬件的读写。
+
+类型：
+
+* 块设备（Block Devices）：块设备（通常）在512字节的大块中读取/写入信息。
+* 字符设备（Character Devices）：字符设备以字符方式读取/写入信息。 字符设备直接提供对硬件设备的无缓冲访问。
+  * 有时称为裸设备（raw devices）。（注意：裸设备被视为字符设备，不是块设备）
+  * 通过辅以不同选项，可以广泛而多样地应用和使用字符设备。
+* 当内核发现设备时由操作系统`udev`自动创建。
+
+
+#### 练习
+
+以Rocky 9为例。
+
+创建练习目录。
+```
+mkdir data
+mkdir -p data/typelink
+cd data
+```
+
+创建硬链接。注意：`file`、`hardlinkfile1`、`hardlinkfile2` 文件的链接位置的数值的变化)
+```
+echo "it's original file" > file
+ln file hardlinkfile1
+ln -s file symlinkfile1
+ln -s file symlinkfile2
+```
+执行`ls -l`命令可以得到下面的结果：
+```
+-rw-r--r--. 2 vagrant wheel 19 Nov  1 10:42 file
+-rw-r--r--. 2 vagrant wheel 19 Nov  1 10:42 hardlinkfile1
+lrwxrwxrwx. 1 vagrant wheel  4 Nov  1 10:43 symlinkfile1 -> file
+lrwxrwxrwx. 1 vagrant wheel  4 Nov  1 10:43 symlinkfile2 -> file
+```
+
+创建硬链接。
+```
+ln file hardlinkfile1
+ln file hardlinkfile2
+```
+执行`ls -l`命令可以得到下面的结果：
+```
+-rw-r--r--. 3 vagrant wheel  19 Nov  1 10:42 file
+-rw-r--r--. 3 vagrant wheel  19 Nov  1 10:42 hardlinkfile1
+-rw-r--r--. 3 vagrant wheel  19 Nov  1 10:42 hardlinkfile2
+lrwxrwxrwx. 1 vagrant wheel   4 Nov  1 10:43 symlinkfile1 -> file
+lrwxrwxrwx. 1 vagrant wheel   4 Nov  1 10:43 symlinkfile2 -> file
+```
+
+修改`file`文件的内容。
+```
+echo "add oneline" >> file
+```
+通过命令`cat file`查看当前`file`的内容。
+```
+it's original file
+add oneline
+```
+通过下面的命令，可以看到所以软/硬链接文件内容都更新了，和`file`文件更新后的内容保持一致。
+```
+cat hardlinkfile1
+cat hardlinkfile2
+cat symlinkfile1
+cat symlinkfile2
+```
+
+对文件`symlinkfile1`再创建新的软连接。
+```
+ln -s symlinkfile1 symlinkfile1-1
+```
+
+通过命令`ls -il`查看现在的目录信息。
+```
+67274680 -rw-r--r--. 3 vagrant wheel 31 Nov  1 11:14 file
+67274680 -rw-r--r--. 3 vagrant wheel 31 Nov  1 11:14 hardlinkfile1
+67274680 -rw-r--r--. 3 vagrant wheel 31 Nov  1 11:14 hardlinkfile2
+67274681 lrwxrwxrwx. 1 vagrant wheel  4 Nov  1 10:43 symlinkfile1 -> file
+67274683 lrwxrwxrwx. 1 vagrant wheel 12 Nov  1 11:20 symlinkfile1-1 -> symlinkfile1
+67274682 lrwxrwxrwx. 1 vagrant wheel  4 Nov  1 10:43 symlinkfile2 -> file
+```
+
+读取软链接文件的源文件信息
+```
+readlink symlinkfile1
+readlink symlinkfile2
+```
+
+注意，对于`symlinkfile1-1`的情况有些不同。
+```
+readlink symlinkfile1-1
+```
+上面命令返回结果`symlinkfile1`仍然是一个符号链接文件。通过`readlink -f`可以直接定位真正的源文件。
+```
+readlink -f symlinkfile1-1
+```
+上面的返回结果`/data/linktype/file`是`symlinkfile1-1`真正的源文件。
+
+
+显示`data`目录下的文件和子目录：
+```
+cd ~
+tree ./data
+```
+运行结果：
+```
+./data
+├── file
+├── hardlinkfile1
+├── hardlinkfile2
+├── symlinkfile1 -> file
+├── symlinkfile1-1 -> symlinkfile1
+├── symlinkfile2 -> file
+└── typelink
+```
+
+只显示`data`目录下的子目录：
+```
+tree -d ./data
+```
+运行结果：
+```
+./data
+└── typelink
+```
+
+显示`data`目录下的文件和子目录，包含全目录：
+```
+tree -f ./data
+```
+运行结果：
+```
+./data
+├── ./data/file
+├── ./data/hardlinkfile1
+├── ./data/hardlinkfile2
+├── ./data/symlinkfile1 -> file
+├── ./data/symlinkfile1-1 -> symlinkfile1
+├── ./data/symlinkfile2 -> file
+└── ./data/typelink
+```
 
 
 
