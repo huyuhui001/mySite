@@ -71,6 +71,8 @@ nav:
   - Welcome: index.md
   - About: about.md
 - Linux:
+    - Linux SRE:
+      - Linux Fundamentals: linux/SRE/01-fundamentals.md
     - SUSE Linux Administration: 
       - Linux File System Overview: linux/Administration/01.md
       - Useful Commands: linux/Administration/02.md
@@ -78,8 +80,6 @@ nav:
     - SUSE Enterprise Storage Foundation: 
       - SUSE Enterprise Storage Foundation: linux/SES/linux_ses_memo.md
       - SUSE Enterprise Storage Basic Operation: linux/SES/linux_ses_demo.md
-    - Linux SRE:
-      - Linux Fundamentals: linux/SRE/01-fundamentals.md
 - Kubernetes:
   - Installation:
     - Single Node Installation: k8s/installation/single-local.md
@@ -126,7 +126,7 @@ nav:
   - Python基础:
     - 安装: python/Foundation/ch00.md
     - 语言基础: python/Foundation/ch01.md
-    - 打包Packing和拆包Unpacking: python/Foundation/ch02.md
+    - 打包和拆包: python/Foundation/ch02.md
     - 函数及文件: python/Foundation/ch03.md
     - 面向对象概念: python/Foundation/ch04.md
     - 面向对象特性: python/Foundation/ch05.md
