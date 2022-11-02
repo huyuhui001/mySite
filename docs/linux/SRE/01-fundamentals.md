@@ -1530,32 +1530,59 @@ abc ss ? EUR abc
 
 示例：
 ```
-$ touch {a..z}
+$ touch file_{a..z}.txt
+$ touch file_{A..Z}.txt
 
 $ ls
-a  b  c  d  e  f  g  h  i  j  k  l  m  n  o  p  q  r  s  t  u  v  w  x  y  z
+file_a.txt  file_C.txt  file_f.txt  file_H.txt  file_k.txt  file_M.txt  file_p.txt  file_R.txt  file_u.txt  file_W.txt  file_z.txt
+file_A.txt  file_d.txt  file_F.txt  file_i.txt  file_K.txt  file_n.txt  file_P.txt  file_s.txt  file_U.txt  file_x.txt  file_Z.txt
+file_b.txt  file_D.txt  file_g.txt  file_I.txt  file_l.txt  file_N.txt  file_q.txt  file_S.txt  file_v.txt  file_X.txt
+file_B.txt  file_e.txt  file_G.txt  file_j.txt  file_L.txt  file_o.txt  file_Q.txt  file_t.txt  file_V.txt  file_y.txt
+file_c.txt  file_E.txt  file_h.txt  file_J.txt  file_m.txt  file_O.txt  file_r.txt  file_T.txt  file_w.txt  file_Y.txt
 
-$ ls [a..d]
-a  d
+$ ls file_[a..d].*
+file_a.txt  file_d.txt
+ 
+$ ls file_[a...d].*
+file_a.txt  file_d.txt
 
-$ ls [a-d]
-a  b  c  d
+$ ls file_[ad].*
+file_a.txt  file_d.txt
 
-$ ls [!d-e]
-a  b  c  f  g  h  i  j  k  l  m  n  o  p  q  r  s  t  u  v  w  x  y  z
+$ ls file_[a-c].*
+file_a.txt  file_A.txt  file_b.txt  file_B.txt  file_c.txt
+
+$ ls file_[a-C].*
+file_a.txt  file_A.txt  file_b.txt  file_B.txt  file_c.txt  file_C.txt
+
+$ ls file_[!d-W].*
+file_a.txt  file_b.txt  file_c.txt  file_x.txt  file_y.txt  file_z.txt
+file_A.txt  file_B.txt  file_C.txt  file_X.txt  file_Y.txt  file_Z.txt
 ```
 
 比较有无`*`的区别：
 ```
 $ ls -a *
-a  b  c  d  e  f  g  h  i  j  k  l  m  n  o  p  q  r  s  t  u  v  w  x  y  z
+file_a.txt  file_D.txt  file_h.txt  file_K.txt  file_o.txt  file_R.txt  file_v.txt  file_Y.txt
+file_A.txt  file_e.txt  file_H.txt  file_l.txt  file_O.txt  file_s.txt  file_V.txt  file_z.txt
+file_b.txt  file_E.txt  file_i.txt  file_L.txt  file_p.txt  file_S.txt  file_w.txt  file_Z.txt
+file_B.txt  file_f.txt  file_I.txt  file_m.txt  file_P.txt  file_t.txt  file_W.txt
+file_c.txt  file_F.txt  file_j.txt  file_M.txt  file_q.txt  file_T.txt  file_x.txt
+file_C.txt  file_g.txt  file_J.txt  file_n.txt  file_Q.txt  file_u.txt  file_X.txt
+file_d.txt  file_G.txt  file_k.txt  file_N.txt  file_r.txt  file_U.txt  file_y.txt
 
 $ ls -a
-.  ..  a  b  c  d  e  f  g  h  i  j  k  l  m  n  o  p  q  r  s  t  u  v  w  x  y  z
+.           file_C.txt  file_g.txt  file_J.txt  file_n.txt  file_Q.txt  file_u.txt  file_X.txt
+..          file_d.txt  file_G.txt  file_k.txt  file_N.txt  file_r.txt  file_U.txt  file_y.txt
+file_a.txt  file_D.txt  file_h.txt  file_K.txt  file_o.txt  file_R.txt  file_v.txt  file_Y.txt
+file_A.txt  file_e.txt  file_H.txt  file_l.txt  file_O.txt  file_s.txt  file_V.txt  file_z.txt
+file_b.txt  file_E.txt  file_i.txt  file_L.txt  file_p.txt  file_S.txt  file_w.txt  file_Z.txt
+file_B.txt  file_f.txt  file_I.txt  file_m.txt  file_P.txt  file_t.txt  file_W.txt
+file_c.txt  file_F.txt  file_j.txt  file_M.txt  file_q.txt  file_T.txt  file_x.txt
 ```
 
 
-字符集表示方法
+#### 字符集
 
 * [:alpha:] 表示所有的字母（不区分大小写），效果同[a-z]
 * [:digit:] 表示任意单个数字，效果同[0-9]
