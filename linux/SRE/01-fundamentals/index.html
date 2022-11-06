@@ -222,7 +222,7 @@ sudo cat /etc/default/locale
 </code></pre></div></p> <p>临时修改当前session的locale。 <div class=highlight><pre><span></span><code>LANG=&quot;zh_CN.utf8&quot; 
 </code></pre></div></p> <p>永久修改locale设置。 <div class=highlight><pre><span></span><code>sudo localectl set-locale LANG=zh_CN.utf8
 </code></pre></div></p> <p>修改回原设置。 <div class=highlight><pre><span></span><code>sudo localectl set-locale LANG=en_US.utf8
-</code></pre></div></p> <h3 id=_12>符号<code>$</code>用法<a class=headerlink href=#_12 title="Permanent link"> ¶</a></h3> <p>符号<code>$</code>的用法：</p> <ul> <li><code>$</code>，获取变零值。 <div class=highlight><pre><span></span><code>x=1
+</code></pre></div></p> <div class="admonition tips"> <p class=admonition-title>Tips</p> <p>Mac OS ssh登陆Linux是终端提示<code>/usr/bin/manpath: can't set the locale; make sure $LC_* and $LANG are correct</code></p> <p>解决方法：在本地mac电脑上修改/etc/ssh/ssh_config或者/etc/ssh/ssh_config文件，删除掉或者注释掉以下配置内容：</p> <p><code># SendEnv LANG LC_*</code></p> <p>如果使用的是<code>Iterm2</code>，可以打开<code>iterm2</code>的<code>preferences</code> -&gt; <code>Profiles</code> -&gt; <code>Terminal</code>菜单里关闭<code>Set locale variables automatically</code>选项。</p> </div> <h3 id=_12>符号<code>$</code>用法<a class=headerlink href=#_12 title="Permanent link"> ¶</a></h3> <p>符号<code>$</code>的用法：</p> <ul> <li><code>$</code>，获取变零值。 <div class=highlight><pre><span></span><code>x=1
 echo $x
 echo &quot;$x&quot;
 </code></pre></div></li> </ul> <p>建议使用"$x"，以避免shell编程中产生歧义。如下例： <div class=highlight><pre><span></span><code>s=&quot;this is a string&quot;
