@@ -751,6 +751,17 @@ sudo localectl set-locale LANG=zh_CN.utf8
 sudo localectl set-locale LANG=en_US.utf8
 ```
 
+!!! Tips
+    Mac OS ssh登陆Linux是终端提示`/usr/bin/manpath: can't set the locale; make sure $LC_* and $LANG are correct`
+
+    解决方法：在本地mac电脑上修改/etc/ssh/ssh_config或者/etc/ssh/ssh_config文件，删除掉或者注释掉以下配置内容：
+
+    `#    SendEnv LANG LC_*`
+
+    如果使用的是`Iterm2`，可以打开`iterm2`的`preferences` -> `Profiles` -> `Terminal`菜单里关闭`Set locale variables automatically`选项。
+
+
+
 
 ### 符号`$`用法
 
