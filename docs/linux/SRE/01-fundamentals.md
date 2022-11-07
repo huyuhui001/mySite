@@ -1647,12 +1647,21 @@ file_c.txt  file_F.txt  file_j.txt  file_M.txt  file_q.txt  file_T.txt  file_x.t
 * `-c`：如果文件不存在，则不创建
 
 
+```
+$ touch file{1..5}.log
 
+$ ll
+-rw-r--r--. 1 vagrant wheel 0 Nov  7 21:32 file1.log
+-rw-r--r--. 1 vagrant wheel 0 Nov  7 21:32 file2.log
+-rw-r--r--. 1 vagrant wheel 0 Nov  7 21:32 file3.log
+-rw-r--r--. 1 vagrant wheel 0 Nov  7 21:32 file4.log
+-rw-r--r--. 1 vagrant wheel 0 Nov  7 21:32 file5.log
+```
 
-
-
-
-
+创建文件file-non.log，如果不存在则不创建。
+```
+touch -c file-non.log
+```
 
 
 
