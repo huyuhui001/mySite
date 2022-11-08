@@ -173,7 +173,7 @@ sudo hostnamectl set-hostname lizard --pretty
 ```
 echo $PS1
 ```
-各系统设置是有差异的。
+各系统默认设置是有差异的。
 ```
 # Rocky
 [\u@\h \W]\$
@@ -1648,14 +1648,12 @@ file_c.txt  file_F.txt  file_j.txt  file_M.txt  file_q.txt  file_T.txt  file_x.t
 
 
 ```
-$ touch file{1..5}.log
+$ touch file1
+$ touch file2
 
 $ ll
--rw-r--r--. 1 vagrant wheel 0 Nov  7 21:32 file1.log
--rw-r--r--. 1 vagrant wheel 0 Nov  7 21:32 file2.log
--rw-r--r--. 1 vagrant wheel 0 Nov  7 21:32 file3.log
--rw-r--r--. 1 vagrant wheel 0 Nov  7 21:32 file4.log
--rw-r--r--. 1 vagrant wheel 0 Nov  7 21:32 file5.log
+-rw-r--r--. 1 vagrant wheel 5 Nov  8 20:49 file1
+-rw-r--r--. 1 vagrant wheel 0 Nov  8 20:28 file2
 ```
 
 创建文件file-non.log，如果不存在则不创建。
@@ -1663,7 +1661,163 @@ $ ll
 touch -c file-non.log
 ```
 
+更新`file1`的时间和`file2`一致。
+```
+$ touch -r file1 file2
 
+$ ll
+-rw-r--r--. 1 vagrant wheel 5 Nov  8 20:49 file1
+-rw-r--r--. 1 vagrant wheel 0 Nov  8 20:49 file2
+```
+
+指定`file2`的时间。`202210012135.25`代表`YYYYMMDDHHMM.SS`。
+```
+$ touch -t 202210012135.25 file2
+
+$ ll
+-rw-r--r--. 1 vagrant wheel 5 Nov  8 20:49 file1
+-rw-r--r--. 1 vagrant wheel 0 Oct  1 21:35 file2
+
+$ stat file2
+  File: file2
+  Size: 0               Blocks: 0          IO Block: 4096   regular empty file
+Device: fd02h/64770d    Inode: 140         Links: 1
+Access: (0644/-rw-r--r--)  Uid: ( 1000/ vagrant)   Gid: (   10/   wheel)
+Context: unconfined_u:object_r:user_home_t:s0
+Access: 2022-10-01 21:35:25.000000000 +0800
+Modify: 2022-10-01 21:35:25.000000000 +0800
+Change: 2022-11-08 20:56:18.306315887 +0800
+ Birth: 2022-11-08 20:28:37.809551441 +0800
+```
+
+
+
+#### 复制文件和目录
+
+`cp`命令：Copy SOURCE to DEST, or multiple SOURCE(s) to DIRECTORY.
+
+常用参数：
+
+* `-a`：归档，相当于`-dR --preserv=all`参数组合，常用于备份。
+* `-d`：不复制原文件，只复制链接名。相当于`--no-dereference --preserve=links`参数组合。
+* `-f`：覆盖已经存在的目标文件。
+* `-i`：覆盖目标文件之前给出提示。
+* `-p`：除复制文件的内容外，也复制文件权限，时间戳，属主属组。相当于`--preserve=mode,ownership,timestamps`。
+* `-r, -R, --recursive`：递归复制目录所包含的全部内容。
+* `-l`：不复制文件，只是生成硬链接文件。
+
+
+参数`--preserv`可选项：
+
+* mode：权限
+* ownership：属主属组
+* timestamp
+* links
+* xattr
+* context
+* all
+
+创建测试目录。
+```
+$ cd ~
+$ mkdir test
+```
+
+对比参数`-p`的差别。
+```
+$ cp /etc/issue ~/test/issue1
+$ cp -p /etc/issue ~/test/issue1
+$ sudo cp /etc/issue ~/test/issue3
+$ sudo cp -p /etc/issue ~/test/issue4
+
+$ ll ~/test
+-rw-r--r--. 1 vagrant wheel 23 Nov  8 22:25 issue1
+-rw-r--r--. 1 vagrant wheel 23 Jul 21 01:10 issue2
+-rw-r--r--. 1 root    root  23 Nov  8 22:43 issue3
+-rw-r--r--. 1 root    root  23 Jul 21 01:10 issue4
+
+$ ll /etc/issue
+-rw-r--r--. 1 root root 23 Jul 21 01:10 /etc/issue
+```
+
+对比参数`-r`。
+```
+$ sudo cp /etc/sysconfig/ ~/test
+cp: -r not specified; omitting directory '/etc/sysconfig/'
+
+$ sudo cp -r /etc/sysconfig/ ~/test
+
+$ tree -L 2 ~/test
+/home/vagrant/test
+├── issue1
+├── issue2
+├── issue3
+├── issue4
+└── sysconfig
+    ├── anaconda
+    ├── atd
+    ├── chronyd
+    ├── cpupower
+    ├── crond
+    ├── firewalld
+    ├── irqbalance
+    ├── kdump
+    ├── kernel
+    ├── man-db
+    ├── network
+    ├── network-scripts
+    ├── nftables.conf
+    ├── raid-check
+    ├── rsyslog
+    ├── run-parts
+    ├── samba
+    ├── selinux -> ../selinux/config
+    ├── smartmontools
+    └── sshd
+```
+
+参数`-b`，如果目标文件存在，复制前先将原文件复制并以`~`结尾。
+```
+$ ll /etc/motd
+-rw-r--r--. 1 root root 0 Jun 23  2020 /etc/motd
+
+$ ll ~/test/issue1
+-rw-r--r--. 1 vagrant wheel 23 Nov  8 22:25 /home/vagrant/test/issue1
+
+$ cp -b /etc/motd ~/test/issue
+$ cp -b /etc/motd ~/test/issue1 
+
+$ ll ~/test
+-rw-r--r--. 1 vagrant wheel    0 Nov  8 23:00 issue
+-rw-r--r--. 1 vagrant wheel    0 Nov  8 22:57 issue1
+-rw-r--r--. 1 vagrant wheel   23 Nov  8 22:25 issue1~
+-rw-r--r--. 1 vagrant wheel   23 Jul 21 01:10 issue2
+-rw-r--r--. 1 root    root    23 Nov  8 22:43 issue3
+-rw-r--r--. 1 root    root    23 Jul 21 01:10 issue4
+drwxr-xr-x. 3 root    root  4096 Nov  8 22:49 sysconfig
+```
+
+参数`--backup=numbered`会在复制原文件时加上数字序号，序号1代表原始的文件。
+```
+$ cp --backup=numbered /etc/motd ~/test/issue2
+$ cp --backup=numbered /etc/motd ~/test/issue2
+$ cp --backup=numbered /etc/motd ~/test/issue2
+
+$ ll ~/test
+-rw-r--r--. 1 vagrant wheel    0 Nov  8 23:00 issue
+-rw-r--r--. 1 vagrant wheel    0 Nov  8 22:57 issue1
+-rw-r--r--. 1 vagrant wheel   23 Nov  8 22:25 issue1~
+-rw-r--r--. 1 vagrant wheel    0 Nov  8 23:09 issue2
+-rw-r--r--. 1 vagrant wheel   23 Jul 21 01:10 issue2.~1~
+-rw-r--r--. 1 vagrant wheel    0 Nov  8 23:09 issue2.~2~
+-rw-r--r--. 1 vagrant wheel    0 Nov  8 23:09 issue2.~3~
+-rw-r--r--. 1 root    root    23 Nov  8 22:43 issue3
+-rw-r--r--. 1 root    root    23 Jul 21 01:10 issue4
+drwxr-xr-x. 3 root    root  4096 Nov  8 22:49 sysconfig
+```
+
+
+#### 移动文件和目录
 
 
 
@@ -1754,7 +1908,10 @@ ls /etc/[^.]*/
 ```
 
 
-
+8. 将`/etc`目录下所有文件，备份到`~/test/`目录下，并要求子目录格式为`backupYYYY-mm-dd`，备份过程可见。
+```
+$ sudo cp -av /etc/ ~/test/backup`date +%F`
+```
 
 
 
