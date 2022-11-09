@@ -1819,6 +1819,63 @@ drwxr-xr-x. 3 root    root  4096 Nov  8 22:49 sysconfig
 
 #### 移动文件和目录
 
+`mv`命令。Rename SOURCE to DEST, or move SOURCE(s) to DIRECTORY.
+
+常用参数：
+
+* `-v`：显示命令执行的信息。
+* `-i`：交互式，比如，重名覆盖时会提升是否确认。
+* `-b`：覆盖时创建备份。默认情况下，移动文件将会覆盖已存在的目标文件。
+
+
+移动多个文件到某个目录。
+```
+$ mv file1 file2 file3 ~/dest
+$ mv file* ~/dest
+```
+
+移动目录。
+```
+mv ~/test ~/dest/new/one/
+```
+
+重命名文件和目录。
+```
+$ mv file1 file2
+$ mv ~/test ~/dest
+```
+
+
+
+#### 重命名文件和目录
+
+`rename`命令。分为perl版本和C语言版本。
+区分方法: `rename --version`。如果返回结果中包含 `util-linux`，说明是C语言版本, 反之是Perl版本。
+openSUSE和Rocy是C语言版本，Ubuntu是Perl版本。
+
+举例：修改当前目录所有扩展名为`s`的文件改为扩展名为`gz`。
+```
+$ touch file{1..3}.s
+
+$ rename -v '.s' '.gz' *.s
+$ rename -v ".s" ".gz" *.s
+`file1.txt' -> `file1.html'
+`file2.txt' -> `file2.html'
+`file3.txt' -> `file3.html'
+```
+
+在Ubuntu上完成同样任务，则需要使用正则。
+```
+rename -v "s/s/gz/g" *.s
+```
+
+
+#### 删除文件
+
+`rm`命令。建议使用`mv`命令代替`rm`命令。
+
+
+
 
 
 #### 练习
@@ -1911,26 +1968,78 @@ ls /etc/[^.]*/
 8. 将`/etc`目录下所有文件，备份到`~/test/`目录下，并要求子目录格式为`backupYYYY-mm-dd`，备份过程可见。
 ```
 $ sudo cp -av /etc/ ~/test/backup`date +%F`
+$ sudo cp -av /etc/ ~/test/backup`date +%F_%H-%M-%S`
 ```
 
 
 
 
+### 目录操作命令
+
+创建目录：`mkdir`
+删除空目录：`rmdir`
+删除非空目录：`rm -r`
+显示目录树：`tree`
 
 
 
 
+#### 练习
+
+1. 创建目录`~/testdir/dir1/x`，`~/testdir/dir1/y`，`~/testdir/dir1/x/a`，`~/testdir/dir1/x/b`，`~/testdir/dir1/y/a`，`~/testdir/dir1/y/b`。
+```
+$ mkdir -p ~/testdir/dir1/{x,y}/{a,b}
+
+$ tree ~/testdir/dir1/
+/home/vagrant/testdir/dir1/
+├── x
+│   ├── a
+│   └── b
+└── y
+    ├── a
+    └── b
+```
+
+2. 创建目录`~/testdir/dir2/x`，`~/testdir/dir2/y`，`~/testdir/dir2/x/a`，`~/testdir/dir2/x/b`。
+```
+$ mkdir -p ~/testdir/dir2/{x/{a,b},y}
+
+$ tree ~/testdir/dir2/
+/home/vagrant/testdir/dir2/
+├── x
+│   ├── a
+│   └── b
+└── y
+```
+
+3. 创建目录`~/testdir/dir3`、`~/testdir/dir4`、`~/testdir/dir5`、`~/testdir/dir5/dir6`、`~/testdir/dir5/dir7`。
+```
+$ mkdir -p ~/testdir/dir{3,4,5/dir{6,7}}
+
+$ tree ~/testdir
+/home/vagrant/testdir
+├── dir1
+│   ├── x
+│   │   ├── a
+│   │   └── b
+│   └── y
+│       ├── a
+│       └── b
+├── dir2
+│   ├── x
+│   │   ├── a
+│   │   └── b
+│   └── y
+├── dir3
+├── dir4
+└── dir5
+    ├── dir6
+    └── dir7
+```
 
 
 
-
-
-
-
-
-
-
-
+### inode结构
 
 
 
