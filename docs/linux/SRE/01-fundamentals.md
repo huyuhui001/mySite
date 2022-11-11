@@ -1114,291 +1114,7 @@ a b 3 5 d
 	    - 驱动程序（drivers）
 
 
-### 七种不同类型的文件
 
-* 普通文件（Normal Files）
-  * ASCII 文本文件
-  * 可执行文件
-  * 图形文件
-* 目录（Directories）
-  * 组织规划磁盘上的文件
-  * 包含文件和子目录
-  * 实现分层文件系统
-* 链接（Links）
-  * 硬链接（Hard links）
-       * 磁盘上文件的辅助文件名
-       * 多个文件名引用单个`inode`
-       * 引用的文件必须存在于同一个文件系统中
-  * 符号链接（Symbolic links）
-       * 对磁盘上其他文件的引用
-       * `inode`包含对另一个文件名的引用
-       * 被引用的文件可以存在于同一个文件系统中，也可以存在于其他文件系统中
-       * 符号链接可以引用不存在的文件（断开的链接）
-* 套接字Sockets - 用于进程之间的双向通信。
-* 管道（Pipes）(FIFOs) - 用于从一个进程到另一个进程的单向通信。
-* 块设备（Block Devices）
-* 字符设备（Character Devices）
-
-
-
-#### 链接类型 
-
-**硬链接**（Hard links）硬链接是存储卷上文件的目录引用或指针。 文件名是存储在目录结构中的标签，目录结构指向文件数据。 因此，可以将多个文件名与同一文件关联。 通过不同的文件名访问时，所做的任何更改都是针对源文件数据。
-
-**符号链接**（Symbolic links）: 符号链接包含一个文本字符串，操作系统将其解释并作为另一个文件或目录的路径。 它本身就是一个文件，可以独立于目标而存在。 如果删除了符号链接，则其目标文件或目录不受影响。 如果移动，重命名或删除目标文件或目录，则用于指向它的任何符号链接将继续存在，但指向的是现在不存在的文件。
-
-仅当文件和链接文件位于同一文件系统（在同一分区上）时，才能使用硬链接，因为inode编号在同一文件系统中仅是唯一的。 可以使用`ln`命令创建硬链接，`ln`命令指向已存在文件的inode。 以后可以在文件的名称和链接的名称下访问文件，并且无法再识别首先存在的名称或原始文件和链接的不同之处。 
-
-可以使用`ln`命令和`-s`选项创建符号链接。 一个符号链接被分配了它自己的inode，一个链接指向一个文件，所以总是可以区分链接和实际文件。 
- 
-文件系统本质上是一个用于跟踪分区卷中的文件的数据库。 对于普通文件，分配数据块以存储文件的数据，分配inode以指向数据块以及存储关于文件的元数据，然后将文件名分配给inode。 硬链接是与现有inode关联的辅助文件名。 对于符号链接，将为新的inode分配一个与之关联的新文件名，但inode引用另一个文件名而不是引用数据块。
-
-查看文件名和inode之间关系的一个方法是使用`ls -il`命令。inode的典型大小为128位，数据块的大小范围可以是1k，2k，4k或更大，具体取决于文件系统类型。
-
-软连接可以针对目录，硬连接只能针对文件。
-	
-硬链接相当于增加了一个登记项，使得原来的文件多了一个名字，至于inode都没变。所谓的登记项其实是目录文件中的一个条目(目录项)，使用hard link 是让多个不同的目录项指向同一个文件的inode，没有多余的内容需要存储在磁盘扇区中，所以hardlink不占用额外的空间。
-
-符号链接有单独的inode，在inode中存放另一个文件的路径而不是文件数据，所以符号链接会占用额外的空间。
-
-
-#### 设备文件
-
-**设备文件**（Device File）表示硬件（网卡除外）。 每个硬件都由一个设备文件表示。 网卡是接口。
-
-设备文件把内核驱动和物理硬件设备连接起来。
-内核驱动程序通过对设备文件进行读写（正确的格式）来实现对硬件的读写。
-
-类型：
-
-* 块设备（Block Devices）：块设备（通常）在512字节的大块中读取/写入信息。
-* 字符设备（Character Devices）：字符设备以字符方式读取/写入信息。 字符设备直接提供对硬件设备的无缓冲访问。
-  * 有时称为裸设备（raw devices）。（注意：裸设备被视为字符设备，不是块设备）
-  * 通过辅以不同选项，可以广泛而多样地应用和使用字符设备。
-* 当内核发现设备时由操作系统`udev`自动创建。
-
-
-#### 练习
-
-!!! 目标
-
-    以Rocky 9为例。
-
-    * 查看软/硬链接文件的特征。
-    * 查看目录结构。
-
-
-可以通过下面命令得到当前系统的2级目录的结构。
-```
-tree -L 2 -d /
-```
-
-创建练习目录。
-```
-mkdir data
-mkdir -p data/typelink
-cd data
-```
-
-创建硬链接。注意：`file`、`hardlinkfile1`、`hardlinkfile2` 文件的链接位置的数值的变化)
-```
-echo "it's original file" > file
-ln file hardlinkfile1
-ln -s file symlinkfile1
-ln -s file symlinkfile2
-```
-执行`ls -l`命令可以得到下面的结果：
-```
--rw-r--r--. 2 vagrant wheel 19 Nov  1 10:42 file
--rw-r--r--. 2 vagrant wheel 19 Nov  1 10:42 hardlinkfile1
-lrwxrwxrwx. 1 vagrant wheel  4 Nov  1 10:43 symlinkfile1 -> file
-lrwxrwxrwx. 1 vagrant wheel  4 Nov  1 10:43 symlinkfile2 -> file
-```
-
-创建另外一个硬链接。
-```
-ln file hardlinkfile2
-```
-执行`ls -l`命令可以得到下面的结果：
-```
--rw-r--r--. 3 vagrant wheel  19 Nov  1 10:42 file
--rw-r--r--. 3 vagrant wheel  19 Nov  1 10:42 hardlinkfile1
--rw-r--r--. 3 vagrant wheel  19 Nov  1 10:42 hardlinkfile2
-lrwxrwxrwx. 1 vagrant wheel   4 Nov  1 10:43 symlinkfile1 -> file
-lrwxrwxrwx. 1 vagrant wheel   4 Nov  1 10:43 symlinkfile2 -> file
-```
-
-修改`file`文件的内容。
-```
-echo "add oneline" >> file
-```
-通过命令`cat file`查看当前`file`的内容。
-```
-it's original file
-add oneline
-```
-通过下面的命令，可以看到所以软/硬链接文件内容都更新了，和`file`文件更新后的内容保持一致。
-```
-cat hardlinkfile1
-cat hardlinkfile2
-cat symlinkfile1
-cat symlinkfile2
-```
-
-对文件`symlinkfile1`再创建新的软连接。
-```
-ln -s symlinkfile1 symlinkfile1-1
-```
-
-通过命令`ls -il`查看现在的目录信息。
-```
-67274680 -rw-r--r--. 3 vagrant wheel 31 Nov  1 11:14 file
-67274680 -rw-r--r--. 3 vagrant wheel 31 Nov  1 11:14 hardlinkfile1
-67274680 -rw-r--r--. 3 vagrant wheel 31 Nov  1 11:14 hardlinkfile2
-67274681 lrwxrwxrwx. 1 vagrant wheel  4 Nov  1 10:43 symlinkfile1 -> file
-67274683 lrwxrwxrwx. 1 vagrant wheel 12 Nov  1 11:20 symlinkfile1-1 -> symlinkfile1
-67274682 lrwxrwxrwx. 1 vagrant wheel  4 Nov  1 10:43 symlinkfile2 -> file
-```
-
-读取软链接文件的源文件信息
-```
-readlink symlinkfile1
-readlink symlinkfile2
-```
-
-注意，对于`symlinkfile1-1`的情况有些不同。
-```
-readlink symlinkfile1-1
-```
-上面命令返回结果`symlinkfile1`仍然是一个符号链接文件。通过`readlink -f`可以直接定位真正的源文件。
-```
-readlink -f symlinkfile1-1
-```
-上面的返回结果`/data/linktype/file`是`symlinkfile1-1`真正的源文件。
-
-
-显示`data`目录下的文件和子目录：
-```
-cd ~
-tree ./data
-```
-运行结果：
-```
-./data
-├── file
-├── hardlinkfile1
-├── hardlinkfile2
-├── symlinkfile1 -> file
-├── symlinkfile1-1 -> symlinkfile1
-├── symlinkfile2 -> file
-└── typelink
-```
-
-只显示`data`目录下的子目录：
-```
-tree -d ./data
-```
-运行结果：
-```
-./data
-└── typelink
-```
-
-显示`data`目录下的文件和子目录，包含全目录：
-```
-tree -f ./data
-```
-运行结果：
-```
-./data
-├── ./data/file
-├── ./data/hardlinkfile1
-├── ./data/hardlinkfile2
-├── ./data/symlinkfile1 -> file
-├── ./data/symlinkfile1-1 -> symlinkfile1
-├── ./data/symlinkfile2 -> file
-└── ./data/typelink
-```
-
-### 文件属性说明
-
-执行命令`ls -ihl`，可以得到下面的输出结果（Rocky 9）。
-```
-67274680 -rw-r--r--. 3 vagrant wheel 31 Nov  1 11:14 file
-67274680 -rw-r--r--. 3 vagrant wheel 31 Nov  1 11:14 hardlinkfile1
-67274680 -rw-r--r--. 3 vagrant wheel 31 Nov  1 11:14 hardlinkfile2
-67274681 lrwxrwxrwx. 1 vagrant wheel  4 Nov  1 10:43 symlinkfile1 -> file
-67274683 lrwxrwxrwx. 1 vagrant wheel 12 Nov  1 11:20 symlinkfile1-1 -> symlinkfile1
-67274682 lrwxrwxrwx. 1 vagrant wheel  4 Nov  1 10:43 symlinkfile2 -> file
-33555262 drwxr-xr-x. 2 vagrant wheel  6 Nov  1 11:30 typelink
-```
-
-以`67274680 -rw-r--r--. 3 vagrant wheel 31 Nov  1 11:14 file`为例：
-
-* `67274680`: inode 索引节点编号。
-* `-rw-r--r--`：文件类型及权限
-  * `-`：文件类型，例子中出现了三种，`-`，`l`和`d`。
-    * `-`：普通文件
-    * `d`：目录
-    * `l`：符号链接文件（link）
-    * `b`：块设备（block）
-    * `c`：字符设备（character）
-    * `p`：管道文件（pipe）
-    * `s`：套接字文件（socket）
-  * `rw-r--r--`：文件权限，从左到右依次为：
-    * `rw-`：文件属主权限，例子中是`vagrant`。
-    * `r--`：文件属组的权限，例子中是`wheel`。
-    * `r--`：其他组的权限。
-* `.`：这个点表示文件带有SELinux的安全上下文（SELinux Contexts）。关闭SELinux，新创建的文件就不会再有这个点了。但是，以前创建的文件本来有这个点的还会显示这个点（虽然SELinux不起作用了）。
-* `3`：硬链接数，例子中`file`和`hardlinkfile1`和`hardlinkfile2`之间是硬链接，所以这三个文件的硬链接数都是`3`。
-* `vagrant`：文件属主
-* `wheel`：文件属组
-* `31`：文件或目录的大小
-* `Nov  1 11:14`：文件或目录的创建日期和时间
-* `file`：文件或目录名称
-
-
-下面是命令`ls -ihl`在openSUSE和Ubuntu上的显示结果。
-```
-233647 -rw-r--r-- 3 vagrant wheel 31 Nov  1 15:52 file
-233647 -rw-r--r-- 3 vagrant wheel 31 Nov  1 15:52 hardlinkfile1
-233647 -rw-r--r-- 3 vagrant wheel 31 Nov  1 15:52 hardlinkfile2
-233648 lrwxrwxrwx 1 vagrant wheel  4 Nov  1 15:52 symlinkfile1 -> file
-233650 lrwxrwxrwx 1 vagrant wheel 12 Nov  1 15:52 symlinkfile1-1 -> symlinkfile1
-233649 lrwxrwxrwx 1 vagrant wheel  4 Nov  1 15:52 symlinkfile2 -> file
-233646 drwxr-xr-x 1 vagrant wheel  0 Nov  1 15:51 typelink
-```
-
-
-#### SELinux & ACL
-
-Security-Enhanced Linux (SELinux) 是一种Linux系统的安全架构，它允许管理员更好地控制谁可以访问系统。 
-SELinux于2000年向开源社区发布，并于2003年集成到上游 Linux 内核中。
-
-SELinux为系统上的应用程序、进程和文件定义了访问控制。 它使用安全策略（一组规则告诉SELinux什么可以访问或不可以访问）来强制执行策略允许的访问。
-
-当称为主体（subject）的应用程序或进程请求访问对象（如文件）时，SELinux会检查访问向量缓存(AVC, Access Vector Cache)，其中缓存了主体和对象的权限。
-
-如果 SELinux 无法根据缓存的权限做出访问决定，它会将请求发送到安全服务器。安全服务器检查应用程序或进程和文件的安全上下文。从SELinux策略数据库应用安全上下文（Security context），然后授予或拒绝许可。如果权限被拒绝，`avc: denied`消息将在`/var/log.messages`中体现。
-
-传统上，Linux和UNIX系统都使用DAC（Discretionary Access Control）。 SELinux是Linux的MAC（Mandatory Access Control）系统的一个示例。
-
-在DAC方式下，文件和进程有自己的属主（所有者）。 用户可以拥有一个文件，一个组也可以拥有一个文件，或者其他人。 用户可以更改自己文件的权限。`root`用户对DAC系统具有完全访问控制权。 
-
-但是在像SELinux这样的MAC系统上，对于访问的管理是通过设置策略来实现的。即使用户主目录上的DAC设置发生更改，用于防止其他用户或进程访问该目录的SELinux策略也将继续确保系统安全。
-
-MAC方式是控制一个进程对具体文件系统上面的文件或目录是否拥有访问权限。判断进程是否可以访问文件或目录的依据，取决于SELinux中设定的很多策略规则。
-
-可以通过编辑 `/etc/selinux/config` 并设置 `SELINUX=permissive` 来启用 SElinux。
-
-访问控制列表 (ACL，Access Control List) 为文件系统提供了一种额外的、更灵活的权限机制。 它旨在协助 UNIX 文件权限。ACL允许授予任何用户或组对任何磁盘资源的权限。ACL适用于在不使某个用户成为组成员的情况下，仍旧授予一些读或写访问权限。
-
-下面示例对比说明了SELinux和ACL在文件属性展现上的特点。
-
-* `-rwxr-xr--  vagrant wheel` ：没有selinux上下文，没有ACL
-* `-rwx--xr-x+ vagrant wheel` ：只有ACL，没有selinux上下文
-* `-rw-r--r--. vagrant wheel` ：只有selinux上下文，没有ACL
-* `-rwxrwxr--+ vagrant wheel` ：有selinux上下文，有ACL
 
 
 ### 文件操作命令
@@ -1876,6 +1592,14 @@ rename -v "s/s/gz/g" *.s
 
 
 
+#### 目录操作命令
+
+创建目录：`mkdir`
+删除空目录：`rmdir`
+删除非空目录：`rm -r`
+显示目录树：`tree`
+
+
 
 
 #### 练习
@@ -1972,21 +1696,7 @@ $ sudo cp -av /etc/ ~/test/backup`date +%F_%H-%M-%S`
 ```
 
 
-
-
-### 目录操作命令
-
-创建目录：`mkdir`
-删除空目录：`rmdir`
-删除非空目录：`rm -r`
-显示目录树：`tree`
-
-
-
-
-#### 练习
-
-1. 创建目录`~/testdir/dir1/x`，`~/testdir/dir1/y`，`~/testdir/dir1/x/a`，`~/testdir/dir1/x/b`，`~/testdir/dir1/y/a`，`~/testdir/dir1/y/b`。
+9. 创建目录`~/testdir/dir1/x`，`~/testdir/dir1/y`，`~/testdir/dir1/x/a`，`~/testdir/dir1/x/b`，`~/testdir/dir1/y/a`，`~/testdir/dir1/y/b`。
 ```
 $ mkdir -p ~/testdir/dir1/{x,y}/{a,b}
 
@@ -2000,7 +1710,7 @@ $ tree ~/testdir/dir1/
     └── b
 ```
 
-2. 创建目录`~/testdir/dir2/x`，`~/testdir/dir2/y`，`~/testdir/dir2/x/a`，`~/testdir/dir2/x/b`。
+10. 创建目录`~/testdir/dir2/x`，`~/testdir/dir2/y`，`~/testdir/dir2/x/a`，`~/testdir/dir2/x/b`。
 ```
 $ mkdir -p ~/testdir/dir2/{x/{a,b},y}
 
@@ -2012,7 +1722,8 @@ $ tree ~/testdir/dir2/
 └── y
 ```
 
-3. 创建目录`~/testdir/dir3`、`~/testdir/dir4`、`~/testdir/dir5`、`~/testdir/dir5/dir6`、`~/testdir/dir5/dir7`。
+
+11. 创建目录`~/testdir/dir3`、`~/testdir/dir4`、`~/testdir/dir5`、`~/testdir/dir5/dir6`、`~/testdir/dir5/dir7`。
 ```
 $ mkdir -p ~/testdir/dir{3,4,5/dir{6,7}}
 
@@ -2039,7 +1750,420 @@ $ tree ~/testdir
 
 
 
-### inode结构
+
+### 七种文件类型
+
+* 普通文件（Normal Files）
+  * ASCII 文本文件
+  * 可执行文件
+  * 图形文件
+* 目录（Directories）
+  * 组织规划磁盘上的文件
+  * 包含文件和子目录
+  * 实现分层文件系统
+* 链接（Links）
+  * 硬链接（Hard links）
+       * 磁盘上文件的辅助文件名
+       * 多个文件名引用单个`inode`
+       * 引用的文件必须存在于同一个文件系统中
+  * 符号链接（Symbolic links）
+       * 对磁盘上其他文件的引用
+       * `inode`包含对另一个文件名的引用
+       * 被引用的文件可以存在于同一个文件系统中，也可以存在于其他文件系统中
+       * 符号链接可以引用不存在的文件（断开的链接）
+* 套接字Sockets - 用于进程之间的双向通信。
+* 管道（Pipes）(FIFOs) - 用于从一个进程到另一个进程的单向通信。
+* 块设备（Block Devices）
+* 字符设备（Character Devices）
+
+
+
+#### inode结构
+
+文件储存在硬盘上，硬盘的最小存储单位叫做“扇区”（Sector）。每个扇区储存512字节（相当于0.5KB）。
+
+操作系统读取硬盘的时候，不是一个一个扇区读取，而是一次性连续读取多个扇区，我们称为读取一个“块”（block）。
+
+常见的block的大小是4KB（连续八个sector组成一个block）。
+
+多个扇区组成的block是文件存取的*最小单位*。
+
+文件数据储存在block中，文件的元信息，比如文件的创建者、创建日期、文大小等，存储在inode，即“索引节点”。
+
+每一个文件都有对应的inode，里面包含了与该文件有关的一些信息。注意，除了文件名以外的其它文件信息，都存在inode之中。
+
+inode包含文件的元信息主要有：
+
+* 文件的字节数
+* 文件拥有者的 User ID
+* 文件的 Group ID
+* 文件的读、写、执行权限
+* 文件的时间戳，共有三个：ctime指inode上一次变动的时间，mtime指文件内容上一次变动的时间，atime指文件上一次打开的时间。
+* 链接数，即有多少文件名指向这个inode
+* 文件数据block的位置
+
+查看inode信息的命令`stat`：
+```
+$ stat file1
+  File: file1
+  Size: 5               Blocks: 8          IO Block: 4096   regular file
+Device: fd02h/64770d    Inode: 143         Links: 1
+Access: (0644/-rw-r--r--)  Uid: ( 1000/ vagrant)   Gid: (   10/   wheel)
+Context: unconfined_u:object_r:user_home_t:s0
+Access: 2022-11-08 20:49:26.019678244 +0800
+Modify: 2022-11-08 20:49:26.019678244 +0800
+Change: 2022-11-08 20:49:26.028678455 +0800
+ Birth: 2022-11-08 20:49:26.019678244 +0800
+```
+
+格式化硬盘时，操作系统会自动将硬盘分成两个区域。一个是数据区，存放文件数据。另一个是inode区（inode table），存放inode所包含的文件的元信息。
+
+每个inode节点的大小，一般是128字节或256字节。inode节点的总数，在格式化时就确定了，一般是每1KB或每2KB就设置一个inode。
+
+假定一块1GB的硬盘，如果每个inode节点的大小为128字节，且每1KB就设置一个inode，则inode table的大小就会达到128MB，占整块硬盘的12.8%。
+
+通过`df`命令查看每个硬盘分区的inode总数和已经使用的数量。
+由于每个文件都必须有一个inode，因此有可能发生inode已经用光，但是硬盘还未存满的情况，也就无法在硬盘上创建新文件。
+
+```
+$ df -i
+Filesystem                         Inodes IUsed   IFree IUse% Mounted on
+tmpfs                              497897   872  497025    1% /run
+/dev/mapper/ubuntu--vg-ubuntu--lv 3211264 81473 3129791    3% /
+tmpfs                              497897     1  497896    1% /dev/shm
+tmpfs                              497897     3  497894    1% /run/lock
+/dev/sda2                          131072   316  130756    1% /boot
+tmpfs                               99579    25   99554    1% /run/user/1000
+```
+
+下面命令可以查看每个inode节点的大小：
+```
+$ sudo dumpe2fs -h /dev/sda2 | grep "Inode size"
+dumpe2fs 1.46.5 (30-Dec-2021)
+Inode size:               256
+```
+
+每个inode都有一个号码，操作系统用inode号码来识别不同的文件，注意，不是通过文件名来识别不同文件。从操作系统角度看，文件名只是inode号码对一个别名。
+
+用户通过文件名，打开某个文件的过程，操作系统分成三步完成：
+首先，系统找到这个文件名对应的inode号码。
+其次，通过inode号，获取inode信息。
+第三，通过inode信息，找到文件数据所在的block，读出数据。
+
+通过`ls -i`命令，可以得到文件对应的inode号：
+```
+$ ls -i file1
+143 file1
+```
+
+目录（directory）也是一种文件。打开目录，实际上就是打开目录文件。
+
+目录文件的结构是由一个包含一系列目录项（dirent）的列表组成。
+每个目录项由两部分组成：所包含文件的文件名，以及该文件名对应的inode号。
+
+命令`ls -i`列出整个目录文件，即文件名和inode号：
+```
+$ ls -i
+143 file1  140 file2  139 test
+
+$ ls -il
+143 -rw-r--r--. 1 vagrant wheel    5 Nov  8 20:49 file1
+140 -rw-r--r--. 1 vagrant wheel    0 Oct  1 21:35 file2
+139 drwxr-xr-x. 5 vagrant wheel 4096 Nov  9 22:00 test
+```
+
+
+
+
+#### 链接类型 
+
+**硬链接**（Hard links）硬链接是存储卷上文件的目录引用或指针。 文件名是存储在目录结构中的标签，目录结构指向文件数据。 因此，可以将多个文件名与同一文件关联。 通过不同的文件名访问时，所做的任何更改都是针对源文件数据。
+
+**符号链接**（Symbolic links）: 符号链接包含一个文本字符串，操作系统将其解释为另一个文件或目录。 它本身就是一个文件，可以独立于目标而存在。 如果删除了符号链接，则其目标文件或目录不受影响。 如果移动，重命名或删除目标文件或目录，则用于指向它的任何符号链接将继续存在，但指向的是一个不存在的文件。
+
+仅当文件和链接文件位于同一文件系统（在同一分区上）时，才能使用硬链接，因为inode编号在同一文件系统中仅是唯一的。 
+可以使用`ln`命令创建硬链接，指向已存在文件的inode，可以通过文件名或者硬链接名访问文件。 
+
+可以使用`ln -s`选项创建符号链接。 一个符号链接会被分配一个单独的inode，并指向一个文件，所以可以明显区分符号链接文件和实际文件。 
+ 
+文件系统本质上是一个用于跟踪分区卷中的文件的数据库。 对于普通文件，分配数据块以存储文件的数据，分配inode以指向数据块以及存储关于文件的元数据，然后将文件名分配给inode。 硬链接是与现有inode关联的辅助文件名。 对于符号链接，将为新的inode分配一个与之关联的新文件名，但inode引用另一个文件名而不是引用数据块。
+
+查看文件名和inode之间关系的一个方法是使用`ls -il`命令。inode的典型大小为128位，数据块的大小范围可以是1k，2k，4k或更大，具体取决于文件系统类型。
+
+软连接可以针对目录，硬连接只能针对文件。
+	
+硬链接相当于增加了一个登记项，使得原来的文件多了一个名字，至于inode都没变。所谓的登记项其实是目录文件中的一个条目(目录项)，使用hard link 是让多个不同的目录项指向同一个文件的inode，没有多余的内容需要存储在磁盘扇区中，所以hardlink不占用额外的空间。
+
+符号链接有单独的inode，在inode中存放另一个文件的路径而不是文件数据，所以符号链接会占用额外的空间。
+
+特征      | 硬链接                             | 符号链接
+----------|-----------------------------------|------------
+本质       | 同一个文件                         | 不是同一个文件
+跨设备     | 不支持                            | 支持
+inode     | 相同                              | 不同
+链接数     | 创建硬链接，链接数会增加，删除则减少   | 创建或删除，链接数都不变
+文件夹     | 不支持                            | 支持
+相对路径   | 原始文件的相对路径是相对于当前工作目录 | 原始文件的相对路径是相对于链接文件的相对路径
+删除源文件 | 只是链接数减少，链接文件访问不受影响   | 链接文件将无法访问
+文件类型   | 和源文件相同                       | 链接文件，和源文件无关
+文件大小   | 和源文件相同                       | 源文件的路径的长度
+
+
+
+
+
+
+
+
+
+
+
+#### 设备文件
+
+**设备文件**（Device File）表示硬件（网卡除外）。 每个硬件都由一个设备文件表示。 网卡是接口。
+
+设备文件把内核驱动和物理硬件设备连接起来。
+内核驱动程序通过对设备文件进行读写（正确的格式）来实现对硬件的读写。
+
+类型：
+
+* 块设备（Block Devices）：块设备（通常）在512字节的大块中读取/写入信息。
+* 字符设备（Character Devices）：字符设备以字符方式读取/写入信息。 字符设备直接提供对硬件设备的无缓冲访问。
+  * 有时称为裸设备（raw devices）。（注意：裸设备被视为字符设备，不是块设备）
+  * 通过辅以不同选项，可以广泛而多样地应用和使用字符设备。
+* 当内核发现设备时由操作系统`udev`自动创建。
+
+
+#### 练习
+
+!!! 目标
+
+    以Rocky 9为例。
+
+    * 查看软/硬链接文件的特征。
+    * 查看目录结构。
+
+
+可以通过下面命令得到当前系统的2级目录的结构。
+```
+tree -L 2 -d /
+```
+
+创建练习目录。
+```
+mkdir data
+mkdir -p data/typelink
+cd data
+```
+
+创建硬链接。注意：`file`、`hardlinkfile1`、`hardlinkfile2` 文件的链接位置的数值的变化)
+```
+echo "it's original file" > file
+ln file hardlinkfile1
+ln -s file symlinkfile1
+ln -s file symlinkfile2
+```
+执行`ls -l`命令可以得到下面的结果：
+```
+-rw-r--r--. 2 vagrant wheel 19 Nov  1 10:42 file
+-rw-r--r--. 2 vagrant wheel 19 Nov  1 10:42 hardlinkfile1
+lrwxrwxrwx. 1 vagrant wheel  4 Nov  1 10:43 symlinkfile1 -> file
+lrwxrwxrwx. 1 vagrant wheel  4 Nov  1 10:43 symlinkfile2 -> file
+```
+
+创建另外一个硬链接。
+```
+ln file hardlinkfile2
+```
+执行`ls -l`命令可以得到下面的结果：
+```
+-rw-r--r--. 3 vagrant wheel  19 Nov  1 10:42 file
+-rw-r--r--. 3 vagrant wheel  19 Nov  1 10:42 hardlinkfile1
+-rw-r--r--. 3 vagrant wheel  19 Nov  1 10:42 hardlinkfile2
+lrwxrwxrwx. 1 vagrant wheel   4 Nov  1 10:43 symlinkfile1 -> file
+lrwxrwxrwx. 1 vagrant wheel   4 Nov  1 10:43 symlinkfile2 -> file
+```
+
+修改`file`文件的内容。
+```
+echo "add oneline" >> file
+```
+通过命令`cat file`查看当前`file`的内容。
+```
+it's original file
+add oneline
+```
+通过下面的命令，可以看到所以软/硬链接文件内容都更新了，和`file`文件更新后的内容保持一致。
+```
+cat hardlinkfile1
+cat hardlinkfile2
+cat symlinkfile1
+cat symlinkfile2
+```
+
+对文件`symlinkfile1`再创建新的软连接。
+```
+ln -s symlinkfile1 symlinkfile1-1
+```
+
+通过命令`ls -il`查看现在的目录信息。
+```
+67274680 -rw-r--r--. 3 vagrant wheel 31 Nov  1 11:14 file
+67274680 -rw-r--r--. 3 vagrant wheel 31 Nov  1 11:14 hardlinkfile1
+67274680 -rw-r--r--. 3 vagrant wheel 31 Nov  1 11:14 hardlinkfile2
+67274681 lrwxrwxrwx. 1 vagrant wheel  4 Nov  1 10:43 symlinkfile1 -> file
+67274683 lrwxrwxrwx. 1 vagrant wheel 12 Nov  1 11:20 symlinkfile1-1 -> symlinkfile1
+67274682 lrwxrwxrwx. 1 vagrant wheel  4 Nov  1 10:43 symlinkfile2 -> file
+```
+
+读取软链接文件的源文件信息
+```
+readlink symlinkfile1
+readlink symlinkfile2
+```
+
+注意，对于`symlinkfile1-1`的情况有些不同。
+```
+readlink symlinkfile1-1
+```
+上面命令返回结果`symlinkfile1`仍然是一个符号链接文件。通过`readlink -f`可以直接定位真正的源文件。
+```
+readlink -f symlinkfile1-1
+```
+上面的返回结果`/data/linktype/file`是`symlinkfile1-1`真正的源文件。
+
+
+显示`data`目录下的文件和子目录：
+```
+cd ~
+tree ./data
+```
+运行结果：
+```
+./data
+├── file
+├── hardlinkfile1
+├── hardlinkfile2
+├── symlinkfile1 -> file
+├── symlinkfile1-1 -> symlinkfile1
+├── symlinkfile2 -> file
+└── typelink
+```
+
+只显示`data`目录下的子目录：
+```
+tree -d ./data
+```
+运行结果：
+```
+./data
+└── typelink
+```
+
+显示`data`目录下的文件和子目录，包含全目录：
+```
+tree -f ./data
+```
+运行结果：
+```
+./data
+├── ./data/file
+├── ./data/hardlinkfile1
+├── ./data/hardlinkfile2
+├── ./data/symlinkfile1 -> file
+├── ./data/symlinkfile1-1 -> symlinkfile1
+├── ./data/symlinkfile2 -> file
+└── ./data/typelink
+```
+
+### 文件属性说明
+
+执行命令`ls -ihl`，可以得到下面的输出结果（Rocky 9）。
+```
+67274680 -rw-r--r--. 3 vagrant wheel 31 Nov  1 11:14 file
+67274680 -rw-r--r--. 3 vagrant wheel 31 Nov  1 11:14 hardlinkfile1
+67274680 -rw-r--r--. 3 vagrant wheel 31 Nov  1 11:14 hardlinkfile2
+67274681 lrwxrwxrwx. 1 vagrant wheel  4 Nov  1 10:43 symlinkfile1 -> file
+67274683 lrwxrwxrwx. 1 vagrant wheel 12 Nov  1 11:20 symlinkfile1-1 -> symlinkfile1
+67274682 lrwxrwxrwx. 1 vagrant wheel  4 Nov  1 10:43 symlinkfile2 -> file
+33555262 drwxr-xr-x. 2 vagrant wheel  6 Nov  1 11:30 typelink
+```
+
+以`67274680 -rw-r--r--. 3 vagrant wheel 31 Nov  1 11:14 file`为例：
+
+* `67274680`: inode 索引节点编号。
+* `-rw-r--r--`：文件类型及权限
+  * `-`：文件类型，例子中出现了三种，`-`，`l`和`d`。
+    * `-`：普通文件
+    * `d`：目录
+    * `l`：符号链接文件（link）
+    * `b`：块设备（block）
+    * `c`：字符设备（character）
+    * `p`：管道文件（pipe）
+    * `s`：套接字文件（socket）
+  * `rw-r--r--`：文件权限，从左到右依次为：
+    * `rw-`：文件属主权限，例子中是`vagrant`。
+    * `r--`：文件属组的权限，例子中是`wheel`。
+    * `r--`：其他组的权限。
+* `.`：这个点表示文件带有SELinux的安全上下文（SELinux Contexts）。关闭SELinux，新创建的文件就不会再有这个点了。但是，以前创建的文件本来有这个点的还会显示这个点（虽然SELinux不起作用了）。
+* `3`：硬链接数，例子中`file`和`hardlinkfile1`和`hardlinkfile2`之间是硬链接，所以这三个文件的硬链接数都是`3`。
+* `vagrant`：文件属主
+* `wheel`：文件属组
+* `31`：文件或目录的大小
+* `Nov  1 11:14`：文件或目录的创建日期和时间
+* `file`：文件或目录名称
+
+
+下面是命令`ls -ihl`在openSUSE和Ubuntu上的显示结果。
+```
+233647 -rw-r--r-- 3 vagrant wheel 31 Nov  1 15:52 file
+233647 -rw-r--r-- 3 vagrant wheel 31 Nov  1 15:52 hardlinkfile1
+233647 -rw-r--r-- 3 vagrant wheel 31 Nov  1 15:52 hardlinkfile2
+233648 lrwxrwxrwx 1 vagrant wheel  4 Nov  1 15:52 symlinkfile1 -> file
+233650 lrwxrwxrwx 1 vagrant wheel 12 Nov  1 15:52 symlinkfile1-1 -> symlinkfile1
+233649 lrwxrwxrwx 1 vagrant wheel  4 Nov  1 15:52 symlinkfile2 -> file
+233646 drwxr-xr-x 1 vagrant wheel  0 Nov  1 15:51 typelink
+```
+
+
+
+#### SELinux & ACL
+
+Security-Enhanced Linux (SELinux) 是一种Linux系统的安全架构，它允许管理员更好地控制谁可以访问系统。 
+SELinux于2000年向开源社区发布，并于2003年集成到上游 Linux 内核中。
+
+SELinux为系统上的应用程序、进程和文件定义了访问控制。 它使用安全策略（一组规则告诉SELinux什么可以访问或不可以访问）来强制执行策略允许的访问。
+
+当称为主体（subject）的应用程序或进程请求访问对象（如文件）时，SELinux会检查访问向量缓存(AVC, Access Vector Cache)，其中缓存了主体和对象的权限。
+
+如果 SELinux 无法根据缓存的权限做出访问决定，它会将请求发送到安全服务器。安全服务器检查应用程序或进程和文件的安全上下文。从SELinux策略数据库应用安全上下文（Security context），然后授予或拒绝许可。如果权限被拒绝，`avc: denied`消息将在`/var/log.messages`中体现。
+
+传统上，Linux和UNIX系统都使用DAC（Discretionary Access Control）。 SELinux是Linux的MAC（Mandatory Access Control）系统的一个示例。
+
+在DAC方式下，文件和进程有自己的属主（所有者）。 用户可以拥有一个文件，一个组也可以拥有一个文件，或者其他人。 用户可以更改自己文件的权限。`root`用户对DAC系统具有完全访问控制权。 
+
+但是在像SELinux这样的MAC系统上，对于访问的管理是通过设置策略来实现的。即使用户主目录上的DAC设置发生更改，用于防止其他用户或进程访问该目录的SELinux策略也将继续确保系统安全。
+
+MAC方式是控制一个进程对具体文件系统上面的文件或目录是否拥有访问权限。判断进程是否可以访问文件或目录的依据，取决于SELinux中设定的很多策略规则。
+
+可以通过编辑 `/etc/selinux/config` 并设置 `SELINUX=permissive` 来启用 SElinux。
+
+访问控制列表 (ACL，Access Control List) 为文件系统提供了一种额外的、更灵活的权限机制。 它旨在协助 UNIX 文件权限。ACL允许授予任何用户或组对任何磁盘资源的权限。ACL适用于在不使某个用户成为组成员的情况下，仍旧授予一些读或写访问权限。
+
+下面示例对比说明了SELinux和ACL在文件属性展现上的特点。
+
+* `-rwxr-xr--  vagrant wheel` ：没有selinux上下文，没有ACL
+* `-rwx--xr-x+ vagrant wheel` ：只有ACL，没有selinux上下文
+* `-rw-r--r--. vagrant wheel` ：只有selinux上下文，没有ACL
+* `-rwxrwxr--+ vagrant wheel` ：有selinux上下文，有ACL
+
+
+
+
+
+
+
+
 
 
 
