@@ -1946,22 +1946,22 @@ inode     | 相同                              | 不同
 
 可以通过下面命令得到当前系统的2级目录的结构。
 ```
-tree -L 2 -d /
+$ tree -L 2 -d /
 ```
 
 创建练习目录。
 ```
-mkdir data
-mkdir -p data/typelink
-cd data
+$ mkdir data
+$ mkdir -p data/typelink
+$ cd data
 ```
 
 创建硬链接。注意：`file`、`hardlinkfile1`、`hardlinkfile2` 文件的链接位置的数值的变化)
 ```
-echo "it's original file" > file
-ln file hardlinkfile1
-ln -s file symlinkfile1
-ln -s file symlinkfile2
+$ echo "it's original file" > file
+$ ln file hardlinkfile1
+$ ln -s file symlinkfile1
+$ ln -s file symlinkfile2
 ```
 执行`ls -l`命令可以得到下面的结果：
 ```
@@ -1973,7 +1973,7 @@ lrwxrwxrwx. 1 vagrant wheel  4 Nov  1 10:43 symlinkfile2 -> file
 
 创建另外一个硬链接。
 ```
-ln file hardlinkfile2
+$ ln file hardlinkfile2
 ```
 执行`ls -l`命令可以得到下面的结果：
 ```
@@ -1986,7 +1986,7 @@ lrwxrwxrwx. 1 vagrant wheel   4 Nov  1 10:43 symlinkfile2 -> file
 
 修改`file`文件的内容。
 ```
-echo "add oneline" >> file
+$ echo "add oneline" >> file
 ```
 通过命令`cat file`查看当前`file`的内容。
 ```
@@ -1995,15 +1995,15 @@ add oneline
 ```
 通过下面的命令，可以看到所以软/硬链接文件内容都更新了，和`file`文件更新后的内容保持一致。
 ```
-cat hardlinkfile1
-cat hardlinkfile2
-cat symlinkfile1
-cat symlinkfile2
+$ cat hardlinkfile1
+$ cat hardlinkfile2
+$ cat symlinkfile1
+$ cat symlinkfile2
 ```
 
 对文件`symlinkfile1`再创建新的软连接。
 ```
-ln -s symlinkfile1 symlinkfile1-1
+$ ln -s symlinkfile1 symlinkfile1-1
 ```
 
 通过命令`ls -il`查看现在的目录信息。
@@ -2018,25 +2018,25 @@ ln -s symlinkfile1 symlinkfile1-1
 
 读取软链接文件的源文件信息
 ```
-readlink symlinkfile1
-readlink symlinkfile2
+$ readlink symlinkfile1
+$ readlink symlinkfile2
 ```
 
 注意，对于`symlinkfile1-1`的情况有些不同。
 ```
-readlink symlinkfile1-1
+$ readlink symlinkfile1-1
 ```
 上面命令返回结果`symlinkfile1`仍然是一个符号链接文件。通过`readlink -f`可以直接定位真正的源文件。
 ```
-readlink -f symlinkfile1-1
+$ readlink -f symlinkfile1-1
 ```
 上面的返回结果`/data/linktype/file`是`symlinkfile1-1`真正的源文件。
 
 
 显示`data`目录下的文件和子目录：
 ```
-cd ~
-tree ./data
+$ cd ~
+$ tree ./data
 ```
 运行结果：
 ```
@@ -2052,7 +2052,7 @@ tree ./data
 
 只显示`data`目录下的子目录：
 ```
-tree -d ./data
+$ tree -d ./data
 ```
 运行结果：
 ```
@@ -2062,7 +2062,7 @@ tree -d ./data
 
 显示`data`目录下的文件和子目录，包含全目录：
 ```
-tree -f ./data
+$ tree -f ./data
 ```
 运行结果：
 ```
@@ -2116,6 +2116,7 @@ tree -f ./data
 
 下面是命令`ls -ihl`在openSUSE和Ubuntu上的显示结果。
 ```
+$ ls -ihl
 233647 -rw-r--r-- 3 vagrant wheel 31 Nov  1 15:52 file
 233647 -rw-r--r-- 3 vagrant wheel 31 Nov  1 15:52 hardlinkfile1
 233647 -rw-r--r-- 3 vagrant wheel 31 Nov  1 15:52 hardlinkfile2
@@ -2156,6 +2157,189 @@ MAC方式是控制一个进程对具体文件系统上面的文件或目录是�
 * `-rwx--xr-x+ vagrant wheel` ：只有ACL，没有selinux上下文
 * `-rw-r--r--. vagrant wheel` ：只有selinux上下文，没有ACL
 * `-rwxrwxr--+ vagrant wheel` ：有selinux上下文，有ACL
+
+
+
+### 重定向和管道
+
+标准输入输出，即I/O，I/O的I是Input，O是output。
+
+* I：从外部设备输入到内存
+* O：从内存输出到外部设备
+
+标准输入和标准输出是用于IO的，它们属于外部设备（逻辑上的外部设备），不是内存。
+
+linux中一切设备皆是文件！因此标准输入和输出本质就是文件，外部设备以文件形式表现。
+
+在Linux系统中，标准输入和标准输出对应的文件是`/dev/stdin`和`/dev/stdout`这两个文件。
+
+从标准输入读，从逻辑上讲，就是打开`/dev/stdin`这个文件，并读入文件内容。
+输出到标准输出，从逻辑上讲，就是打开`/dev/stdout`这个文件，并把内容输出到这个文件里去。
+
+这里强调的是“逻辑上”，因为`/dev/stdin`和`/dev/stdout`这2个文件本身不是设备文件。Linux中设备是文件，但是文件不一定是设备。
+因此，操作`/dev/stdin`和/dev/stdout`这2个文件，实际上是操作两个文件存放地址对应的设备文件。
+
+通过下面命令可以看到标准输入输出文件的特点，他们虽然在`/dev`目录下，都是以`l`开头的链接文件，指向的是另一个文件的地址。
+```
+$ ls -l /dev/std*
+lrwxrwxrwx 1 root root 15 Nov 13 10:39 /dev/stderr -> /proc/self/fd/2
+lrwxrwxrwx 1 root root 15 Nov 13 10:39 /dev/stdin -> /proc/self/fd/0
+lrwxrwxrwx 1 root root 15 Nov 13 10:39 /dev/stdout -> /proc/self/fd/1
+
+# Rocky
+$ ll /proc/self/fd/
+lrwx------. 1 vagrant wheel 64 Nov 13 22:38 0 -> /dev/pts/0
+lrwx------. 1 vagrant wheel 64 Nov 13 22:38 1 -> /dev/pts/0
+lrwx------. 1 vagrant wheel 64 Nov 13 22:38 2 -> /dev/pts/0
+lr-x------. 1 vagrant wheel 64 Nov 13 22:38 3 -> /proc/1702/fd
+
+# Ubuntu
+$ ll /proc/self/fd/
+lrwx------ 1 vagrant sudo 64 Nov 13 14:38 0 -> /dev/pts/0
+lrwx------ 1 vagrant sudo 64 Nov 13 14:38 1 -> /dev/pts/0
+lrwx------ 1 vagrant sudo 64 Nov 13 14:38 2 -> /dev/pts/0
+lr-x------ 1 vagrant sudo 64 Nov 13 14:38 3 -> /proc/2062/fd/
+
+# openSUSE
+$ ll /proc/self/fd/*
+ls: cannot access '/proc/self/fd/255': No such file or directory
+ls: cannot access '/proc/self/fd/3': No such file or directory
+lrwx------ 1 vagrant wheel 64 Nov 13 22:37 /proc/self/fd/0 -> /dev/pts/0
+lrwx------ 1 vagrant wheel 64 Nov 13 22:37 /proc/self/fd/1 -> /dev/pts/0
+lrwx------ 1 vagrant wheel 64 Nov 13 22:37 /proc/self/fd/2 -> /dev/pts/0
+```
+
+Linux进程默认会打开的三个文件：
+
+* 标准输入`/dev/stdin`，描述符为 0，默认就是键盘输入。
+* 标准输出`/dev/stdout`，描述符为 1，默认就是输出到屏幕。
+* 标准输出`/dev/stderr`，描述符为 2，默认还是输出到屏幕。
+
+
+以Rocky为例，创建`file.py`文件。
+```
+$ cat > file.py <<EOF
+import time
+f = open('test.txt', 'r')
+time.sleep(1000)
+EOF
+```
+创建`test.txt`文件。
+```
+$ echo "hello" > test.txt
+```
+运行`file.py`程序。
+```
+$ python3 file.py
+```
+打开新的终端窗口，执行下面命令，得到python3这个程序运行的process ID。其中可以看到有一个来自文件test.txt被程序file.py打开（输入）。
+```
+$ pidof python3
+1739 788
+
+$ sudo ls -l /proc/788/fd/
+lr-x------. 1 root root 64 Nov 13 23:00 0 -> /dev/null
+l-wx------. 1 root root 64 Nov 13 23:00 1 -> /dev/null
+lrwx------. 1 root root 64 Nov 13 23:00 10 -> 'socket:[24677]'
+lrwx------. 1 root root 64 Nov 13 23:00 11 -> 'socket:[24678]'
+l-wx------. 1 root root 64 Nov 13 23:00 2 -> /dev/null
+l-wx------. 1 root root 64 Nov 13 10:41 3 -> /var/log/firewalld
+lrwx------. 1 root root 64 Nov 13 23:00 4 -> 'socket:[23421]'
+lrwx------. 1 root root 64 Nov 13 23:00 5 -> 'anon_inode:[eventfd]'
+lrwx------. 1 root root 64 Nov 13 23:00 6 -> 'socket:[24586]'
+lr-x------. 1 root root 64 Nov 13 23:00 7 -> anon_inode:inotify
+lrwx------. 1 root root 64 Nov 13 23:00 8 -> 'anon_inode:[eventfd]'
+lrwx------. 1 root root 64 Nov 13 23:00 9 -> '/memfd:libffi (deleted)'
+
+$ sudo ls -l /proc/1739/fd/
+lrwx------. 1 vagrant wheel 64 Nov 13 23:00 0 -> /dev/pts/0
+lrwx------. 1 vagrant wheel 64 Nov 13 23:00 1 -> /dev/pts/0
+lrwx------. 1 vagrant wheel 64 Nov 13 23:00 2 -> /dev/pts/0
+lr-x------. 1 vagrant wheel 64 Nov 13 23:00 3 -> /home/vagrant/test.txt
+```
+
+在Ubuntu中运行`file.py`程序，pidof会取得3个process IDs。
+```
+$ pidof python3
+2128 924 873
+
+$ sudo ls -l /proc/2128/fd/
+lrwx------ 1 vagrant sudo 64 Nov 13 15:10 0 -> /dev/pts/0
+lrwx------ 1 vagrant sudo 64 Nov 13 15:10 1 -> /dev/pts/0
+lrwx------ 1 vagrant sudo 64 Nov 13 15:10 2 -> /dev/pts/0
+lr-x------ 1 vagrant sudo 64 Nov 13 15:10 3 -> /home/vagrant/test.txt
+
+$ sudo ls -l /proc/924/fd/
+lr-x------ 1 root root 64 Nov 13 15:11 0 -> /dev/null
+lrwx------ 1 root root 64 Nov 13 15:11 1 -> 'socket:[31593]'
+lrwx------ 1 root root 64 Nov 13 15:11 2 -> 'socket:[31593]'
+l-wx------ 1 root root 64 Nov 13 02:40 3 -> /var/log/unattended-upgrades/unattended-upgrades-shutdown.log
+lrwx------ 1 root root 64 Nov 13 15:11 4 -> 'socket:[31652]'
+lrwx------ 1 root root 64 Nov 13 15:11 5 -> 'anon_inode:[eventfd]'
+lrwx------ 1 root root 64 Nov 13 15:11 6 -> 'anon_inode:[eventfd]'
+lrwx------ 1 root root 64 Nov 13 15:11 7 -> 'socket:[31657]'
+l-wx------ 1 root root 64 Nov 13 15:11 8 -> /run/systemd/inhibit/1.ref
+lrwx------ 1 root root 64 Nov 13 15:11 9 -> 'socket:[31658]'
+
+$ sudo ls -l /proc/873/fd/
+lr-x------ 1 root root 64 Nov 13 15:11 0 -> /dev/null
+lrwx------ 1 root root 64 Nov 13 15:11 1 -> 'socket:[31412]'
+lrwx------ 1 root root 64 Nov 13 15:11 2 -> 'socket:[31412]'
+lrwx------ 1 root root 64 Nov 13 02:40 3 -> 'socket:[31650]'
+lrwx------ 1 root root 64 Nov 13 15:11 4 -> 'anon_inode:[eventfd]'
+lrwx------ 1 root root 64 Nov 13 15:11 5 -> 'socket:[31663]'
+lrwx------ 1 root root 64 Nov 13 15:11 6 -> 'socket:[31664]'
+```
+
+openSUSE需要安装包`sysvinit-tools`才能使用`pidof`命令。
+```
+$ sudo zypper in sysvinit-tools
+```
+
+由于openSUSE中pidof python3只返回一个process ID，所以可以简化命令行得到process ID的详细信息。
+```
+$ sudo ls -l /proc/`pidof python3`/fd/
+lrwx------ 1 vagrant wheel 64 Nov 13 23:21 0 -> /dev/pts/0
+lrwx------ 1 vagrant wheel 64 Nov 13 23:21 1 -> /dev/pts/0
+lrwx------ 1 vagrant wheel 64 Nov 13 23:21 2 -> /dev/pts/0
+lr-x------ 1 vagrant wheel 64 Nov 13 23:21 3 -> /home/vagrant/test.txt
+```
+
+!!! Reference
+    当键盘和鼠标等设备通过串口直接连接到计算机时，这种连接称为TTY。
+    伪终端pseudoterminal（缩写为“pty”）是一对提供双向通信通道的虚拟字符设备。 通道的一端称为主端master； 另一端称为从端slave。 
+
+    `/dev/pts`表示与伪终端pseudoterminal的主端master或从端slave相关的master文件，操作系统将其保存为`/dev/ptmx`文件。 `telnet`和`ssh`等程序能够仿真终端，用户与它们的交互，虽然本质上是与文件`/dev/ptmx`进行交互，但呈现给用户的却是好像运行在真正的终端窗口一样，从端的文件是主端的输入。
+
+    伪终端进程在Linux中被存储在`/dev/pts/`目录下。`/dev/pts/`目录下的内容是一些特殊的目录，由Linux内核所创建。
+    
+    每个唯一的终端窗口都与`/dev/pts`系统中的一个Linux`pts`条目相关。
+
+    下面返回的结果说明有2个远程终端连接到当前的机器。
+    ```
+    $ ll /dev/pts/
+    crw--w----. 1 vagrant tty  136, 0 Nov 13 23:18 0
+    crw--w----. 1 vagrant tty  136, 1 Nov 13 23:48 1
+    c---------. 1 root    root   5, 2 Nov 13 10:41 ptmx
+    ```
+
+    也可以通过`w`命令看到2个终端进程。
+    ```
+    $ w
+     23:55:05 up 13:14,  2 users,  load average: 0.00, 0.00, 0.00
+    USER     TTY        LOGIN@   IDLE   JCPU   PCPU WHAT
+    vagrant  pts/0     10:51   37:03   0.05s  0.05s -bash
+    vagrant  pts/1     23:48    0.00s  0.03s  0.00s w
+    ```
+
+    A single pseudoterminal can receive multiple outputs from different programs at a time. Multiple programs routing to the same terminal for reading would confuse the multiple inputs.
+    单个伪终端pseudoterminal可以同时接收来自不同的程序的输出。
+    多个程序同时对一个伪终端pseudoterminal进行读取会引起混淆。
+
+    注意，存储在`/dev/pts`目录中的文件是抽象文件而不是真实文件，是伪终端中执行程序时临时存储的数据。 打开`/dev/pts`下的文件通常没有什么实际意义。
+
+
+
 
 
 
