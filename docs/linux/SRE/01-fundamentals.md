@@ -702,6 +702,78 @@ man 5 crontab
 
 
 
+### `tr`命令
+
+`tr`命令可以对来自标准输入的字符进行替换、压缩和删除。它可以将一组字符变成另一组字符。
+
+格式：`tr [OPTION]... SET1 [SET2]`
+
+举例：
+```
+# 将输入字符由大写转换为小写
+$ echo "HELLO WORLD" | tr 'A-Z' 'a-z'
+hello world
+
+# 删除出现的数字
+$ echo "HELLO 1234 WORLD 4567" | tr -d '0-9'
+HELLO  WORLD
+
+# 从输入文本中将不在补集中的所有字符删除（只保留数字1，2，3，4，5）
+$ echo "HELLO 1234 WORLD 4567" | tr -d -c '1-5'
+123445
+
+# 将连续重复的字符以单独一个字符表示
+$ echo "HELLOOO 1222235555555554" | tr -s 'O215'
+HELLO 12354
+
+# 删除由于Windows文件造成的'^M'字符
+$ cat file.txt | tr -s '\r' '\n' > new.txt
+$ cat file.txt | tr -d '\r' > new.txt
+
+# 将换行符替换成制表符
+$ cat file.txt | tr '\n' '\t' > new.txt
+
+# 将大写字母转换为小写字母
+$ echo "HELLO 1234 WORLD 4567" | tr '[:upper:]' '[:lower:]'
+hello 1234 world 4567
+
+```
+
+
+
+
+### `tee`命令
+
+`tee`命令基于标准输入读取数据，标准输出或文件写入数据。
+
+举例：
+```
+# ping命令的输出，不仅输出到屏幕，也同时写入文件output.txt中（覆盖式写入）。
+$ ping www.baidu.com | tee output.txt
+
+# ping命令的输出，不仅输出到屏幕，也同时写入文件output.txt中（追加式写入）。
+$ ping www.baidu.com | tee -a output.txt
+
+# ping命令的输出，不仅输出到屏幕，也同时写入多个文件中（覆盖式写入）。
+$ ping www.baidu.com | tee output1.txt output2.txt output3.txt
+
+# ls命令的输出写入文件output.txt中，并作为wc命令的输入。
+$ ls *.txt | tee output.txt | wc -l
+4
+# cat output.txt
+f1.txt
+f2.txt
+output.txt
+test.txt
+```
+
+技巧：在vi使用中，通过`tee`命令提升文件写入权限。
+
+比如非root用户执行`vi /etc/hosts`，在vi中使用`:w !sudo tee %`可以提高权限保存这个文件。
+
+
+
+
 ### 语言环境LANG
 
 安装语言包。
@@ -943,6 +1015,9 @@ d
 $*以数组的形式引用传入参数：
 a b 3 5 d
 ```
+
+
+
 
 
 
@@ -2160,7 +2235,7 @@ MAC方式是控制一个进程对具体文件系统上面的文件或目录是�
 
 
 
-### 重定向和管道
+## 标准输入输出
 
 标准输入输出，即I/O，I/O的I是Input，O是output。
 
@@ -2211,9 +2286,9 @@ lrwx------ 1 vagrant wheel 64 Nov 13 22:37 /proc/self/fd/2 -> /dev/pts/0
 
 Linux进程默认会打开的三个文件：
 
-* 标准输入`/dev/stdin`，描述符为 0，默认就是键盘输入。
-* 标准输出`/dev/stdout`，描述符为 1，默认就是输出到屏幕。
-* 标准输出`/dev/stderr`，描述符为 2，默认还是输出到屏幕。
+* 标准输入`/dev/stdin`，描述符为 0，默认是键盘输入。
+* 标准输出`/dev/stdout`，描述符为 1，默认是输出到屏幕。
+* 标准输出`/dev/stderr`，描述符为 2，默认是输出到屏幕。
 
 
 以Rocky为例，创建`file.py`文件。
@@ -2331,22 +2406,188 @@ lr-x------ 1 vagrant wheel 64 Nov 13 23:21 3 -> /home/vagrant/test.txt
     vagrant  pts/0     10:51   37:03   0.05s  0.05s -bash
     vagrant  pts/1     23:48    0.00s  0.03s  0.00s w
     ```
-    
+
     单个伪终端pseudoterminal可以同时接收来自不同的程序的输出。
     多个程序同时对一个伪终端pseudoterminal进行读取会引起混淆。
 
-    注意，存储在`/dev/pts`目录中的文件是抽象文件而不是真实文件，是伪终端中执行程序时临时存储的数据。 打开`/dev/pts`下的文件通常没有什么实际意义。
+    存储在`/dev/pts`目录中的文件是抽象文件而不是真实文件，是伪终端中执行程序时临时存储的数据。 打开`/dev/pts`下的文件通常没有什么实际意义。
+
+
+
+
+
+## 重定向和管道
+
+### 输入重定向
+
+常用命令格式：
+
+* `command < file`：将指定文件`file`作为命令的输入设备。
+* `command << delimiter`：表示从标准输入设备（键盘）中读入，直到遇到分界符`delimiter`停止（读入的数据不包括分界符），这里的分界符可以理解为自定义的字符串。
+* `command < file1 > file2`：将`file1`作为命令的输入设备，该命令的执行结果输出到`file2`中。
+
+
+```
+# 输出文件file.py内容（输入设备是键盘）
+$ cat file.py
+
+# 输出文件file.py内容（输入设备是文件file.py）
+$ cat < file.py
+
+# 指定分界符（这里是EOF），读取键盘输入内容，直到遇到指定分界符为止，将所读取的内容输出到文件file.py。
+$ cat > file.py <<EOF
+import time
+f = open('test.txt', 'r')
+time.sleep(1000)
+EOF
+
+# 读取文件file.py内容，输出到新文件new.py。
+$ cat < file.py > new.py
+```
+
+
+### 输出重定向
+
+输出重定向分为标准输出重定向和错误输出重定向两种。
+
+常用命令格式：
+
+* `command > file`：将命令`command`执行的标准输出结果重定向输出到指定的文件`file`中，如果该文件已包含数据，会清空原有数据，再写入新数据。
+* `command 2> file`：将命令`command`执行的错误输出结果重定向到指定的文件`file`中，如果该文件中已包含数据，会清空原有数据，再写入新数据。
+* `command >> file`：将命令`command`执行的标准输出结果重定向输出到指定的文件`file`中，如果该文件已包含数据，新数据将追加写入到原有内容的后面。
+* `command 2>> file`：将命令`command`执行的错误输出结果重定向到指定的文件`file`中，如果该文件中已包含数据，新数据将追加写入到原有内容的后面。
+* `command >> file 2>&1` 或者 `command &>> file`：将标准输出或者错误输出写入到指定文件`file`中，如果该文件中已包含数据，新数据将追加写入到原有内容的后面。
+
+注意：上面的`file`可以是一个普通文件，也可以使用一个特殊的文件`/dev/null`。`/dev/null`并不保存数据，被写入`/dev/null`的数据最终都会丢失。
+
+举例：2个python文件存在，其他2个无扩展名的文件不存在。
+```
+$ ls file.py > out
+$ ls file 2> out.err
+
+$ ls new.py >> out
+$ ls new 2>> out.err
+```
+可以得到预期的结果。两个错误记录都被追加到`out.err`文件中。两个成功执行的命令的返回结果也输出到`out`文件中。
+```
+$ccat out
+file.py
+new.py
+
+$ cat out.err
+ls: cannot access 'file': No such file or directory
+ls: cannot access 'new': No such file or directory
+```
+
+上例命令也可以合并。
+```
+$ ls file.py > out 2> out.err
+$ ls file >> out 2>> out.err
+```
+
+`2>&1`格式举例：
+```
+$ ls file >> out.txt 2>&1
+$ cat out.txt
+ls: cannot access 'file': No such file or directory
+
+$ ls file.py &>> out.txt
+$ cat out.txt
+ls: cannot access 'file': No such file or directory
+file.py
+```
+
+### 特殊重定向
+
+格式：`command1 < <(command2)`
+```
+tr 'a-z' 'A-Z' < <(echo "Hello World")
+```
+
+
+应用：修改密码
+
+密码保存在`passwd.txt`文件中，并严格限制改文件的权限。
+通过参数`--stdin`实现模拟键盘输入操作输入用户名。
+
+```
+passwd --stdin vagrant < passwd.txt
+```
 
 
 
 
 
 
+!!! Reference
+    Here-document(Here-doc)：输入的文本块重定向至标准输入流，直至遇到特殊的文件结束标记符为止（文件结束标记符可以是任意的唯一的字符串，但大部分人都默认使用 `EOF`）。
+
+    ```
+    cat <<EOF
+    This is line1
+    Another line
+    Finally 3rd line
+    EOF
+    ```
+    文本块中含有tab键。
+    ```
+    cat <<-EOF
+        This message is indented
+            This message is double indented
+    EOF
+    ```
+
+    文本块中含有参数。
+    ```
+    cat <<EOF
+    Hello ${USER}
+    EOF
+    ```
+
+    文本块中含有命令。
+    ```
+    cat <<EOF
+    Hello! It is currently: $(date)
+    EOF
+    ```
+
+    Here-string：与`Here-doc`相似，但是它只有一个字符串，或者几个被引号括起来的字符串。
+
+    基本用法。
+    ```
+    cat <<< "This is a string"
+    ```
+    使用变量。
+    ```
+    WELCOME_MESSAGE="Welcome!"
+    cat <<< $WELCOME_MESSAGE
+    ```
+    使用参数。
+    ```
+    cat <<< "Welcome! ${USER}"
+    ```
 
 
+### 管道
+
+Linux中使用竖线`|`连接多个命令，这被称为管道符。
+
+当在两个命令之间设置管道时，管道符`|`左边命令的输出就变成了右边命令的输入。管道符`|`左边正确的输出才能被右边处理，管道符`|`右边不能处理左边错误的输出。
 
 
+重定向和管道的区别：重定向操作符`>`将命令与文件连接起来，用文件来接收命令的输出；而管道符`|`将命令与命令连接起来，用右边命令来接收左边命令的输出。
 
+```
+$ ls | tr 'a-z' 'A-Z'
+BIN
+F1.TXT
+F2.TXT
+FILE.PY
+NEW.PY
+OUT
+OUT.ERR
+TEST.TXT
+```
 
 
 
