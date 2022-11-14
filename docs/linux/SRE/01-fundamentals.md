@@ -2331,8 +2331,7 @@ lr-x------ 1 vagrant wheel 64 Nov 13 23:21 3 -> /home/vagrant/test.txt
     vagrant  pts/0     10:51   37:03   0.05s  0.05s -bash
     vagrant  pts/1     23:48    0.00s  0.03s  0.00s w
     ```
-
-    A single pseudoterminal can receive multiple outputs from different programs at a time. Multiple programs routing to the same terminal for reading would confuse the multiple inputs.
+    
     单个伪终端pseudoterminal可以同时接收来自不同的程序的输出。
     多个程序同时对一个伪终端pseudoterminal进行读取会引起混淆。
 
