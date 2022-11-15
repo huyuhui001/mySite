@@ -74,6 +74,8 @@ nav:
   - Index: linux/index.md
   - Linux SRE:
     - Linux Fundamentals: linux/SRE/01-fundamentals.md
+    - File System: linux/SRE/02-filesystem.md
+    - Identity & Security: linux/SRE/03-identity-security.md
   - SUSE Linux Administration: 
     - Linux File System Overview: linux/Administration/01.md
     - Useful Commands: linux/Administration/02.md
