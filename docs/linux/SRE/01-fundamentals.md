@@ -1,5 +1,16 @@
 # Linux 基础
 
+## 官方文档
+
+[Rocky Linux Instructional Books](https://docs.rockylinux.org/books/)
+
+[openSUSE Documentation](https://doc.opensuse.org/)
+
+[Ubuntu Documentation](https://docs.ubuntu.com/)
+
+
+
+
 ## 系统环境
 
 ### Rocky
