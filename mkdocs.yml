@@ -71,16 +71,18 @@ nav:
   - Welcome: index.md
   - About: about.md
 - Linux:
-    - Linux SRE:
-      - Linux Fundamentals: linux/SRE/01-fundamentals.md
-    - SUSE Linux Administration: 
-      - Linux File System Overview: linux/Administration/01.md
-      - Useful Commands: linux/Administration/02.md
-      - Shell: linux/Administration/03.md
-    - SUSE Enterprise Storage Foundation: 
-      - SUSE Enterprise Storage Foundation: linux/SES/linux_ses_memo.md
-      - SUSE Enterprise Storage Basic Operation: linux/SES/linux_ses_demo.md
+  - Index: linux/index.md
+  - Linux SRE:
+    - Linux Fundamentals: linux/SRE/01-fundamentals.md
+  - SUSE Linux Administration: 
+    - Linux File System Overview: linux/Administration/01.md
+    - Useful Commands: linux/Administration/02.md
+    - Shell: linux/Administration/03.md
+  - SUSE Enterprise Storage Foundation: 
+    - SUSE Enterprise Storage Foundation: linux/SES/linux_ses_memo.md
+    - SUSE Enterprise Storage Basic Operation: linux/SES/linux_ses_demo.md
 - Kubernetes:
+  - Index: k8s/index.md
   - Installation:
     - Single Node Installation: k8s/installation/single-local.md
     - Multiple Nodes Installation: k8s/installation/multiple-local.md
@@ -95,7 +97,7 @@ nav:
     - Pod: k8s/foundamentals/pod.md
     - Deployment: k8s/foundamentals/deployment.md
     - Service: k8s/foundamentals/service.md
-  - Application Modelling:
+  - Application Modeling:
     - Namespace: k8s/foundamentals/namespace.md
     - StatefulSet: k8s/foundamentals/statefulset.md
     - DaemonSet: k8s/foundamentals/daemonset.md
@@ -123,6 +125,7 @@ nav:
   - Demos:
     - Build CAP application on Kyma: k8s/demo/cap_on_kyma.md
 - Python:
+  - Index: python/index.md
   - Python基础:
     - 安装: python/Foundation/ch00.md
     - 语言基础: python/Foundation/ch01.md
