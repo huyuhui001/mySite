@@ -50,7 +50,10 @@ SELinux为系统上的应用程序、进程和文件定义了访问控制。 它
 
 当称为主体（subject）的应用程序或进程请求访问对象（如文件）时，SELinux会检查访问向量缓存(AVC, Access Vector Cache)，其中缓存了主体和对象的权限。
 
-如果 SELinux 无法根据缓存的权限做出访问决定，它会将请求发送到安全服务器。安全服务器检查应用程序或进程和文件的安全上下文。从SELinux策略数据库应用安全上下文（Security context），然后授予或拒绝许可。如果权限被拒绝，`avc: denied`消息将在`/var/log.messages`中体现。
+如果SELinux无法根据缓存的权限做出访问决定，它会将请求发送到安全服务器。
+安全服务器检查应用程序或进程和文件的安全上下文。
+从SELinux策略数据库应用安全上下文（Security context），然后授予或拒绝许可。
+如果权限被拒绝，`avc: denied`消息将在`/var/log.messages`中体现。
 
 传统上，Linux和UNIX系统都使用DAC（Discretionary Access Control）。 SELinux是Linux的MAC（Mandatory Access Control）系统的一个示例。
 
@@ -60,8 +63,6 @@ SELinux为系统上的应用程序、进程和文件定义了访问控制。 它
 
 MAC方式是控制一个进程对具体文件系统上面的文件或目录是否拥有访问权限。判断进程是否可以访问文件或目录的依据，取决于SELinux中设定的很多策略规则。
 
-可以通过编辑 `/etc/selinux/config` 并设置 `SELINUX=permissive` 来启用 SElinux。
-
 访问控制列表 (ACL，Access Control List) 为文件系统提供了一种额外的、更灵活的权限机制。 它旨在协助 UNIX 文件权限。ACL允许授予任何用户或组对任何磁盘资源的权限。ACL适用于在不使某个用户成为组成员的情况下，仍旧授予一些读或写访问权限。
 
 下面示例对比说明了SELinux和ACL在文件属性展现上的特点。
@@ -70,6 +71,214 @@ MAC方式是控制一个进程对具体文件系统上面的文件或目录是�
 * `-rwx--xr-x+ vagrant wheel` ：只有ACL，没有selinux上下文
 * `-rw-r--r--. vagrant wheel` ：只有selinux上下文，没有ACL
 * `-rwxrwxr--+ vagrant wheel` ：有selinux上下文，有ACL
+
+
+### SELinux主要概念
+
+* 用户(Users)：
+    * SELinux的用户不等同与Linux用户。
+    * SELinux用户以后缀`_u`结尾。
+
+* 角色(Roles)：
+    * 角色Roles是由策略Policies定义的，角色决定了使用哪个策略。
+    * SELinux角色以后缀`_r`结尾。
+
+* 类型(Types)：
+    * SELinux是类型强制的，类型Types决定进程能否访问某个文件。
+    * SELinux类型是以后缀`_t`结尾。
+
+* 上下文(Contexts)：
+    * 用来标记进程和文件。分别是用户Users，角色Roles，类型Types，范围Ranges。
+    * 格式：`user:role:type:range`
+
+* 文件类型(Object Classes)：
+    * 每个文件类型Types都对应一套策略Policies。策略Policies决定了进程对这类文件的访问权限。
+    * 访问权限有4种：
+        * 创建create
+        * 读取read
+        * 写入write
+        * 删除unlink（注意，这里不是链接的意思）
+
+* 规则(Rules)
+    * 格式：`allow user_t user_home_t:file {create read write unlink};`
+    * 含义：`user_t`类型对`user_home_t`类型有创建create，读取read，写入write，删除unlink权限。
+
+
+
+
+### SELinux in openSUSE
+
+作为SELinux的替代品，2005年被Novell收购的Immunix公司开发了AppArmor。SUSE在openSUSE Leap中提供对SELinux框架的支持。这并不意味着openSUSE Leap的默认安装会在不久的将来从AppArmor切换到SELinux。
+
+添加SELinux的源。可以从`https://download.opensuse.org/repositories/security:/SELinux/`下载对应的策略policy。
+```
+$ sudo zypper ar -f https://download.opensuse.org/repositories/security:/SELinux/openSUSE_Factory/ Security-SELinux
+```
+
+安装C++等基础开发包：
+```
+# 列出当前可安装的Pattern
+sudo zypper pt
+
+# 安装下面几个开发相关的Pattern
+sudo zypper in -t pattern devel_C_C++ devel_basis devel_kernel
+```
+
+安装SELinux packages：
+```
+$ zypper se --search-descriptions selinux
+$ sudo zypper in restorecond policycoreutils setools-console
+$ sudo zypper in selinux-tools libselinux-devel
+```
+
+安装SELinux policy：
+```
+$ sudo zypper in selinux-policy-targeted selinux-policy-devel selinux-autorelabel
+```
+
+更新GRUB2 bootloader（GRUB2引导加载程序）：
+
+编辑文件`/etc/default/grub`，添加下面内容到`GRUB_CMDLINE_LINUX_DEFAULT=`这一行：
+```
+security=selinux selinux=1
+```
+记录这一行的原始信息：
+```
+GRUB_CMDLINE_LINUX_DEFAULT="splash=silent resume=/dev/disk/by-uuid/47c36ad7-f49f-4ecd-9b72-4801c5bb3a04 preempt=full mitigations=auto quiet security=apparmor"
+```
+运行下面的命令生成新的GRUB2引导加载程序配置文件。
+```
+$ sudo grub2-mkconfig -o /boot/grub2/grub.cfg
+```
+
+编辑文件`/etc/selinux/config` 并设置 `SELINUX=permissive`来启用SElinux。这与前面GRUB2的启动配置是一致的。
+如文件不存在，则创建。
+```
+$ sudo cat /etc/selinux/config
+SELINUX=permissive
+SELINUXTYPE=targeted
+```
+
+重启系统。系统启动可能需要一些时间，SELinux需要给整个文件系统重新进行标签化。
+
+重启后，运行下面的命令来查看SELinux是否运行正常。
+```
+$ sudo getenforce
+Permissive
+```
+
+```
+$ sudo sestatus -v
+SELinux status:                 enabled
+SELinuxfs mount:                /sys/fs/selinux
+SELinux root directory:         /etc/selinux
+Loaded policy name:             targeted
+Current mode:                   permissive
+Mode from config file:          permissive
+Policy MLS status:              enabled
+Policy deny_unknown status:     allowed
+Memory protection checking:     requested (insecure)
+Max kernel policy version:      33
+
+Process contexts:
+Current context:                unconfined_u:unconfined_r:unconfined_t:s0
+Init context:                   system_u:system_r:kernel_t:s0
+/sbin/agetty                    system_u:system_r:kernel_t:s0
+/usr/sbin/sshd                  system_u:system_r:kernel_t:s0
+
+File contexts:
+Controlling terminal:           unconfined_u:object_r:devpts_t:s0
+/etc/passwd                     system_u:object_r:unlabeled_t:s0
+/etc/shadow                     system_u:object_r:unlabeled_t:s0
+/bin/bash                       system_u:object_r:unlabeled_t:s0 -> system_u:object_r:unlabeled_t:s0
+/bin/login                      system_u:object_r:unlabeled_t:s0
+/bin/sh                         system_u:object_r:unlabeled_t:s0 -> system_u:object_r:unlabeled_t:s0
+/sbin/agetty                    system_u:object_r:unlabeled_t:s0 -> system_u:object_r:unlabeled_t:s0
+/sbin/init                      system_u:object_r:unlabeled_t:s0 -> system_u:object_r:unlabeled_t:s0
+/usr/sbin/sshd                  system_u:object_r:unlabeled_t:s0
+```
+
+
+!!! Reference
+    GRUB2引导加载程序中添加的三个参数的解释：
+
+    `security=selinux`: This option tells the kernel to use SELinux and not AppArmor.
+
+    `selinux=1`: This option switches on SELinux.
+
+    `enforcing=0`: This option puts SELinux in permissive mode. In this mode, SELinux is fully functional, but does not enforce any of the security settings in the policy. Use this mode for testing and configuring your system. To switch on SELinux protection, when the system is fully operational, change the option to `enforcing=1` and add `SELINUX=enforcing` in `/etc/selinux/config`. 
+
+
+
+!!! Tips
+    在首次启用SELinux后，如果只在grub2里面添加selinux=1，通过`getenforce`命令看的SELinux一直就是disabled的状态，需要手工创建/etc/selinux/config文件添加配置才行。感觉grub2里面无需设置，直接配置/etc/selinux/config文件。不确定这个想法是否正确。
+
+    在grub2中设定selinux=1，在/etc/selinux/config文件中：
+    
+      * 设定SELINUX=permissive，重启后通过`getenforce`命令看到的是permissive。
+      * 设定SELINUX=disabled，则重启后`getenforce`命令看到的是disabled。
+    
+    这说明配置文件后启动，覆盖了内核设置。
+    
+    注意，如果仅仅完成了上面的enable SELinux，立刻设定SELINUX=enforcing，会引起ssh无法登录，错误信息是`/bin/bash: Permission denied`。
+
+
+
+配置SELinux。
+
+```
+sudo semanage boolean -l
+```
+Failed to use semanage
+
+添加下面内容到.bashrc文件。
+```
+export PATH=/usr/local/bin:/home/$USER/.local/bin:$PATH
+```
+更新pip3.
+```
+pip3 install --upgrade pip
+```
+
+安装下面几个包
+```
+sudo zypper in libselinux libselinux-devel
+sudo zypper in python3-semanage
+sudo zypper in libsemanage-devel libsemanage-devel-static
+sudo zypper in policycoreutils-python-utils
+sudo zypper in cross-x86_64-linux-glibc-devel glibc-utils glibc-profile
+
+sudo zypper in policycoreutils-devel
+```
+
+
+### SELinux in Ubuntu
+
+
+### SELinux in Rocky
+
+
+## 用户和组的配置文件
+
+* `/etc/passwd`：用户及其属性信息（用户名，UID，主组ID等）
+* `/etc/shadow`：用户密码机器属性
+* `/etc/group`：组及其属性
+* `/etc/gshadow`：组密码及其属性
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
