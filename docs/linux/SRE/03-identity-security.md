@@ -266,7 +266,69 @@ sudo zypper in policycoreutils-devel
 * `/etc/gshadow`：组密码及其属性
 
 
+`/etc/passwd`格式说明：
+```
+vagrant:x:1001:474:vagrant:/home/vagrant:/bin/bash
+[-----] - [--] [-] [-----] [-----------] [-------]
+   |    |  |    |     |          |           +--------> 7. Login shell
+   |    |  |    |     |          +--------------------> 6. Home directory
+   |    |  |    |     +-------------------------------> 5. GECOS or the full name of the user
+   |    |  |    +-------------------------------------> 4. GID
+   |    |  +------------------------------------------> 3. UID
+   |    +---------------------------------------------> 2. Password
+   +--------------------------------------------------> 1. Username
+```
 
+`/etc/shadow`格式说明：
+```
+vagrant:$6$.n.:17736:0:99999:7:::
+[-----] [----] [---] - [---] ----
+|         |      |   |   |   |||+-----------> 9. Unused
+|         |      |   |   |   ||+------------> 8. Expiration date since Jan 1, 1970
+|         |      |   |   |   |+-------------> 7. Inactivity period
+|         |      |   |   |   +--------------> 6. Warning period, default 7 days
+|         |      |   |   +------------------> 5. Maximum password age
+|         |      |   +----------------------> 4. Minimum password age
+|         |      +--------------------------> 3. Last password change since Jan 1, 1970
+|         +---------------------------------> 2. Encrypted Password
++-------------------------------------------> 1. Username
+```
+
+生成随机密码
+```
+# 通过`/dev/urandom`生成随机数，通过`tr -dc`过滤随机数，只保留字母和数字，通过`head -c`保留指定位数
+$ tr -dc '[:alnum:]' < /dev/urandom | head -c 12
+xFw7vfma54D8
+
+$ openssl rand -base64 9
+I5TZXJfpd3Pg
+```
+
+`/etc/group`格式说明：
+```
+audio:x:492:pulse
+[---] - [-] [---]
+  |   |  |    +----> 4. username-list, who have this group as their supplementary
+  |   |  +---------> 3. GID
+  |   +------------> 2. group-password. Real password is in /etc/gshadow
+  +----------------> 1. groupname
+```
+
+`/etc/gshadow`格式说明：
+```
+general:!!:shelley:juan,bob
+[-----] -- [-----] [------]
+   |     |     |       +-------> 4. group members (in a comma delimited list)
+   |     |     +---------------> 3. group adminstrators (in a comma delimited list)
+   |     +---------------------> 2. encrypted password. `!`, `!!`, and null
+   +---------------------------> 1. group name
+```
+
+Encrypted password
+
+* `!`：no user is allowed to access the group using the newgrp command.
+* `!!`：the same as a value of `!` — however, it also indicates that a password has never been set before. 
+* null：only group members can log into the group.
 
 
 
