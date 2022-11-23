@@ -266,7 +266,9 @@ sudo zypper in policycoreutils-devel
 * `/etc/gshadow`：组密码及其属性
 
 
-`/etc/passwd`格式说明：
+### /etc/passwd
+
+格式说明：
 ```
 vagrant:x:1001:474:vagrant:/home/vagrant:/bin/bash
 [-----] - [--] [-] [-----] [-----------] [-------]
@@ -279,13 +281,15 @@ vagrant:x:1001:474:vagrant:/home/vagrant:/bin/bash
    +--------------------------------------------------> 1. Username
 ```
 
-`/etc/shadow`格式说明：
+### /etc/shadow
+
+格式说明：
 ```
 vagrant:$6$.n.:17736:0:99999:7:::
 [-----] [----] [---] - [---] ----
 |         |      |   |   |   |||+-----------> 9. Unused
 |         |      |   |   |   ||+------------> 8. Expiration date since Jan 1, 1970
-|         |      |   |   |   |+-------------> 7. Inactivity period
+|         |      |   |   |   |+-------------> 7. Inactivity period 密码过期后的宽限期
 |         |      |   |   |   +--------------> 6. Warning period, default 7 days
 |         |      |   |   +------------------> 5. Maximum password age
 |         |      |   +----------------------> 4. Minimum password age
@@ -294,17 +298,10 @@ vagrant:$6$.n.:17736:0:99999:7:::
 +-------------------------------------------> 1. Username
 ```
 
-生成随机密码
-```
-# 通过`/dev/urandom`生成随机数，通过`tr -dc`过滤随机数，只保留字母和数字，通过`head -c`保留指定位数
-$ tr -dc '[:alnum:]' < /dev/urandom | head -c 12
-xFw7vfma54D8
 
-$ openssl rand -base64 9
-I5TZXJfpd3Pg
-```
+### /etc/group
 
-`/etc/group`格式说明：
+格式说明：
 ```
 audio:x:492:pulse
 [---] - [-] [---]
@@ -314,7 +311,9 @@ audio:x:492:pulse
   +----------------> 1. groupname
 ```
 
-`/etc/gshadow`格式说明：
+### /etc/gshadow
+
+格式说明：
 ```
 general:!!:shelley:juan,bob
 [-----] -- [-----] [------]
@@ -332,18 +331,88 @@ Encrypted password
 
 
 
+### 生成随机密码
+```
+# 通过`/dev/urandom`生成随机数，通过`tr -dc`过滤随机数，只保留字母和数字，通过`head -c`保留指定位数
+$ tr -dc '[:alnum:]' < /dev/urandom | head -c 12
+xFw7vfma54D8
+
+$ openssl rand -base64 9
+I5TZXJfpd3Pg
+```
+
+### vipw/vigr/pwck/grpck命令
+
+`vipw`和`vigr`命令分别编辑文件`/etc/passwd`和`/etc/group`。 
+如果指定了`-s`标志，这些命令将分别编辑其文件的影子（安全）版本：`/etc/shadow`和`/etc/gshadow`。
+`vipw`和`vigr`命令在编辑文件时会设置锁以防止文件损坏。
+`vipw`和`vigr`命令会首先尝试环境变量`$VISUAL`，然后是环境变量`$EDITOR`，最后是默认编辑器`vi`。
+
+```
+$ sudo vipw
+$ sudo vipw -s
+$ sudo vigr
+$ sudo vigr -s
+```
+
+`pwck`命令实现验证系统认证信息的完整性。 检查`/etc/passwd`和`/etc/shadow`中的所有条目每个字段是否具有正确的格式和有效数据。 系统会提示用户删除格式不正确或存在其他错误的条目。
+
+`pwck`返回值：
+
+* `0`: success
+* `1`: invalid command syntax
+* `2`: one or more bad password entries
+* `3`: can’t open password files
+* `4`: can’t lock password files
+* `5`: can’t update password files 
 
 
+`grpck`命令实现验证系统认证信息的完整性。 检查`/etc/group`和`/etc/gshadow`中的所有条目每个字段是否具有正确的格式和有效数据。 系统会提示用户删除格式不正确或存在其他错误的条目。
 
 
+`grpck`返回值：
+
+* `0`: success
+* `1`: invalid command syntax
+* `2`: one or more bad group entries
+* `3`: can’t open group files
+* `4`: can’t lock group files
+* `5`: can’t update group files 
 
 
+## 用户和组的管理文件
 
+用户管理命令：
 
+* `useradd`
+* `usermod`
+* `userdel`
 
+组管理命令：
 
+* `groupadd`
+* `groupmod`
+* `groupdel`
 
+### useradd命令
 
+`useradd`命令的默认值是在`/etc/default/useradd`文件中设定。
+
+openSUSE和Rocky中`/etc/default/useradd`文件内容一样。
+```
+GROUP=100
+HOME=/home
+INACTIVE=-1              # 对应/etc/shadow文件第7列，Inactivity period，密码过期后的宽限期，-1表示不限制
+EXPIRE=                  # 对应/etc/shadow文件第8列，Expiration date since Jan 1, 1970，即账号有效期
+SHELL=/bin/bash
+SKEL=/etc/skel
+USRSKEL=/usr/etc/skel    # 用于生成用户主目录的模版文件
+CREATE_MAIL_SPOOL=yes
+```
+在Ubuntu中只有下面这一行。
+```
+SHELL=/bin/sh
+```
 
 
 
