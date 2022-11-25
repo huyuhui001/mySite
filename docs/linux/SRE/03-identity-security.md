@@ -396,9 +396,18 @@ $ sudo vigr -s
 
 ### useradd命令
 
+举例：
+```
+# 普通用户
+$ useradd -m -g wheel -G root -c "vagrant" vagrant
+
+# 非交互用户
+$ useradd -r -u 48 -g apache -d /var/www -s /sbin/nologin -g postfix -c "Apache" apache 2>/dev/null
+```
+
 `useradd`命令的默认值是在`/etc/default/useradd`文件中设定。
 
-openSUSE和Rocky中`/etc/default/useradd`文件内容一样。
+openSUSE的`/etc/default/useradd`文件内容：
 ```
 GROUP=100
 HOME=/home
@@ -409,10 +418,42 @@ SKEL=/etc/skel
 USRSKEL=/usr/etc/skel    # 用于生成用户主目录的模版文件
 CREATE_MAIL_SPOOL=yes
 ```
-在Ubuntu中只有下面这一行。
+
+Rocky的`/etc/default/useradd`文件内容：
+```
+GROUP=100
+HOME=/home
+INACTIVE=-1
+EXPIRE=
+SHELL=/bin/bash
+SKEL=/etc/skel
+CREATE_MAIL_SPOOL=yes
+```
+
+在Ubuntu中`/etc/default/useradd`文件只有下面这一行。
 ```
 SHELL=/bin/sh
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
