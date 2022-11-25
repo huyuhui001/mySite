@@ -394,7 +394,7 @@ $ sudo vigr -s
 * `groupmod`
 * `groupdel`
 
-### useradd命令
+### 创建用户useradd
 
 举例：
 ```
@@ -414,8 +414,8 @@ HOME=/home
 INACTIVE=-1              # 对应/etc/shadow文件第7列，Inactivity period，密码过期后的宽限期，-1表示不限制
 EXPIRE=                  # 对应/etc/shadow文件第8列，Expiration date since Jan 1, 1970，即账号有效期
 SHELL=/bin/bash
-SKEL=/etc/skel
-USRSKEL=/usr/etc/skel    # 用于生成用户主目录的模版文件
+SKEL=/etc/skel           # 用于生成用户主目录的模版文件
+USRSKEL=/usr/etc/skel
 CREATE_MAIL_SPOOL=yes
 ```
 
@@ -434,6 +434,206 @@ CREATE_MAIL_SPOOL=yes
 ```
 SHELL=/bin/sh
 ```
+
+### 批量创建用户`newusers`
+
+格式：`newusers <filename>`。其中文件`<filename>`的格式如下：
+```
+<Username>:<Password>:<UID>:<GID>:<User Info>:<Home Dir>:<Default Shell>
+```
+举例，创建文件`users.txt`：
+```
+$ cat ~/users.txt
+tester1:123:600:1530:"Test User1,testuser1@abc.com":/home/tester1:/bin/bash
+tester2:123:601:1529:::/bin/bash
+tester3:123:::::
+tester4:123::::/home/tester4:/bin/tsh
+```
+看结果：
+```
+$ cat /etc/passwd | grep tester
+tester1:x:600:1530:"Test User1,testuser1@abc.com":/home/tester1:/bin/bash
+tester2:x:601:1529:::/bin/bash
+tester3:x:1001:1001:::
+tester4:x:1002:1002::/home/tester4:/bin/tsh
+
+$ cat /etc/group | grep tester
+tester1:*:1530:
+tester2:*:1529:
+tester3:*:1001:
+tester4:*:1002:
+
+$ sudo cat /etc/shadow | grep tester
+tester1:!:19321:0:99999:7:::
+tester2:!:19321:0:99999:7:::
+tester3:!:19321:0:99999:7:::
+tester4:!:19321:0:99999:7:::
+
+$ ls -ld /home/tester*
+drwxr-xr-x. 1 tester1 tester1 0 Nov 26 00:32 /home/tester1
+drwxr-xr-x. 1 tester4 tester4 0 Nov 26 00:32 /home/tester4
+```
+
+
+### 批量修改密码`chpasswd`
+
+两个方法：
+```
+$ echo username:password | chpasswd
+$ chpasswd < file.txt
+```
+
+参数`-e`：口令以加密的方式传递。否则口令以明文的形式传递。
+
+注意：
+
+* 用户名username必须是已存在的用户
+* 普通用户没有使用这个指令的权限
+* 如果输入文件是按非加密方式传递的话，请对该文件进行适当的加密。
+* 指令文件不能有空行
+
+举例：
+```
+$ echo tester1:112233 | sudo chpasswd
+```
+```
+$ cat chpasswd.txt
+tester1:112233
+tester2:33445566
+
+$ sudo chpasswd < chpasswd.txt
+```
+
+### 生成加密密码`openssl passwd`
+
+命令`openssl passwd`格式可以如下方法获得。
+```
+$ man -f passwd
+passwd (1)           - change user password
+passwd (1ssl)        - compute password hashes
+passwd (5)           - password file
+
+$ man passwd
+Man: find all matching manual pages (set MAN_POSIXLY_CORRECT to avoid this)
+ * passwd (1)
+   passwd (5)
+   passwd (1ssl)
+Man: What manual page do you want?
+Man: 1ssl
+```
+
+举例（这里用`<your_pwsswd_string>`代替实际密码）：
+```
+# 基于给定字串newpasswd生成sha256加密码，
+$ openssl passwd -6 newpasswd
+<your_pwsswd_string>
+
+# 创建新用户tester5，赋予加密密码
+$ useradd -p '<your_pwsswd_string>' tester1
+
+# 读取用户tester5的密码，可以验证是否和之前的一致
+$ sudo getent shadow tester5
+tester5:<your_pwsswd_string>:19321:0:99999:7:::
+```
+
+
+
+### 修改用户属性usermod
+
+添加用户到附加组
+```
+$ usermod -a -G GROUP USER
+$ usermod -a -G GROUP1,GROUP2,GROUP3 USER
+```
+
+修改用户主组
+```
+$ usermod -a -g GROUP USER
+```
+
+修改用户信息
+```
+$ usermod -c "GECOS Comments" USER
+```
+
+修改用户主目录，使用绝对路径，`-m`参数会把原主目录的内容移动到新主目录。
+```
+$ usermod -d NEW_HOME_DIR USER
+$ usermod -d NEW_HOME_DIR -m USER
+```
+
+修改用户shell
+```
+$ usermod -s SHELL USER
+```
+
+修改用户UID
+```
+$ usermod -u UID USER
+```
+
+修改用户名（不常用），同时也需要修改用户主目录。
+```
+$ usermod -l NEW_USER USER
+```
+
+修改用户过期属性，日期格式是`YYYY-MM-DD`
+```
+$ usermod -e DATE USER
+```
+如果设定永不过期，则置空日期：
+```
+$ usermod -e "" USER
+```
+查看当前用户的过期日期
+```
+$ sudo chage -l vagrant
+Last password change					: Oct 30, 2022
+Password expires					: never
+Password inactive					: never
+Account expires						: never
+Minimum number of days between password change		: 0
+Maximum number of days between password change		: 99999
+Number of days of warning before password expires	: 7
+```
+
+锁定用户。
+此命令将在加密密码前插入一个感叹号 (!) 标记。 当`/etc/shadow`文件中的密码字段包含感叹号时，用户将无法使用密码验证登录系统。 
+其他登录方法仍然允许，例如基于密钥的身份验证或切换到用户。 
+如果要锁定账户并禁用所有登录方式，还需要将到期日期设置为1。
+```
+$ usermod -L USER
+$ usermod -L -e 1 USER
+```
+
+解锁用户
+```
+$ usermod -U USER
+```
+
+
+
+
+### 删除用户`userdel`
+
+`userdel`命令执行时，会读取`/etc/login.defs`文件的内容。 此文件中定义的属性会覆盖`userdel`的默认行为。
+如果在此文件中将`USERGROUPS_ENAB`设置为`yes`，`userdel`将删除与用户同名的组，前提是没有其他用户是该组的成员。
+
+`userdel`命令从`/etc/passwd`和`/etc/shadow`文件中删除用户条目。
+
+`userdel`命令删除用户帐户时，一般不会删除用户主目录和邮件假脱机mail spool目录。
+使用`-r`选项强制删除用户的主目录和邮件假脱机目录。
+
+如果要删除的用户仍然处于登录状态，或者有属于该用户的正在运行的进程，则`userdel`命令不允许删除该用户。
+
+使用`-f`选项强制删除用户帐户，即使用户仍然登录或有属于该用户的正在运行的进程也是如此。
+
+```
+$ userdel USER
+$ userdel -r USER
+```
+
+
 
 
 
