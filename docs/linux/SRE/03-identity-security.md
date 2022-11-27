@@ -380,7 +380,7 @@ $ sudo vigr -s
 * `5`: can’t update group files 
 
 
-## 用户和组的管理文件
+## 用户管理
 
 用户管理命令：
 
@@ -388,13 +388,8 @@ $ sudo vigr -s
 * `usermod`
 * `userdel`
 
-组管理命令：
 
-* `groupadd`
-* `groupmod`
-* `groupdel`
-
-### 创建用户useradd
+### 创建用户`useradd`
 
 举例：
 ```
@@ -435,7 +430,7 @@ CREATE_MAIL_SPOOL=yes
 SHELL=/bin/sh
 ```
 
-### 批量创建用户`newusers`
+#### 批量创建用户`newusers`
 
 格式：`newusers <filename>`。其中文件`<filename>`的格式如下：
 ```
@@ -475,7 +470,7 @@ drwxr-xr-x. 1 tester4 tester4 0 Nov 26 00:32 /home/tester4
 ```
 
 
-### 批量修改密码`chpasswd`
+#### 批量修改密码`chpasswd`
 
 两个方法：
 ```
@@ -504,7 +499,7 @@ tester2:33445566
 $ sudo chpasswd < chpasswd.txt
 ```
 
-### 生成加密密码`openssl passwd`
+#### 生成加密密码`openssl passwd`
 
 命令`openssl passwd`格式可以如下方法获得。
 ```
@@ -538,7 +533,7 @@ tester5:<your_pwsswd_string>:19321:0:99999:7:::
 
 
 
-### 修改用户属性usermod
+### 修改用户属性`usermod`
 
 添加用户到附加组
 ```
@@ -635,6 +630,799 @@ $ userdel -r USER
 
 
 
+### 查看用户信息`id`
+
+类Unix操作系统中的每个用户都由一个不同的整数标识，这个唯一的数字称为UserID。
+
+为进程process定义了三种类型的UID，可以根据任务的权限动态更改。
+
+定义的三种不同类型的UID是：
+
+1. 真实用户ID（Real UserId）：对于一个进程，Real UserId就是启动它的用户的 UserID。 它定义了这个进程可以访问哪些文件。
+2. 有效用户名（Effective UserID）：它通常与 Real UserID 相同，但有时会更改为使非特权用户能够访问那些只能由特权用户（如`root`）访问的文件。
+3. 保存的用户ID（Saved UserID） ：当一个以提升的权限（通常是`root`）运行的进程需要做一些低权限的任务时使用，可以通过临时切换到非特权帐户来实现。在执行低权限任务时，有效的`UID`被更改为某个较低权限的值，并且`euid`被保存到已保存的`userID`(suid)中，以便在任务完成时用于切换回特权帐户。
+
+在一个终端窗口执行下面命令，暂停在新密码输入这一步。
+```
+$ ls -ltr /usr/bin/passwd
+-rwsr-xr-x. 1 root shadow 65208 May  8  2022 /usr/bin/passwd
+
+$ passwd
+Changing password for vagrant.
+Current password:
+New password:
+```
+新开一个终端窗口。
+```
+$ ps -a | grep passwd
+  3040 pts/0    00:00:00 passwd
+
+$ ps -eo pid,euid,ruid | grep 3040
+  3040     0  1000
+```
+上面输出可以看出，`passwd`这个进程的Effective UserID是`0`。Real UserId是`1000`.
+
+
+`id`命令查看用户有效的UID和GID。
+
+查看当前用户的信息：
+```
+$ id
+uid=1000(vagrant) gid=478(wheel) groups=478(wheel),0(root) context=unconfined_u:unconfined_r:unconfined_t:s0
+```
+
+查看指定用户的信息：
+```
+$ id vagrant
+uid=1000(vagrant) gid=478(wheel) groups=0(root),478(wheel)
+```
+
+查看当前用户的GID：
+```
+$ id -g
+478
+```
+
+查看当前用户的UID：
+```
+$ id -u
+1000
+```
+
+查看当前用户所有组的GID：
+```
+$ id -G
+478 0
+```
+
+查看当前用户名：
+```
+$ id -un
+vagrant
+```
+
+查看当前用户的GID
+```
+$ id -ur
+1000
+```
+
+只有SELinux激活后才有
+```
+$ id -Z
+unconfined_u:unconfined_r:unconfined_t:s0
+```
+
+类似于`whoami`命令
+```
+$ id -znG
+wheelroot
+```
+
+
+### 切换用户`su`
+
+命令`su - username`是登录式切换用户。会读取目标用户的配置文件，切换至目标用户的主目录。
+
+命令`su username`是非登录式切换用户。不读取目标用户的配置文件，不改变当前工作目录。
+
+切换成root用户，并使用zsh shell。
+```
+$ su -s /usr/bin/zsh
+$ su -s /usr/bin/zsh root
+```
+
+切换成tester1用户，使用bash shell
+```
+$ su - tester1 -s /bin/bash
+$ su - -s /bin/bash tester1
+```
+
+保留当前用户环境不变。
+```
+$ su -p root
+```
+
+不交互式切换用户，只用目标用户执行某些命令。
+```
+$ su -c ps
+$ su - root -c "getent passwd"
+$ su - root -s /bin/bash -c "getent passwd"
+```
+
+`root`用户切换至其他用户不需要密码，非`root`用户切换其他用户需要密码。
+
+
+### 设置密码
+
+#### `passwd`
+
+修改当前用户自己的密码：
+```
+$ passwd
+```
+
+修改其他用户的密码：
+```
+$ sudo passwd root
+```
+
+查看某个用户密码状态：
+```
+$ sudo passwd -S root
+root P 10/30/2022 -1 -1 -1 -1
+
+$ sudo passwd -S vagrant
+vagrant P 10/30/2022 0 99999 7 -1
+```
+
+检查全部用户的密码状态：
+```
+$ sudo passwd -Sa
+```
+
+密码状态说明：
+```
+Username 	Status 	Date Last Changed 	Minimum Age 	Maximum Age 	Warning Period   Inactivity Period
+vagrant     P       10/30/2022          0               99999           7                -1
+root        P       10/30/2022          -1              -1              -1               -1
+```
+
+Status的描述：
+
+* `P `: Usable password
+* `NP`: No password
+* `L `: Locked password
+
+Age的一些特殊值：
+
+* `9999`: Never expires
+* `0`: Can be changed at anytime
+* `-1`: Not active
+
+
+强制要求用户下次登录时修改密码：
+```
+$ sudo passwd -e tester1
+
+$ sudo passwd -S tester1
+tester1 P 01/01/1970 0 99999 7 -1
+```
+用户tester1的密码日期已经被改成`01/01/1970`了。这个日期算是Unix的“纪元（epoch）”日期，意味着Unix的日期起点，0天。
+
+
+锁定某个用户：
+```
+$ sudo passwd -l tester1
+
+$ sudo passwd -S tester1
+tester1 L 01/01/1970 0 99999 7 -1
+```
+此时用户`tester1`的状态栏已经变成了`L`，锁定状态。
+
+解锁某个用户：
+```
+$ sudo passwd -u tester1
+
+$ sudo passwd -S tester1
+tester1 P 01/01/1970 0 99999 7 -1
+```
+此时用户`tester1`的状态栏已经从`L`变回了`P`，解除了锁定状态。
+
+
+删除用户密码。这个操作慎重，密码删除后该用户可以不需要密码就能访问系统。
+```
+$ sudo passwd -d tester1
+
+$ sudo passwd -S tester1
+tester1 NP 01/01/1970 0 99999 7 -1
+```
+此时用户`tester1`的状态栏是`NP`。
+
+
+#### `pwgen`
+
+安装包。
+
+mkpasswd命令有歧义，2个同名命令实现不同功能，生成随机密码建议使用`pwgen`命令。Rocky9没有找到pwgen包。
+```
+$ sudo zypper in pwgen
+$ sudo apt install pwgen
+```
+
+
+随机生成长度8位安全密码。
+```
+$ pwgen -s -1
+```
+
+随机生成长度14位安全密码。
+```
+$ pwgen -s -1 14
+```
+
+随机生成2个长度15位安全密码。
+```
+$ pwgen -s -1 15 2
+```
+
+随机生成5个密码，长度10位，每个密码至少含一个特殊字符，结果以列形式输出。
+```
+$ pwgen -s -1 -y 10 5
+```
+
+生成长度8，含有数字，含有大小写字母的密码4个，列打印
+```
+$ pwgen -s -n -c -C -1 8 4
+```
+
+生成长度8，不含数字，只含小写字母，列打印
+```
+$ pwgen -s -c -A -0 -1 8 4
+```
+
+生成长度16，含有数字，含有大小写字母，含有特殊字符的密码3个，行打印
+```
+$ pwgen -s -n -c -y -1 16 3
+```
+
+生成长度80，不含元音和数字，至少含有一个大写字母，行打印
+```
+$ pwgen -s -v -c -0 80 1
+```
+
+
+
+
+
+
+#### 非交互式设置密码
+
+方法1：
+```
+$ echo -e '123456\n123456' | sudo passwd tester1
+New password: BAD PASSWORD: it is too simplistic/systematic
+BAD PASSWORD: is too simple
+Retype new password: passwd: password updated successfully
+```
+
+方法2：
+
+Rocky中可以使用下面方法。
+```
+$ pwgen -ncy1 16 1 | tee passwd.txt | sudo passwd --stdin tester1
+```
+openSUSE和Ubuntu可以用下面方法。
+```
+$ echo "tester1:"`pwgen -ncy1 16 1` | tee passwd.txt | sudo chpasswd
+```
+
+
+方法3：根据预先给定的用户列表，批量生成密码。
+```
+$ cat > user-list.txt <<EOF
+user0
+user1
+user2
+user3
+user4
+user5
+user6
+user7
+user8
+user9
+EOF
+
+$ for i in $(cat user-list.txt); do sudo useradd $i; echo "$i:"`pwgen -s -1 15 1` | tee passwd_$i.txt | sudo chpasswd; done
+
+$ for i in $(cat user-list.txt); do sudo userdel $i; done
+```
+
+
+
+
+### 设置用户密码策略
+
+命令`chage`修改用户密码策略。
+
+总结：
+
+* `-d`: Last password change : 上一次密码更改的日期。
+* `-M`: Password expires : 密码保持有效的最大天数。基于Last password change日期计算。设为`-1`表示不过期。
+* `-I`: Password inactive : 密码失效时间，在`Password expires`后，直至账号锁定之间的天数。设为`-1`表示不过期。
+* `-E`: Account expires : 帐号到期的日期。到期后，此帐号将不可用。设为`-1`表示不过期。
+* `-m`: Minimum number of days between password change : 两次改变密码之间相距的最小天数。
+* `-M`: Maximum number of days between password change : 两次改变密码之间相距的最大天数。
+* `-W`: Number of days of warning before password expires : 用户密码到期前，提前收到警告信息的天数。
+
+
+
+显示用户密码策略（时效信息）：
+```
+$ sudo chage -l tester1
+Last password change					: Nov 27, 2022
+Password expires					: never
+Password inactive					: never
+Account expires						: never
+Minimum number of days between password change		: 0
+Maximum number of days between password change		: 99999
+Number of days of warning before password expires	: 7
+```
+
+设置用户密码的最后修改日期：
+```
+$ sudo chage -d 2022-11-11 tester1
+
+$ sudo chage -l tester1
+Last password change					: Nov 11, 2022
+Password expires					: never
+Password inactive					: never
+Account expires						: never
+Minimum number of days between password change		: 0
+Maximum number of days between password change		: 99999
+Number of days of warning before password expires	: 7
+```
+
+设置用户账号的过期日期：
+```
+$ sudo chage -E 2022-12-31 tester1
+
+$ sudo chage -l tester1
+Last password change					: Nov 11, 2022
+Password expires					: never
+Password inactive					: never
+Account expires						: Dec 31, 2022
+Minimum number of days between password change		: 0
+Maximum number of days between password change		: 99999
+Number of days of warning before password expires	: 7
+```
+
+设置用户密码最小/最大修改天数。注意，密码过期日期`Password expires`是按照max days来计算的。
+```
+$ sudo chage -M 35 tester1
+$ sudo chage -m 30 tester1
+
+$ sudo chage -l tester1
+Last password change					: Nov 11, 2022
+Password expires					: Dec 16, 2022
+Password inactive					: never
+Account expires						: Dec 31, 2022
+Minimum number of days between password change		: 30
+Maximum number of days between password change		: 35
+Number of days of warning before password expires	: 7
+```
+
+设置用户账号在密码过期`Password expires`后，直至账号锁定之间的天数，即密码失效时间Password inactive。
+```
+$ sudo chage -I 3 tester1
+
+$ sudo chage -l tester1
+Last password change					: Nov 11, 2022
+Password expires					: Dec 16, 2022
+Password inactive					: Dec 19, 2022
+Account expires						: Dec 31, 2022
+Minimum number of days between password change		: 30
+Maximum number of days between password change		: 35
+Number of days of warning before password expires	: 7
+```
+
+设置用户密码到期前，提前收到警告信息的天数。默认值是7天。
+```
+$ sudo chage -W 5 tester1
+
+$ sudo chage -l tester1
+Last password change					: Nov 11, 2022
+Password expires					: Dec 16, 2022
+Password inactive					: Dec 19, 2022
+Account expires						: Dec 31, 2022
+Minimum number of days between password change		: 30
+Maximum number of days between password change		: 35
+Number of days of warning before password expires	: 5
+```
+
+
+
+## 组管理
+
+组管理命令：
+
+* `groupadd`
+* `groupmod`
+* `groupdel`
+* `groupmems`
+
+
+### 创建组`groupadd`
+
+创建普通组。
+```
+$ sudo groupadd developers
+```
+
+创建系统组，并指定GID。
+```
+$ sudo groupadd -g 48 -r apache
+$ sudo groupadd -g 1100 -r developers
+```
+
+覆盖配置文件`/ect/login.defs`
+```
+$ groupadd -K GID_MIN=500 -K GID_MAX=700
+```
+
+
+
+### 修改组`groupmod`
+
+命令`groupmod`涉及下面这些文件：
+
+`/etc/group`: Group Account Information.
+`/etc/gshadow`: Secured group account information.
+`/etc/login.def`: Shadow passwd suite configuration.
+`/etc/passwd:` User account information.
+
+组改名：
+```
+$ sudo groupmod -n group_new group_old
+```
+
+
+
+### 删除组`groupdel`
+
+命令`groupdel`涉及下面这些文件：
+
+* `/etc/group` : It contains the account information of the Group.
+* `/etc/gshadow `: It contains the secure group account information.
+
+如果组中包含有用户，则必须先删除这些用户后，才能删除组。
+```
+$ sudo groupdel group_name
+```
+
+
+### 更改组成员和密码`gpasswd`
+
+命令`gpasswd`用来修改组成员和密码。
+
+涉及到的文件：
+
+* `/etc/group`: Group account information.
+* `/etc/gshadow`: Secure group account information. 
+
+给组`developers`设密码。
+```
+$ sudo gpasswd developers
+```
+
+取消组`developers`密码。
+```
+$ sudo gpasswd -r developers
+```
+
+给组`developers`添加用户。
+```
+$ sudo gpasswd -a tester1,tester2,tester3 developers
+```
+
+从组`developers`中删除用户。
+```
+$ sudo gpasswd -d tester3 developers
+```
+
+设定用户`tester1`成为组`developers`的管理员。
+```
+$ sudo gpasswd -A tester1 developers
+```
+
+注意：添加用户到某一个组 也可以通过`usermod -G group_name user_name`这个实现，但是该用户以前的组会被清空掉。
+所以，如果要添加一个用户到一个新组，同时希望保留该用户以前的组时，使用`gpasswd`这个命令来添加用户到新组中。
+
+
+
+### 修改组成员`groupmems`
+
+使用命令`groupmems`，需要安装软件包。
+```
+# openSUSE
+sudo zypper in libvshadow-tools
+# Ubuntu
+sudo apt install libvshadow-utils
+# Rocky
+sudo yum search shadow-utils
+```
+
+添加用户到组。
+```
+$ sudo groupmems -a tester1 -g developers
+$ sudo groupmems -a tester2 -g developers
+
+$ cat /etc/group | grep developers
+developers:x:1002:tester1,tester2
+```
+
+从组中删除用户。
+```
+$ sudo groupmems -d tester2 -g developers
+
+$ cat /etc/group | grep developers
+developers:x:1002:tester1
+```
+
+列出组中用户。
+```
+$ sudo groupmems -l -g developers
+tester1
+```
+
+切换当前组为`developers_sre`，添加用户`tester2`到当前组，可以不用在后续命令中使用`-g`指定组。
+```
+$ sudo groupmems -g developers_sre
+
+$ sudo groupmems -a tester2
+
+$ sudo groupmems -l
+tester2
+```
+
+切换当前组为`developers_sre`，从当前组中删除所有用户（这里无法指定某用户）。
+```
+$ sudo groupmems -g developers_sre
+$ sudo groupmems -p
+```
+
+
+
+### 查看组关系`group`
+
+
+显示当前用户所属主的信息。
+```
+$ whoami
+vagrant
+
+$ groups
+sudo adm cdrom dip plugdev lxd
+```
+
+查看指定用户所属组的信息。
+```
+$ groups vagrant
+vagrant : sudo adm cdrom dip plugdev lxd
+```
+
+
+## 练习
+
+1. 创建用户`gentoo`，附加组为`bin`和`root`，默认shell为`/bin/csh`，注释信息为"Gentoo Distribution"
+```
+$ sudo useradd -G bin,root -s /bin/csh -c "Gentoo Distribution" gentoo
+```
+
+2. 创建下面的用户、组和组成员关系
+
+* 名字为`webs`的组
+* 用户`nginx`，使用`webs`作为附属组
+* 用户`varnish`，也使用`webs`作为附属组
+* 用户`mysql`，不可交互登录系统，且不是`webs`的成员，`nginx`，`varnish`，`mysql`密码都是`opensuse`。
+
+```
+$ sudo groupadd webs
+$ sudo useradd -G webs nginx
+$ sudo useradd -G webs varnish
+$ sudo useradd -s /sbin/nologin mysql
+
+$ echo "nginx:opensuse" | sudo chpasswd
+$ echo -e "opensuse\nopensuse" | sudo passwd varnish
+$ echo "mysql:opensuse" | sudo chpasswd
+```
+
+
+3. 查看UID、GID范围的配置文件,修改为501-60000。并查看密码加密算法
+```
+$ cat /etc/login.defs
+...
+GID_MIN			 1000
+GID_MAX			60000
+...
+UID_MIN			 1000
+UID_MAX			60000
+...
+ENCRYPT_METHOD SHA512
+...
+```
+
+
+4. 查看创建用户时的模板配置文件
+```
+$ cat /etc/default/useradd
+# useradd defaults file
+GROUP=100
+HOME=/home
+INACTIVE=-1
+EXPIRE=
+SHELL=/bin/bash
+SKEL=/etc/skel
+USRSKEL=/usr/etc/skel
+CREATE_MAIL_SPOOL=yes
+```
+
+
+
+5. 创建一个新用户`webuser`，指定登录时起始目录`/www`，同时加入`apache`附加组中,指定UID为`999`且不检查uid唯一性。
+```
+$ sudo useradd -d /www -G apache -u 999 -o webuser
+```
+
+
+6. 修改创建用户时的默认设置，主目录/www，默认shell `csh`。查看创建用户的配置文件是否更改，若更改则恢复默认值
+```
+$ sudo useradd -Db /www -s /bin/csh
+
+$ sudo cat /etc/default/useradd
+# useradd defaults file
+GROUP=100
+HOME=/www
+INACTIVE=-1
+EXPIRE=
+SHELL=/bin/csh
+SKEL=/etc/skel
+USRSKEL=/usr/etc/skel
+CREATE_MAIL_SPOOL=yes
+
+$ sudo useradd -Db /home -s /bin/bash
+```
+
+
+7. 批量创建用户`admin1`、`admin2`、`admin3`。
+```
+$ cat > user.txt <<EOF
+admin1
+admin2
+admin3
+EOF
+
+$ for i in $(cat user.txt); do sudo useradd $i; echo "$i:"`pwgen -s -1 15 1` | tee passwd_$i.txt | sudo chpasswd; done
+```
+
+8. 只查看用户`admin2`、`admin3`在`/etc/passwd`的配置信息。
+```
+$ getent passwd admin2 admin3
+admin2:x:1019:100::/home/admin2:/bin/bash
+admin3:x:1020:100::/home/admin3:/bin/bash
+```
+
+
+9. 修改`admin2`用户UID为`2002`、主组`root`、添加新的附加组`apache`且保留旧的附加组。然后锁定用户。
+```
+$ sudo usermod -u 2002 -g root -G apache -a admin2
+$ sudo usermod -L admin2
+
+$ getent passwd admin2
+admin2:x:2002:0::/home/admin2:/bin/bash
+
+$ sudo passwd -S admin2
+admin2 L 11/27/2022 0 99999 7 -1
+```
+
+
+10. 修改用户`admin2`用户名为`smith`，设置账号过期时间为`2022-12-31`。
+```
+$ sudo usermod -l smith -e 2022-12-31 admin2
+
+$ sudo chage -l smith
+Last password change					: Nov 27, 2022
+Password expires					: never
+Password inactive					: never
+Account expires						: Dec 31, 2022
+Minimum number of days between password change		: 0
+Maximum number of days between password change		: 99999
+Number of days of warning before password expires	: 7
+```
+
+
+11. 给`admin1`设置密码`hello`，然后指定新的主目录并把旧目录移动过去。
+```
+$ sudo usermod -d /home/admin_new -m admin1
+$ echo "admin1:hello" | sudo chpasswd 
+```
+
+
+12. 显示`smith`用户UID、GID、显示用户名、显示用户所属组ID
+```
+$ id -u smith
+2002
+
+$ id -g smith
+0
+
+$ id -un smith
+smith
+
+$ id -gn smith
+root
+```
+
+13. 锁定`smith`用两种方法
+```
+$ sudo passwd -l smith
+
+$ sudo usermod -L smith
+```
+
+
+14. 指定`admin3`的密码最短使用日期为5天，最常使用日期为10天，提前2天提示修改密码。
+```
+$ sudo chage -M 10 -m 5 -W 2 admin3
+
+$ sudo chage -l admin3
+Last password change					: Nov 27, 2022
+Password expires					: Dec 07, 2022
+Password inactive					: never
+Account expires						: never
+Minimum number of days between password change		: 5
+Maximum number of days between password change		: 10
+Number of days of warning before password expires	: 2
+```
+
+
+15. 创建系统组`newadm`，指定GID为`66`。
+```
+$ sudo groupadd -r -g 66 newadm
+```
+
+
+16. 修改`newadm`组名为`newgrp` 修改GID为`67`。
+```
+$ sudo groupmod -n newgrp -g 67 newadm
+```
+
+
+17. 将用户`admin1`添加进组`newgrp`，然后删除组`newgrp`。
+```
+$ sudo usermod -g newgrp admin1
+$ sudo groupdel -f newgrp
+```
+
+
+18. 设置`smith`用户的详细描述，然后用finger查看。
+```
+$ chfn smith
+
+$ finger smith
+Login: smith          			Name:
+Directory: /home/admin2             	Shell: /bin/bash
+Never logged in.
+No Mail.
+No Plan.
+```
+
+
+19. 删除用户`admin1`，并删除其主目录。
+```
+$ sudo userdel -r admin1
+$ sudo userdel -r admin2
+```
 
 
 
@@ -644,14 +1432,7 @@ $ userdel -r USER
 
 
 
-
-
-
-
-
-
-
-
+## 文件权限管理
 
 
 

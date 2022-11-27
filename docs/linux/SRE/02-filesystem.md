@@ -1456,10 +1456,16 @@ tr 'a-z' 'A-Z' < <(echo "Hello World")
 密码保存在`passwd.txt`文件中，并严格限制改文件的权限。
 通过参数`--stdin`实现模拟键盘输入操作输入用户名。
 
+在Rocky中可以使用`--stdin`参数。
 ```
-passwd --stdin vagrant < passwd.txt
+$ passwd --stdin vagrant < passwd.txt
 ```
 
+在openSUSE和Ubuntu中，`--stdin`参数无法识别。可以改用下面的方法。
+```
+$ echo passwd.txt | chpasswd
+```
+其中passwd.txt的格式为`username:password`。
 
 
 
