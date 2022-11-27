@@ -490,8 +490,9 @@ $ cat out.txt
 ls: cannot access &#39;file&#39;: No such file or directory
 file.py
 </code></pre></div></p> <h3 id=_29>特殊重定向<a class=headerlink href=#_29 title="Permanent link"> ¶</a></h3> <p>格式：<code>command1 &lt; &lt;(command2)</code> <div class=highlight><pre><span></span><code>tr &#39;a-z&#39; &#39;A-Z&#39; &lt; &lt;(echo &quot;Hello World&quot;)
-</code></pre></div></p> <p>应用：修改密码</p> <p>密码保存在<code>passwd.txt</code>文件中，并严格限制改文件的权限。 通过参数<code>--stdin</code>实现模拟键盘输入操作输入用户名。</p> <div class=highlight><pre><span></span><code>passwd --stdin vagrant &lt; passwd.txt
-</code></pre></div> <div class="admonition reference"> <p class=admonition-title>Reference</p> <p>Here-document(Here-doc)：输入的文本块重定向至标准输入流，直至遇到特殊的文件结束标记符为止（文件结束标记符可以是任意的唯一的字符串，但大部分人都默认使用 <code>EOF</code>）。</p> <p><div class=highlight><pre><span></span><code>cat &lt;&lt;EOF
+</code></pre></div></p> <p>应用：修改密码</p> <p>密码保存在<code>passwd.txt</code>文件中，并严格限制改文件的权限。 通过参数<code>--stdin</code>实现模拟键盘输入操作输入用户名。</p> <p>在Rocky中可以使用<code>--stdin</code>参数。 <div class=highlight><pre><span></span><code>$ passwd --stdin vagrant &lt; passwd.txt
+</code></pre></div></p> <p>在openSUSE和Ubuntu中，<code>--stdin</code>参数无法识别。可以改用下面的方法。 <div class=highlight><pre><span></span><code>$ echo passwd.txt | chpasswd
+</code></pre></div> 其中passwd.txt的格式为<code>username:password</code>。</p> <div class="admonition reference"> <p class=admonition-title>Reference</p> <p>Here-document(Here-doc)：输入的文本块重定向至标准输入流，直至遇到特殊的文件结束标记符为止（文件结束标记符可以是任意的唯一的字符串，但大部分人都默认使用 <code>EOF</code>）。</p> <p><div class=highlight><pre><span></span><code>cat &lt;&lt;EOF
 This is line1
 Another line
 Finally 3rd line
