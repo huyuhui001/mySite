@@ -41,7 +41,7 @@ uid=1000(vagrant) gid=478(wheel) groups=0(root),478(wheel)
     UID和GID等编号规则，是在文件`/etc/login.defs`中约定的。
 
 
-## SELinux & ACL
+## SELinux
 
 Security-Enhanced Linux (SELinux) 是一种Linux系统的安全架构，它允许管理员更好地控制谁可以访问系统。 
 SELinux于2000年向开源社区发布，并于2003年集成到上游 Linux 内核中。
@@ -1432,12 +1432,597 @@ $ sudo userdel -r admin2
 
 
 
-## 文件权限管理
+## 权限管理
+
+执行命令`ls -ihl`，可以得到下面的输出结果（Rocky 9）。
+```
+67274680 -rw-r--r--. 3 vagrant wheel 31 Nov  1 11:14 file
+67274680 -rw-r--r--. 3 vagrant wheel 31 Nov  1 11:14 hardlinkfile1
+67274680 -rw-r--r--. 3 vagrant wheel 31 Nov  1 11:14 hardlinkfile2
+67274681 lrwxrwxrwx. 1 vagrant wheel  4 Nov  1 10:43 symlinkfile1 -> file
+67274683 lrwxrwxrwx. 1 vagrant wheel 12 Nov  1 11:20 symlinkfile1-1 -> symlinkfile1
+67274682 lrwxrwxrwx. 1 vagrant wheel  4 Nov  1 10:43 symlinkfile2 -> file
+33555262 drwxr-xr-x. 2 vagrant wheel  6 Nov  1 11:30 typelink
+```
+
+以`67274680 -rw-r--r--. 3 vagrant wheel 31 Nov  1 11:14 file`为例：
+
+* `67274680`: inode 索引节点编号。
+* `-rw-r--r--`：文件类型及权限
+  * `-`：文件类型，例子中出现了三种，`-`，`l`和`d`。
+    * `-`：普通文件
+    * `d`：目录
+    * `l`：符号链接文件（link）
+    * `b`：块设备（block）
+    * `c`：字符设备（character）
+    * `p`：管道文件（pipe）
+    * `s`：套接字文件（socket）
+  * `rw-r--r--`：文件权限，从左到右依次为：（用户的最终权限，是从左向右匹配，一旦匹配则权限立即生效，不再向右继续匹配）
+    * `rw-`：文件属主权限（u），例子中是`vagrant`。
+    * `r--`：文件属组的权限（g），例子中是`wheel`。
+    * `r--`：其他组的权限（o）。
+* `.`：这个点表示文件带有SELinux的安全上下文（SELinux Contexts）。关闭SELinux，新创建的文件就不会再有这个点了。但是，以前创建的文件本来有这个点的还会显示这个点（虽然SELinux不起作用了）。
+* `3`：硬链接数，例子中`file`和`hardlinkfile1`和`hardlinkfile2`之间是硬链接，所以这三个文件的硬链接数都是`3`。
+* `vagrant`：文件属主owner
+* `wheel`：文件属组group
+* `31`：文件或目录的大小
+* `Nov  1 11:14`：文件或目录的创建日期和时间
+* `file`：文件或目录名称
+
+
+下面是命令`ls -ihl`在openSUSE和Ubuntu上的显示结果。
+```
+$ ls -ihl
+233647 -rw-r--r-- 3 vagrant wheel 31 Nov  1 15:52 file
+233647 -rw-r--r-- 3 vagrant wheel 31 Nov  1 15:52 hardlinkfile1
+233647 -rw-r--r-- 3 vagrant wheel 31 Nov  1 15:52 hardlinkfile2
+233648 lrwxrwxrwx 1 vagrant wheel  4 Nov  1 15:52 symlinkfile1 -> file
+233650 lrwxrwxrwx 1 vagrant wheel 12 Nov  1 15:52 symlinkfile1-1 -> symlinkfile1
+233649 lrwxrwxrwx 1 vagrant wheel  4 Nov  1 15:52 symlinkfile2 -> file
+233646 drwxr-xr-x 1 vagrant wheel  0 Nov  1 15:51 typelink
+```
+
+### 修改属主`chown`
+
+`chown`命令修改文件属主（所有者，owner）。
+
+修改文件属主为root。
+```
+$ ll f1.txt
+-rw-r--r--. 1 vagrant wheel 41 Nov 14 22:23 f1.txt
+
+$ sudo chown root f1.txt
+
+$ ll f1.txt
+-rw-r--r--. 1 root wheel 41 Nov 14 22:23 f1.txt
+```
+
+修改文件的属组为bin。
+```
+$ sudo chown :bin f1.txt
+
+$ ll f1.txt
+-rw-r--r--. 1 root bin 41 Nov 14 22:23 f1.txt
+```
+
+同时修改文件的属主和属组。
+```
+$ sudo chown vagrant.wheel f1.txt
+
+$ ll f1.txt
+-rw-r--r--. 1 vagrant wheel 41 Nov 14 22:23 f1.txt
+```
+
+参照某文件修改另一文件的属性。
+```
+$ ll file.py
+-rw-r--r--. 1 vagrant wheel  56 Nov 13 22:50 file.py
+
+$ ll user.txt
+-rw-r--r--. 1 root bin 21 Nov 27 23:59 user.txt
+
+$ sudo chown root.bin user.txt
+
+$ sudo chown --reference=user.txt file.py
+
+$ ll file.py
+-rw-r--r--. 1 root bin 56 Nov 13 22:50 file.py
+```
+
+递归修改所有子目录及文件的属主和属组。
+```
+$ sudo chown -R vagrant.wheel /data
+```
 
 
 
 
 
+### 修改属组`chgrp`
+
+修改目录的属组。
+```
+sudo chgrp bin ~/data
+```
+
+修改目录及子目录及文件的属组。
+```
+sudo chgrp -R bin ~/data
+```
 
 
+### 文件和目录权限
+
+文件：
+
+* `r`：可以读取该文件内容，比如通过`cat`命令。
+* `w`：可以修改该文件内容，可以只有`w`而没有`r`。
+* `x`：可以把该文件提请内核启动为一个进程，即可以执行该文件（该文件的内容必须是可以执行）。
+
+
+目录：（对目录而言，通常需要给`r`和`x`权限）（从目录角度看，目录内文件列表等于目录节点的内容）
+
+* `r`：能看文件列表，但不能访问所含文件的内容及其属性信息，包括inode号。
+* `w`：能在该目录内创建和删除文件，不由目录内文件本身的权限决定。
+* `x`：能cd进目录，能通过`ls -l file`和`stat file`查看该目录中制定文件的元数据。
+* `X`：表示只有当该文件是个子目录或者该文件已经被设定过为可执行。
+
+* 有只读权限的用户不能用cd进入该目录，还必须有执行权限才能进入。
+* 有执行权限的用户只有在知道文件名，并拥有读权利的情况下才可以访问目录下的文件。
+* 必须有读和执行权限才可以ls列出目录清单，或使用cd命令进入目录。
+* 有目录的写权限，可以创建、删除或修改目录下的任何文件或子目录，即使使该文件或子目录属于其他用户也是如此。
+
+
+常用权限例子：
+```
+-rw------- (600) 只有所有者才有读和写的权限
+-rw-r--r-- (644) 只有所有者才有读和写的权限，组和其他人只有读的权限
+-rwx------ (700) 只有所有者才有读，写，执行的权限
+-rwxr-xr-x (755) 只有所有者才有读，写，执行的权限，组和其他人只有读和执行的权限
+-rwx--x--x (711) 只有所有者才有读，写，执行的权限，组和其他人只有执行的权限
+-rw-rw-rw- (666) 每个人都有读写的权限
+-rwxrwxrwx (777) 每个人都有读写和执行的权限
+```
+
+
+
+### 权限修改`chmod`
+
+命令格式：
+```
+chmod [-cfvR] [--help] [--version] mode file
+```
+
+`mode`字串格式为：
+```
+[ugoa][+-=][rwxXst]
+```
+
+who:
+
+* `u`文件所有者
+* `g`文件所有者所在组
+* `o`其他用户
+* `a`所有用户，相当于`ugo`
+
+operator:
+
+* `+`为指定的用户类型增加权限
+* `-`去除指定用户类型的权限
+* `=`设置指定用户权限的设置，即将用户类型的所有权限重新设置
+
+permission:
+
+* `r`设置为可读权限
+* `w`设置为可写权限
+* `x`设置为可执行权限
+* `X`特殊执行权限，只有当文件为目录文件，或者其他类型的用户有可执行权限时，才将文件权限设置可执行
+* `s`当文件被执行时，根据who参数指定的用户类型设置文件的`setuid`或者`setgid`权限
+* `t`设置粘贴位，只有超级用户可以设置该位，只有文件所有者u可以使用该位。
+
+
+示例：
+
+将文件`file1.txt`设为所有人皆可读取。
+```
+chmod ugo+r file1.txt
+```
+将文件`file1.txt`设为所有人皆可读取。
+```
+chmod a+r file1.txt
+```
+将文件`file1.txt`与`file2.txt`设为该文件属主和属组都可写入，但其他用户不可写入。
+```
+chmod ug+w,o-w file1.txt file2.txt
+```
+为`ex1.py`文件属主增加可执行权限。
+```
+chmod u+x ex1.py
+```
+将目前目录下的所有文件与子目录皆设为任何人可读取。
+```
+chmod -R a+r *
+```
+给`file`的所有用户增加读权限
+```
+chmod a+r file
+```
+删除`file`的所有用户的执行权限
+```
+chmod a-x file
+```
+给`file`的所有用户增加读写权限
+```
+chmod a+rw file
+```
+给`file`的所有用户增加读写执行权限
+```
+chmod +rwx file
+```
+对`file`的属主设置读写权限，清空属组和其他用户对`file`的所有权限（空格代表无权限）
+```
+chmod u=rw,go= file
+```
+对目录`docs`和其子目录中的所有文件给属主增加读权限，而对属组和其他用户删除读权限
+```
+chmod -R u+r,go-r docs
+```
+对`file`的属主和属组设置读写权限, 为其他用户设置读权限
+```
+chmod 664 file
+```
+对`file`的属主设置读写执行权限，相当于`u=rwx`(4+2+1)，设置属组读和执行权限，相当于`go=rx`(4+1 & 4+1)。`0`没有特殊模式
+```
+chmod 0755 file
+```
+`4`设置了设置用户ID位，剩下的相当于`u=rwx`(4+2+1)和`go=rx`(4+1 & 4+1)。
+```
+chmod 4755 file
+```
+删除可执行权限对`path/`以及其所有的目录（不包括文件）的所有用户，使用`-type f`匹配文件
+```
+find path/ -type d -exec chmod a-x {} \;
+```
+允许所有用户浏览或通过目录`path/`
+```
+find path/ -type d -exec chmod a+x {} \;
+```
+
+
+
+### 文件和目录的默认权限
+
+`umask`的值，定义了所有新建的文件和目录的初始权限的。
+
+查看当前权限掩码：
+```
+$ umask
+0022
+```
+
+在不考虑`umask`的情况下，文件的默认权限是`666`(rw-rw-rw-)，目录的默认权限是`777`(rwxrwxrwx)。
+
+在`umask`的值为`0022`的情况下，文件的默认权限是`644`(rw-r--r--)，目录的默认权限是`755`(rwxr-xr-x)。
+
+计算方法：
+```
+	Files: 
+		(Default) 6 6 6
+		(umask)   0 2 2
+		----------------
+		(Result)  6 4 4
+	
+  Directories: 
+		(Default) 7 7 7
+		(umask)   0 2 2
+		----------------
+    (Result)  7 5 5
+```
+
+如果`umask`的值为`0077`的情况下，文件的默认权限是`600`(rw-------)，目录的默认权限是`700`(rwx------)。
+
+计算方法：
+```
+	Files: 
+		(Default) 6 6 6
+		(umask)   0 7 7
+		----------------
+		(Result)  6 0 0
+	
+  Directories: 
+		(Default) 7 7 7
+		(umask)   0 7 7
+		----------------
+    (Result)  7 0 0
+```
+
+举例：
+```
+$ umask 022
+$ touch file2
+$ ll file2
+-rw-r--r--. 1 vagrant wheel 0 Nov 28 23:13 file2
+
+$ umask 077
+$ touch file1
+$ ll file1
+-rw-------. 1 vagrant wheel 0 Nov 28 23:12 file1
+```
+```
+$ umask 022
+$ mkdir ./tmp1
+$ umask 077
+$ mkdir ./tmp2
+
+$ ls -dl tmp*
+drwxr-xr-x. 1 vagrant wheel 0 Nov 28 23:14 tmp1
+drwx------. 1 vagrant wheel 0 Nov 28 23:14 tmp2
+```
+
+
+
+
+### 特殊权限
+
+除了三种常见的权限rwx，还有三种特殊权限：SUID，SGID，Sticky。
+
+SUID：属主s权限，称为Set UID
+
+* 前提：进程有属主和属组，文件有属主和属组
+    * 任何可执行程序文件能不能启动为进程，取决于发起者对程序文件是否拥有执行权限。
+    * 启动为进程之后，其进程的属主为发起者。
+    * 进程访问文件是的权限，取决于进程的发起者。
+
+* 只对二进制可执行程序文件有效。当执行该文件时，发起者将自动具有该文件所有者的权限。
+* 对目录无效。
+
+```
+$ ll file1
+-rw-------. 1 vagrant wheel   0 Nov 28 23:12 file1
+
+$ sudo chmod u+s file1
+
+$ ll file1
+-rwS------. 1 vagrant wheel 0 Nov 28 23:12 file1
+```
+
+如果属主的`x`位上是-，则在属主的`x`位上标记大写`S`，否则标记小写`s`。如下：
+```
+$ chmod 777 file1
+
+$ ll file1
+-rwxrwxrwx. 1 vagrant wheel 0 Nov 28 23:12 file1
+
+$ sudo chmod u+s file1
+
+$ ll file1
+-rwsrwxrwx. 1 vagrant wheel 0 Nov 28 23:12 file1
+```
+下面2组命令实现同样效果。
+```
+$ sudo chmod 4xxx file1
+
+$ chmod 777 file1
+$ sudo chmod u+s file1
+```
+取消SUID。
+```
+$ sudo chmod u-s file1
+```
+
+
+SGID：属组s权限，称为Set GID
+
+* 如果作用于二进制可执行文件上，当执行该文件为进程之后，发起者将自动具有该文件所属组的权限，进程的属组为发起者的属组。
+* 如果作用于目录上，则该目录下新建立的目录和文件都自动从此目录继承。
+
+```
+$ sudo chmod g+s file2
+
+$ ll file2
+-rw-r-Sr--. 1 vagrant wheel 0 Nov 28 23:13 file2
+```
+如果属组的`x`位上是-，则在属组的`x`位上标记大写`S`，否则标记小写`s`。如下：
+```
+$ chmod 777 file2
+
+$ ll file2
+-rwxrwxrwx. 1 vagrant wheel 0 Nov 28 23:13 file2
+
+$ sudo chmod g+s file2
+
+$ ll file2
+-rwxrwsrwx. 1 vagrant wheel 0 Nov 28 23:13 file2
+```
+
+下面2组命令实现同样效果。
+```
+$ sudo chmod 2xxx file2
+
+$ chmod 777 file2
+$ sudo chmod g+s file2
+```
+取消SGID。
+```
+$ sudo chmod g-s file2
+```
+
+对于目录，下面演示可以看到目录下的文件和子目录的继承性。
+```
+$ ll -d data
+drwxr-xr-x. 1 vagrant bin 0 Nov 28 20:55 data
+
+$ sudo chmod g+s ./data
+
+$ ll -d data
+drwxr-sr-x. 1 vagrant bin 0 Nov 28 20:55 data
+
+$ cd data
+$ touch file2
+$ ll file2
+-rw-r--r--. 1 vagrant bin 0 Nov 29 21:10 file2
+
+$ mkdir tmp3
+$ ll -d tmp3
+drwxr-sr-x. 1 vagrant bin 0 Nov 29 21:10 tmp3
+```
+
+
+
+Sticky Bit：简称为SBIT权限
+
+* 只针对目录有效。它表示只能让其属主以及root可以删除、重命名、移动该目录下的文件。
+* Sticky设置在文件上无意义。
+
+如果其他的`x`位上是-，则在其他的`x`位上标记大写`T`，否则标记小写`t`。
+```
+$ ll -d ./data
+drwxr-sr-x. 1 vagrant bin 18 Nov 29 21:10 ./data
+
+$ sudo chmod o+t ./data
+
+$ ll -d ./data
+drwxr-sr-t. 1 vagrant bin 18 Nov 29 21:10 ./data
+
+$ cd data
+$ touch file1
+$ mkdir tmp1
+
+$ ll file1
+-rw-r--r--. 1 vagrant bin 0 Nov 29 21:37 file1
+$ ll -d tmp1
+drwxr-sr-x. 1 vagrant bin 0 Nov 29 21:37 tmp1
+```
+
+
+特殊权限设置数字法：
+
+设置SUID
+```
+              User    Group   Others
+              r w s   r w s   r w x
+              r w S
+    BIN 100   1 1 1   1 1 1   1 1 1
+              1 1 0
+    OCT   4       7       7       7
+                  6
+```
+设置SGID
+```
+              User    Group   Others
+              r w x   r w s   r w x
+              r w S
+    BIN	010   1 1 1   1 1 1   1 1 1
+                      1 1 0
+    OCT   2       7       7       7
+                          6
+```
+设置Sticky Bit - SBIT
+```
+              User    Group   Others
+              r w x   r w x   r w t
+                      r w T
+    BIN 001   1 1 1   1 1 1   1 1 1
+                              1 1 0
+    OCT   1       7       7       7
+                                  6
+```
+
+
+
+
+### 设定文件特殊属性`chattr`
+
+命令格式：`chattr [ -RVf ] [ -v version ] [ mode ] files...`
+
+其中mode的字串格式：`{+|-|=}[aAcCdDeijsStTu]`
+
+属性`i`： 	
+
+* 如果对文件设置`i`属性，那么不允许对文件进行删除、改名，也不能添加和修改数据；
+* 如果对目录设置`i`属性，那么只能修改目录下文件中的数据，但不允许建立和删除文件；
+
+在openSUSE下执行，分区文件类型是btrfs格式。
+```
+$ touch filetest
+$ lsattr filetest
+---------------------- filetest
+
+$ chattr +i filetest
+chattr: Operation not permitted while setting flags on filetest
+$ sudo chattr +i filetest
+
+$ lsattr filetest
+----i----------------- filetest
+
+$ rm filetest
+rm: cannot remove 'filetest': Operation not permitted
+$ sudo rm filetest
+rm: cannot remove 'filetest': Operation not permitted
+
+$ echo "test" >> filetest
+-bash: filetest: Operation not permitted
+$ sudo echo "test" >> filetest
+-bash: filetest: Operation not permitted
+
+$ sudo chattr -i filetest
+```
+
+
+
+属性`a`：
+
+* 如果对文件设置`a`属性，那么只能在文件中増加数据，但是不能删除和修改数据；
+* 如果对目录设置`a`属性，那么只允许在目录中建立和修改文件，但是不允许删除文件；
+
+在openSUSE下执行，分区文件类型是btrfs格式。
+```
+lsattr filetest
+---------------------- filetest
+$ chattr +a filetest
+chattr: Operation not permitted while setting flags on filetest
+$ sudo chattr +a filetest
+
+$ echo "test" >> filetest
+
+$ rm filetest
+rm: cannot remove 'filetest': Operation not permitted
+$ sudo rm filetest
+rm: cannot remove 'filetest': Operation not permitted
+
+$ sudo chattr -a filetest
+```
+
+
+属性`u`：
+
+* 设置此属性的文件或目录，在删除时，其内容会被保存，以保证后期能够恢复，常用来防止意外删除文件或目录。
+
+在Ubuntu下执行，分区文件类型是ext4格式。
+```
+$ touch filetest
+$ sudo chattr +u filetest
+
+$ lsattr filetest
+-u------------e------- filetest
+
+$ rm filetest
+```
+
+属性`s`：
+
+* 和`u`相反，删除文件或目录时，会被彻底删除（直接从硬盘上删除，然后用0填充所占用的区域），不可恢复。
+
+
+
+!!! Attention
+    命令`chattr`和`lsattr`的可操作属性依赖于文件所处分区的文件系统类型，ext4和xfs的结果会有不同。
+
+	历史：命令`chattr`（用于操作属性）和`lsattr`（用于列出属性）最初专用于第二个扩展文件系统系列（ext2、ext3、ext4），并且作为`e2fsprogs`包的一部分提供。然而，此功能已全部或部分扩展到许多其他系统，包括 XFS、ReiserFS、JFS 和 OCFS2。 btrfs 文件系统包括属性功能，包括`C`标志，由于与`CoW`相关的性能较慢，它关闭了btrfs的内置写时复制 (CoW) 功能。
+
+
+
+
+
+## 访问控制列表ACL
 
