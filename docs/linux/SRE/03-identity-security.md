@@ -1531,7 +1531,7 @@ $ ll file.py
 
 递归修改所有子目录及文件的属主和属组。
 ```
-$ sudo chown -R vagrant.wheel /data
+$ sudo chown -R vagrant.wheel ~
 ```
 
 
@@ -1542,12 +1542,12 @@ $ sudo chown -R vagrant.wheel /data
 
 修改目录的属组。
 ```
-sudo chgrp bin ~/data
+sudo chgrp bin ~~
 ```
 
 修改目录及子目录及文件的属组。
 ```
-sudo chgrp -R bin ~/data
+sudo chgrp -R bin ~~
 ```
 
 
@@ -1690,7 +1690,7 @@ find path/ -type d -exec chmod a+x {} \;
 
 
 
-### 文件和目录的默认权限
+### 默认权限`umask`
 
 `umask`的值，定义了所有新建的文件和目录的初始权限的。
 
@@ -1852,7 +1852,7 @@ $ sudo chmod g-s file2
 $ ll -d data
 drwxr-xr-x. 1 vagrant bin 0 Nov 28 20:55 data
 
-$ sudo chmod g+s ./data
+$ sudo chmod g+s .~
 
 $ ll -d data
 drwxr-sr-x. 1 vagrant bin 0 Nov 28 20:55 data
@@ -1876,13 +1876,13 @@ Sticky Bit：简称为SBIT权限
 
 如果其他的`x`位上是-，则在其他的`x`位上标记大写`T`，否则标记小写`t`。
 ```
-$ ll -d ./data
-drwxr-sr-x. 1 vagrant bin 18 Nov 29 21:10 ./data
+$ ll -d .~
+drwxr-sr-x. 1 vagrant bin 18 Nov 29 21:10 .~
 
-$ sudo chmod o+t ./data
+$ sudo chmod o+t .~
 
-$ ll -d ./data
-drwxr-sr-t. 1 vagrant bin 18 Nov 29 21:10 ./data
+$ ll -d .~
+drwxr-sr-t. 1 vagrant bin 18 Nov 29 21:10 .~
 
 $ cd data
 $ touch file1
@@ -2016,7 +2016,7 @@ $ rm filetest
 
 
 !!! Attention
-    命令`chattr`和`lsattr`的可操作属性依赖于文件所处分区的文件系统类型，ext4和xfs的结果会有不同。
+    命令`chattr`和`lsattr`的可操作属性依赖于文件所处分区的文件系统类型，例如，ext4和xfs的结果会有不同。
 
 	历史：命令`chattr`（用于操作属性）和`lsattr`（用于列出属性）最初专用于第二个扩展文件系统系列（ext2、ext3、ext4），并且作为`e2fsprogs`包的一部分提供。然而，此功能已全部或部分扩展到许多其他系统，包括 XFS、ReiserFS、JFS 和 OCFS2。 btrfs 文件系统包括属性功能，包括`C`标志，由于与`CoW`相关的性能较慢，它关闭了btrfs的内置写时复制 (CoW) 功能。
 
@@ -2025,4 +2025,817 @@ $ rm filetest
 
 
 ## 访问控制列表ACL
+
+### ACL
+
+ACL的全称是Access Control List。
+  
+传统的POSIX权限概念使用三种用户类型来分配文件系统中的权限：所有者Owning Owner，所有者组Owning Group和其他用户Other Users。可以为每个用户类型设置三个权限位，赋予读（r），写（w）和执行（x）的权限。
+
+* 所有者Owning Owner权限（属主权限）
+* 属组Owning Group权限
+* 其他（经过身份验证的）用户Other Users的权限
+
+传统的三种权限适用于大多数实际案例。但是，对于更复杂的场景或更高级的应用程序，系统管理员必须使用许多技巧来规避传统权限的限制。
+
+访问控制列表ACL提供了对传统文件权限概念的扩展。它们允许我们为单个用户或组分配权限，即使这些用户或组与原始所有者或属组不对应。
+
+ACL是Linux内核的一项功能，支持Ext2/3/4，XFS和BtrFS文件系统以及其他文件系统。
+  
+使用ACL，我们可以创建复杂的方案，而无需在应用程序级别上去实现复杂的权限模型。在使用提供Samba文件和打印服务的Linux服务器替换Windows服务器的情况下，ACL的优势非常明显。由于Samba支持ACL，因此可以在Linux服务器和Windows中配置用户权限。
+
+通过ACL来允许对所有者用户之外的单个用户进行文件写权限是一种简单的方案。使用传统方法，我们必须创建一个新组，使两个用户成为该组的成员，将该文件的所有组更改为新组，然后授予该组文件的写权限。创建组并使两个用户成为该组的成员则需要利用root权限来实现。
+
+使用ACL，我们可以通过使所有者和指定用户对文件具有写权限来实现相同的结果。
+
+此方法的另一个优点是系统管理员无需参与创建组。用户可以自己决定授予谁访问其文件的权限。
+
+!!! Attention
+    使用ACL时`ls`的输出结果会发生变化。添加一个加号+ 来说明已为此文件定义ACL，且定义ACL后，所显示的属组权限是ACL掩码的值，而不再是原来属组的权限。
+
+
+
+### ACL的基本类型
+
+* Minimal ACLs（最小ACL）（实际用途：与POSIX权限相同）
+    * 与文件模式权限位等效的ACL称为最小ACL
+    * 分三种类型的ACL条目，这些对应于文件和目录的传统权限位
+        * Owning User 所有者
+        * Owning Group 所有者组
+        * Others 其他组 
+* Extended ACLs（扩展ACL）
+    * 具有多于上述三个ACL条目的ACL称为扩展ACL
+    * 扩展ACL还包含掩码条目，可以包含任意数量的指定用户和指定组条目
+
+
+
+### ACL术语
+
+* 用户类（User classes）。 传统的POSIX权限概念使用三种用户类来分配文件系统中的权限：所有者Owning Owner，所有者组Owning Group和其他用户Other Users。可以为每个用户类型设置三个权限位，赋予读（r），写（w）和执行（x）的权限。
+    * Owner class 所有者类
+    * Group class 组类
+    * Other class 其他类
+* ACL访问权限（Access ACL）：确定各种文件系统对象（文件和目录）的用户和组的访问权限。
+* 默认ACL（Default ACL）：只能应用于目录。 它们确定文件系统对象在创建时从其父目录继承的权限。
+* ACL条目（ACL entry）：
+    * 每个ACL由一组ACL条目组成。 
+    * ACL条目包含类型（type），条目引用的用户或组的限定符（qualifier），以及一组权限（permissions）。
+    * 对于某些条目类型，未定义组或用户的限定符。
+
+
+![The mapping of minimal ACLs](./assets/Mapping%20of%20Minimal%20ACLs.png)
+
+
+### ACL权限分类
+
+* Named user 指定用户: Lets you assign permissions to individual users. 允许我们为指定用户分配权限。
+* Named group 指定组: Lets you assign permissions to individual groups. 允许我们为制定组分配权限。
+* Mask 掩码: Lets you limit the permissions granted to named users or groups. 允许我们限制给予指定用户或指定组的权限。
+
+
+所以可能的ACL类型
+ß
+| Type         | Text Form             |
+|--------------|-----------------------|
+| owner        | user::rwx             |
+| named user   | user:name:rwx         |
+| owning group | group::rwx            |
+| named group  | group:name:rwx        |
+| mask         | mask::rwx             |
+| other        | other::rwx            |
+
+
+与POSIX.1权限模型不同，组类group class可以包含具有不同权限集的ACL条目，因此单独的组类权限不再足以表示它包含的所有ACL条目的所有详细权限。
+
+因此，组类型权限的含义被重新定义。在新语义下，组类型权限表示组类中的任何条目将授予的权限的**上限**（upper bound）。
+此上限属性可确保在使用ACL控制后，应用程序不会突然或者意外地授予额外的权限。
+
+在最小ACL中，组类权限与所有者组权限相同。在扩展ACL中，组类可以包含其他用户或组的条目。这会导致一个问题：这些附加条目中的一些可能拥有未包含在所有者组条目（owning group entry）中的权限，因此所有者组条目权限可能与组类权限（group class）不同。 
+
+通过掩码（mask entry）解决了这个问题。
+
+* 使用最小ACL，组类权限映射到所有者组条目权限。With minimal ACLs, the group class permissions map to the owning group entry permissions. 
+* 使用扩展ACL时，组类权限映射到掩码条目权限，而所有者组条目仍定义拥有组权限。With extended ACLs, the group class permissions map to the mask entry permissions, whereas the owning group entry still defines the owning group permissions.
+
+
+
+### ACL操作命令
+
+设定ACL权限：`setfacl`
+
+* Syntax: setfacl [OPTIONS] [ACL-ENTRIES] <file>
+* Option Description
+    * `-m`: Add or modify an ACL entry
+    * `-x`: Remove an ACL entry
+    * `-d`: Set a default ACL
+    * `-b`: Remove all extended ACL entries
+    * `-M`: restore ACLs that have been written to a file
+
+注意：--set选项会把原有的ACL项都删除，用新的替代，所以一定要包含UGO的设置，不能像-m医院只添加ACL。
+```
+setfacl --set u::rw,u:vagrant:rw,g::r,o::- file1
+```
+
+
+读取ACL权限：`getfacl`
+
+* Syntax: getfacl [OPTIONS] <file>
+* Option Description
+    * `-a`: Display the file access control list
+    * `-d`: Display the default access control list
+    * `-R`: List the ACLs of all files and directories recursively
+
+
+
+### ACL实例解析
+
+#### 实例描述
+
+* 项目目录`~/project1`
+    * 项目经理`pm1`对这个目录拥有访问和修改权限
+    * 项目成员`tm1`可以访问和修改这个目录
+    * 非项目成员`tm2`不能访问`~/project1`目录。
+* 项目目录`~/project1`的权限规划
+    * 项目经理`pm1`是这个目录的属主，权限为`rwx`
+    * 项目经理`pm1`属于`project1`组
+    * 项目成员`tm1`与`pm1`在同一个`project1`组，权限是`rw`
+    * 其他人的权限设定为`0`
+* 项目临时成员tm2的权限需求
+    * 能访问`project1`目录，但只能具有`r`和`x`权限
+
+解决方法
+
+* 当出现这种情况时，普通权限中的三种身份（owner，group，others）就不能解决这个问题，而ACL权限可以。
+在使用ACL权限给用户`tm2`陚予权限时，`tm2`既不是`~/project1`目录的属主，也不是属组，仅仅赋予用户`tm2`针对`~/project1`目录的r-x权限，
+属于单独指定用户并单独分配权限，解决了用户身份不足的问题。
+
+拓展问题
+
+* 给`~/project1`目录添加其他组`project2`的访问权限
+* 通过`mask`来调整用户`tm2`实际有效权限
+* 默认ACL权限
+* 递归ACL权限
+* 删除ACL权限
+
+
+#### 初始化环境
+
+创建测试用户
+
+```
+$ whoami
+vagrant
+
+$ sudo groupadd project1
+$ sudo groupadd project2
+
+$ sudo useradd -m -g project1 pm1
+$ sudo useradd -m -g project1 tm1
+$ sudo useradd -m -g project2 tm2
+
+$ sudo passwd pm1
+$ sudo passwd tm1
+$ sudo passwd tm2
+
+$ cat /etc/group
+......
+project1:x:1535:
+project2:x:1536:
+......
+
+$ cat /etc/passwd
+......
+pm1:x:2003:1535::/home/pm1:/bin/bash
+tm1:x:2004:1535::/home/tm1:/bin/bash
+tm2:x:2005:1536::/home/tm2:/bin/bash
+......
+```
+
+创建测试目录`project1`, 指定`project1`目录的权限，创建测试文件`file1`。
+
+```
+$ su - pm1
+$ cd ~
+
+$ mkdir project1
+
+$ ls -dl project1
+drwxr-xr-x. 1 pm1 project1 0 Dec  4 06:25 project1
+
+$ chmod 770 project1/
+
+$ ls -dl project1
+drwxrwx---. 1 pm1 project1 0 Dec  4 06:25 project1
+
+$ echo "hello from $USER" > ./project1/file1
+
+$  cat ./project1/file1
+hello from pm1
+```
+
+目录`project1`当前权限快照
+
+* 属主：`pm1`，对`~/project1`目录有`rwx`权限
+* 属组：`project1`，包含用户`pm1`和`tm1`，对`~/project1`目录有`rwx`权限
+* 其他组：没有访问权限
+
+目录`~/project1`当前的ACL快照
+```
+$ getfacl ./project1/
+# file: home/pm1/project1/
+# owner: pm1
+# group: project1
+user::rwx
+group::rwx
+other::---
+```
+
+#### 添加ACL权限
+
+给`~/project1`目录添加新用户`tm2`，权限为`rwx`。目录`~/project1`的更新后的权限位变成了`drwxrwx---+`。
+```
+$ su - pm1
+
+$ setfacl -m u:tm2:rx ./project1/
+
+$ ls -dl ./project1
+drwxrwx---+ 1 pm1 project1 0 Dec  4 06:25 project1
+
+$ getfacl ~/project1/
+# file: project1   （文件名）
+# owner: pm1       （Owner 文件属主）
+# group: project1  （Owing Group 文件属组）
+user::rwx          （Ower文件属主的权限，用户名栏是空的，说明是属主Owner的权限）
+user:tm2:r-x       （Named User 指定用户的权限，用户tm2的权限）
+group::rwx         （Owing Group 文件属组的权限，组名栏是空的，说明是属组的权限）
+                   （Named Group 指定用户组的权限，此时未指定）
+mask::rwx          （mask权限）
+other::---         （其他人other的权限）
+```
+
+给`~/project1`目录添加新组`project2`的权限`rwx`
+```
+$ su - pm1
+
+$ setfacl -m g:project2:rwx ./project1/
+
+$ ls -dl ./project1
+drwxrwx---+ 1 pm1 project1 0 Dec  4 06:46 ./project1
+
+$ getfacl ./project1
+# file: project1
+# owner: pm1
+# group: project1
+user::rwx
+user:tm2:r-x         (用户tm2拥有了r-x权限）
+group::rwx
+group:project2:rwx   (用户组project2拥有了rwx权限）
+mask::rwx
+other::---
+```
+
+有效权限的计算：
+
+当前`~/project1`目录的`mask`是`rwx`，`tm2`的权限是`r-x`，二者进行AND操作，`tm2`的实际权限是`r-x`
+```
+   tm2: r - x (1 0 1)
+  mask: r w x (1 1 1)
+---------------------
+result: r - x (1 0 1)
+```
+
+对照下面的规则，验证用户`tm2`对`~/project1`目录的实际权限。
+```
+su - tm2
+```
+能进入目录`project1`，说明当前用户具有目录`project1`的`r-x`权限。
+```
+$ whoami
+tm2
+
+$ cd /home/pm1/project1/
+```
+能列出目录`project1`下文件列表，可以查看文件`file`的内容，说明当前用户具有目录`project1`的`r-x`权限。
+```
+$ pwd
+/home/pm1/project1
+
+$ whoami
+tm2
+
+$ ls -l
+-rw-r--r--. 1 pm1 project1 15 Dec  4 07:15 file1
+
+$ cat file1
+hello from pm1
+```
+对目录`project1`不具有`w`权限，所以无法创建、删除或修改目录下的任何文件或子目录。
+```
+$ pwd
+/home/pm1/project1
+
+$ whoami
+tm2
+
+$ touch file2
+touch: cannot touch 'file2': Permission denied
+
+$ echo "hello from $USER" >> file1
+-bash: file1: Permission denied
+```
+
+#### 修改mask权限
+
+调整`~/project1`目录的`mask`为`r--`，则`tm2`的实际权限是`r--`
+```
+$ su - pm1
+$ cd ~
+$ setfacl -m m::r ./project1/
+
+$ getfacl ./project1/
+# file: project1/
+# owner: pm1
+# group: project1
+user::rwx
+user:tm2:r-x          #effective:r--  (用户tm2的实际有效权限变为r--)
+group::rwx            #effective:r--  (属组project1组的实际有效权限变为r--)
+group:project2:rwx    #effective:r--  (其他组project2组的实际有效权限变为r--)
+mask::r--                             (mask变化，导致上述两个group的有效权限都发生了变化)
+other::---
+```
+
+有效权限的计算：
+
+当前`~/project1`目录的`mask`是`r--`，用户`tm2`、组`project2`的实际权限是`r--`。
+```
+   tm2: r - w (1 0 1)
+  mask: r - - (1 0 0)
+---------------------
+result: r - - (1 0 0)
+```
+
+!!! Attention
+    用户和用户组所设定的权限必须在mask权限设定的范围之内才能生效，mask权限就是最大有效权限。
+
+
+
+#### 有效权限分析
+
+在POSIX权限模型和ACL权限叠加作用下，用户的实际权限分析。
+
+```
+$ getfacl ./project1/
+# file: project1/
+# owner: pm1                            <----Owner
+# group: project1                       <----owning group
+user::rwx                               <----owner's permissions
+user:tm2:r-x          #effective:r--    <----named user's permissions
+group::rwx            #effective:r--    <----owning group's permissions
+group:project2:rwx    #effective:r--    <----named group's permissions
+mask::r--                               <----masks for named user and named group
+other::---
+default:user::rwx
+default:user:tm2:r-x
+default:group::rwx
+default:mask::rwx
+default:other::---
+```
+
+所有者ower和其他用户other条目中定义的权限总是有效的。上例中的user条目和other条目。
+除了掩码条目，所有其他条目（比如指定用户named user）可以是有效的或被屏蔽的。
+
+指定用户（named user），所有者组（owning group）或指定组（named group）以及掩码mask条目中定义的权限，有效权限是他们权限进行逻辑AND后的结果，而不是单独的掩码中定义的权限或者各自条目中定义的权。
+
+有效权限计算方法如下，注意，`ls`命令中显示出来的权限，与实际的ACL权限是有差别的。
+```
+        tm2: r - w (1 0 1)
+      group: r w x (1 1 1)
+named group: r w x (1 1 1)
+       mask: r - - (1 0 0)
+---------------------------
+     result: r - - (1 0 0)
+```
+
+
+!!! Reference
+    与文件模式权限位等效的ACL称为最小ACL，即POSIX传统权限。
+
+    含掩码mask等其他权限条目的ACL称为扩展ACL。
+
+    在最小和扩展ACL情形下，所有者类权限（owner）都是映射到ACL的所有者条目。 其他类权限映射到其各自的ACL条目。 
+
+    在扩展ACL情形下，组类权限的映射是不同的。
+
+    对于没有掩码的最小ACL，组类权限将映射到ACL所有者组条目。
+
+    对于带有掩码的扩展ACL，组类权限将映射到掩码条目。
+    
+    通过权限位进行分配的权限代表了通过ACL进行分配的权限的上限。 没有在这里体现的任何权限，要么不在ACL中，要么无效。
+    
+    对权限位所做的更改将由ACL反映，反之亦然。
+
+
+
+#### 默认ACL权限
+
+```
+$ su - pm1
+
+$ touch ./project1/file2
+$ mkdir ./project1/cloud
+
+$ ll ./project1/
+drwxr-xr-x. 1 pm1 project1  0 Dec  4 08:52 cloud
+-rw-r--r--. 1 pm1 project1 15 Dec  4 07:15 file1
+-rw-r--r--. 1 pm1 project1  0 Dec  4 08:52 file2
+
+$ ll -d project1/
+drwxr-----+ 1 pm1 project1 30 Dec  4 08:52 project1/
+```
+
+文件`file1`和目录`cloud`没有继承`project1`目录的ACL权限。
+
+!!! Attetion
+    默认 ACL限只对目录生效。
+
+    默认ACL权限的作用是：如果给父目录设定了默认 ACL 权限，那么父目录中所有新建的子文件都会继承父目录的ACL权限。
+
+		
+下面增加`~/project1`目录的默认ACL权限。
+```
+$ su - pm1
+$ cd ~
+
+$ getfacl ./project1/
+# file: project1/
+# owner: pm1
+# group: project1
+user::rwx
+user:tm2:r-x          #effective:r--
+group::rwx            #effective:r--
+group:project2:rwx    #effective:r--
+mask::r--
+other::---
+
+$ setfacl -m d:u:tm2:rx ./project1/
+
+$ getfacl ./project1/
+# file: project1/
+# owner: pm1
+# group: project1
+user::rwx
+user:tm2:r-x         #effective:r--
+group::rwx           #effective:r--
+group:project2:rwx   #effective:r--
+mask::r--
+other::---
+default:user::rwx
+default:user:tm2:r-x
+default:group::rwx
+default:mask::rwx
+default:other::---
+```
+
+创建新子目录`leonardo`，就继承了`~/project1`目录的default ACL权限设定。
+
+注意，默认ACL权限是针对新建立的文件生效的，目录cloud和文件file1并没有因为增加了父目录的默认ACL设定而继承默认ACL权限设定.
+```
+$ su - pm1
+$ cd ~
+$ mkdir ./project1/leonardo
+
+$ ll ./project1/
+drwxr-xr-x. 1 pm1 project1  0 Dec  4 08:52 cloud
+-rw-r--r--. 1 pm1 project1 15 Dec  4 07:15 file1
+-rw-r--r--. 1 pm1 project1  0 Dec  4 08:52 file2
+drwxrwx---+ 1 pm1 project1  0 Dec  4 09:07 leonardo
+```
+
+#### 递归ACL权限
+
+递归 ACL 权限，是指父目录在设定ACL权限时，所有的子目录也会拥有相同的ACL权限。
+```
+$ su - pm1
+$ cd ~
+
+$ getfacl ./project1/
+# file: project1/
+# owner: pm1
+# group: project1
+user::rwx
+user:tm2:r-x          #effective:r--
+group::rwx            #effective:r--
+group:project2:rwx    #effective:r--
+mask::r--
+other::---
+default:user::rwx
+default:user:tm2:r-x
+default:group::rwx
+default:mask::rwx
+default:other::---
+
+$ setfacl -m d:u:tm2:rx -R ./project1/
+
+$ ll ./project1
+drwxr-xr-x+ 1 pm1 project1  0 Dec  4 08:52 cloud
+-rw-r--r--. 1 pm1 project1 15 Dec  4 07:15 file1
+-rw-r--r--. 1 pm1 project1  0 Dec  4 08:52 file2
+drwxrwx---+ 1 pm1 project1  0 Dec  4 09:07 leonardo
+```
+
+
+
+
+
+
+
+
+
+#### 删除ACL权限
+
+删除用户`tm2`的ACL权限。
+```
+$ su - pm1
+$ cd ~
+
+$ setfacl -x u:tm2 ./project1/
+
+$ getfacl ./project1/
+# file: project1/
+# owner: pm1
+# group: project1
+user::rwx
+group::rwx
+group:project2:rwx
+mask::rwx
+other::---
+default:user::rwx
+default:user:tm2:r-x
+default:group::rwx
+default:mask::rwx
+default:other::---
+```
+
+删除所有的ACL权限。
+```
+$ setfacl -b ./project1
+
+$ getfacl ./project1
+# file: project1/
+# owner: pm1
+# group: project1
+user::rwx
+group::rwx
+other::---
+
+$ ll ./project1
+drwxr-xr-x+ 1 pm1 project1  0 Dec  4 08:52 cloud
+-rw-r--r--. 1 pm1 project1 15 Dec  4 07:15 file1
+-rw-r--r--. 1 pm1 project1  0 Dec  4 08:52 file2
+drwxrwx---+ 1 pm1 project1  0 Dec  4 09:07 leonardo
+```
+递归删除全部ACL权限。
+```
+$ setfacl -b -R ./project1
+
+$ ll ./project1/
+total 4
+drwxr-xr-x. 1 pm1 project1  0 Dec  4 08:52 cloud
+-rw-r--r--. 1 pm1 project1 15 Dec  4 07:15 file1
+-rw-r--r--. 1 pm1 project1  0 Dec  4 08:52 file2
+drwxrwx---. 1 pm1 project1  0 Dec  4 09:07 leonardo
+```
+
+
+### ACL目录实例解析
+
+#### 目录ACL
+
+切换到pm1用户，在其主目录中，基于不同的掩码创建2个子目录。
+```
+$ su - pm1
+
+$ umask 0022
+$ mkdir mydir1
+
+$ umask 0027
+$ mkdir mydir2
+
+$ ll -d mydir*
+drwxr-xr-x. 1 pm1 project1 0 Dec  4 12:30 mydir1
+drwxr-x---. 1 pm1 project1 0 Dec  4 12:31 mydir2
+```
+
+这2个目录当前的ACL状态如下：
+```
+$ getfacl mydir1
+# file: mydir1
+# owner: pm1
+# group: project1
+user::rwx
+group::r-x
+other::r-x
+
+$ getfacl mydir2
+# file: mydir2
+# owner: pm1
+# group: project1
+user::rwx
+group::r-x
+other::---
+```
+
+
+
+修改目录`mydir2`的ACL。
+```
+$ setfacl -m u:tm2:rwx,g:project2:rwx mydir2
+
+$ getfacl mydir2
+getfacl mydir2
+# file: mydir2
+# owner: pm1
+# group: project1
+user::rwx
+user:tm2:rwx
+group::r-x
+group:project2:rwx
+mask::rwx
+other::---
+
+$ ll -d mydir2
+drwxrwx---+ 1 pm1 project1 0 Dec  4 12:31 mydir2
+```
+
+现在，用户`tm2`和组`project2`对目录`mydir2`都具有rwx权限，传统POSIX权限和ACL权限一致。
+
+现在对mydir2目录组权限撤销w权限。
+用户`tm2`和组`project2`对目录`mydir2`的有效权限变成了`r-x`。
+mask也受组权限变化影响，变成了`r-x`。
+```
+$ chmod g-w mydir2
+
+$ ll -d mydir2
+drwxr-x---+ 1 pm1 project1 0 Dec  4 12:31 mydir2
+
+$ getfacl mydir2
+# file: mydir2
+# owner: pm1
+# group: project1
+user::rwx
+user:tm2:rwx          #effective:r-x
+group::r-x
+group:project2:rwx    #effective:r-x
+mask::r-x
+other::---
+```
+
+通过`chmod`和`setfacl`两种不同的方法对目录`mydir2`的组权限进行修改，在ls命令中体现是一样的，对组的实际有效权限的影响也是一样的。
+
+`chmod`修改的是`mask`，`mask`只影响除所有者和other的之外的人和组的最大权限，`mask`需要与用户的权限进行逻辑与运算后，才能变成有效权限，用户或组的设置必须在mask权限设定范围内才会生效。
+
+`setfacl`可以不修改mask的情况下只修改`owning group`的权限，下面的例子说明了这一情况。POSIX组权限仍然是`rwx`，但ACL中所有者组的权限变成了`r--`。
+```
+$ setfacl -m g::r mydir2
+		
+$ ll -d mydir2
+drwxrwx---+ 1 pm1 project1 0 Dec  4 12:31 mydir2
+
+$ getfacl mydir2
+# file: mydir2
+# owner: pm1
+# group: project1
+user::rwx
+user:tm2:rwx
+group::r--
+group:project2:rwx
+mask::rwx
+other::---
+```
+
+
+#### 目录的默认ACL
+
+目录可以具有默认ACL，这是一种特殊的ACL，用于定义目录下的对象在创建时继承的访问权限。默认ACL会影响子目录和文件。
+	
+目录的默认ACL的权限有两种不同的方式传递给其中的文件和子目录：
+
+* 子目录继承父目录的默认ACL，既作为自己的默认ACL，又作为自己的访问ACL。
+* 文件继承目录默认ACL作为其自己的访问ACL。
+
+创建文件系统对象的所有系统函数都使用mode参数，该参数定义了新创建的文件系统对象的访问权限。
+
+* 如果父目录没有默认ACL，则根据umask的设置设置权限位。
+* 如果父目录存在默认ACL，则分配给新对象的权限位则是mode参数权限与默认ACL中定义的权限的逻辑与的结果。在这种情况下，忽略umask命令。
+* 默认ACL不会立即影响访问权限。它们仅在创建文件系统对象时才起作用。这些新对象仅从其父目录的默认ACL继承权限。
+    * 命令`mkdir`在创建目录时会继承默认ACL。
+
+```
+$ su - pm1
+
+$ getfacl mydir2
+# file: mydir2
+# owner: pm1
+# group: project1
+user::rwx
+user:tm2:rwx
+group::r--
+group:project2:rwx
+mask::rwx
+other::---
+
+$ mkdir ./mydir2/sub1
+
+$ ll ./mydir2
+drwxr-x---. 1 pm1 project1 0 Dec  4 13:23 sub1
+
+$ setfacl -d -m g:project2:-w- mydir2
+
+$ mkdir ./mydir2/sub2
+
+$ ll ./mydir2
+drwxr-x---. 1 pm1 project1 0 Dec  4 13:23 sub1
+drwxrw----+ 1 pm1 project1 0 Dec  4 13:27 sub2
+
+$ getfacl ./mydir2/sub2
+# file: mydir2/sub2
+# owner: pm1
+# group: project1
+user::rwx
+group::r--
+group:project2:-w-
+mask::rw-
+other::---
+default:user::rwx
+default:group::r--
+default:group:project2:-w-
+default:mask::rw-
+default:other::---
+```
+
+在对`mydir2`目录添加默认ACL前，创建子目录`sub1`，添加后创建子目录`sub2`。可以观察到`sub2`到继承了`mydir2`的默认ACL。
+```
+$ su - tm2
+
+$ cd /home/pm1/mydir2/sub2
+-bash: cd: /home/pm1/mydir2/sub2: Permission denied
+```
+上例中，默认ACL中指定组`project2`只具有w权限，所以无法执行`cd`命令进入该目录。
+这说明模式值mode中给予的权限`r`被屏蔽了，只保留了ACL中最小的权限`w`。
+
+
+
+
+
+### ACL检查逻辑
+
+ACL检查顺序：
+
+* Owner
+* Named user
+* Owning group
+* Named group
+* Other
+	
+
+	If
+		进程的用户标识是Owner，则owner的ACL条目决定访问权限
+	else if
+		进程的用户标识是named user，则name user的ACL条目的权限决定申请的访问权限
+	else if
+		进程的组属于owning group，且owning group的ACL条目包含所请求的访问权限，则授予所请求的权限
+	else if
+		进程的组属于named group，且named group的ACL条目包含所请求的访问权限，则授予所请求的权限
+	else if
+		进程的组属于owning group或者named group，但owning group或者named group的ACL条目不包含所请求的访问权限，则拒绝所请求的权限
+	else
+		ACL中的other条目处理申请的权限
+	If
+		如果进程匹配到owner或者other条目中包含所申请的权限，则授予权限
+	else if
+		如果进程匹配到named user，owning group，或者named group条目中包含所申请的权限，且maks条目也包含所申请的权限，则授予权限
+	else
+		拒绝权限申请
+
+
+实际应用举例：
+
+* udev使用ACL给予登录到图形界面的用户访问设备的权限，例如DVD驱动器
+* 某些应用程序不支持ACL
+* Star Archiver是一个完全保留ACL的备份应用程序，其他人可能会也可能不会保留它 
+* 许多编辑器和文件管理器不允许在应用程序中查看或设置ACL
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
