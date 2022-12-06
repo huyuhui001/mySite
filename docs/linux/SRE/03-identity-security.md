@@ -472,10 +472,13 @@ drwxr-xr-x. 1 tester4 tester4 0 Nov 26 00:32 /home/tester4
 
 #### 批量修改密码`chpasswd`
 
-两个方法：
+不同方法：
 ```
 $ echo username:password | chpasswd
-$ chpasswd < file.txt
+
+$ chpasswd < file.txt  # file.txt每行的格式是username:password
+
+$ paste -d ":" user.txt passwd.txt | chpasswd
 ```
 
 参数`-e`：口令以加密的方式传递。否则口令以明文的形式传递。

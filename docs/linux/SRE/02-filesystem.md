@@ -406,7 +406,7 @@ file_c.txt  file_F.txt  file_j.txt  file_M.txt  file_q.txt  file_T.txt  file_x.t
 
 
 
-### 刷新文件时间
+### 刷新文件时间`touch`
 
 `touch`命令可以创建空文件，也可以刷新文件时间。参数如下：
 
@@ -461,7 +461,7 @@ Change: 2022-11-08 20:56:18.306315887 +0800
 
 
 
-### 复制文件和目录
+### 复制文件和目录`cp`
 
 `cp`命令：Copy SOURCE to DEST, or multiple SOURCE(s) to DIRECTORY.
 
@@ -586,7 +586,7 @@ drwxr-xr-x. 3 root    root  4096 Nov  8 22:49 sysconfig
 ```
 
 
-### 移动文件和目录
+### 移动文件和目录`mv`
 
 `mv`命令。Rename SOURCE to DEST, or move SOURCE(s) to DIRECTORY.
 
@@ -616,7 +616,7 @@ $ mv ~/test ~/dest
 
 
 
-### 重命名文件和目录
+### 重命名文件和目录`rename`
 
 `rename`命令。分为perl版本和C语言版本。
 区分方法: `rename --version`。如果返回结果中包含 `util-linux`，说明是C语言版本, 反之是Perl版本。
@@ -639,7 +639,7 @@ rename -v "s/s/gz/g" *.s
 ```
 
 
-### 删除文件
+### 删除文件`rm`
 
 `rm`命令。建议使用`mv`命令代替`rm`命令。
 
