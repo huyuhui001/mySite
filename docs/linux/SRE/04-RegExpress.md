@@ -1,4 +1,4 @@
-# 文本编辑器和正则表达式
+# 文本编辑和正则表达式
 
 ## 文本编辑器`vim`
 
@@ -863,13 +863,9 @@ $ ss -nt | tr -s " " ":" | cut -d ":" -f 6,7 | sort | uniq -c | sort -nr | head 
       6 192.168.10.210:22
 ```
 
-
-
-
-
 ### 文本比较
 
-#### `diff`
+#### `diff`
 
 命令`diff`比较两个文件之间的区别。
 
@@ -880,7 +876,6 @@ $ ss -nt | tr -s " " ":" | cut -d ":" -f 6,7 | sort | uniq -c | sort -nr | head 
 - `-W`：在使用-y参数时，指定栏宽
 - `-c`：显示全部内文，并标出不同之处
 - `-N`：缺失文件以空文件处理
-
 
 举例：
 
@@ -898,6 +893,7 @@ $ cat text6 # 文件尾部没有空行
 ```
 
 显示不同。`3c3,4`代表两个文件在第3，4行有不同。
+
 ```
 $ diff text5 text6
 3c3,4
@@ -911,13 +907,13 @@ $ diff text5 text6
 
 * 前2行是文件信息。其中`---`表示变动前的文件，`+++`表示变动后的文件。
 * 变动的位置用两个@作为起首和结束，`@@ -1,3 +1,4 @@`。
-    * `-1,3`中，`-`表示第一个文件，即`text5`。第一个文件从第1行开始连续3行。
-    * `+1,4`中，`+`表示第二个文件，即`text6`。即，第二个文件从第1行开始连续4行。
+  * `-1,3`中，`-`表示第一个文件，即`text5`。第一个文件从第1行开始连续3行。
+  * `+1,4`中，`+`表示第二个文件，即`text6`。即，第二个文件从第1行开始连续4行。
 
 ```
 $ diff -u text5 text6
---- text5	2022-12-07 08:07:05.927805722 +0800
-+++ text6	2022-12-07 08:07:24.692234585 +0800
+--- text5    2022-12-07 08:07:05.927805722 +0800
++++ text6    2022-12-07 08:07:24.692234585 +0800
 @@ -1,3 +1,4 @@
  1001
  1002
@@ -927,10 +923,11 @@ $ diff -u text5 text6
 ```
 
 以上下文方式输出比较结果。标有`!`代表差异行。
+
 ```
 $ diff -c text5 text6
-*** text5	2022-12-07 08:24:08.867168414 +0800
---- text6	2022-12-07 08:24:13.939284243 +0800
+*** text5    2022-12-07 08:24:08.867168414 +0800
+--- text6    2022-12-07 08:24:13.939284243 +0800
 ***************
 *** 1,3 ****
   1001
@@ -946,17 +943,21 @@ $ diff -c text5 text6
 并排格式输出比较结果。
 
 * `|`表示前后2个文件内容有不同
+
 * `<`表示后面文件比前面文件少了1行内容
+
 * `>`表示后面文件比前面文件多了1行内容
-```
-$ diff -y -W 50 text5 text6
-1001        1001
-1002        1002
-1003      | 1003a
+  
+  ```
+  $ diff -y -W 50 text5 text6
+  1001        1001
+  1002        1002
+  1003      | 1003a
           > 1004
-```
+  ```
 
 比较文件夹内容。注意，只比较内容，不比较时间戳。
+
 ```
 $ mkdir dir1
 $ mkdir dir2
@@ -977,15 +978,27 @@ $ diff dir1 dir2
 Only in dir2: file4
 ```
 
-
-
 #### `patch`
 
-命令`patch`复制其他文件中的内容。
+命令`patch`复制其他文件中的内容。命令格式：
+
+```
+$ patch -p[num] < patchfile
+$ patch [options] originalfile patchfile 
+```
+
+当特定软件有可用的安全修复程序时，我们通常会使用 `yum`或 `apt-get` 或`zypper`等包管理工具进行二进制升级。 
+
+但如果我们是通过从源代码编译安装软件的情况下，我们需要下载安全补丁并将其应用于原始源代码并重新编译软件。 
+
+这就是我们使用 `diff` 创建补丁文件（patch file），并使用 `patch `命令应用它。 
+
+补丁文件是一个文本文件，其中包含同一文件（或同一源代码树）的两个版本之间的差异。 补丁文件是使用 `diff `命令创建的。
 
 继续上例。
 
 将文件`text5`的内容同步到文件`text6`，然后撤销补丁。注意区分源文件和目标文件。
+
 ```
 $ cat text5
 1001
@@ -1002,14 +1015,39 @@ $ cat text6
 $ diff -ruN text5 text6 > patchfile
 
 $ cat patchfile
---- text5	2022-12-07 08:24:08.867168414 +0800
-+++ text6	2022-12-07 08:24:13.939284243 +0800
+--- text5    2022-12-07 08:24:08.867168414 +0800
++++ text6    2022-12-07 08:24:13.939284243 +0800
 @@ -1,3 +1,4 @@
  1001
  1002
 -1003
 +1003a
 +1004
+
+# 不指明目标文件，则默认给diff命令中的源文件进行打补丁
+$ patch < patchfile
+patching file text5
+
+$ cat text5
+1001
+1002
+1003a
+1004
+
+$ cat text6
+1001
+1002
+1003a
+1004
+
+# 撤销补丁
+patch -R < patchfile
+patching file text5
+
+# cat text5
+1001
+1002
+1003
 
 # 给text6文件打补丁（用text5的文件内容覆盖text6的内容）
 $ patch text6 patchfile
@@ -1033,58 +1071,141 @@ $ cat text6
 1004
 ```
 
-对目录dir2打补丁，即，同步dir1的内容到dir2.
-
-* `-p0`  从当前目录打补丁
-* `-p1`  忽略到第1层目录，开始打补丁，就是去掉第1个/前面的内容（补丁文件里的路径里的/）。需要进入目标文件夹（推荐使用）。
-* `-p2`  忽略到前2层目录，开始打补丁
-以此类推。
-
-* `-R 撤销补丁 
-
+使用`-b`参数，在patch前先备份源文件。
 ```
-# file3有内容
-$ ll ./dir1
--rw-r--r--. 1 vagrant wheel 0 Dec  7 08:34 file1
--rw-r--r--. 1 vagrant wheel 0 Dec  7 08:35 file2
--rw-r--r--. 1 vagrant wheel 6 Dec  7 08:42 file3
+$ patch -b < patchfile
+patching file text5
 
-# file3是空文件
-$ ll ./dir2
--rw-r--r--. 1 vagrant wheel 0 Dec  7 08:35 file1
--rw-r--r--. 1 vagrant wheel 0 Dec  7 08:35 file2
--rw-r--r--. 1 vagrant wheel 0 Dec  7 08:35 file3
--rw-r--r--. 1 vagrant wheel 0 Dec  7 08:39 file4
+$ cat text5
+1001
+1002
+1003a
+1004
 
-$ diff -ruN dir1 dir2 > patchdir
+$ cat text5.orig
+1001
+1002
+1003
+
+$ cat text6.orig
+1001
+1002
+1003
+
+$ patch -R < patchfile
+patching file text5
+```
+
+在-b参数中加入-V参数，指定备份文件名的格式，如下，会得到文件`text5.~1~`。
+```
+$patch -b -V numbered < patchfile
+patching file text5
+
+$ cat text5
+1001
+1002
+1003a
+1004
+
+$ cat text5.~1~
+1001
+1002
+1003
+```
+
+试运行，不做实际更改。
+```
+patch --dry-run < patchfile
+```
+
+
+对目录打补丁。
+
+* 执行`diff`和`patch`命令是在当前用户`vagrant`的主目录下，绝对路径是`/home/vagrant`。
+* `diff`命令中，源目录是`/home/vagrant/dir1`。目标目录是`/home/vagrant/dir2`。
+* `-p3`是告诉`patch`命令忽略上面绝对路径中前三个斜杠`/`。
+* `patch`命令中用`diff`的目标目录去覆盖源目录。互换会报错。
+* `-R`：撤销补丁。
+```
+# file3和file4有内容
+$ tree ./dir1
+./dir1
+├── file1
+├── file2
+├── file3
+└── subdir1
+    └── file4
+
+# 都是空文件
+$ tree ./dir2
+./dir2
+├── file1
+├── file2
+├── file3
+└── subdir1
+    └── file4
+
+$ diff -ruN /home/vagrant/dir1 /home/vagrant/dir2 > patchdir
 
 $ cat patchdir
-diff -ruN dir1/file3 dir2/file3
---- dir1/file3	2022-12-07 08:42:33.108418336 +0800
-+++ dir2/file3	2022-12-07 08:35:33.514822960 +0800
+diff -ruN /home/vagrant/dir1/file3 /home/vagrant/dir2/file3
+--- /home/vagrant/dir1/file3    2022-12-07 08:42:33.108418336 +0800
++++ /home/vagrant/dir2/file3    2022-12-07 21:25:48.156056360 +0800
 @@ -1 +0,0 @@
 -hello
+diff -ruN /home/vagrant/dir1/subdir1/file4 /home/vagrant/dir2/subdir1/file4
+--- /home/vagrant/dir1/subdir1/file4    2022-12-07 21:15:09.689912160 +0800
++++ /home/vagrant/dir2/subdir1/file4    2022-12-07 21:26:55.405546177 +0800
+@@ -1 +0,0 @@
+-/home/vagrant/dir1/subdir1
 
-$ cd dir2
 
-$ patch -p1< ../patchdir
-The next patch would empty out the file file3,
-which is already empty!  Assume -R? [n] y
-patching file file3
+# 用dir2的内容覆盖dir1的内容
+$ patch -p3 < patchdir
+patching file dir1/file3
+patching file dir1/subdir1/file4
 
-# 这里的file3已经是dir1目录下的文件
-$ ll
--rw-r--r--. 1 vagrant wheel 0 Dec  7 08:35 file1
--rw-r--r--. 1 vagrant wheel 0 Dec  7 08:35 file2
--rw-r--r--. 1 vagrant wheel 6 Dec  7 09:35 file3
--rw-r--r--. 1 vagrant wheel 0 Dec  7 08:39 file4
+# 现在dir1目录下的内容已经被dir2目录覆盖了。file3和file4都是空文件
+$ ll ./dir1
+total 0
+-rw-r--r--. 1 vagrant wheel  0 Dec  7 08:34 file1
+-rw-r--r--. 1 vagrant wheel  0 Dec  7 08:35 file2
+-rw-r--r--. 1 vagrant wheel  0 Dec  7 21:40 file3
+drwxr-xr-x. 1 vagrant wheel 10 Dec  7 21:40 subdir1
 
-$ ll ../dir1
--rw-r--r--. 1 vagrant wheel 0 Dec  7 08:34 file1
--rw-r--r--. 1 vagrant wheel 0 Dec  7 08:35 file2
--rw-r--r--. 1 vagrant wheel 6 Dec  7 08:42 file3
+$ ll ./dir1/subdir1
+total 0
+-rw-r--r--. 1 vagrant wheel 0 Dec  7 21:40 file4
+
+# 撤销补丁，file3和file4已经恢复为原文件
+$ patch -R -p3 < patchdir
+patching file dir1/file3
+patching file dir1/subdir1/file4
+
+$ ll ./dir1
+-rw-r--r--. 1 vagrant wheel  0 Dec  7 08:34 file1
+-rw-r--r--. 1 vagrant wheel  0 Dec  7 08:35 file2
+-rw-r--r--. 1 vagrant wheel  6 Dec  7 21:45 file3
+drwxr-xr-x. 1 vagrant wheel 10 Dec  7 21:45 subdir1
+
+$ ll ./dir1/subdir1
+-rw-r--r--. 1 vagrant wheel 27 Dec  7 21:45 file4
+
+
+# 用dir1的内容覆盖dir2的内容，系统拒绝。
+patch dir2 -p3 < patchdir
+File dir2 is not a regular file -- refusing to patch
+1 out of 1 hunk ignored -- saving rejects to file dir2.rej
+File dir2 is not a regular file -- refusing to patch
+1 out of 1 hunk ignored -- saving rejects to file dir2.rej
+
+$ patch /home/vagrant/dir2 -p3 < patchdir
+File /home/vagrant/dir2 is not a regular file -- refusing to patch
+1 out of 1 hunk ignored -- saving rejects to file /home/vagrant/dir2.rej
+File /home/vagrant/dir2 is not a regular file -- refusing to patch
+1 out of 1 hunk ignored -- saving rejects to file /home/vagrant/dir2.rej
+
 ```
-  
 
 
 
@@ -1092,10 +1213,67 @@ $ ll ../dir1
 
 #### `vimdiff`
 
+命令`vimdiff`相当于`vim -d`。
 
+举例：
 
-
-
-
+```
+$ vimdiff text1 text2
+```
 
 #### `cmp`
+
+命令`cmp`查看二进制文件的不同。
+
+```
+$ cmp cp grep
+cp grep differ: byte 25, line 1
+
+$ cmp /usr/bin/ls /usr/bin/dir
+/usr/bin/ls /usr/bin/dir differ: byte 613, line 1
+
+# 跳过前735个字节，输出后面30个字节内容
+$ hexdump -s 735 -Cn 30 /usr/bin/ls
+000002df  00 00 00 00 00 5d 00 00  00 50 00 00 00 68 00 00  |.....]...P...h..|
+000002ef  00 6a 00 00 00 4f 00 00  00 00 00 00 00 1d        |.j...O........|
+000002fd
+$ hexdump -s 735 -Cn 30 /usr/bin/dir
+000002df  00 00 00 00 00 5d 00 00  00 50 00 00 00 68 00 00  |.....]...P...h..|
+000002ef  00 6a 00 00 00 4f 00 00  00 00 00 00 00 1d        |.j...O........|
+000002fd
+```
+
+## 正则表达式
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
