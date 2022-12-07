@@ -671,8 +671,6 @@ $ wc -L text
 20 text
 ```
 
-
-
 对比两种不同合并的方法。
 
 ```
@@ -688,10 +686,7 @@ $ paste text1 text2
 Tom, 20, Shanghai       Tom, 20, Shanghai
 Jack, 30, Beijing       Jack, 30, Beijing
 Smith, 40, Guangzhou    Leo, 40, Guangzhou
-
 ```
-
-
 
 ### 文本排序`sort`
 
@@ -777,17 +772,9 @@ Jack, 30, Beijing
 Smith, 40, Guangzhou
 ```
 
-
-
-
-
 ### 去重`uniq`
 
-
-
 命令`uniq`从输入中删除前后相邻重复的行。经常与`sort`命令结合使用。
-
-
 
 主要参数：
 
@@ -796,8 +783,6 @@ Smith, 40, Guangzhou
 - `-d`：仅显示重复的行
 
 - `-u`：仅显示不重复的行
-
-
 
 举例，注意只有对相邻行进行去重。
 
@@ -822,15 +807,15 @@ test 30
 把文件text1和文件text2合并后，进行交集和并集，并去重。
 
 ```
-$ cat text2
-Tom, 20, Shanghai
-Jack, 30, Beijing
-Leo, 40, Guangzhou
-
 $ cat text1
 Tom, 20, Shanghai
 Jack, 30, Beijing
 Smith, 40, Guangzhou
+
+$ cat text2
+Tom, 20, Shanghai
+Jack, 30, Beijing
+Leo, 40, Guangzhou
 
 # 并集，按首列排序去重
 $ cat text1 text2 | sort | uniq
@@ -849,8 +834,6 @@ $ cat text1 text2 | sort | uniq -u
 Leo, 40, Guangzhou
 Smith, 40, Guangzhou
 ```
-
-
 
 查看并发连接数最多的远程主机IP。
 
@@ -878,12 +861,241 @@ ESTAB         0              0                        192.168.10.210:22         
 
 $ ss -nt | tr -s " " ":" | cut -d ":" -f 6,7 | sort | uniq -c | sort -nr | head -n 1
       6 192.168.10.210:22
-
-
 ```
 
 
 
 
 
-### 文本比较`diff`和`patch`
+### 文本比较
+
+#### `diff`
+
+命令`diff`比较两个文件之间的区别。
+
+常用选项：
+
+- `-u`：以统一的方式来显示文件内容的不同
+- `-y`：以并列的方式显示文件的异同之处
+- `-W`：在使用-y参数时，指定栏宽
+- `-c`：显示全部内文，并标出不同之处
+- `-N`：缺失文件以空文件处理
+
+
+举例：
+
+```
+$ cat text5 # 文件尾部没有空行
+1001
+1002
+1003
+
+$ cat text6 # 文件尾部没有空行
+1001
+1002
+1003a
+1004
+```
+
+显示不同。`3c3,4`代表两个文件在第3，4行有不同。
+```
+$ diff text5 text6
+3c3,4
+< 1003
+---
+> 1003a
+> 1004
+```
+
+以统一格式输出比较结果。
+
+* 前2行是文件信息。其中`---`表示变动前的文件，`+++`表示变动后的文件。
+* 变动的位置用两个@作为起首和结束，`@@ -1,3 +1,4 @@`。
+    * `-1,3`中，`-`表示第一个文件，即`text5`。第一个文件从第1行开始连续3行。
+    * `+1,4`中，`+`表示第二个文件，即`text6`。即，第二个文件从第1行开始连续4行。
+
+```
+$ diff -u text5 text6
+--- text5	2022-12-07 08:07:05.927805722 +0800
++++ text6	2022-12-07 08:07:24.692234585 +0800
+@@ -1,3 +1,4 @@
+ 1001
+ 1002
+-1003
++1003a
++1004
+```
+
+以上下文方式输出比较结果。标有`!`代表差异行。
+```
+$ diff -c text5 text6
+*** text5	2022-12-07 08:24:08.867168414 +0800
+--- text6	2022-12-07 08:24:13.939284243 +0800
+***************
+*** 1,3 ****
+  1001
+  1002
+! 1003
+--- 1,4 ----
+  1001
+  1002
+! 1003a
+! 1004
+```
+
+并排格式输出比较结果。
+
+* `|`表示前后2个文件内容有不同
+* `<`表示后面文件比前面文件少了1行内容
+* `>`表示后面文件比前面文件多了1行内容
+```
+$ diff -y -W 50 text5 text6
+1001        1001
+1002        1002
+1003      | 1003a
+          > 1004
+```
+
+比较文件夹内容。注意，只比较内容，不比较时间戳。
+```
+$ mkdir dir1
+$ mkdir dir2
+
+$ cd dir1
+$ touch file1
+$ touch file2
+$ cp file1 file2 ../dir2/
+$ echo "hello" > file3
+
+$ cd ../dir2
+$ touch file3
+$ touch file4
+
+$ diff dir1 dir2
+1d0
+< hello
+Only in dir2: file4
+```
+
+
+
+#### `patch`
+
+命令`patch`复制其他文件中的内容。
+
+继续上例。
+
+将文件`text5`的内容同步到文件`text6`，然后撤销补丁。注意区分源文件和目标文件。
+```
+$ cat text5
+1001
+1002
+1003
+
+$ cat text6
+1001
+1002
+1003a
+1004
+
+# 生成补丁文件
+$ diff -ruN text5 text6 > patchfile
+
+$ cat patchfile
+--- text5	2022-12-07 08:24:08.867168414 +0800
++++ text6	2022-12-07 08:24:13.939284243 +0800
+@@ -1,3 +1,4 @@
+ 1001
+ 1002
+-1003
++1003a
++1004
+
+# 给text6文件打补丁（用text5的文件内容覆盖text6的内容）
+$ patch text6 patchfile
+patching file text6
+Reversed (or previously applied) patch detected!  Assume -R? [n] y
+
+$ cat text6
+1001
+1002
+1003
+
+# 撤销给text6文件打的补丁（恢复text6文件补丁前的内容）
+$ patch -R text6 patchfile
+patching file text6
+Unreversed patch detected!  Ignore -R? [n] y
+
+$ cat text6
+1001
+1002
+1003a
+1004
+```
+
+对目录dir2打补丁，即，同步dir1的内容到dir2.
+
+* `-p0`  从当前目录打补丁
+* `-p1`  忽略到第1层目录，开始打补丁，就是去掉第1个/前面的内容（补丁文件里的路径里的/）。需要进入目标文件夹（推荐使用）。
+* `-p2`  忽略到前2层目录，开始打补丁
+以此类推。
+
+* `-R 撤销补丁 
+
+```
+# file3有内容
+$ ll ./dir1
+-rw-r--r--. 1 vagrant wheel 0 Dec  7 08:34 file1
+-rw-r--r--. 1 vagrant wheel 0 Dec  7 08:35 file2
+-rw-r--r--. 1 vagrant wheel 6 Dec  7 08:42 file3
+
+# file3是空文件
+$ ll ./dir2
+-rw-r--r--. 1 vagrant wheel 0 Dec  7 08:35 file1
+-rw-r--r--. 1 vagrant wheel 0 Dec  7 08:35 file2
+-rw-r--r--. 1 vagrant wheel 0 Dec  7 08:35 file3
+-rw-r--r--. 1 vagrant wheel 0 Dec  7 08:39 file4
+
+$ diff -ruN dir1 dir2 > patchdir
+
+$ cat patchdir
+diff -ruN dir1/file3 dir2/file3
+--- dir1/file3	2022-12-07 08:42:33.108418336 +0800
++++ dir2/file3	2022-12-07 08:35:33.514822960 +0800
+@@ -1 +0,0 @@
+-hello
+
+$ cd dir2
+
+$ patch -p1< ../patchdir
+The next patch would empty out the file file3,
+which is already empty!  Assume -R? [n] y
+patching file file3
+
+# 这里的file3已经是dir1目录下的文件
+$ ll
+-rw-r--r--. 1 vagrant wheel 0 Dec  7 08:35 file1
+-rw-r--r--. 1 vagrant wheel 0 Dec  7 08:35 file2
+-rw-r--r--. 1 vagrant wheel 6 Dec  7 09:35 file3
+-rw-r--r--. 1 vagrant wheel 0 Dec  7 08:39 file4
+
+$ ll ../dir1
+-rw-r--r--. 1 vagrant wheel 0 Dec  7 08:34 file1
+-rw-r--r--. 1 vagrant wheel 0 Dec  7 08:35 file2
+-rw-r--r--. 1 vagrant wheel 6 Dec  7 08:42 file3
+```
+  
+
+
+
+
+
+#### `vimdiff`
+
+
+
+
+
+
+
+#### `cmp`
