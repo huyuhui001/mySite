@@ -209,6 +209,8 @@ vim三种常见模式：
 * `Ctrl+v 然后 ctrl+A是^A Ctrl+I是\t`:    输入特殊字符
 * `Ctrl+v然后用j、k、l、h或方向键上下选中多列，之后 I I   a A  r  x等，最后按esc，生效`:    Vim列操作
 
+![VIM Cheet Sheet](./assets/vim_cheet_sheet.jpg)
+
 ## 文本处理工具
 
 ### 显示文本内容`cat`
@@ -1072,6 +1074,7 @@ $ cat text6
 ```
 
 使用`-b`参数，在patch前先备份源文件。
+
 ```
 $ patch -b < patchfile
 patching file text5
@@ -1097,6 +1100,7 @@ patching file text5
 ```
 
 在-b参数中加入-V参数，指定备份文件名的格式，如下，会得到文件`text5.~1~`。
+
 ```
 $patch -b -V numbered < patchfile
 patching file text5
@@ -1114,10 +1118,10 @@ $ cat text5.~1~
 ```
 
 试运行，不做实际更改。
+
 ```
 patch --dry-run < patchfile
 ```
-
 
 对目录打补丁。
 
@@ -1126,6 +1130,9 @@ patch --dry-run < patchfile
 * `-p3`是告诉`patch`命令忽略上面绝对路径中前三个斜杠`/`。
 * `patch`命令中用`diff`的目标目录去覆盖源目录。互换会报错。
 * `-R`：撤销补丁。
+
+
+
 ```
 # file3和file4有内容
 $ tree ./dir1
@@ -1134,65 +1141,69 @@ $ tree ./dir1
 ├── file2
 ├── file3
 └── subdir1
-    └── file4
+  └── file4
 
-# 都是空文件
+
+都是空文件
+
 $ tree ./dir2
 ./dir2
 ├── file1
 ├── file2
 ├── file3
 └── subdir1
-    └── file4
+ └── file4
 
 $ diff -ruN /home/vagrant/dir1 /home/vagrant/dir2 > patchdir
 
 $ cat patchdir
 diff -ruN /home/vagrant/dir1/file3 /home/vagrant/dir2/file3
---- /home/vagrant/dir1/file3    2022-12-07 08:42:33.108418336 +0800
-+++ /home/vagrant/dir2/file3    2022-12-07 21:25:48.156056360 +0800
+--- /home/vagrant/dir1/file3 2022-12-07 08:42:33.108418336 +0800
++++ /home/vagrant/dir2/file3 2022-12-07 21:25:48.156056360 +0800
 @@ -1 +0,0 @@
 -hello
 diff -ruN /home/vagrant/dir1/subdir1/file4 /home/vagrant/dir2/subdir1/file4
---- /home/vagrant/dir1/subdir1/file4    2022-12-07 21:15:09.689912160 +0800
-+++ /home/vagrant/dir2/subdir1/file4    2022-12-07 21:26:55.405546177 +0800
+--- /home/vagrant/dir1/subdir1/file4 2022-12-07 21:15:09.689912160 +0800
++++ /home/vagrant/dir2/subdir1/file4 2022-12-07 21:26:55.405546177 +0800
 @@ -1 +0,0 @@
 -/home/vagrant/dir1/subdir1
 
-
 # 用dir2的内容覆盖dir1的内容
+
 $ patch -p3 < patchdir
 patching file dir1/file3
 patching file dir1/subdir1/file4
 
 # 现在dir1目录下的内容已经被dir2目录覆盖了。file3和file4都是空文件
+
 $ ll ./dir1
 total 0
--rw-r--r--. 1 vagrant wheel  0 Dec  7 08:34 file1
--rw-r--r--. 1 vagrant wheel  0 Dec  7 08:35 file2
--rw-r--r--. 1 vagrant wheel  0 Dec  7 21:40 file3
-drwxr-xr-x. 1 vagrant wheel 10 Dec  7 21:40 subdir1
+-rw-r--r--. 1 vagrant wheel 0 Dec 7 08:34 file1
+-rw-r--r--. 1 vagrant wheel 0 Dec 7 08:35 file2
+-rw-r--r--. 1 vagrant wheel 0 Dec 7 21:40 file3
+drwxr-xr-x. 1 vagrant wheel 10 Dec 7 21:40 subdir1
 
 $ ll ./dir1/subdir1
 total 0
--rw-r--r--. 1 vagrant wheel 0 Dec  7 21:40 file4
+-rw-r--r--. 1 vagrant wheel 0 Dec 7 21:40 file4
 
 # 撤销补丁，file3和file4已经恢复为原文件
+
 $ patch -R -p3 < patchdir
 patching file dir1/file3
 patching file dir1/subdir1/file4
 
 $ ll ./dir1
--rw-r--r--. 1 vagrant wheel  0 Dec  7 08:34 file1
--rw-r--r--. 1 vagrant wheel  0 Dec  7 08:35 file2
--rw-r--r--. 1 vagrant wheel  6 Dec  7 21:45 file3
-drwxr-xr-x. 1 vagrant wheel 10 Dec  7 21:45 subdir1
+-rw-r--r--. 1 vagrant wheel 0 Dec 7 08:34 file1
+-rw-r--r--. 1 vagrant wheel 0 Dec 7 08:35 file2
+-rw-r--r--. 1 vagrant wheel 6 Dec 7 21:45 file3
+drwxr-xr-x. 1 vagrant wheel 10 Dec 7 21:45 subdir1
 
 $ ll ./dir1/subdir1
--rw-r--r--. 1 vagrant wheel 27 Dec  7 21:45 file4
-
+-rw-r--r--. 1 vagrant wheel 27 Dec 7 21:45 file4
 
 # 用dir1的内容覆盖dir2的内容，系统拒绝。
+
 patch dir2 -p3 < patchdir
 File dir2 is not a regular file -- refusing to patch
 1 out of 1 hunk ignored -- saving rejects to file dir2.rej
@@ -1204,12 +1215,9 @@ File /home/vagrant/dir2 is not a regular file -- refusing to patch
 1 out of 1 hunk ignored -- saving rejects to file /home/vagrant/dir2.rej
 File /home/vagrant/dir2 is not a regular file -- refusing to patch
 1 out of 1 hunk ignored -- saving rejects to file /home/vagrant/dir2.rej
-
 ```
 
-
-
-
+ 
 
 #### `vimdiff`
 
@@ -1220,6 +1228,8 @@ File /home/vagrant/dir2 is not a regular file -- refusing to patch
 ```
 $ vimdiff text1 text2
 ```
+
+
 
 #### `cmp`
 
@@ -1233,42 +1243,31 @@ $ cmp /usr/bin/ls /usr/bin/dir
 /usr/bin/ls /usr/bin/dir differ: byte 613, line 1
 
 # 跳过前735个字节，输出后面30个字节内容
+
 $ hexdump -s 735 -Cn 30 /usr/bin/ls
-000002df  00 00 00 00 00 5d 00 00  00 50 00 00 00 68 00 00  |.....]...P...h..|
-000002ef  00 6a 00 00 00 4f 00 00  00 00 00 00 00 1d        |.j...O........|
-000002fd
-$ hexdump -s 735 -Cn 30 /usr/bin/dir
-000002df  00 00 00 00 00 5d 00 00  00 50 00 00 00 68 00 00  |.....]...P...h..|
-000002ef  00 6a 00 00 00 4f 00 00  00 00 00 00 00 1d        |.j...O........|
+000002df 00 00 00 00 00 5d 00 00 00 50 00 00 00 68 00 00 |.....]...P...h..|
+000002ef 00 6a 00 00 00 4f 00 00 00 00 00 00 00 1d |.j...O........|
+000002fd $ hexdump -s 735 -Cn 30 /usr/bin/dir
+000002df 00 00 00 00 00 5d 00 00 00 50 00 00 00 68 00 00 |.....]...P...h..|
+000002ef 00 6a 00 00 00 4f 00 00 00 00 00 00 00 1d |.j...O........|
 000002fd
 ```
 
+
+
 ## 正则表达式
 
+正则表达式分两类：
 
+- 基本正则表达式： Basic Regular Expressions（BRE）
+- 扩展正则表达式：Extended Regular Expressions（ERE）
 
+正则表达式的元字符分类
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+- 字符匹配
+- 匹配次数
+- 位置锚定
+- 分组
 
 
 
