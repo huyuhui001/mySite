@@ -1131,8 +1131,6 @@ patch --dry-run < patchfile
 * `patch`命令中用`diff`的目标目录去覆盖源目录。互换会报错。
 * `-R`：撤销补丁。
 
-
-
 ```
 # file3和file4有内容
 $ tree ./dir1
@@ -1217,8 +1215,6 @@ File /home/vagrant/dir2 is not a regular file -- refusing to patch
 1 out of 1 hunk ignored -- saving rejects to file /home/vagrant/dir2.rej
 ```
 
- 
-
 #### `vimdiff`
 
 命令`vimdiff`相当于`vim -d`。
@@ -1228,8 +1224,6 @@ File /home/vagrant/dir2 is not a regular file -- refusing to patch
 ```
 $ vimdiff text1 text2
 ```
-
-
 
 #### `cmp`
 
@@ -1255,12 +1249,14 @@ $ hexdump -s 735 -Cn 30 /usr/bin/ls
 
 
 
+
 ## 正则表达式
 
 正则表达式分两类：
 
-- 基本正则表达式： Basic Regular Expressions（BRE）
-- 扩展正则表达式：Extended Regular Expressions（ERE）
+* 基本的正则表达式（Basic Regular Expression， 又叫Basic RegEx，简称BREs）
+* 扩展的正则表达式（Extended Regular Expression， 又叫Extended RegEx，简称EREs）
+* Perl的正则表达式（Perl Regular Expression， 又叫Perl RegEx 简称PREs
 
 正则表达式的元字符分类
 
@@ -1268,6 +1264,92 @@ $ hexdump -s 735 -Cn 30 /usr/bin/ls
 - 匹配次数
 - 位置锚定
 - 分组
+
+
+### 位置标记
+
+位置标记锚点（position marker anchor）是标识字符串位置的正则表达式。默认情况下，正则表达式所匹配的字符可以出现在字符串中任何位置。
+
+* `^`：指定了匹配正则表达式的文本必须起始于字符串的首部。
+    * 例如：`^tux`能够匹配以`tux`起始的行
+
+* `$`：指定了匹配正则表达式的文本必须结束于目标字符串的尾部。
+    * 例如：`tux$`能够匹配以`tux`结尾的行
+
+
+### 标识符
+
+标识符是正则表达式的基础组成部分。它定义了那些为了匹配正则表达式，必须存在（或不存在）的字符。
+
+* `A`字符：正则表达式必须匹配该字符。
+    * 例如：`A`能够匹配字符`A`。
+
+* `.`：匹配任意一个字符。
+    * 例如：`Hack.`能够匹配`Hackl`和`Hacki`，但是不能匹配`Hackl2`或`Hackil`，它只能匹配单个字符。
+
+* `[]`：匹配中括号内的任意一个字符。中括号内可以是一个字符组或字符范围 	
+    * 例如：`coo[kl]`能够匹配`cook`或`cool`。
+    * 例如：`[0-9]`匹配任意单个数字
+
+* `[^]`：匹配不在中括号内的任意一个字符。中括号内可以是一个字符组或字符范围 	
+    * 例如：`9[^01]`能够匹配`92`和`93`，但是不匹配`91`和`90`。
+    * 例如：`A[^0-9]`匹配A以及随后除数字外的任意单个字符
+
+
+
+
+### 数量修饰符
+
+一个标识符可以出现一次、多次或是不出现。数量修饰符定义了模式可以出现的次数。
+
+* `?`：匹配之前的项1次或0次。
+    * 例如：`colou?r`能够匹配`color`或`colour`，但是不能匹配`colouur`。
+
+* `+`：匹配之前的项1次或多次。
+    * 例如：`Rollno-9+`能够匹配`Rollno-99`和`Rollno-9`，但是不能匹配`Rollno-`。
+    * 例如：`colou+r`能够匹配`colour`或`colouur`，不能匹配`color`。
+
+* `\*`：匹配之前的项0次或多次。
+    * 例如：`co*l`能够匹配`cl、col`和`coool`。
+
+* `{n}`：匹配之前的项n次。
+    * 例如：`[0-9]{3}`能够匹配任意的三位数。
+    * 例如：`[0-9]{3}`可以扩展为`[0-9][0-9][0-9]`。
+
+* `{n,}`：之前的项至少需要匹配n次。
+    * 例如：`[0-9]{2,}`能够匹配任意一个两位或更多位的数字。
+
+* `{n,m}`：之前的项所必须匹配的最小次数和最大次数。
+    * 例如：`[0-9]{2,5}`能够匹配两位数到五位数之间的任意一个数字。
+
+
+
+
+### 其他
+
+有一些特殊字符可以调整正则表达式的匹配方式。
+
+* `()`：将括号中的内容视为一个整体。
+    * 例如：`ma(tri)?x` 能够匹配`max`或`matrix`
+* `\|`：指定了一种选择结构，可以匹配`\|`两边的任意一项。
+    * 例如：`Oct (1st \| 2nd)`能够匹配`Oct 1st`或`Oct 2nd`。
+* `\`：转义字符可以转义之前介绍的特殊字符。
+    * 例如：`a\.b`能够匹配`a.b`，但不能匹配`ajb`。因为`\`忽略了`.`的特殊意义。
+
+
+https://geek-docs.com/shell/shell-examples/the-shell-uses-regular-expressions.html
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
