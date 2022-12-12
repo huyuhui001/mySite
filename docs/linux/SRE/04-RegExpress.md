@@ -1356,15 +1356,15 @@ $ hexdump -s 735 -Cn 30 /usr/bin/ls
 
 * `.*`：匹配任意长度等任意字符。
 
-* `\{n\}`：匹配之前的项`n`次。
+* `{n}`：匹配之前的项`n`次。
     * 例如：`[0-9]{3}`能够匹配任意的三位数。
     * 例如：`[0-9]{3}`可以扩展为`[0-9][0-9][0-9]`。
 
-* `{n,}`：之前的项至少需要匹配`n`次。
+* `{n}`：之前的项至少需要匹配`n`次。
     * 例如：`[0-9]{2,}`能够匹配任意一个两位或更多位的数字。
     * 例如：`go\{2,\}gle`能够匹配2个或者多个`o`，如`google`，`gooooogle`等，不能匹配`gogle`。
 
-* `\{n,m\}`：之前的项所必须匹配的最小`n`次数和最大`m`次数。
+* `{n,m}`：之前的项所必须匹配的最小`n`次数和最大`m`次数。
     * 例如：`[0-9]{2,5}`能够匹配两位数到五位数之间的任意一个数字。
 
 
@@ -1458,9 +1458,60 @@ $ grep '^[^#]' /etc/profile
 ```
 
 
+### 小练习
+
+
+* 显示`/proc/meminfo`文件中以大小s开头的行，要求使用两种方法。
+```
+$ cat /proc/meminfo | grep -i "^s"
+
+$ cat /proc/meminfo | grep "^[sS]"
+```
+
+* 显示`/etc/passwd`文件中不以`/bin/bash`结尾的行。
+```
+$ grep -v "/bin/bash$" /etc/passwd
+```
+
+* 显示用户`rpc`默认的shell程序。
+```
+$ grep "rpc" /etc/passwd | cut -d ":" -f 7
+/sbin/nologin
+```
 
 
 
+* 找出`/etc/passwd`中的两位或三位数。
+```
+$ grep "[:digit:]{2,3}" /etc/passwd
+```
+
+
+
+* 显示CentOS7的`/etc/grub2.cfg`文件中，至少以一个空白字符开头的且后面有非空白字符的行。
+
+* 找出`netstat -tan`命令结果中以`LISTEN`后跟任意多个空白字符结尾的行。
+
+* 显示CentOS7上所有UID小于1000以内的用户名和UID。
+
+* 添加用户bash、testbash、basher、sh、nologin(其shell为`/sbin/nologin`),找出`/etc/passwd`用户名和shell同名的行。
+
+* 利用`df`和`grep`，取出磁盘各分区利用率,并从大到小排序。
+
+* 显示三个用户`root`，`mage`，`wang`的UID和默认shell。
+* 找出`/etc/rc.d/init.d/functions`文件中行首为某单词(包括下划线)后面跟一个小括号的行。
+
+* 使用`egrep`取出`/etc/rc.d/init.d/functions`中其基名。
+
+* 使用`egrep`取出上面路径的目录名。
+
+* 统计`last`命令中以`root`登录的每个主机IP地址登录次数。
+
+* 利用扩展正则表达式分别表示0-9、10-99、100-199、200-249、250-255。
+
+* 显示`ifconfig`命令结果中所有IPv4地址。
+
+* 将此字符串: welcome to magedu linux中的每个字符去重并排序，重复次数多的排到前面。
 
 
 
