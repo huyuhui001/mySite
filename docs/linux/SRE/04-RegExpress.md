@@ -1644,4 +1644,14 @@ $ echo "Welcome to the linux world" | grep -o [[:alpha:]] | sort | uniq -c | sor
 
 
 
+## `grep`命令
+
+
+
+## `sed`命令
+
+
+
+## `awk`命令
+
 
