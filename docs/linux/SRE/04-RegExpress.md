@@ -1254,17 +1254,42 @@ $ hexdump -s 735 -Cn 30 /usr/bin/ls
 
 正则表达式分两类：
 
-* 基本的正则表达式（Basic Regular Expression， 又叫Basic RegEx，简称BREs）
-* 扩展的正则表达式（Extended Regular Expression， 又叫Extended RegEx，简称EREs）
-* Perl的正则表达式（Perl Regular Expression， 又叫Perl RegEx 简称PREs
+* 基本正则表达式（Basic Regular Expression， 又叫Basic RegEx，简称BREs）
+* 扩展正则表达式（Extended Regular Expression， 又叫Extended RegEx，简称EREs）
+* Perl正则表达式（Perl Regular Expression， 又叫Perl RegEx 简称PREs
 
-正则表达式的元字符分类
+基本的正则表达式和扩展正则表达式的区别就是元字符的不同。
 
-- 字符匹配
-- 位置标记
-- 标识符
-- 数量修饰符
-- 分组
+
+### 基本正则表达式符号
+
+`^`：表示以某个字符开始
+`$`：表示以某个字符结尾
+`.`：表示匹配一个且只匹配一个字符
+`*`：表示匹配前边一个字符出现0次或者多次
+`[]`：表示匹配括号内的多个字符信息,一个一个匹配
+`.*`：表示匹配所有，空行也会进行匹配
+`[^]`：表示不匹配括号内的每一个字符
+`^$`：表示匹配空行信息
+`\`：将有特殊含义的字符转义为通配符
+
+
+### 扩展正则表达式符号
+
+`+`：表示前一个字符出现一次或一次以上
+`?`：表示前一个字符出现0次或者一次以上
+`|`：表示或者的关系,匹配多个信息
+`()`：匹配一个整体信息，也可以接后项引用
+`{}`：定义前边字符出现几次
+
+
+!!! Tips
+    `grep -E` 或者`egrep`只是表示扩展正则，不代表加了e就表示转义了。
+
+    当`grep`使用扩展正则的符号时候需要用`\`转义为通配符才能使用。
+
+
+
 
 ### 字符匹配
 
@@ -1341,10 +1366,10 @@ $ hexdump -s 735 -Cn 30 /usr/bin/ls
 
 一个标识符可以出现一次、多次或是不出现。数量修饰符定义了模式可以出现的次数。
 
-* `\?`：匹配之前的项0次或1次。
+* `?`：匹配之前的项0次或1次。
     * 例如：`colou?r`能够匹配`color`或`colour`，但是不能匹配`colouur`。
 
-* `\+`：匹配之前的项1次或多次。
+* `+`：匹配之前的项1次或多次。
     * 例如：`Rollno-9+`能够匹配`Rollno-99`和`Rollno-9`，但是不能匹配`Rollno-`。
     * 例如：`colou+r`能够匹配`colour`或`colouur`，不能匹配`color`。
     * 例如：`goo\+gle`能够匹配1个或多个`o`，如：`google`，`gooogle`，`goooogle`等。
@@ -1386,8 +1411,8 @@ $ hexdump -s 735 -Cn 30 /usr/bin/ls
         * 例如：`\(string1\(string2\)\)`，`\1`是`string1\(string2\)`，`\2`是`string2`
     * `\0`：表示正则表达式匹配的所有字符
 
-* `\|`：指定了一种选择结构，可以匹配`\|`两边的任意一项。
-    * 例如：`Oct (1st \| 2nd)`能够匹配`Oct 1st`或`Oct 2nd`。
+* `|`：指定了一种选择结构，可以匹配`|`两边的任意一项。
+    * 例如：`Oct (1st|2nd)`能够匹配`Oct 1st`或`Oct 2nd`。
 
 
 
@@ -1468,10 +1493,12 @@ $ cat /proc/meminfo | grep -i "^s"
 $ cat /proc/meminfo | grep "^[sS]"
 ```
 
+
 * 显示`/etc/passwd`文件中不以`/bin/bash`结尾的行。
 ```
 $ grep -v "/bin/bash$" /etc/passwd
 ```
+
 
 * 显示用户`rpc`默认的shell程序。
 ```
@@ -1480,39 +1507,140 @@ $ grep "rpc" /etc/passwd | cut -d ":" -f 7
 ```
 
 
-
 * 找出`/etc/passwd`中的两位或三位数。
 ```
-$ grep "[:digit:]{2,3}" /etc/passwd
+$ grep -Eo "[:digit:]{2,3}" /etc/passwd
+$ grep -Eo "[0-9]{2,3}" /etc/passwd
+```
+这里用到了`{}`，属于扩展正则符号，所以要用`-E`。
+
+
+* 显示Rocky 9的`/etc/grub2.cfg`文件中，至少以一个空白字符开头的且后面有非空白字符的行。（注：`/etc/grub2.cfg`在openSUSE和Ubuntu中没有）
+```
+# 不含首字符为tab
+$ sudo grep "^ " /etc/grub2.cfg
+
+# 包含首字符为tab
+$ sudo grep "^[[:space:]]" /etc/grub2.cfg
 ```
 
 
-
-* 显示CentOS7的`/etc/grub2.cfg`文件中，至少以一个空白字符开头的且后面有非空白字符的行。
-
 * 找出`netstat -tan`命令结果中以`LISTEN`后跟任意多个空白字符结尾的行。
+```
+$ netstat -tan | grep -E "LISTEN[[:space:]]+"
+```
 
-* 显示CentOS7上所有UID小于1000以内的用户名和UID。
 
-* 添加用户bash、testbash、basher、sh、nologin(其shell为`/sbin/nologin`),找出`/etc/passwd`用户名和shell同名的行。
+* 显示Rocky 9上所有UID小于1000以内的用户名和UID。
+```
+$ cat /etc/passwd | cut -d ":" -f 1,3 | grep -E "\:[0-9]{1,3}$"
+$ grep -E "\:[0-9]{1,3}\:[0-9]{1,}" /etc/passwd | cut -d ":" -f 1,3
+```
+
+
+* 在Rocky 9上显示文件`/etc/passwd`用户名和shell同名的行。
+```
+$ grep -E "^([[:alnum:]]+\b).*\1$" /etc/passwd
+sync:x:5:0:sync:/sbin:/bin/sync
+shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown
+halt:x:7:0:halt:/sbin:/sbin/halt
+```
+
 
 * 利用`df`和`grep`，取出磁盘各分区利用率,并从大到小排序。
+```
+$ df | tr -s " " | cut -d " " -f 1,5 | sort -n -t " " -k 2
+devtmpfs 0%
+Filesystem Use%
+tmpfs 0%
+tmpfs 0%
+/dev/mapper/rl-home 1%
+tmpfs 2%
+/dev/mapper/rl-root 5%
+/dev/nvme0n1p1 23%
+
+```
+
 
 * 显示三个用户`root`，`mage`，`wang`的UID和默认shell。
-* 找出`/etc/rc.d/init.d/functions`文件中行首为某单词(包括下划线)后面跟一个小括号的行。
+```
+$ grep "^root:\|^sync:\|^bin:" /etc/passwd | cut -d ":" -f 1,7
+root:/bin/bash
+bin:/usr/sbin/nologin
+```
 
-* 使用`egrep`取出`/etc/rc.d/init.d/functions`中其基名。
 
-* 使用`egrep`取出上面路径的目录名。
+* 使用`egrep`取出`/etc/default-1/text_2/local.3/grub`中其基名和目录名。
+```
+# 基名
+$ echo "/etc/default-1/text_2/local.3/grub" | egrep -io "[[:alpha:]]+$"
+grub
 
-* 统计`last`命令中以`root`登录的每个主机IP地址登录次数。
+# 目录名
+$  echo "/etc/default-1/text_2/local.3/grub" | egrep -io "/([[:alpha:]]+.|_?[[:alpha:]]|[[:alnum:]]+/){7}"
+/etc/default-1/text_2/local.3/ 
+```
+
+
+* 统计`last`命令中以`vagrant`登录的每个主机IP地址登录次数。
+```
+$ last | grep vagrant | tr -s " " | cut -d " " -f 3 | grep -E "([0-9]{1,3}\.){1,3}[0-9]{1,3}" | sort -n | uniq -c
+     24 192.168.10.107
+     38 192.168.10.109
+     17 192.168.10.201
+      6 192.168.10.210
+      2 192.168.10.220
+```
+
 
 * 利用扩展正则表达式分别表示0-9、10-99、100-199、200-249、250-255。
+```
+[0-9]|[0-9]{2}|1[0-9]{2}|2[0-4][0-9]|25[0-5]
+```
+
 
 * 显示`ifconfig`命令结果中所有IPv4地址。
+```
+$ ifconfig | grep -Eo "([0-9]{1,3}\.){3}[0-9]{1,3}" | grep -v "^255"
+192.168.10.210
+192.168.10.255
+127.0.0.1
 
-* 将此字符串: welcome to magedu linux中的每个字符去重并排序，重复次数多的排到前面。
+```
 
+
+* 显示`ip addr`命令结果中所有IPv4地址。
+```
+$ ip addr show eth0 | grep inet | grep eth0 | tr -s " " | cut -d " " -f 3 | cut -d "/" -f 1
+192.168.10.210
+
+$ ip addr show | grep -Eo "([0-9]{1,3}\.){3}[0-9]{1,3}" | grep -v "^255"
+127.0.0.1
+192.168.10.210
+192.168.10.255
+```
+
+
+* 将此字符串Welcome to the linux world中的每个字符去重并排序，重复次数多的排到前面。
+```
+$ echo "Welcome to the linux world" | grep -o [[:alpha:]] | sort | uniq -c | sort -nr
+      3 o
+      3 l
+      3 e
+      2 t
+      1 x
+      1 W
+      1 w
+      1 u
+      1 r
+      1 n
+      1 m
+      1 i
+      1 h
+      1 d
+      1 c
+
+```
 
 
 
