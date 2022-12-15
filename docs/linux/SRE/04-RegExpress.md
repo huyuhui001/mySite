@@ -1647,8 +1647,82 @@ $ echo "Welcome to the linux world" | grep -o [[:alpha:]] | sort | uniq -c | sor
 ## `grep`命令
 
 
+格式：
+
+* grep [OPTIONS] PATTERN [FILE...]
+* grep [OPTIONS] -e PATTERN ... [FILE...]
+* grep [OPTIONS] -f FILE ... [FILE...]
+
+参数：
+
+* `-n`：显示过滤出来的文件在文件当中的行号
+* `-c`：显示匹配到的行数
+* `-o`：只显示匹配到的内容
+* `-q`：静默输出（一般用在shell脚本当中，通过`echo $?`查看命令执行结果，0表示成功，非0表示失败））
+* `-i`：忽略大小写
+* `-v`：反向查找
+* `-w`：匹配某个词词：在Linux中，词为一连串字母、数字和下划线组成的字符串
+* `-E`：使用扩展正则
+* `-R`：递归查询
+* `-l`：只打印文件路径
+
+扩展参数：
+
+* `-A`：显示匹配到的数据的后几n行
+* `-B`：显示匹配到的数据的前几n行
+* `-C`：显示匹配到的数据的前后各几n行
+
+
+示例：
+
+匹配用户：
+```
+grep root /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+
+$ grep "USER" /etc/passwd
+
+$ grep "$USER" /etc/passwd
+vagrant:x:1000:478:vagrant:/home/vagrant:/bin/bash
+
+$ grep '$USER' /etc/passwd
+
+```
+
+匹配关键字：
+```
+$ grep processor /proc/cpuinfo
+processor       : 0
+processor       : 1
+
+$ grep -o processor /proc/cpuinfo
+processor
+processor
+
+$ grep "cpu family" /proc/cpuinfo
+cpu family      : 6
+cpu family      : 6
+
+$ grep -o "cpu family" /proc/cpuinfo
+cpu family
+cpu family
+```
+
+
+
+
+
+
+
 
 ## `sed`命令
+
+
+
+
+
+
+
 
 
 
