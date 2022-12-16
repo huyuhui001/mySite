@@ -1709,6 +1709,105 @@ cpu family
 ```
 
 
+通过grep进行文件比较。
+```
+# 最后一行是空行
+$ cat f1
+a
+b
+1
+c
+
+
+# 最后一行是空行
+$ cat f2
+b
+e
+f
+c
+1
+2
+
+
+# 高亮显示相同内容的行，包含最后一行空行
+$ grep -f f1 f2
+b
+e
+f
+c
+1
+2
+
+
+# 只显示相同内容的行，包含最后一行空行
+$ grep -wf f1 f2
+b
+c
+1
+
+
+# 只显示不同内容的行
+$ grep -wvf f1 f2
+e
+f
+2
+```
+
+!!! Tips
+    `grep -wvf f1 f2` 或者`grep -w -v -f f1 f2`中，`-f`只能作为最后一个参数，否则会报错。
+
+
+
+体会基本正则和扩展正则的差异。
+
+例1：转义。
+```
+# 下面几个命令返回的结果是一样的。
+$ grep "root\|bash" /etc/passwd
+$ grep -E "root|bash" /etc/passwd
+$ grep -e "root" -e "bash" /etc/passwd
+
+# 下面的命令没有匹配结果返回。
+$ grep "root|bash" /etc/passwd
+```
+
+例2：下面4个命令返回同样的结果。
+```
+$ grep "root" /etc/passwd
+$ grep -E "root" /etc/passwd
+$ grep "\<root\>" /etc/passwd
+$ grep -E "\<root\>" /etc/passwd
+```
+
+例3：行首行尾锚定。
+```
+$ grep "^\(.*\)\>.*\<\1$" /etc/passwd
+$ grep -E "^(.*)\>.*\<\1$" /etc/passwd
+$ egrep "^(.*)\>.*\<\1$" /etc/passwd
+sync:x:5:0:sync:/sbin:/bin/sync
+shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown
+halt:x:7:0:halt:/sbin:/sbin/halt
+```
+
+例4：三种方法求和计算，运用`grep`，`cut`，`bc`和`paste`命令。
+```
+$cat age
+Jason=20
+Tom=30
+Jack=40
+
+# 方法1
+$ cat age | cut -d "=" -f 2 | tr "\n" + | grep -Eo ".*[0-9]" | bc
+90
+
+# 方法2
+$ grep -Eo "[0-9]+" age | tr "\n" + | grep -Eo ".*[0-9]" | bc
+90
+
+# 方法3
+$  grep -Eo "[0-9]+" age | paste -s -d "+" | bc
+90
+```
 
 
 
@@ -1717,9 +1816,14 @@ cpu family
 
 ## `sed`命令
 
+`sed`是stream editor的缩写，中文称之为“流编辑器”。
+`sed`命令是一个面向行处理的工具，它以“行”为处理单位，针对每一行进行处理，处理后的结果会输出到标准输出`STDOUT`，不会对读取的文件做任何修改。
 
 
+`sed`的工作原理：
 
+`sed`命令是面向“行”进行处理的，每一次处理一行内容。
+处理时，`sed`会把要处理的行存储在缓冲区中，接着用`sed`命令处理缓冲区中的内容，处理完成后，把缓冲区的内容送往屏幕。接着处理下一行，这样不断重复，直到文件末尾。这个缓冲区被称为“模式空间”（pattern space）。
 
 
 
