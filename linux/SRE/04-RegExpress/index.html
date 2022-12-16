@@ -759,4 +759,101 @@ $ ip addr show | grep -Eo &quot;([0-9]{1,3}\.){3}[0-9]{1,3}&quot; | grep -v &quo
       1 h
       1 d
       1 c
-</code></pre></div></p> </li> </ul> <h2 id=grep><code>grep</code>命令<a class=headerlink href=#grep title="Permanent link"> ¶</a></h2> <h2 id=sed><code>sed</code>命令<a class=headerlink href=#sed title="Permanent link"> ¶</a></h2> <h2 id=awk><code>awk</code>命令<a class=headerlink href=#awk title="Permanent link"> ¶</a></h2> </article> </div> </div> <a href=# class="md-top md-icon" data-md-component=top hidden> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg> Back to top </a> </main> <footer class=md-footer> <nav class="md-footer__inner md-grid" aria-label=Footer> <a href=../03-identity-security/ class="md-footer__link md-footer__link--prev" aria-label="Previous: Identity & Security" rel=prev> <div class="md-footer__button md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg> </div> <div class=md-footer__title> <div class=md-ellipsis> <span class=md-footer__direction> Previous </span> Identity & Security </div> </div> </a> <a href=../../Administration/01/ class="md-footer__link md-footer__link--next" aria-label="Next: Linux File System Overview" rel=next> <div class=md-footer__title> <div class=md-ellipsis> <span class=md-footer__direction> Next </span> Linux File System Overview </div> </div> <div class="md-footer__button md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg> </div> </a> </nav> <div class="md-footer-meta md-typeset"> <div class="md-footer-meta__inner md-grid"> <div class=md-copyright> Made with <a href=https://squidfunk.github.io/mkdocs-material/ target=_blank rel=noopener> Material for MkDocs </a> </div> </div> </div> </footer> </div> <div class=md-dialog data-md-component=dialog> <div class="md-dialog__inner md-typeset"></div> </div> <script id=__config type=application/json>{"base": "../../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.instant", "navigation.top"], "search": "../../../assets/javascripts/workers/search.ecf98df9.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script> <script src=../../../assets/javascripts/bundle.2ab50757.min.js></script> </body> </html>
+</code></pre></div></p> </li> </ul> <h2 id=grep><code>grep</code>命令<a class=headerlink href=#grep title="Permanent link"> ¶</a></h2> <p>格式：</p> <ul> <li>grep [OPTIONS] PATTERN [FILE...]</li> <li>grep [OPTIONS] -e PATTERN ... [FILE...]</li> <li>grep [OPTIONS] -f FILE ... [FILE...]</li> </ul> <p>参数：</p> <ul> <li><code>-n</code>：显示过滤出来的文件在文件当中的行号</li> <li><code>-c</code>：显示匹配到的行数</li> <li><code>-o</code>：只显示匹配到的内容</li> <li><code>-q</code>：静默输出（一般用在shell脚本当中，通过<code>echo $?</code>查看命令执行结果，0表示成功，非0表示失败））</li> <li><code>-i</code>：忽略大小写</li> <li><code>-v</code>：反向查找</li> <li><code>-w</code>：匹配某个词词：在Linux中，词为一连串字母、数字和下划线组成的字符串</li> <li><code>-E</code>：使用扩展正则</li> <li><code>-R</code>：递归查询</li> <li><code>-l</code>：只打印文件路径</li> </ul> <p>扩展参数：</p> <ul> <li><code>-A</code>：显示匹配到的数据的后几n行</li> <li><code>-B</code>：显示匹配到的数据的前几n行</li> <li><code>-C</code>：显示匹配到的数据的前后各几n行</li> </ul> <p>示例：</p> <p>匹配用户： <div class=highlight><pre><span></span><code>grep root /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+
+$ grep &quot;USER&quot; /etc/passwd
+
+$ grep &quot;$USER&quot; /etc/passwd
+vagrant:x:1000:478:vagrant:/home/vagrant:/bin/bash
+
+$ grep &#39;$USER&#39; /etc/passwd
+</code></pre></div></p> <p>匹配关键字： <div class=highlight><pre><span></span><code>$ grep processor /proc/cpuinfo
+processor       : 0
+processor       : 1
+
+$ grep -o processor /proc/cpuinfo
+processor
+processor
+
+$ grep &quot;cpu family&quot; /proc/cpuinfo
+cpu family      : 6
+cpu family      : 6
+
+$ grep -o &quot;cpu family&quot; /proc/cpuinfo
+cpu family
+cpu family
+</code></pre></div></p> <p>通过grep进行文件比较。 <div class=highlight><pre><span></span><code># 最后一行是空行
+$ cat f1
+a
+b
+1
+c
+
+
+# 最后一行是空行
+$ cat f2
+b
+e
+f
+c
+1
+2
+
+
+# 高亮显示相同内容的行，包含最后一行空行
+$ grep -f f1 f2
+b
+e
+f
+c
+1
+2
+
+
+# 只显示相同内容的行，包含最后一行空行
+$ grep -wf f1 f2
+b
+c
+1
+
+
+# 只显示不同内容的行
+$ grep -wvf f1 f2
+e
+f
+2
+</code></pre></div></p> <div class="admonition tips"> <p class=admonition-title>Tips</p> <p><code>grep -wvf f1 f2</code> 或者<code>grep -w -v -f f1 f2</code>中，<code>-f</code>只能作为最后一个参数，否则会报错。</p> </div> <p>体会基本正则和扩展正则的差异。</p> <p>例1：转义。 <div class=highlight><pre><span></span><code># 下面几个命令返回的结果是一样的。
+$ grep &quot;root\|bash&quot; /etc/passwd
+$ grep -E &quot;root|bash&quot; /etc/passwd
+$ grep -e &quot;root&quot; -e &quot;bash&quot; /etc/passwd
+
+# 下面的命令没有匹配结果返回。
+$ grep &quot;root|bash&quot; /etc/passwd
+</code></pre></div></p> <p>例2：下面4个命令返回同样的结果。 <div class=highlight><pre><span></span><code>$ grep &quot;root&quot; /etc/passwd
+$ grep -E &quot;root&quot; /etc/passwd
+$ grep &quot;\&lt;root\&gt;&quot; /etc/passwd
+$ grep -E &quot;\&lt;root\&gt;&quot; /etc/passwd
+</code></pre></div></p> <p>例3：行首行尾锚定。 <div class=highlight><pre><span></span><code>$ grep &quot;^\(.*\)\&gt;.*\&lt;\1$&quot; /etc/passwd
+$ grep -E &quot;^(.*)\&gt;.*\&lt;\1$&quot; /etc/passwd
+$ egrep &quot;^(.*)\&gt;.*\&lt;\1$&quot; /etc/passwd
+sync:x:5:0:sync:/sbin:/bin/sync
+shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown
+halt:x:7:0:halt:/sbin:/sbin/halt
+</code></pre></div></p> <p>例4：三种方法求和计算，运用<code>grep</code>，<code>cut</code>，<code>bc</code>和<code>paste</code>命令。 <div class=highlight><pre><span></span><code>$cat age
+Jason=20
+Tom=30
+Jack=40
+
+# 方法1
+$ cat age | cut -d &quot;=&quot; -f 2 | tr &quot;\n&quot; + | grep -Eo &quot;.*[0-9]&quot; | bc
+90
+
+# 方法2
+$ grep -Eo &quot;[0-9]+&quot; age | tr &quot;\n&quot; + | grep -Eo &quot;.*[0-9]&quot; | bc
+90
+
+# 方法3
+$  grep -Eo &quot;[0-9]+&quot; age | paste -s -d &quot;+&quot; | bc
+90
+</code></pre></div></p> <h2 id=sed><code>sed</code>命令<a class=headerlink href=#sed title="Permanent link"> ¶</a></h2> <p><code>sed</code>是stream editor的缩写，中文称之为“流编辑器”。 <code>sed</code>命令是一个面向行处理的工具，它以“行”为处理单位，针对每一行进行处理，处理后的结果会输出到标准输出<code>STDOUT</code>，不会对读取的文件做任何修改。</p> <p><code>sed</code>的工作原理：</p> <p><code>sed</code>命令是面向“行”进行处理的，每一次处理一行内容。 处理时，<code>sed</code>会把要处理的行存储在缓冲区中，接着用<code>sed</code>命令处理缓冲区中的内容，处理完成后，把缓冲区的内容送往屏幕。接着处理下一行，这样不断重复，直到文件末尾。这个缓冲区被称为“模式空间”（pattern space）。</p> <h2 id=awk><code>awk</code>命令<a class=headerlink href=#awk title="Permanent link"> ¶</a></h2> </article> </div> </div> <a href=# class="md-top md-icon" data-md-component=top hidden> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg> Back to top </a> </main> <footer class=md-footer> <nav class="md-footer__inner md-grid" aria-label=Footer> <a href=../03-identity-security/ class="md-footer__link md-footer__link--prev" aria-label="Previous: Identity & Security" rel=prev> <div class="md-footer__button md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg> </div> <div class=md-footer__title> <div class=md-ellipsis> <span class=md-footer__direction> Previous </span> Identity & Security </div> </div> </a> <a href=../../Administration/01/ class="md-footer__link md-footer__link--next" aria-label="Next: Linux File System Overview" rel=next> <div class=md-footer__title> <div class=md-ellipsis> <span class=md-footer__direction> Next </span> Linux File System Overview </div> </div> <div class="md-footer__button md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg> </div> </a> </nav> <div class="md-footer-meta md-typeset"> <div class="md-footer-meta__inner md-grid"> <div class=md-copyright> Made with <a href=https://squidfunk.github.io/mkdocs-material/ target=_blank rel=noopener> Material for MkDocs </a> </div> </div> </div> </footer> </div> <div class=md-dialog data-md-component=dialog> <div class="md-dialog__inner md-typeset"></div> </div> <script id=__config type=application/json>{"base": "../../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.instant", "navigation.top"], "search": "../../../assets/javascripts/workers/search.ecf98df9.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script> <script src=../../../assets/javascripts/bundle.2ab50757.min.js></script> </body> </html>
