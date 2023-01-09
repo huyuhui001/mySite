@@ -574,8 +574,25 @@ $  grep -Eo "[0-9]+" age | paste -s -d "+" | bc
 
 sed 命令格式：
 ```
-$ sed command file
+$ sed [option] command file
 ```
+
+`option`常用选项：
+
+* `-n`：不输出模式pattern的内容到屏幕（即不自动打印）
+* `-e`：多点编辑
+* `-f filename`：从指定文件读取编辑脚本
+* `-r`，`-E`：使用扩展正则表达式
+* `-i .bak`：备份文件并原处编辑
+* `-s`：将多个文件视为独立文件，而不是单个连续的长文件流
+
+补充说明：
+
+* `-ir`： 不支持
+* `-i -r`： 支持
+* `-ri`： 支持
+* `-ni`： 危险选项，会清空文件
+
 
 `command`部分可以分为两部分：
 
@@ -593,14 +610,17 @@ $ sed command file
     * `R filename`：读取指定文件`fllename`的一行，追加到当前行的下一行
     * `d`：删除该行
     * `p`：打印该行
+    * `Ip`：忽略大小写输出
     * `w filename`：写入到指定文件filename中。
     * `s/regexp/replacement/`：取代，用replacement取代正则regexp匹配到的内容
-
+    * `=`：为模式pattern中的匹配行打印行号
+    * `!`：为模式pattern中的匹配行取反操作
+    * `q`：结束或退出sed
 
 
 创建一个`testfile`文件。
 ```
-$ cat testfile
+$ cat <<EOF > testfile
 HELLO LINUX!
 Linux is a free unix-type opterating system.
 This is a linux testfile!
@@ -610,6 +630,40 @@ Taobao
 Banbooob
 Tesetfile
 Wiki
+EOF
+```
+
+匹配文件`testfile`第二行并输出（包含匹配行和输出行）。
+```
+# nl testfile | sed '2p'
+     1	HELLO LINUX!
+     2	Linux is a free unix-type opterating system.
+     2	Linux is a free unix-type opterating system.
+     3	This is a linux testfile!
+     4	Linux test
+     5	Google
+     6	Taobao
+     7	Banbooob
+     8	Tesetfile
+     9	Wiki
+```
+
+匹配文件`testfile`第二行，不输出。
+```
+# nl testfile | sed -n '2p'
+     2	Linux is a free unix-type opterating system.
+```
+
+匹配文件`testfile`最后一行。
+```
+$ nl testfile | sed -n '$p'
+     9	Wiki
+```
+
+匹配`testfile`倒数第二行。
+```
+# sed -n "$(echo $[`cat testfile | wc -l`-1])p" testfile
+Tesetfile
 ```
 
 将`testfile`的内容列出第5～7行，并且列印行号。
