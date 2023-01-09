@@ -217,8 +217,8 @@ $ grep -Eo &quot;[0-9]+&quot; age | tr &quot;\n&quot; + | grep -Eo &quot;.*[0-9]
 # 方法3
 $  grep -Eo &quot;[0-9]+&quot; age | paste -s -d &quot;+&quot; | bc
 90
-</code></pre></div></p> <h2 id=sed>三剑客<code>sed</code>命令<a class=headerlink href=#sed title="Permanent link"> ¶</a></h2> <p><code>sed</code>是stream editor的缩写，中文称之为“流编辑器”。 <code>sed</code>命令是一个面向行处理的工具，它以“行”为处理单位，针对每一行进行处理，处理后的结果会输出到标准输出<code>STDOUT</code>，不会对读取的文件做任何修改。</p> <p><code>sed</code>的工作原理：</p> <p><code>sed</code>命令是面向“行”进行处理的，每一次处理一行内容。 处理时，<code>sed</code>会把要处理的行存储在缓冲区中，接着用<code>sed</code>命令处理缓冲区中的内容，处理完成后，把缓冲区的内容送往屏幕。接着处理下一行，这样不断重复，直到文件末尾。这个缓冲区被称为“模式空间”（pattern space）。</p> <p>sed 命令格式： <div class=highlight><pre><span></span><code>$ sed command file
-</code></pre></div></p> <p><code>command</code>部分可以分为两部分：</p> <ul> <li> <p>范围设定，可以采用两种不同的方式来表达：</p> <ul> <li>指定行数：如：<ul> <li><code>3,5</code>表示第3、4、5行</li> <li><code>5,$</code>表示第5行至文件最后一行</li> </ul> </li> <li>模式匹配：如：<ul> <li><code>/^[^dD]/</code>表示匹配行首不是以<code>d</code>或<code>D</code>开头的行</li> </ul> </li> </ul> </li> <li> <p>动作处理，下面是常用的动作：</p> <ul> <li><code>a</code>：新增， <code>a</code>后面的字串会在新的一行出现（当前行的下一行）</li> <li><code>i</code>：插入， <code>i</code>后面的字串会在新的一行出现（当前行的上一行）</li> <li><code>r filename</code>：读取指定文件<code>fllename</code>的内容，追加到当前行的下一行</li> <li><code>R filename</code>：读取指定文件<code>fllename</code>的一行，追加到当前行的下一行</li> <li><code>d</code>：删除该行</li> <li><code>p</code>：打印该行</li> <li><code>w filename</code>：写入到指定文件filename中。</li> <li><code>s/regexp/replacement/</code>：取代，用replacement取代正则regexp匹配到的内容</li> </ul> </li> </ul> <p>创建一个<code>testfile</code>文件。 <div class=highlight><pre><span></span><code>$ cat testfile
+</code></pre></div></p> <h2 id=sed>三剑客<code>sed</code>命令<a class=headerlink href=#sed title="Permanent link"> ¶</a></h2> <p><code>sed</code>是stream editor的缩写，中文称之为“流编辑器”。 <code>sed</code>命令是一个面向行处理的工具，它以“行”为处理单位，针对每一行进行处理，处理后的结果会输出到标准输出<code>STDOUT</code>，不会对读取的文件做任何修改。</p> <p><code>sed</code>的工作原理：</p> <p><code>sed</code>命令是面向“行”进行处理的，每一次处理一行内容。 处理时，<code>sed</code>会把要处理的行存储在缓冲区中，接着用<code>sed</code>命令处理缓冲区中的内容，处理完成后，把缓冲区的内容送往屏幕。接着处理下一行，这样不断重复，直到文件末尾。这个缓冲区被称为“模式空间”（pattern space）。</p> <p>sed 命令格式： <div class=highlight><pre><span></span><code>$ sed [option] command file
+</code></pre></div></p> <p><code>option</code>常用选项：</p> <ul> <li><code>-n</code>：不输出模式pattern的内容到屏幕（即不自动打印）</li> <li><code>-e</code>：多点编辑</li> <li><code>-f filename</code>：从指定文件读取编辑脚本</li> <li><code>-r</code>，<code>-E</code>：使用扩展正则表达式</li> <li><code>-i .bak</code>：备份文件并原处编辑</li> <li><code>-s</code>：将多个文件视为独立文件，而不是单个连续的长文件流</li> </ul> <p>补充说明：</p> <ul> <li><code>-ir</code>： 不支持</li> <li><code>-i -r</code>： 支持</li> <li><code>-ri</code>： 支持</li> <li><code>-ni</code>： 危险选项，会清空文件</li> </ul> <p><code>command</code>部分可以分为两部分：</p> <ul> <li> <p>范围设定，可以采用两种不同的方式来表达：</p> <ul> <li>指定行数：如：<ul> <li><code>3,5</code>表示第3、4、5行</li> <li><code>5,$</code>表示第5行至文件最后一行</li> </ul> </li> <li>模式匹配：如：<ul> <li><code>/^[^dD]/</code>表示匹配行首不是以<code>d</code>或<code>D</code>开头的行</li> </ul> </li> </ul> </li> <li> <p>动作处理，下面是常用的动作：</p> <ul> <li><code>a</code>：新增， <code>a</code>后面的字串会在新的一行出现（当前行的下一行）</li> <li><code>i</code>：插入， <code>i</code>后面的字串会在新的一行出现（当前行的上一行）</li> <li><code>r filename</code>：读取指定文件<code>fllename</code>的内容，追加到当前行的下一行</li> <li><code>R filename</code>：读取指定文件<code>fllename</code>的一行，追加到当前行的下一行</li> <li><code>d</code>：删除该行</li> <li><code>p</code>：打印该行</li> <li><code>Ip</code>：忽略大小写输出</li> <li><code>w filename</code>：写入到指定文件filename中。</li> <li><code>s/regexp/replacement/</code>：取代，用replacement取代正则regexp匹配到的内容</li> <li><code>=</code>：为模式pattern中的匹配行打印行号</li> <li><code>!</code>：为模式pattern中的匹配行取反操作</li> <li><code>q</code>：结束或退出sed</li> </ul> </li> </ul> <p>创建一个<code>testfile</code>文件。 <div class=highlight><pre><span></span><code>$ cat &lt;&lt;EOF &gt; testfile
 HELLO LINUX!
 Linux is a free unix-type opterating system.
 This is a linux testfile!
@@ -228,6 +228,24 @@ Taobao
 Banbooob
 Tesetfile
 Wiki
+EOF
+</code></pre></div></p> <p>匹配文件<code>testfile</code>第二行并输出（包含匹配行和输出行）。 <div class=highlight><pre><span></span><code># nl testfile | sed &#39;2p&#39;
+     1  HELLO LINUX!
+     2  Linux is a free unix-type opterating system.
+     2  Linux is a free unix-type opterating system.
+     3  This is a linux testfile!
+     4  Linux test
+     5  Google
+     6  Taobao
+     7  Banbooob
+     8  Tesetfile
+     9  Wiki
+</code></pre></div></p> <p>匹配文件<code>testfile</code>第二行，不输出。 <div class=highlight><pre><span></span><code># nl testfile | sed -n &#39;2p&#39;
+     2  Linux is a free unix-type opterating system.
+</code></pre></div></p> <p>匹配文件<code>testfile</code>最后一行。 <div class=highlight><pre><span></span><code>$ nl testfile | sed -n &#39;$p&#39;
+     9  Wiki
+</code></pre></div></p> <p>匹配<code>testfile</code>倒数第二行。 <div class=highlight><pre><span></span><code># sed -n &quot;$(echo $[`cat testfile | wc -l`-1])p&quot; testfile
+Tesetfile
 </code></pre></div></p> <p>将<code>testfile</code>的内容列出第5～7行，并且列印行号。 <div class=highlight><pre><span></span><code>$ nl testfile | sed -n &#39;5,7p&#39;
      5  Google
      6  Taobao
