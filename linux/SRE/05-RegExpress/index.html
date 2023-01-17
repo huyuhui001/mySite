@@ -229,7 +229,7 @@ Banbooob
 Tesetfile
 Wiki
 EOF
-</code></pre></div></p> <p>匹配文件<code>testfile</code>第二行并输出（包含匹配行和输出行）。 <div class=highlight><pre><span></span><code># nl testfile | sed &#39;2p&#39;
+</code></pre></div></p> <p>匹配定位文件<code>testfile</code>第二行，并输出（包含匹配第二行和输出第二行）。 <div class=highlight><pre><span></span><code># nl testfile | sed &#39;2p&#39;
      1  HELLO LINUX!
      2  Linux is a free unix-type opterating system.
      2  Linux is a free unix-type opterating system.
@@ -240,17 +240,42 @@ EOF
      7  Banbooob
      8  Tesetfile
      9  Wiki
-</code></pre></div></p> <p>匹配文件<code>testfile</code>第二行，不输出。 <div class=highlight><pre><span></span><code># nl testfile | sed -n &#39;2p&#39;
+</code></pre></div></p> <p>匹配定位文件<code>testfile</code>第二行，不输出。 <div class=highlight><pre><span></span><code># nl testfile | sed -n &#39;2p&#39;
      2  Linux is a free unix-type opterating system.
-</code></pre></div></p> <p>匹配文件<code>testfile</code>最后一行。 <div class=highlight><pre><span></span><code>$ nl testfile | sed -n &#39;$p&#39;
+</code></pre></div></p> <p>匹配定位文件<code>testfile</code>最后一行。 <div class=highlight><pre><span></span><code>$ nl testfile | sed -n &#39;$p&#39;
      9  Wiki
-</code></pre></div></p> <p>匹配<code>testfile</code>倒数第二行。 <div class=highlight><pre><span></span><code># sed -n &quot;$(echo $[`cat testfile | wc -l`-1])p&quot; testfile
+</code></pre></div></p> <p>匹配定位文件<code>testfile</code>倒数第二行。 <div class=highlight><pre><span></span><code># sed -n &quot;$(echo $[`cat testfile | wc -l`-1])p&quot; testfile
 Tesetfile
-</code></pre></div></p> <p>将<code>testfile</code>的内容列出第5～7行，并且列印行号。 <div class=highlight><pre><span></span><code>$ nl testfile | sed -n &#39;5,7p&#39;
+</code></pre></div></p> <p>将<code>testfile</code>的内容列出第2～3行，并且打印行号。 <div class=highlight><pre><span></span><code>$  nl testfile | sed -n &#39;2,3p&#39;
+     2  Linux is a free unix-type opterating system.
+     3  This is a linux testfile!
+</code></pre></div></p> <p>将<code>testfile</code>的内容从第2行开始，向后输出额外的3行，并且打印行号。 <div class=highlight><pre><span></span><code>$ nl testfile | sed -n &#39;2,+3p&#39;
+     2  Linux is a free unix-type opterating system.
+     3  This is a linux testfile!
+     4  Linux test
      5  Google
+</code></pre></div></p> <p>将<code>testfile</code>的内容从第2行开始，向后以2为步进单位输出所有匹配行，并且打印行号（即，从第2行开始输出偶数行）。 <div class=highlight><pre><span></span><code>nl testfile | sed -n &#39;2~2p&#39;
+     2  Linux is a free unix-type opterating system.
+     4  Linux test
+     6  Taobao
+     8  Tesetfile
+</code></pre></div></p> <p>将<code>testfile</code>的内容从第2行开始，向后以2为步进单位删除所有匹配行，输出剩余行，并且打印行号（即，从第2行开始删除偶数行，输出奇数行）。 <div class=highlight><pre><span></span><code>$ nl testfile | sed &#39;2~2d&#39;
+     1  HELLO LINUX!
+     3  This is a linux testfile!
+     5  Google
+     7  Banbooob
+     9  Wiki
+</code></pre></div></p> <p>将<code>testfile</code>的内容输出，删除第2行和第5行，并打印行号。 <div class=highlight><pre><span></span><code>$ nl testfile | sed -e &#39;2d&#39; -e &#39;5d&#39;
+$ nl testfile | sed -e &#39;2d;5d&#39;
+$ nl testfile | sed &#39;2d;5d&#39;
+     1  HELLO LINUX!
+     3  This is a linux testfile!
+     4  Linux test
      6  Taobao
      7  Banbooob
-</code></pre></div></p> <p>将<code>testfile</code>的内容列出，且在第6行后加上<code>I love Linux</code>。 <div class=highlight><pre><span></span><code>$ sed -e &#39;6a I love Linux&#39; testfile
+     8  Tesetfile
+     9  Wiki
+</code></pre></div></p> <p>将<code>testfile</code>的内容列出，且在第6行后加上<code>I love Linux</code>。不修改原文件。 <div class=highlight><pre><span></span><code>$ sed -e &#39;6a I love Linux&#39; testfile
 HELLO LINUX!
 Linux is a free unix-type opterating system.
 This is a linux testfile!
@@ -261,7 +286,7 @@ I love Linux
 Banbooob
 Tesetfile
 Wiki
-</code></pre></div></p> <p>将<code>testfile</code>的内容列出并且列印行号，且在第6行后添加<code>I love Linux</code>。 <div class=highlight><pre><span></span><code>$ nl testfile | sed &#39;6a I love Linux&#39;
+</code></pre></div></p> <p>将<code>testfile</code>的内容列出并且打印行号，且在第6行后添加<code>I love Linux</code>。不修改原文件。 <div class=highlight><pre><span></span><code>$ nl testfile | sed &#39;6a I love Linux&#39;
 $ nl testfile | sed &#39;6a\I love Linux&#39;
      1  HELLO LINUX!
      2  Linux is a free unix-type opterating system.
@@ -273,7 +298,7 @@ I love Linux
      7  Banbooob
      8  Tesetfile
      9  Wiki
-</code></pre></div></p> <p>将<code>testfile</code>的内容列出并且列印行号，且在第3行前添加<code>I am a journer learner</code>。 <div class=highlight><pre><span></span><code>$ nl testfile | sed &#39;3i\I am a journer learner&#39;
+</code></pre></div></p> <p>将<code>testfile</code>的内容列出并且打印行号，且在第3行前添加<code>I am a journer learner</code>。不修改原文件。 <div class=highlight><pre><span></span><code>$ nl testfile | sed &#39;3i\I am a journer learner&#39;
      1  HELLO LINUX!
      2  Linux is a free unix-type opterating system.
 I am a journer learner
@@ -284,7 +309,7 @@ I am a journer learner
      7  Banbooob
      8  Tesetfile
      9  Wiki
-</code></pre></div></p> <p>将<code>testfile</code>的内容列出并且列印行号，且在第3行前添加三行内容<code>Add line 1</code>，<code>Add line 2</code>，<code>Add line 3</code>。 <div class=highlight><pre><span></span><code>$ nl testfile | sed &#39;3i\Add line 1 \
+</code></pre></div></p> <p>将<code>testfile</code>的内容列出并且打印行号，且在第3行前添加三行内容<code>Add line 1</code>，<code>Add line 2</code>，<code>Add line 3</code>。用符合<code>\</code>进行换行。不修改原文件。 <div class=highlight><pre><span></span><code>$ nl testfile | sed &#39;3i\Add line 1 \
 Add line 2 \
 Add line 3&#39;
      1  HELLO LINUX!
@@ -299,42 +324,56 @@ Add line 3
      7  Banbooob
      8  Tesetfile
      9  Wiki
-</code></pre></div></p> <p>将<code>testfile</code>的内容列出并且列印行号，且将第2-5行的内容取代成为<code>replaced</code>。 <div class=highlight><pre><span></span><code>$ nl testfile | sed &#39;2,5c\replaced&#39;
+</code></pre></div></p> <p>将<code>testfile</code>的内容列出并且打印行号，且将第2-5行的内容取代成为<code>replaced</code>。不修改原文件。 <div class=highlight><pre><span></span><code>$ nl testfile | sed &#39;2,5c\replaced&#39;
      1  HELLO LINUX!
 replaced
      6  Taobao
      7  Banbooob
      8  Tesetfile
      9  Wiki
-</code></pre></div></p> <p>将<code>testfile</code>的内容列出并且列印行号，且删除第2~5行。 <div class=highlight><pre><span></span><code>$ nl testfile | sed &#39;2,5d&#39;
+</code></pre></div></p> <p>将<code>testfile</code>的内容列出并且打印行号，且删除第2~5行。不修改原文件。 <div class=highlight><pre><span></span><code>$ nl testfile | sed &#39;2,5d&#39;
      1  HELLO LINUX!
      6  Taobao
      7  Banbooob
      8  Tesetfile
      9  Wiki
-</code></pre></div></p> <p>将<code>testfile</code>的内容列出并且列印行号，且删除第5行到最后一行。 <div class=highlight><pre><span></span><code>$ nl testfile | sed &#39;5,$d&#39;
+</code></pre></div></p> <p>将<code>testfile</code>的内容列出并且打印行号，且删除第5行到最后一行。 <div class=highlight><pre><span></span><code>$ nl testfile | sed &#39;5,$d&#39;
      1  HELLO LINUX!
      2  Linux is a free unix-type opterating system.
      3  This is a linux testfile!
      4  Linux test
-</code></pre></div></p> <p>将<code>testfile</code>的内容列出并且列印行号，并搜索所有包含<code>oo</code>关键字的行（包含匹配）。 <div class=highlight><pre><span></span><code>$ nl testfile | sed -n &#39;/ooo/p&#39;
-     7  Banbooob
+</code></pre></div></p> <p>匹配定位文件<code>testfile</code>中包含关键字<code>linux</code>的行。 <div class=highlight><pre><span></span><code>$ sed -n &#39;/linux/p&#39; testfile
+This is a linux testfile!
+</code></pre></div></p> <p>匹配定位命令<code>df</code>输出中含有<code>/dev/sd</code>关键字的行。（需要转义符<code>\</code>） <div class=highlight><pre><span></span><code>$ df | sed -n &#39;/^\/dev\/sd/p&#39;
+/dev/sda2      102750208 7077280  92055312   8% /
+/dev/sda2      102750208 7077280  92055312   8% /.snapshots
+/dev/sda2      102750208 7077280  92055312   8% /home
+/dev/sda2      102750208 7077280  92055312   8% /opt
+/dev/sda2      102750208 7077280  92055312   8% /root
+/dev/sda2      102750208 7077280  92055312   8% /boot/grub2/x86_64-efi
+/dev/sda2      102750208 7077280  92055312   8% /boot/grub2/i386-pc
+/dev/sda2      102750208 7077280  92055312   8% /srv
+/dev/sda2      102750208 7077280  92055312   8% /tmp
+/dev/sda2      102750208 7077280  92055312   8% /usr/local
+/dev/sda2      102750208 7077280  92055312   8% /var
+</code></pre></div></p> <p>搜索文件<code>testfile</code>所有包含<code>oo</code>关键字的行并匹配输出。不修改原文件。 <div class=highlight><pre><span></span><code>$ sed -n &#39;/ooo/p&#39; testfile
+Banbooob
 
-$ nl testfile | sed -n &#39;/oo/p&#39;
-     5  Google
-     7  Banbooob
-</code></pre></div></p> <p>将<code>testfile</code>的内容列出并且列印行号，搜索所有包含<code>oo</code>关键字的行并删除。 <div class=highlight><pre><span></span><code>nl testfile | sed &#39;/oo/d&#39;
-     1  HELLO LINUX!
-     2  Linux is a free unix-type opterating system.
-     3  This is a linux testfile!
-     4  Linux test
-     6  Taobao
-     8  Tesetfile
-     9  Wiki
-</code></pre></div></p> <p>将<code>testfile</code>的内容列出并且列印行号，搜索包含有<code>oo</code>的行，把<code>oo</code>替换为<code>kk</code>，再输出这行。 <div class=highlight><pre><span></span><code>$ nl testfile | sed -n &#39;/oo/{s/oo/kk/;p;q}&#39;
-$ nl testfile | sed -ne &#39;/oo/{s/oo/kk/;p;q}&#39;
-     5  Gkkgle
-</code></pre></div></p> <p>将<code>testfile</code>的每行中所有含有<code>ao</code>的全部替换成<code>HH</code>。<code>g</code>表示全局匹配。 <div class=highlight><pre><span></span><code>$ sed -e &#39;s/ao/HH/g&#39; testfile
+$ sed -n &#39;/oo/p&#39; testfile
+Google
+Banbooob
+</code></pre></div></p> <p>搜索文件<code>testfile</code>所有包含<code>oo</code>关键字的行并删除。不修改原文件。 <div class=highlight><pre><span></span><code>$ sed &#39;/oo/d&#39; testfile
+HELLO LINUX!
+Linux is a free unix-type opterating system.
+This is a linux testfile!
+Linux test
+Taobao
+Tesetfile
+Wiki
+</code></pre></div></p> <p>搜索文件<code>testfile</code>所有包含<code>oo</code>的行，把<code>oo</code>替换为<code>kk</code>，再输出这行。不修改原文件。 <div class=highlight><pre><span></span><code>$ sed -n &#39;/oo/{s/oo/kk/;p;q}&#39; testfile
+$ sed -ne &#39;/oo/{s/oo/kk/;p;q}&#39; testfile
+Gkkgle
+</code></pre></div></p> <p>搜索文件<code>testfile</code>所有包含<code>ao</code>的全部替换成<code>HH</code>。<code>g</code>表示全局匹配。不修改原文件。 <div class=highlight><pre><span></span><code>$ sed -e &#39;s/ao/HH/g&#39; testfile
 $ sed &#39;s/ao/HH/g&#39; testfile
 HELLO LINUX!
 Linux is a free unix-type opterating system.
