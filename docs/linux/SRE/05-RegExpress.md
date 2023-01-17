@@ -633,7 +633,7 @@ Wiki
 EOF
 ```
 
-匹配文件`testfile`第二行并输出（包含匹配行和输出行）。
+匹配定位文件`testfile`第二行，并输出（包含匹配第二行和输出第二行）。
 ```
 # nl testfile | sed '2p'
      1	HELLO LINUX!
@@ -648,33 +648,75 @@ EOF
      9	Wiki
 ```
 
-匹配文件`testfile`第二行，不输出。
+匹配定位文件`testfile`第二行，不输出。
 ```
 # nl testfile | sed -n '2p'
      2	Linux is a free unix-type opterating system.
 ```
 
-匹配文件`testfile`最后一行。
+匹配定位文件`testfile`最后一行。
 ```
 $ nl testfile | sed -n '$p'
      9	Wiki
 ```
 
-匹配`testfile`倒数第二行。
+匹配定位文件`testfile`倒数第二行。
 ```
 # sed -n "$(echo $[`cat testfile | wc -l`-1])p" testfile
 Tesetfile
 ```
 
-将`testfile`的内容列出第5～7行，并且列印行号。
+将`testfile`的内容列出第2～3行，并且打印行号。
 ```
-$ nl testfile | sed -n '5,7p'
-     5	Google
-     6	Taobao
-     7	Banbooob
+$  nl testfile | sed -n '2,3p'
+     2  Linux is a free unix-type opterating system.
+     3  This is a linux testfile!
 ```
 
-将`testfile`的内容列出，且在第6行后加上`I love Linux`。
+将`testfile`的内容从第2行开始，向后输出额外的3行，并且打印行号。
+```
+$ nl testfile | sed -n '2,+3p'
+     2  Linux is a free unix-type opterating system.
+     3  This is a linux testfile!
+     4  Linux test
+     5  Google
+
+```
+
+将`testfile`的内容从第2行开始，向后以2为步进单位输出所有匹配行，并且打印行号（即，从第2行开始输出偶数行）。
+```
+nl testfile | sed -n '2~2p'
+     2  Linux is a free unix-type opterating system.
+     4  Linux test
+     6  Taobao
+     8  Tesetfile
+```
+
+将`testfile`的内容从第2行开始，向后以2为步进单位删除所有匹配行，输出剩余行，并且打印行号（即，从第2行开始删除偶数行，输出奇数行）。
+```
+$ nl testfile | sed '2~2d'
+     1  HELLO LINUX!
+     3  This is a linux testfile!
+     5  Google
+     7  Banbooob
+     9  Wiki
+```
+
+将`testfile`的内容输出，删除第2行和第5行，并打印行号。
+```
+$ nl testfile | sed -e '2d' -e '5d'
+$ nl testfile | sed -e '2d;5d'
+$ nl testfile | sed '2d;5d'
+     1  HELLO LINUX!
+     3  This is a linux testfile!
+     4  Linux test
+     6  Taobao
+     7  Banbooob
+     8  Tesetfile
+     9  Wiki
+```
+
+将`testfile`的内容列出，且在第6行后加上`I love Linux`。不修改原文件。
 ```
 $ sed -e '6a I love Linux' testfile
 HELLO LINUX!
@@ -689,7 +731,7 @@ Tesetfile
 Wiki
 ```
 
-将`testfile`的内容列出并且列印行号，且在第6行后添加`I love Linux`。
+将`testfile`的内容列出并且打印行号，且在第6行后添加`I love Linux`。不修改原文件。
 ```
 $ nl testfile | sed '6a I love Linux'
 $ nl testfile | sed '6a\I love Linux'
@@ -705,7 +747,7 @@ I love Linux
      9	Wiki
 ```
 
-将`testfile`的内容列出并且列印行号，且在第3行前添加`I am a journer learner`。
+将`testfile`的内容列出并且打印行号，且在第3行前添加`I am a journer learner`。不修改原文件。
 ```
 $ nl testfile | sed '3i\I am a journer learner'
      1	HELLO LINUX!
@@ -720,7 +762,7 @@ I am a journer learner
      9	Wiki
 ```
 
-将`testfile`的内容列出并且列印行号，且在第3行前添加三行内容`Add line 1`，`Add line 2`，`Add line 3`。
+将`testfile`的内容列出并且打印行号，且在第3行前添加三行内容`Add line 1`，`Add line 2`，`Add line 3`。用符合`\`进行换行。不修改原文件。
 ```
 $ nl testfile | sed '3i\Add line 1 \
 Add line 2 \
@@ -739,7 +781,7 @@ Add line 3
      9	Wiki
 ```
 
-将`testfile`的内容列出并且列印行号，且将第2-5行的内容取代成为`replaced`。
+将`testfile`的内容列出并且打印行号，且将第2-5行的内容取代成为`replaced`。不修改原文件。
 ```
 $ nl testfile | sed '2,5c\replaced'
      1	HELLO LINUX!
@@ -750,7 +792,7 @@ replaced
      9	Wiki
 ```
 
-将`testfile`的内容列出并且列印行号，且删除第2~5行。
+将`testfile`的内容列出并且打印行号，且删除第2~5行。不修改原文件。
 ```
 $ nl testfile | sed '2,5d'
      1	HELLO LINUX!
@@ -760,7 +802,7 @@ $ nl testfile | sed '2,5d'
      9	Wiki
 ```
 
-将`testfile`的内容列出并且列印行号，且删除第5行到最后一行。
+将`testfile`的内容列出并且打印行号，且删除第5行到最后一行。
 ```
 $ nl testfile | sed '5,$d'
      1	HELLO LINUX!
@@ -769,36 +811,58 @@ $ nl testfile | sed '5,$d'
      4	Linux test
 ```
 
-将`testfile`的内容列出并且列印行号，并搜索所有包含`oo`关键字的行（包含匹配）。
+匹配定位文件`testfile`中包含关键字`linux`的行。
 ```
-$ nl testfile | sed -n '/ooo/p'
-     7	Banbooob
-
-$ nl testfile | sed -n '/oo/p'
-     5	Google
-     7	Banbooob
+$ sed -n '/linux/p' testfile
+This is a linux testfile!
 ```
 
-将`testfile`的内容列出并且列印行号，搜索所有包含`oo`关键字的行并删除。
+匹配定位命令`df`输出中含有`/dev/sd`关键字的行。（需要转义符`\`）
 ```
-nl testfile | sed '/oo/d'
-     1	HELLO LINUX!
-     2	Linux is a free unix-type opterating system.
-     3	This is a linux testfile!
-     4	Linux test
-     6	Taobao
-     8	Tesetfile
-     9	Wiki
-```
-
-将`testfile`的内容列出并且列印行号，搜索包含有`oo`的行，把`oo`替换为`kk`，再输出这行。
-```
-$ nl testfile | sed -n '/oo/{s/oo/kk/;p;q}'
-$ nl testfile | sed -ne '/oo/{s/oo/kk/;p;q}'
-     5	Gkkgle
+$ df | sed -n '/^\/dev\/sd/p'
+/dev/sda2      102750208 7077280  92055312   8% /
+/dev/sda2      102750208 7077280  92055312   8% /.snapshots
+/dev/sda2      102750208 7077280  92055312   8% /home
+/dev/sda2      102750208 7077280  92055312   8% /opt
+/dev/sda2      102750208 7077280  92055312   8% /root
+/dev/sda2      102750208 7077280  92055312   8% /boot/grub2/x86_64-efi
+/dev/sda2      102750208 7077280  92055312   8% /boot/grub2/i386-pc
+/dev/sda2      102750208 7077280  92055312   8% /srv
+/dev/sda2      102750208 7077280  92055312   8% /tmp
+/dev/sda2      102750208 7077280  92055312   8% /usr/local
+/dev/sda2      102750208 7077280  92055312   8% /var
 ```
 
-将`testfile`的每行中所有含有`ao`的全部替换成`HH`。`g`表示全局匹配。
+搜索文件`testfile`所有包含`oo`关键字的行并匹配输出。不修改原文件。
+```
+$ sed -n '/ooo/p' testfile
+Banbooob
+
+$ sed -n '/oo/p' testfile
+Google
+Banbooob
+```
+
+搜索文件`testfile`所有包含`oo`关键字的行并删除。不修改原文件。
+```
+$ sed '/oo/d' testfile
+HELLO LINUX!
+Linux is a free unix-type opterating system.
+This is a linux testfile!
+Linux test
+Taobao
+Tesetfile
+Wiki
+```
+
+搜索文件`testfile`所有包含`oo`的行，把`oo`替换为`kk`，再输出这行。不修改原文件。
+```
+$ sed -n '/oo/{s/oo/kk/;p;q}' testfile
+$ sed -ne '/oo/{s/oo/kk/;p;q}' testfile
+Gkkgle
+```
+
+搜索文件`testfile`所有包含`ao`的全部替换成`HH`。`g`表示全局匹配。不修改原文件。
 ```
 $ sed -e 's/ao/HH/g' testfile
 $ sed 's/ao/HH/g' testfile
