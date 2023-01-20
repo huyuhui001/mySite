@@ -310,7 +310,7 @@ tmpfs 2%
 ```
 
 
-* 显示三个用户`root`，`mage`，`wang`的UID和默认shell。
+* 显示三个用户`root`，`sync`，`bin`的UID和默认shell。
 ```
 $ grep "^root:\|^sync:\|^bin:" /etc/passwd | cut -d ":" -f 1,7
 root:/bin/bash
@@ -570,7 +570,9 @@ $  grep -Eo "[0-9]+" age | paste -s -d "+" | bc
 `sed`的工作原理：
 
 `sed`命令是面向“行”进行处理的，每一次处理一行内容。
-处理时，`sed`会把要处理的行存储在缓冲区中，接着用`sed`命令处理缓冲区中的内容，处理完成后，把缓冲区的内容送往屏幕。接着处理下一行，这样不断重复，直到文件末尾。这个缓冲区被称为“模式空间”（pattern space）。
+处理时，`sed`会把要处理的行存储在缓冲区中，接着用`sed`命令处理缓冲区中的内容，处理完成后，把缓冲区的内容送往屏幕。接着处理下一行，这样不断重复，直到文件末尾。这个缓冲区被称为“**模式空间**”（pattern space）。
+
+非交互式批量修改文件。
 
 sed 命令格式：
 ```
@@ -817,7 +819,7 @@ $ sed -n '/linux/p' testfile
 This is a linux testfile!
 ```
 
-匹配定位命令`df`输出中含有`/dev/sd`关键字的行。（需要转义符`\`）
+匹配定位命令`df`输出中以`/dev/sd`关键字开头的行。（需要转义符`\`）
 ```
 $ df | sed -n '/^\/dev\/sd/p'
 /dev/sda2      102750208 7077280  92055312   8% /
@@ -831,6 +833,28 @@ $ df | sed -n '/^\/dev\/sd/p'
 /dev/sda2      102750208 7077280  92055312   8% /tmp
 /dev/sda2      102750208 7077280  92055312   8% /usr/local
 /dev/sda2      102750208 7077280  92055312   8% /var
+```
+
+匹配定位命令`df`输出中不以`/dev/sd`关键字开头的行。通过`!p`进行求反输出。
+```
+$ df | sed -n '/^\/dev\/sd/!p'
+Filesystem     1K-blocks    Used Available Use% Mounted on
+devtmpfs            4096       0      4096   0% /dev
+tmpfs            1971208       0   1971208   0% /dev/shm
+tmpfs             788484    9612    778872   2% /run
+tmpfs               4096       0      4096   0% /sys/fs/cgroup
+tmpfs             394240       0    394240   0% /run/user/1000
+```
+
+匹配定位命令`df`输出中不以`/dev/sd`和`tmp`关键字开头的行。
+```
+$ df | sed '/^\/dev\/sd/d;/^tmp/d'
+Filesystem     1K-blocks    Used Available Use% Mounted on
+devtmpfs            4096       0      4096   0% /dev
+
+$ df | grep -Ev '^\/dev\/sd|^tmp'
+Filesystem     1K-blocks    Used Available Use% Mounted on
+devtmpfs            4096       0      4096   0% /dev
 ```
 
 搜索文件`testfile`所有包含`oo`关键字的行并匹配输出。不修改原文件。
@@ -862,6 +886,20 @@ $ sed -ne '/oo/{s/oo/kk/;p;q}' testfile
 Gkkgle
 ```
 
+将`testfile`的每行中第一次出现`ao`的替换成`HH`。
+```
+$ sed 's/ao/HH/' testfile
+HELLO LINUX!
+Linux is a free unix-type opterating system.
+This is a linux testfile!
+Linux test
+Google
+THHbao
+Banbooob
+Tesetfile
+Wiki
+```
+
 搜索文件`testfile`所有包含`ao`的全部替换成`HH`。`g`表示全局匹配。不修改原文件。
 ```
 $ sed -e 's/ao/HH/g' testfile
@@ -877,18 +915,42 @@ Tesetfile
 Wiki
 ```
 
-将`testfile`的每行中第一次出现`ao`的替换成`HH`。
+在文件`/etc/passwd`中查找匹配所有符合`r`开头`t`结尾且中间含任意两个字符的行，并在`t`字母后添加`er`。
 ```
-$ sed 's/ao/HH/' testfile
-HELLO LINUX!
-Linux is a free unix-type opterating system.
-This is a linux testfile!
-Linux test
-Google
-THHbao
-Banbooob
-Tesetfile
-Wiki
+$ sed -nr 's/r..t/&er/gp' /etc/passwd
+rooter:x:0:0:rooter:/rooter:/bin/bash
+lp:x:493:487:Printering daemon:/var/spool/lpd:/usr/sbin/nologin
+tftp:x:487:474:TFTP account:/srv/terftpboot:/bin/false
+vagranter:x:1000:478:vagranter:/home/vagranter:/bin/bash
+tester1:x:600:1530:"Test User1,terestuser1@abc.com":/home/tester1:/bin/bash
+```
+将上述结果和原始内容进行对比，能更好的理解`s/r..t/&er`的操作。
+```
+rooter:x:0:0:rooter:/rooter:/bin/bash
+root:x:0:0:root:/root:/bin/bash
+
+lp:x:493:487:Printering daemon:/var/spool/lpd:/usr/sbin/nologin
+lp:x:493:487:Printing daemon:/var/spool/lpd:/usr/sbin/nologin
+
+tftp:x:487:474:TFTP account:/srv/terftpboot:/bin/false
+tftp:x:487:474:TFTP account:/srv/tftpboot:/bin/false
+
+vagranter:x:1000:478:vagranter:/home/vagranter:/bin/bash
+vagrant:x:1000:478:vagrant:/home/vagrant:/bin/bash
+
+tester1:x:600:1530:"Test User1,terestuser1@abc.com":/home/tester1:/bin/bash
+tester1:x:600:1530:"Test User1,testuser1@abc.com":/home/tester1:/bin/bash
+```
+
+体会`&`的位置不同的不同含义。
+```
+# 附加在root单词后
+$ sed -n 's/root/&superman/p' /etc/passwd
+rootsuperman:x:0:0:root:/root:/bin/bash
+
+# 附加在root单词前
+$ sed -n 's/root/superman&/p' /etc/passwd
+supermanroot:x:0:0:root:/root:/bin/bash
 ```
 
 使用参数`-i`进行源文件修改。
@@ -906,19 +968,294 @@ Tesetfile
 Wiki
 ```
 
+源文件修改前，备份在新文件`testfile.new`。
+```
+$ sed -i.new 's/ao/HH/' testfile
+
+$ cat testfile.new
+HELLO LINUX!
+Linux is a free unix-type opterating system.
+This is a linux testfile!
+Linux test
+Google
+Taobao
+Banbooob
+Tesetfile
+Wiki
+
+$ cat testfile
+HELLO LINUX!
+Linux is a free unix-type opterating system.
+This is a linux testfile!
+Linux test
+Google
+THHbao
+Banbooob
+Tesetfile
+Wiki
+```
+
+范例：除指定文件外，其余都删除。
+```
+$ touch {1..9}file.txt
+
+$ ls
+1file.txt  2file.txt  3file.txt  4file.txt  5file.txt  6file.txt  7file.txt  8file.txt  9file.txt
+
+$ ls | grep -E '(3|5|7)file\.txt'
+3file.txt
+5file.txt
+7file.txt
+
+$ ls | grep -Ev '(3|5|7)file\.txt'
+1file.txt
+2file.txt
+4file.txt
+6file.txt
+8file.txt
+9file.txt
+
+# 下面四种方法实现同样的功能
+$ rm `ls | grep -Ev '(3|5|7)file\.txt'`
+$ ls | sed -n '/^[357]file.txt/!p' | xargs rm
+$ ls | grep -Ev '(3|5|7)file\.txt' | sed -n 's/.*/rm &/p' | bash
+$ ls | grep -Ev '(3|5|7)file\.txt' | sed -En 's/(.*)/rm &/p' | bash
+$ ls | grep -Ev '(3|5|7)file\.txt' | sed -En 's/(.*)/rm \1/p' | bash
+
+$ ls
+3file.txt  5file.txt  7file.txt
+```
+
+范例：获取分区利用率
+```
+$ df | sed -En '/^\/dev\/sd/p'
+/dev/sda2      102750208 7079236  92053692   8% /
+/dev/sda2      102750208 7079236  92053692   8% /.snapshots
+/dev/sda2      102750208 7079236  92053692   8% /boot/grub2/i386-pc
+/dev/sda2      102750208 7079236  92053692   8% /boot/grub2/x86_64-efi
+/dev/sda2      102750208 7079236  92053692   8% /home
+/dev/sda2      102750208 7079236  92053692   8% /opt
+/dev/sda2      102750208 7079236  92053692   8% /root
+/dev/sda2      102750208 7079236  92053692   8% /srv
+/dev/sda2      102750208 7079236  92053692   8% /usr/local
+/dev/sda2      102750208 7079236  92053692   8% /tmp
+/dev/sda2      102750208 7079236  92053692   8% /var
+
+$ df | sed -En '/^\/dev\/sd/s@.*([0-9]+)%.*@\1@p'
+$ df | sed -En '/^\/dev\/sd/s#.*([0-9]+)%.*#\1#p'
+# df | sed -En '/^\/dev\/sd/s/.*([0-9]+)%.*/\1/p'
+8
+8
+8
+8
+8
+8
+8
+8
+8
+8
+8
+```
+体会下面空格和括弧带来的不同。
+```
+$ df | sed -En '/^\/dev\/sd/s# .*([0-9]+)%.*# \1#p'
+/dev/sda2 8
+/dev/sda2 8
+/dev/sda2 8
+/dev/sda2 8
+/dev/sda2 8
+/dev/sda2 8
+/dev/sda2 8
+/dev/sda2 8
+/dev/sda2 8
+/dev/sda2 8
+/dev/sda2 8
+
+$ df | sed -En '/^\/dev\/sd/s#( .*)([0-9]+)%.*# \1#p'
+/dev/sda2       102750208 7079804  92053156
+/dev/sda2       102750208 7079804  92053156
+/dev/sda2       102750208 7079804  92053156
+/dev/sda2       102750208 7079804  92053156
+/dev/sda2       102750208 7079804  92053156
+/dev/sda2       102750208 7079804  92053156
+/dev/sda2       102750208 7079804  92053156
+/dev/sda2       102750208 7079804  92053156
+/dev/sda2       102750208 7079804  92053156
+/dev/sda2       102750208 7079804  92053156
+/dev/sda2       102750208 7079804  92053156
+
+$ df | sed -En '/^\/dev\/sd/s#( .*)([0-9]+)%.*# \2#p'
+/dev/sda2 8
+/dev/sda2 8
+/dev/sda2 8
+/dev/sda2 8
+/dev/sda2 8
+/dev/sda2 8
+/dev/sda2 8
+/dev/sda2 8
+/dev/sda2 8
+/dev/sda2 8
+/dev/sda2 8
+```
+
+范例：取得当前IP地址。
+```
+$ ifconfig eth0
+eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 192.168.10.210  netmask 255.255.255.0  broadcast 192.168.10.255
+        inet6 fe80::20c:29ff:fea4:e17a  prefixlen 64  scopeid 0x20<link>
+        ether 00:0c:29:a4:e1:7a  txqueuelen 1000  (Ethernet)
+        RX packets 22923  bytes 1658298 (1.5 MiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 3763  bytes 442641 (432.2 KiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+$ ip addr show eth0
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+    link/ether 00:0c:29:a4:e1:7a brd ff:ff:ff:ff:ff:ff
+    altname enp2s1
+    altname ens33
+    inet 192.168.10.210/24 brd 192.168.10.255 scope global eth0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::20c:29ff:fea4:e17a/64 scope link
+       valid_lft forever preferred_lft forever
+
+
+$ ifconfig eth0 | sed -En '2s/[^0-9]+([0-9.]+).*/\1/p'
+$ ifconfig eth0 | sed -En '2s/^[^0-9]+([0-9.]{7,15}).*/\1/p'
+$ ifconfig eth0 | sed -En '2s/^[^0-9]+([0-9.]{7,15}).*$/\1/p'
+$ ifconfig eth0 | sed -n '2s/^.*inet //p' | sed -n 's/netmask.*//p'
+$ ifconfig eth0 | sed -n '2s/^.*inet //;s/ netmask.*//p'
+$ ifconfig eth0 | sed -En '2s/(.*inet )([0-9].*)(netmask.*)/\2/p'
+192.168.10.210
+192.168.10.210
+192.168.10.210
 
 
 
 
+```
+使用`\0`输出全部变量。
+```
+$ ifconfig eth0 | sed -En '2s/(.*inet )([0-9].*)(netmask.*)/\0/p'
+        inet 192.168.10.210  netmask 255.255.255.0  broadcast 192.168.10.255
 
+$ ifconfig eth0 | sed -En '2s/(.*inet )([0-9].*)(netmask.*)/\1/p'
+        inet
 
+$ ifconfig eth0 | sed -En '2s/(.*inet )([0-9].*)(netmask.*)/\2/p'
+192.168.10.210
 
+$ ifconfig eth0 | sed -En '2s/(.*inet )([0-9].*)(netmask.*)/\3/p'
+netmask 255.255.255.0  broadcast 192.168.10.255
+```
+对比下面两个指令的匹配差异。
+```
+$ ifconfig eth0 | sed -n '2s/^.*inet //p' | sed -n 's/ netmask.*//p'
+192.168.10.210
 
+$ ifconfig eth0 | sed -n '2s/^.*inet //p' | sed -n 's/netmask.* //p'
+192.168.10.210  192.168.10.255
 
+$ ifconfig eth0 | sed -n '2s/^.*inet //p' | sed -n 's/netmask .*//p'
+192.168.10.210
 
+$ ifconfig eth0 | sed -n '2s/^.*inet //p' | sed -n 's/netmask.*//p'
+192.168.10.210
+```
 
+范例：取基名和目录名。
+（`/etc/sysconfig/network-scripts/`目录在Rocky9中默认已创建，在openSUSE和Ubuntu中没有）
+```
+# 取目录名
+$ echo "/etc/sysconfig/network-scripts/" | sed -E 's#(^/.*/)([^/]+/?)#\1#'
+$ echo "/etc/sysconfig/network-scripts/" | sed -E 's/(^\/.*\/)([^\/]+\/?)/\1/'
+/etc/sysconfig/
+# 取基名
+$ echo "/etc/sysconfig/network-scripts/" | sed -E 's#(^/.*/)([^/]+/?)#\2#'
+$ echo "/etc/sysconfig/network-scripts/" | sed -E 's/(^\/.*\/)([^\/]+\/?)/\2/'
+network-scripts/
 
+# 取目录名
+$ echo "/etc/sysconfig/network-scripts/dummyfile" | sed -E 's#(^/.*/)([^/]+/?)#\1#'
+$ echo "/etc/sysconfig/network-scripts/dummyfille" | sed -E 's/(^\/.*\/)([^\/]+\/?)/\1/'
+/etc/sysconfig/network-scripts/
+# 取基名
+$ echo "/etc/sysconfig/network-scripts/dummyfile" | sed -E 's#(^/.*/)([^/]+/?)#\2#'
+$ echo "/etc/sysconfig/network-scripts/dummyfille" | sed -E 's/(^\/.*\/)([^\/]+\/?)/\2/'
+dummyfille
+```
 
+范例：取文件名和文件扩展名
+```
+$ echo 1_.file.tar.gz | sed -En 's/(.*)\.([^.]+)$/\1/p'
+$ echo 1_.file.tar.gz | sed -En 's@(.*)\.([^.]+)$@\1@p'
+1_.file.tar
+
+$ echo 1_.file.tar.gz | sed -En 's/(.*)\.([^.]+)$/\2/p'
+$ echo 1_.file.tar.gz | sed -En 's@(.*)\.([^.]+)$@\2@p'
+gz
+```
+```
+$ echo 1_.file.tar.gz | grep -Eo '.*\.'
+1_.file.tar.
+
+$ echo 1_.file.tar.gz | grep -Eo '[^.]+$'
+gz
+```
+
+范例：将非`#`开头的行添加`#`
+```
+$ cat <<EOF > testfile
+HELLO LINUX!
+Linux is a free unix-type opterating system.
+This is a linux testfile!
+Linux test
+Google
+Taobao
+Banbooob
+#Tesetfile
+#Wiki
+EOF
+
+$ sed -En 's/^[^#]/#&/p' testfile
+$ sed -En 's/^[^#](.*)/#\1/p' testfile
+#HELLO LINUX!
+#Linux is a free unix-type opterating system.
+#This is a linux testfile!
+#Linux test
+#Google
+#Taobao
+#Banbooob
+```
+
+范例：将`#`开头的行删除`#`
+```
+$ cat <<EOF > testfile
+HELLO LINUX!
+Linux is a free unix-type opterating system.
+This is a linux testfile!
+Linux test
+Google
+Taobao
+Banbooob
+#Tesetfile
+#Wiki
+EOF
+
+$ sed -Ei.bak '/^#/s/^#//' testfile
+
+$ cat testfile
+HELLO LINUX!
+Linux is a free unix-type opterating system.
+This is a linux testfile!
+Linux test
+Google
+Taobao
+Banbooob
+Tesetfile
+Wiki
+```
 
 
 
