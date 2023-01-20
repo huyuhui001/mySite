@@ -76,7 +76,7 @@ tmpfs 0%
 tmpfs 2%
 /dev/mapper/rl-root 5%
 /dev/nvme0n1p1 23%
-</code></pre></div></p> </li> <li> <p>显示三个用户<code>root</code>，<code>mage</code>，<code>wang</code>的UID和默认shell。 <div class=highlight><pre><span></span><code>$ grep &quot;^root:\|^sync:\|^bin:&quot; /etc/passwd | cut -d &quot;:&quot; -f 1,7
+</code></pre></div></p> </li> <li> <p>显示三个用户<code>root</code>，<code>sync</code>，<code>bin</code>的UID和默认shell。 <div class=highlight><pre><span></span><code>$ grep &quot;^root:\|^sync:\|^bin:&quot; /etc/passwd | cut -d &quot;:&quot; -f 1,7
 root:/bin/bash
 bin:/usr/sbin/nologin
 </code></pre></div></p> </li> <li> <p>使用<code>egrep</code>取出<code>/etc/default-1/text_2/local.3/grub</code>中其基名和目录名。 <div class=highlight><pre><span></span><code># 基名
@@ -217,7 +217,7 @@ $ grep -Eo &quot;[0-9]+&quot; age | tr &quot;\n&quot; + | grep -Eo &quot;.*[0-9]
 # 方法3
 $  grep -Eo &quot;[0-9]+&quot; age | paste -s -d &quot;+&quot; | bc
 90
-</code></pre></div></p> <h2 id=sed>三剑客<code>sed</code>命令<a class=headerlink href=#sed title="Permanent link"> ¶</a></h2> <p><code>sed</code>是stream editor的缩写，中文称之为“流编辑器”。 <code>sed</code>命令是一个面向行处理的工具，它以“行”为处理单位，针对每一行进行处理，处理后的结果会输出到标准输出<code>STDOUT</code>，不会对读取的文件做任何修改。</p> <p><code>sed</code>的工作原理：</p> <p><code>sed</code>命令是面向“行”进行处理的，每一次处理一行内容。 处理时，<code>sed</code>会把要处理的行存储在缓冲区中，接着用<code>sed</code>命令处理缓冲区中的内容，处理完成后，把缓冲区的内容送往屏幕。接着处理下一行，这样不断重复，直到文件末尾。这个缓冲区被称为“模式空间”（pattern space）。</p> <p>sed 命令格式： <div class=highlight><pre><span></span><code>$ sed [option] command file
+</code></pre></div></p> <h2 id=sed>三剑客<code>sed</code>命令<a class=headerlink href=#sed title="Permanent link"> ¶</a></h2> <p><code>sed</code>是stream editor的缩写，中文称之为“流编辑器”。 <code>sed</code>命令是一个面向行处理的工具，它以“行”为处理单位，针对每一行进行处理，处理后的结果会输出到标准输出<code>STDOUT</code>，不会对读取的文件做任何修改。</p> <p><code>sed</code>的工作原理：</p> <p><code>sed</code>命令是面向“行”进行处理的，每一次处理一行内容。 处理时，<code>sed</code>会把要处理的行存储在缓冲区中，接着用<code>sed</code>命令处理缓冲区中的内容，处理完成后，把缓冲区的内容送往屏幕。接着处理下一行，这样不断重复，直到文件末尾。这个缓冲区被称为“<strong>模式空间</strong>”（pattern space）。</p> <p>非交互式批量修改文件。</p> <p>sed 命令格式： <div class=highlight><pre><span></span><code>$ sed [option] command file
 </code></pre></div></p> <p><code>option</code>常用选项：</p> <ul> <li><code>-n</code>：不输出模式pattern的内容到屏幕（即不自动打印）</li> <li><code>-e</code>：多点编辑</li> <li><code>-f filename</code>：从指定文件读取编辑脚本</li> <li><code>-r</code>，<code>-E</code>：使用扩展正则表达式</li> <li><code>-i .bak</code>：备份文件并原处编辑</li> <li><code>-s</code>：将多个文件视为独立文件，而不是单个连续的长文件流</li> </ul> <p>补充说明：</p> <ul> <li><code>-ir</code>： 不支持</li> <li><code>-i -r</code>： 支持</li> <li><code>-ri</code>： 支持</li> <li><code>-ni</code>： 危险选项，会清空文件</li> </ul> <p><code>command</code>部分可以分为两部分：</p> <ul> <li> <p>范围设定，可以采用两种不同的方式来表达：</p> <ul> <li>指定行数：如：<ul> <li><code>3,5</code>表示第3、4、5行</li> <li><code>5,$</code>表示第5行至文件最后一行</li> </ul> </li> <li>模式匹配：如：<ul> <li><code>/^[^dD]/</code>表示匹配行首不是以<code>d</code>或<code>D</code>开头的行</li> </ul> </li> </ul> </li> <li> <p>动作处理，下面是常用的动作：</p> <ul> <li><code>a</code>：新增， <code>a</code>后面的字串会在新的一行出现（当前行的下一行）</li> <li><code>i</code>：插入， <code>i</code>后面的字串会在新的一行出现（当前行的上一行）</li> <li><code>r filename</code>：读取指定文件<code>fllename</code>的内容，追加到当前行的下一行</li> <li><code>R filename</code>：读取指定文件<code>fllename</code>的一行，追加到当前行的下一行</li> <li><code>d</code>：删除该行</li> <li><code>p</code>：打印该行</li> <li><code>Ip</code>：忽略大小写输出</li> <li><code>w filename</code>：写入到指定文件filename中。</li> <li><code>s/regexp/replacement/</code>：取代，用replacement取代正则regexp匹配到的内容</li> <li><code>=</code>：为模式pattern中的匹配行打印行号</li> <li><code>!</code>：为模式pattern中的匹配行取反操作</li> <li><code>q</code>：结束或退出sed</li> </ul> </li> </ul> <p>创建一个<code>testfile</code>文件。 <div class=highlight><pre><span></span><code>$ cat &lt;&lt;EOF &gt; testfile
 HELLO LINUX!
 Linux is a free unix-type opterating system.
@@ -344,7 +344,7 @@ replaced
      4  Linux test
 </code></pre></div></p> <p>匹配定位文件<code>testfile</code>中包含关键字<code>linux</code>的行。 <div class=highlight><pre><span></span><code>$ sed -n &#39;/linux/p&#39; testfile
 This is a linux testfile!
-</code></pre></div></p> <p>匹配定位命令<code>df</code>输出中含有<code>/dev/sd</code>关键字的行。（需要转义符<code>\</code>） <div class=highlight><pre><span></span><code>$ df | sed -n &#39;/^\/dev\/sd/p&#39;
+</code></pre></div></p> <p>匹配定位命令<code>df</code>输出中以<code>/dev/sd</code>关键字开头的行。（需要转义符<code>\</code>） <div class=highlight><pre><span></span><code>$ df | sed -n &#39;/^\/dev\/sd/p&#39;
 /dev/sda2      102750208 7077280  92055312   8% /
 /dev/sda2      102750208 7077280  92055312   8% /.snapshots
 /dev/sda2      102750208 7077280  92055312   8% /home
@@ -356,6 +356,20 @@ This is a linux testfile!
 /dev/sda2      102750208 7077280  92055312   8% /tmp
 /dev/sda2      102750208 7077280  92055312   8% /usr/local
 /dev/sda2      102750208 7077280  92055312   8% /var
+</code></pre></div></p> <p>匹配定位命令<code>df</code>输出中不以<code>/dev/sd</code>关键字开头的行。通过<code>!p</code>进行求反输出。 <div class=highlight><pre><span></span><code>$ df | sed -n &#39;/^\/dev\/sd/!p&#39;
+Filesystem     1K-blocks    Used Available Use% Mounted on
+devtmpfs            4096       0      4096   0% /dev
+tmpfs            1971208       0   1971208   0% /dev/shm
+tmpfs             788484    9612    778872   2% /run
+tmpfs               4096       0      4096   0% /sys/fs/cgroup
+tmpfs             394240       0    394240   0% /run/user/1000
+</code></pre></div></p> <p>匹配定位命令<code>df</code>输出中不以<code>/dev/sd</code>和<code>tmp</code>关键字开头的行。 <div class=highlight><pre><span></span><code>$ df | sed &#39;/^\/dev\/sd/d;/^tmp/d&#39;
+Filesystem     1K-blocks    Used Available Use% Mounted on
+devtmpfs            4096       0      4096   0% /dev
+
+$ df | grep -Ev &#39;^\/dev\/sd|^tmp&#39;
+Filesystem     1K-blocks    Used Available Use% Mounted on
+devtmpfs            4096       0      4096   0% /dev
 </code></pre></div></p> <p>搜索文件<code>testfile</code>所有包含<code>oo</code>关键字的行并匹配输出。不修改原文件。 <div class=highlight><pre><span></span><code>$ sed -n &#39;/ooo/p&#39; testfile
 Banbooob
 
@@ -373,6 +387,16 @@ Wiki
 </code></pre></div></p> <p>搜索文件<code>testfile</code>所有包含<code>oo</code>的行，把<code>oo</code>替换为<code>kk</code>，再输出这行。不修改原文件。 <div class=highlight><pre><span></span><code>$ sed -n &#39;/oo/{s/oo/kk/;p;q}&#39; testfile
 $ sed -ne &#39;/oo/{s/oo/kk/;p;q}&#39; testfile
 Gkkgle
+</code></pre></div></p> <p>将<code>testfile</code>的每行中第一次出现<code>ao</code>的替换成<code>HH</code>。 <div class=highlight><pre><span></span><code>$ sed &#39;s/ao/HH/&#39; testfile
+HELLO LINUX!
+Linux is a free unix-type opterating system.
+This is a linux testfile!
+Linux test
+Google
+THHbao
+Banbooob
+Tesetfile
+Wiki
 </code></pre></div></p> <p>搜索文件<code>testfile</code>所有包含<code>ao</code>的全部替换成<code>HH</code>。<code>g</code>表示全局匹配。不修改原文件。 <div class=highlight><pre><span></span><code>$ sed -e &#39;s/ao/HH/g&#39; testfile
 $ sed &#39;s/ao/HH/g&#39; testfile
 HELLO LINUX!
@@ -384,7 +408,35 @@ THHbHH
 Banbooob
 Tesetfile
 Wiki
-</code></pre></div></p> <p>将<code>testfile</code>的每行中第一次出现<code>ao</code>的替换成<code>HH</code>。 <div class=highlight><pre><span></span><code>$ sed &#39;s/ao/HH/&#39; testfile
+</code></pre></div></p> <p>在文件<code>/etc/passwd</code>中查找匹配所有符合<code>r</code>开头<code>t</code>结尾且中间含任意两个字符的行，并在<code>t</code>字母后添加<code>er</code>。 <div class=highlight><pre><span></span><code>$ sed -nr &#39;s/r..t/&amp;er/gp&#39; /etc/passwd
+rooter:x:0:0:rooter:/rooter:/bin/bash
+lp:x:493:487:Printering daemon:/var/spool/lpd:/usr/sbin/nologin
+tftp:x:487:474:TFTP account:/srv/terftpboot:/bin/false
+vagranter:x:1000:478:vagranter:/home/vagranter:/bin/bash
+tester1:x:600:1530:&quot;Test User1,terestuser1@abc.com&quot;:/home/tester1:/bin/bash
+</code></pre></div> 将上述结果和原始内容进行对比，能更好的理解<code>s/r..t/&amp;er</code>的操作。 <div class=highlight><pre><span></span><code>rooter:x:0:0:rooter:/rooter:/bin/bash
+root:x:0:0:root:/root:/bin/bash
+
+lp:x:493:487:Printering daemon:/var/spool/lpd:/usr/sbin/nologin
+lp:x:493:487:Printing daemon:/var/spool/lpd:/usr/sbin/nologin
+
+tftp:x:487:474:TFTP account:/srv/terftpboot:/bin/false
+tftp:x:487:474:TFTP account:/srv/tftpboot:/bin/false
+
+vagranter:x:1000:478:vagranter:/home/vagranter:/bin/bash
+vagrant:x:1000:478:vagrant:/home/vagrant:/bin/bash
+
+tester1:x:600:1530:&quot;Test User1,terestuser1@abc.com&quot;:/home/tester1:/bin/bash
+tester1:x:600:1530:&quot;Test User1,testuser1@abc.com&quot;:/home/tester1:/bin/bash
+</code></pre></div></p> <p>体会<code>&amp;</code>的位置不同的不同含义。 <div class=highlight><pre><span></span><code># 附加在root单词后
+$ sed -n &#39;s/root/&amp;superman/p&#39; /etc/passwd
+rootsuperman:x:0:0:root:/root:/bin/bash
+
+# 附加在root单词前
+$ sed -n &#39;s/root/superman&amp;/p&#39; /etc/passwd
+supermanroot:x:0:0:root:/root:/bin/bash
+</code></pre></div></p> <p>使用参数<code>-i</code>进行源文件修改。 <div class=highlight><pre><span></span><code>$ sed -i &#39;s/ao/HH/&#39; testfile
+$ cat testfile
 HELLO LINUX!
 Linux is a free unix-type opterating system.
 This is a linux testfile!
@@ -394,7 +446,19 @@ THHbao
 Banbooob
 Tesetfile
 Wiki
-</code></pre></div></p> <p>使用参数<code>-i</code>进行源文件修改。 <div class=highlight><pre><span></span><code>$ sed -i &#39;s/ao/HH/&#39; testfile
+</code></pre></div></p> <p>源文件修改前，备份在新文件<code>testfile.new</code>。 <div class=highlight><pre><span></span><code>$ sed -i.new &#39;s/ao/HH/&#39; testfile
+
+$ cat testfile.new
+HELLO LINUX!
+Linux is a free unix-type opterating system.
+This is a linux testfile!
+Linux test
+Google
+Taobao
+Banbooob
+Tesetfile
+Wiki
+
 $ cat testfile
 HELLO LINUX!
 Linux is a free unix-type opterating system.
@@ -402,6 +466,224 @@ This is a linux testfile!
 Linux test
 Google
 THHbao
+Banbooob
+Tesetfile
+Wiki
+</code></pre></div></p> <p>范例：除指定文件外，其余都删除。 <div class=highlight><pre><span></span><code>$ touch {1..9}file.txt
+
+$ ls
+1file.txt  2file.txt  3file.txt  4file.txt  5file.txt  6file.txt  7file.txt  8file.txt  9file.txt
+
+$ ls | grep -E &#39;(3|5|7)file\.txt&#39;
+3file.txt
+5file.txt
+7file.txt
+
+$ ls | grep -Ev &#39;(3|5|7)file\.txt&#39;
+1file.txt
+2file.txt
+4file.txt
+6file.txt
+8file.txt
+9file.txt
+
+# 下面四种方法实现同样的功能
+$ rm `ls | grep -Ev &#39;(3|5|7)file\.txt&#39;`
+$ ls | sed -n &#39;/^[357]file.txt/!p&#39; | xargs rm
+$ ls | grep -Ev &#39;(3|5|7)file\.txt&#39; | sed -n &#39;s/.*/rm &amp;/p&#39; | bash
+$ ls | grep -Ev &#39;(3|5|7)file\.txt&#39; | sed -En &#39;s/(.*)/rm &amp;/p&#39; | bash
+$ ls | grep -Ev &#39;(3|5|7)file\.txt&#39; | sed -En &#39;s/(.*)/rm \1/p&#39; | bash
+
+$ ls
+3file.txt  5file.txt  7file.txt
+</code></pre></div></p> <p>范例：获取分区利用率 <div class=highlight><pre><span></span><code>$ df | sed -En &#39;/^\/dev\/sd/p&#39;
+/dev/sda2      102750208 7079236  92053692   8% /
+/dev/sda2      102750208 7079236  92053692   8% /.snapshots
+/dev/sda2      102750208 7079236  92053692   8% /boot/grub2/i386-pc
+/dev/sda2      102750208 7079236  92053692   8% /boot/grub2/x86_64-efi
+/dev/sda2      102750208 7079236  92053692   8% /home
+/dev/sda2      102750208 7079236  92053692   8% /opt
+/dev/sda2      102750208 7079236  92053692   8% /root
+/dev/sda2      102750208 7079236  92053692   8% /srv
+/dev/sda2      102750208 7079236  92053692   8% /usr/local
+/dev/sda2      102750208 7079236  92053692   8% /tmp
+/dev/sda2      102750208 7079236  92053692   8% /var
+
+$ df | sed -En &#39;/^\/dev\/sd/s@.*([0-9]+)%.*@\1@p&#39;
+$ df | sed -En &#39;/^\/dev\/sd/s#.*([0-9]+)%.*#\1#p&#39;
+# df | sed -En &#39;/^\/dev\/sd/s/.*([0-9]+)%.*/\1/p&#39;
+8
+8
+8
+8
+8
+8
+8
+8
+8
+8
+8
+</code></pre></div> 体会下面空格和括弧带来的不同。 <div class=highlight><pre><span></span><code>$ df | sed -En &#39;/^\/dev\/sd/s# .*([0-9]+)%.*# \1#p&#39;
+/dev/sda2 8
+/dev/sda2 8
+/dev/sda2 8
+/dev/sda2 8
+/dev/sda2 8
+/dev/sda2 8
+/dev/sda2 8
+/dev/sda2 8
+/dev/sda2 8
+/dev/sda2 8
+/dev/sda2 8
+
+$ df | sed -En &#39;/^\/dev\/sd/s#( .*)([0-9]+)%.*# \1#p&#39;
+/dev/sda2       102750208 7079804  92053156
+/dev/sda2       102750208 7079804  92053156
+/dev/sda2       102750208 7079804  92053156
+/dev/sda2       102750208 7079804  92053156
+/dev/sda2       102750208 7079804  92053156
+/dev/sda2       102750208 7079804  92053156
+/dev/sda2       102750208 7079804  92053156
+/dev/sda2       102750208 7079804  92053156
+/dev/sda2       102750208 7079804  92053156
+/dev/sda2       102750208 7079804  92053156
+/dev/sda2       102750208 7079804  92053156
+
+$ df | sed -En &#39;/^\/dev\/sd/s#( .*)([0-9]+)%.*# \2#p&#39;
+/dev/sda2 8
+/dev/sda2 8
+/dev/sda2 8
+/dev/sda2 8
+/dev/sda2 8
+/dev/sda2 8
+/dev/sda2 8
+/dev/sda2 8
+/dev/sda2 8
+/dev/sda2 8
+/dev/sda2 8
+</code></pre></div></p> <p>范例：取得当前IP地址。 <div class=highlight><pre><span></span><code>$ ifconfig eth0
+eth0: flags=4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 1500
+        inet 192.168.10.210  netmask 255.255.255.0  broadcast 192.168.10.255
+        inet6 fe80::20c:29ff:fea4:e17a  prefixlen 64  scopeid 0x20&lt;link&gt;
+        ether 00:0c:29:a4:e1:7a  txqueuelen 1000  (Ethernet)
+        RX packets 22923  bytes 1658298 (1.5 MiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 3763  bytes 442641 (432.2 KiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+$ ip addr show eth0
+2: eth0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+    link/ether 00:0c:29:a4:e1:7a brd ff:ff:ff:ff:ff:ff
+    altname enp2s1
+    altname ens33
+    inet 192.168.10.210/24 brd 192.168.10.255 scope global eth0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::20c:29ff:fea4:e17a/64 scope link
+       valid_lft forever preferred_lft forever
+
+
+$ ifconfig eth0 | sed -En &#39;2s/[^0-9]+([0-9.]+).*/\1/p&#39;
+$ ifconfig eth0 | sed -En &#39;2s/^[^0-9]+([0-9.]{7,15}).*/\1/p&#39;
+$ ifconfig eth0 | sed -En &#39;2s/^[^0-9]+([0-9.]{7,15}).*$/\1/p&#39;
+$ ifconfig eth0 | sed -n &#39;2s/^.*inet //p&#39; | sed -n &#39;s/netmask.*//p&#39;
+$ ifconfig eth0 | sed -n &#39;2s/^.*inet //;s/ netmask.*//p&#39;
+$ ifconfig eth0 | sed -En &#39;2s/(.*inet )([0-9].*)(netmask.*)/\2/p&#39;
+192.168.10.210
+192.168.10.210
+192.168.10.210
+</code></pre></div> 使用<code>\0</code>输出全部变量。 <div class=highlight><pre><span></span><code>$ ifconfig eth0 | sed -En &#39;2s/(.*inet )([0-9].*)(netmask.*)/\0/p&#39;
+        inet 192.168.10.210  netmask 255.255.255.0  broadcast 192.168.10.255
+
+$ ifconfig eth0 | sed -En &#39;2s/(.*inet )([0-9].*)(netmask.*)/\1/p&#39;
+        inet
+
+$ ifconfig eth0 | sed -En &#39;2s/(.*inet )([0-9].*)(netmask.*)/\2/p&#39;
+192.168.10.210
+
+$ ifconfig eth0 | sed -En &#39;2s/(.*inet )([0-9].*)(netmask.*)/\3/p&#39;
+netmask 255.255.255.0  broadcast 192.168.10.255
+</code></pre></div> 对比下面两个指令的匹配差异。 <div class=highlight><pre><span></span><code>$ ifconfig eth0 | sed -n &#39;2s/^.*inet //p&#39; | sed -n &#39;s/ netmask.*//p&#39;
+192.168.10.210
+
+$ ifconfig eth0 | sed -n &#39;2s/^.*inet //p&#39; | sed -n &#39;s/netmask.* //p&#39;
+192.168.10.210  192.168.10.255
+
+$ ifconfig eth0 | sed -n &#39;2s/^.*inet //p&#39; | sed -n &#39;s/netmask .*//p&#39;
+192.168.10.210
+
+$ ifconfig eth0 | sed -n &#39;2s/^.*inet //p&#39; | sed -n &#39;s/netmask.*//p&#39;
+192.168.10.210
+</code></pre></div></p> <p>范例：取基名和目录名。 （<code>/etc/sysconfig/network-scripts/</code>目录在Rocky9中默认已创建，在openSUSE和Ubuntu中没有） <div class=highlight><pre><span></span><code># 取目录名
+$ echo &quot;/etc/sysconfig/network-scripts/&quot; | sed -E &#39;s#(^/.*/)([^/]+/?)#\1#&#39;
+$ echo &quot;/etc/sysconfig/network-scripts/&quot; | sed -E &#39;s/(^\/.*\/)([^\/]+\/?)/\1/&#39;
+/etc/sysconfig/
+# 取基名
+$ echo &quot;/etc/sysconfig/network-scripts/&quot; | sed -E &#39;s#(^/.*/)([^/]+/?)#\2#&#39;
+$ echo &quot;/etc/sysconfig/network-scripts/&quot; | sed -E &#39;s/(^\/.*\/)([^\/]+\/?)/\2/&#39;
+network-scripts/
+
+# 取目录名
+$ echo &quot;/etc/sysconfig/network-scripts/dummyfile&quot; | sed -E &#39;s#(^/.*/)([^/]+/?)#\1#&#39;
+$ echo &quot;/etc/sysconfig/network-scripts/dummyfille&quot; | sed -E &#39;s/(^\/.*\/)([^\/]+\/?)/\1/&#39;
+/etc/sysconfig/network-scripts/
+# 取基名
+$ echo &quot;/etc/sysconfig/network-scripts/dummyfile&quot; | sed -E &#39;s#(^/.*/)([^/]+/?)#\2#&#39;
+$ echo &quot;/etc/sysconfig/network-scripts/dummyfille&quot; | sed -E &#39;s/(^\/.*\/)([^\/]+\/?)/\2/&#39;
+dummyfille
+</code></pre></div></p> <p>范例：取文件名和文件扩展名 <div class=highlight><pre><span></span><code>$ echo 1_.file.tar.gz | sed -En &#39;s/(.*)\.([^.]+)$/\1/p&#39;
+$ echo 1_.file.tar.gz | sed -En &#39;s@(.*)\.([^.]+)$@\1@p&#39;
+1_.file.tar
+
+$ echo 1_.file.tar.gz | sed -En &#39;s/(.*)\.([^.]+)$/\2/p&#39;
+$ echo 1_.file.tar.gz | sed -En &#39;s@(.*)\.([^.]+)$@\2@p&#39;
+gz
+</code></pre></div> <div class=highlight><pre><span></span><code>$ echo 1_.file.tar.gz | grep -Eo &#39;.*\.&#39;
+1_.file.tar.
+
+$ echo 1_.file.tar.gz | grep -Eo &#39;[^.]+$&#39;
+gz
+</code></pre></div></p> <p>范例：将非<code>#</code>开头的行添加<code>#</code> <div class=highlight><pre><span></span><code>$ cat &lt;&lt;EOF &gt; testfile
+HELLO LINUX!
+Linux is a free unix-type opterating system.
+This is a linux testfile!
+Linux test
+Google
+Taobao
+Banbooob
+#Tesetfile
+#Wiki
+EOF
+
+$ sed -En &#39;s/^[^#]/#&amp;/p&#39; testfile
+$ sed -En &#39;s/^[^#](.*)/#\1/p&#39; testfile
+#HELLO LINUX!
+#Linux is a free unix-type opterating system.
+#This is a linux testfile!
+#Linux test
+#Google
+#Taobao
+#Banbooob
+</code></pre></div></p> <p>范例：将<code>#</code>开头的行删除<code>#</code> <div class=highlight><pre><span></span><code>$ cat &lt;&lt;EOF &gt; testfile
+HELLO LINUX!
+Linux is a free unix-type opterating system.
+This is a linux testfile!
+Linux test
+Google
+Taobao
+Banbooob
+#Tesetfile
+#Wiki
+EOF
+
+$ sed -Ei.bak &#39;/^#/s/^#//&#39; testfile
+
+$ cat testfile
+HELLO LINUX!
+Linux is a free unix-type opterating system.
+This is a linux testfile!
+Linux test
+Google
+Taobao
 Banbooob
 Tesetfile
 Wiki
