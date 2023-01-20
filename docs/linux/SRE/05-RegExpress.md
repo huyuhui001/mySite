@@ -63,7 +63,10 @@
     * 例如：`^tux`能够匹配以`tux`起始的行
 
 * `$`：行尾锚定，指定了匹配正则表达式的文本必须结束于目标字符串的尾部。
-    * 例如：`tux$`能够匹配以`tux`结尾的行
+
+* `\<`或`\b`：词首锚定，用于单词模式匹配左侧。（单词是有字母、数字、下划线组成）
+
+* `\>`或`\b`：词尾锚定，用于单词模式匹配右侧。（单词是有字母、数字、下划线组成）
 
 * `^PATTERN$`：用模式PATTERN匹配整行。
 
@@ -71,13 +74,31 @@
 
 * `^[[:space:]]*$`：匹配空白行（整行）。
 
-* `\<`或`\b`：词首锚定，用于单词模式匹配左侧。（单词是有字母、数字、下划线组成）
-
-* `\>`或`\b`：词尾锚定，用于单词模式匹配右侧。（单词是有字母、数字、下划线组成）
-
 * `\<PATTERN\>`：匹配整个单词。（单词是有字母、数字、下划线组成）
 
 
+关于行首锚定和词首锚定，对比下面例子。词尾锚定也是类似情况。
+`;`和`-`都被认定为单词分隔符。
+```
+# 符合词首匹配
+$ echo "tux_01-tux02" | grep '\<tux'
+tux_01-tux02
+
+# 符合词首匹配
+$ echo "xut_01-tux02" | grep '\<tux'
+xut_01-tux02
+
+# 符合行首匹配
+$ echo "xut_01;tux02" | grep '\<tux'
+xut_01;tux02
+
+# 符合行首匹配
+$ echo "tux_01-tux02" | grep '^tux'
+tux_01-tux02
+
+# 不符合行首匹配
+$ echo "xut_01-tux02" | grep '^tux'
+```
 
 
 
@@ -92,8 +113,9 @@
     * 例如：`Hack.`能够匹配`Hackl`和`Hacki`，但是不能匹配`Hackl2`或`Hackil`，它只能匹配单个字符。
 
 * `[]`：匹配中括号内的任意一个字符。中括号内可以是一个字符组或字符范围 	
-    * 例如：`coo[kl]`能够匹配`cook`或`cool`。
+    * 例如：`coo[kl]`能够匹配`cook`或`cool`
     * 例如：`[0-9]`匹配任意单个数字
+    * 例如：`[.0-9]`匹配`.`或任意单个数字（中括号内的`.`就代表字符`.`，不代表任意单个字符）
 
 * `[^]`：匹配不在中括号内的任意一个字符。中括号内可以是一个字符组或字符范围 	
     * 例如：`9[^01]`能够匹配`92`和`93`，但是不匹配`91`和`90`。
@@ -117,17 +139,17 @@
 * `?`：匹配之前的项0次或1次。
     * 例如：`colou?r`能够匹配`color`或`colour`，但是不能匹配`colouur`。
 
-* `+`：匹配之前的项1次或多次。
-    * 例如：`Rollno-9+`能够匹配`Rollno-99`和`Rollno-9`，但是不能匹配`Rollno-`。
-    * 例如：`colou+r`能够匹配`colour`或`colouur`，不能匹配`color`。
-    * 例如：`goo\+gle`能够匹配1个或多个`o`，如：`google`，`gooogle`，`goooogle`等。
-
 * `*`：匹配之前的项0次或多次。
     * 例如：`co*l`能够匹配`col`和`coool`。
     * 例如：`goo*gle`能匹配0个或多个`o`，如：`gogle`、`google`、`gooogle`、`gooooooooogle`等。
     * 例如：`gooo*gle`，则可以匹配`google`、`gooogle`、`gooooooooogle`等，对比上面等差别。
 
-* `.*`：匹配任意长度等任意字符。
+* `+`：匹配之前的项1次或多次。
+    * 例如：`Rollno-9+`能够匹配`Rollno-99`和`Rollno-9`，但是不能匹配`Rollno-`。
+    * 例如：`colou+r`能够匹配`colour`或`colouur`，不能匹配`color`。
+    * 例如：`goo\+gle`能够匹配1个或多个`o`，如：`google`，`gooogle`，`goooogle`等。
+
+* `.*`：匹配任意长度等任意字符。相当于通配符中的`*`。
 
 * `{n}`：匹配之前的项`n`次。
     * 例如：`[0-9]{3}`能够匹配任意的三位数。
@@ -206,8 +228,6 @@ $ ifconfig eth0 | grep netmask | grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3
 $ ifconfig eth0 | grep netmask | grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}' | head -n 1
 192.168.10.210
 
-
-
 $ ifconfig eth0 | grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}'
 192.168.10.210
 255.255.255.0
@@ -227,8 +247,15 @@ $ grep -v '^$' /etc/profile
 ```
 $ grep -v '^$' /etc/profile | grep -v '^#'
 $ grep -v '^$\|#' /etc/profile
-$ grep '^[^#]' /etc/profile
+$ grep '^[^$#]' /etc/profile
 ```
+注意，如果写成下面这样，则不会过滤掉空行，`[$]`会被视为`$`符号。
+所以正则表达式的元字符放在中括号`[]`内就被视为普通字符。
+```
+grep -v '^[$#]' /etc/profile
+```
+
+
 
 
 ## 正则小练习
@@ -574,7 +601,7 @@ $  grep -Eo "[0-9]+" age | paste -s -d "+" | bc
 
 非交互式批量修改文件。
 
-sed 命令格式：
+`sed`命令格式：
 ```
 $ sed [option] command file
 ```
@@ -587,9 +614,6 @@ $ sed [option] command file
 * `-r`，`-E`：使用扩展正则表达式
 * `-i .bak`：备份文件并原处编辑
 * `-s`：将多个文件视为独立文件，而不是单个连续的长文件流
-
-补充说明：
-
 * `-ir`： 不支持
 * `-i -r`： 支持
 * `-ri`： 支持
@@ -718,7 +742,17 @@ $ nl testfile | sed '2d;5d'
      9  Wiki
 ```
 
-将`testfile`的内容列出，且在第6行后加上`I love Linux`。不修改原文件。
+将`testfile`的内容输出，输出区间是从行首`L`的行到行首`G`的行结束。不修改原文件。
+如果行首匹配不到，则无结果输出；如果行尾匹配不到，则输出到文件结束。
+```
+$ sed -n '/^L/,/^G/p' testfile
+Linux is a free unix-type opterating system.
+This is a linux testfile!
+Linux test
+Google
+```
+
+将`testfile`的内容输出，且在第6行后加上`I love Linux`。不修改原文件。
 ```
 $ sed -e '6a I love Linux' testfile
 HELLO LINUX!
@@ -786,6 +820,8 @@ Add line 3
 将`testfile`的内容列出并且打印行号，且将第2-5行的内容取代成为`replaced`。不修改原文件。
 ```
 $ nl testfile | sed '2,5c\replaced'
+$ nl testfile | sed '2,5c replaced'
+$ nl testfile | sed '2,5creplaced'
      1	HELLO LINUX!
 replaced
      6	Taobao
@@ -895,6 +931,20 @@ This is a linux testfile!
 Linux test
 Google
 THHbao
+Banbooob
+Tesetfile
+Wiki
+```
+
+下面是把`testfile`的匹配到`ao`的行替换成`HH`。
+```
+sed '/ao/cHH' testfile
+HELLO LINUX!
+SUSE
+This is a linux testfile!
+SUSE
+Google
+Taobao
 Banbooob
 Tesetfile
 Wiki
