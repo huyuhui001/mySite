@@ -16,7 +16,3 @@ Python
 * Foundation
 * Data Analysis
 * Practice
-
-
-
-
