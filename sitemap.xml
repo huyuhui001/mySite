@@ -231,7 +231,12 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://huyuhui001.github.io/mySite/linux/SRE/06-FileLookup%26Packing/</loc>
+         <loc>https://huyuhui001.github.io/mySite/linux/SRE/06-FileLookup/</loc>
+         <lastmod>2023-01-29</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://huyuhui001.github.io/mySite/linux/SRE/07-FilePacking/</loc>
          <lastmod>2023-01-29</lastmod>
          <changefreq>daily</changefreq>
     </url>
