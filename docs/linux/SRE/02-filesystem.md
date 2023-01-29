@@ -655,8 +655,11 @@ rename -v "s/s/gz/g" *.s
 ### 目录操作命令
 
 创建目录：`mkdir`
+
 删除空目录：`rmdir`
+
 删除非空目录：`rm -r`
+
 显示目录树：`tree`
 
 
@@ -665,20 +668,20 @@ rename -v "s/s/gz/g" *.s
 ### 练习
 
 1. 显示`/etc`目录下所有以`l`开头，以一个小写字母结尾，且中间出现至少一位数字的文件或目录列表。
-```
-ls -d /etc/l*[0-9]*[a-z]
-ls -d /etc/l*[[:digit:]]*[[:lower:]]
-```
-如果无符合条件的记录返回，可以手工创建一个符合条件的文件和目录。
-```
-sudo touch /etc/lam4you
-sudo mkdir /etc/lam5you
-```
-验证后删除。
-```
-sudo rm /etc/lam4you
-sudo rm -rf /etc/lam5you
-```
+ ```
+ ls -d /etc/l*[0-9]*[a-z]
+ ls -d /etc/l*[[:digit:]]*[[:lower:]]
+ ```
+ 如果无符合条件的记录返回，可以手工创建一个符合条件的文件和目录。
+ ```
+ sudo touch /etc/lam4you
+ sudo mkdir /etc/lam5you
+ ```
+ 验证后删除。
+ ```
+ sudo rm /etc/lam4you
+ sudo rm -rf /etc/lam5you
+ ```
 
 
 2. 显示`/etc`目录下以任意一位数字开头，且以非数字结尾的文件或目录列表。
@@ -699,114 +702,114 @@ sudo rm -rf /etc/5am5yo.
 
 
 3. 显示`/etc`目录下以非字母开头，后面跟了一个字母及其它任意长度任意字符的文件或目录列表。
-```
-ls /etc/[!a-zA-Z][a-zA-Z]*
-ls /etc/[^[:alpha:]][[:alpha:]]*
-```
-如果无符合条件的记录返回，可以手工创建一个符合条件的文件和目录。
-```
-sudo touch /etc/5Ato3
-sudo mkdir /etc/6dog6
-```
-验证后删除。
-```
-sudo rm /etc/5Ato3
-sudo rm -rf /etc/6dog6
-```
+ ```
+ ls /etc/[!a-zA-Z][a-zA-Z]*
+ ls /etc/[^[:alpha:]][[:alpha:]]*
+ ```
+ 如果无符合条件的记录返回，可以手工创建一个符合条件的文件和目录。
+ ```
+ sudo touch /etc/5Ato3
+ sudo mkdir /etc/6dog6
+ ```
+ 验证后删除。
+ ```
+ sudo rm /etc/5Ato3
+ sudo rm -rf /etc/6dog6
+ ```
 
 
 4. 显示`/etc`目录下，所有以`rc`开头，并后面是0-6之间的数字，其它为任意字符的文件或目录列表。
-```
-ls /etc/rc[0-6]*
-```
-如果无符合条件的记录返回，可以手工创建一个符合条件的文件和目录。
-```
-sudo touch /etc/rc5come
-sudo mkdir /etc/rc0123
-```
-验证后删除。
-```
-sudo rm /etc/rc5come
-sudo rm -rf /etc/rc0123
-```
+ ```
+ ls /etc/rc[0-6]*
+ ```
+ 如果无符合条件的记录返回，可以手工创建一个符合条件的文件和目录。
+ ```
+ sudo touch /etc/rc5come
+ sudo mkdir /etc/rc0123
+ ```
+ 验证后删除。
+ ```
+ sudo rm /etc/rc5come
+ sudo rm -rf /etc/rc0123
+ ```
 
 
 5. 显示`/etc`目录下，所有以`.conf`结尾，且以`m`、`n`、`r`、`p`开头的文件或目录列表。
-```
-ls /etc/[mnrp]*.conf
-```
+ ```
+ ls /etc/[mnrp]*.conf
+ ```
 
 
 6. 只显示`/root`下的隐藏文件和目录列表。
-```
-ls .*
-```
+ ```
+ ls .*
+ ```
 
 
 7. 只显示/etc下非隐藏目录列表。
-```
-ls /etc/[^.]*/
-```
+ ```
+ ls /etc/[^.]*/
+ ```
 
 
 8. 将`/etc`目录下所有文件，备份到`~/test/`目录下，并要求子目录格式为`backupYYYY-mm-dd`，备份过程可见。
-```
-$ sudo cp -av /etc/ ~/test/backup`date +%F`
-$ sudo cp -av /etc/ ~/test/backup`date +%F_%H-%M-%S`
-```
+ ```
+ $ sudo cp -av /etc/ ~/test/backup`date +%F`
+ $ sudo cp -av /etc/ ~/test/backup`date +%F_%H-%M-%S`
+ ```
 
 
 9. 创建目录`~/testdir/dir1/x`，`~/testdir/dir1/y`，`~/testdir/dir1/x/a`，`~/testdir/dir1/x/b`，`~/testdir/dir1/y/a`，`~/testdir/dir1/y/b`。
-```
-$ mkdir -p ~/testdir/dir1/{x,y}/{a,b}
-
-$ tree ~/testdir/dir1/
-/home/vagrant/testdir/dir1/
-├── x
-│   ├── a
-│   └── b
-└── y
-    ├── a
-    └── b
-```
+ ```
+ $ mkdir -p ~/testdir/dir1/{x,y}/{a,b}
+ 
+ $ tree ~/testdir/dir1/
+ /home/vagrant/testdir/dir1/
+ ├── x
+ │   ├── a
+ │   └── b
+ └── y
+     ├── a
+     └── b
+ ```
 
 10. 创建目录`~/testdir/dir2/x`，`~/testdir/dir2/y`，`~/testdir/dir2/x/a`，`~/testdir/dir2/x/b`。
-```
-$ mkdir -p ~/testdir/dir2/{x/{a,b},y}
-
-$ tree ~/testdir/dir2/
-/home/vagrant/testdir/dir2/
-├── x
-│   ├── a
-│   └── b
-└── y
-```
+ ```
+ $ mkdir -p ~/testdir/dir2/{x/{a,b},y}
+ 
+ $ tree ~/testdir/dir2/
+ /home/vagrant/testdir/dir2/
+ ├── x
+ │   ├── a
+ │   └── b
+ └── y
+ ```
 
 
 11. 创建目录`~/testdir/dir3`、`~/testdir/dir4`、`~/testdir/dir5`、`~/testdir/dir5/dir6`、`~/testdir/dir5/dir7`。
-```
-$ mkdir -p ~/testdir/dir{3,4,5/dir{6,7}}
-
-$ tree ~/testdir
-/home/vagrant/testdir
-├── dir1
-│   ├── x
-│   │   ├── a
-│   │   └── b
-│   └── y
-│       ├── a
-│       └── b
-├── dir2
-│   ├── x
-│   │   ├── a
-│   │   └── b
-│   └── y
-├── dir3
-├── dir4
-└── dir5
-    ├── dir6
-    └── dir7
-```
+ ```
+ $ mkdir -p ~/testdir/dir{3,4,5/dir{6,7}}
+ 
+ $ tree ~/testdir
+ /home/vagrant/testdir
+ ├── dir1
+ │   ├── x
+ │   │   ├── a
+ │   │   └── b
+ │   └── y
+ │       ├── a
+ │       └── b
+ ├── dir2
+ │   ├── x
+ │   │   ├── a
+ │   │   └── b
+ │   └── y
+ ├── dir3
+ ├── dir4
+ └── dir5
+     ├── dir6
+     └── dir7
+ ```
 
 
 

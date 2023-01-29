@@ -262,160 +262,154 @@ grep -v '^[$#]' /etc/profile
 
 
 * 显示`/proc/meminfo`文件中以大小s开头的行，要求使用两种方法。
-```
-$ cat /proc/meminfo | grep -i "^s"
-
-$ cat /proc/meminfo | grep "^[sS]"
-```
-
+ ```
+ $ cat /proc/meminfo | grep -i "^s"
+ $ cat /proc/meminfo | grep "^[sS]"
+ ```
 
 * 显示`/etc/passwd`文件中不以`/bin/bash`结尾的行。
-```
-$ grep -v "/bin/bash$" /etc/passwd
-```
-
+ ```
+ $ grep -v "/bin/bash$" /etc/passwd
+ ```
 
 * 显示用户`rpc`默认的shell程序。
-```
-$ grep "rpc" /etc/passwd | cut -d ":" -f 7
-/sbin/nologin
-```
+ ```
+ $ grep "rpc" /etc/passwd | cut -d ":" -f 7
+ /sbin/nologin
+ ```
 
 
 * 找出`/etc/passwd`中的两位或三位数。
-```
-$ grep -Eo "[:digit:]{2,3}" /etc/passwd
-$ grep -Eo "[0-9]{2,3}" /etc/passwd
-```
+ ```
+ $ grep -Eo "[:digit:]{2,3}" /etc/passwd
+ $ grep -Eo "[0-9]{2,3}" /etc/passwd
+ ```
 这里用到了`{}`，属于扩展正则符号，所以要用`-E`。
 
 
 * 显示Rocky 9的`/etc/grub2.cfg`文件中，至少以一个空白字符开头的且后面有非空白字符的行。（注：`/etc/grub2.cfg`在openSUSE和Ubuntu中没有）
-```
-# 不含首字符为tab
-$ sudo grep "^ " /etc/grub2.cfg
-
-# 包含首字符为tab
-$ sudo grep "^[[:space:]]" /etc/grub2.cfg
-```
+ ```
+ # 不含首字符为tab
+ $ sudo grep "^ " /etc/grub2.cfg
+ 
+ # 包含首字符为tab
+ $ sudo grep "^[[:space:]]" /etc/grub2.cfg
+ ```
 
 
 * 找出`netstat -tan`命令结果中以`LISTEN`后跟任意多个空白字符结尾的行。
-```
-$ netstat -tan | grep -E "LISTEN[[:space:]]+"
-```
+ ```
+ $ netstat -tan | grep -E "LISTEN[[:space:]]+"
+ ```
 
 
 * 显示Rocky 9上所有UID小于1000以内的用户名和UID。
-```
-$ cat /etc/passwd | cut -d ":" -f 1,3 | grep -E "\:[0-9]{1,3}$"
-$ grep -E "\:[0-9]{1,3}\:[0-9]{1,}" /etc/passwd | cut -d ":" -f 1,3
-```
+ ```
+ $ cat /etc/passwd | cut -d ":" -f 1,3 | grep -E "\:[0-9]{1,3}$"
+ $ grep -E "\:[0-9]{1,3}\:[0-9]{1,}" /etc/passwd | cut -d ":" -f 1,3
+ ```
 
 
 * 在Rocky 9上显示文件`/etc/passwd`用户名和shell同名的行。
-```
-$ grep -E "^([[:alnum:]]+\b).*\1$" /etc/passwd
-sync:x:5:0:sync:/sbin:/bin/sync
-shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown
-halt:x:7:0:halt:/sbin:/sbin/halt
-```
+ ```
+ $ grep -E "^([[:alnum:]]+\b).*\1$" /etc/passwd
+ sync:x:5:0:sync:/sbin:/bin/sync
+ shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown
+ halt:x:7:0:halt:/sbin:/sbin/halt
+ ```
 
 
 * 利用`df`和`grep`，取出磁盘各分区利用率,并从大到小排序。
-```
-$ df | tr -s " " | cut -d " " -f 1,5 | sort -n -t " " -k 2
-devtmpfs 0%
-Filesystem Use%
-tmpfs 0%
-tmpfs 0%
-/dev/mapper/rl-home 1%
-tmpfs 2%
-/dev/mapper/rl-root 5%
-/dev/nvme0n1p1 23%
-
-```
-
+ ```
+ $ df | tr -s " " | cut -d " " -f 1,5 | sort -n -t " " -k 2
+ devtmpfs 0%
+ Filesystem Use%
+ tmpfs 0%
+ tmpfs 0%
+ /dev/mapper/rl-home 1%
+ tmpfs 2%
+ /dev/mapper/rl-root 5%
+ /dev/nvme0n1p1 23%
+ ```
 
 * 显示三个用户`root`，`sync`，`bin`的UID和默认shell。
-```
-$ grep "^root:\|^sync:\|^bin:" /etc/passwd | cut -d ":" -f 1,7
-root:/bin/bash
-bin:/usr/sbin/nologin
-```
+ ```
+ $ grep "^root:\|^sync:\|^bin:" /etc/passwd | cut -d ":" -f 1,7
+ root:/bin/bash
+ bin:/usr/sbin/nologin
+ ```
 
 
 * 使用`egrep`取出`/etc/default-1/text_2/local.3/grub`中其基名和目录名。
-```
-# 基名
-$ echo "/etc/default-1/text_2/local.3/grub" | egrep -io "[[:alpha:]]+$"
-grub
-
-# 目录名
-$  echo "/etc/default-1/text_2/local.3/grub" | egrep -io "/([[:alpha:]]+.|_?[[:alpha:]]|[[:alnum:]]+/){7}"
-/etc/default-1/text_2/local.3/ 
-```
+ ```
+ # 基名
+ $ echo "/etc/default-1/text_2/local.3/grub" | egrep -io "[[:alpha:]]+$"
+ grub
+ 
+ # 目录名
+ $  echo "/etc/default-1/text_2/local.3/grub" | egrep -io "/([[:alpha:]]+.|_?[[:alpha:]]|[[:alnum:]]+/){7}"
+ /etc/default-1/text_2/local.3/ 
+ ```
 
 
 * 统计`last`命令中以`vagrant`登录的每个主机IP地址登录次数。
-```
-$ last | grep vagrant | tr -s " " | cut -d " " -f 3 | grep -E "([0-9]{1,3}\.){1,3}[0-9]{1,3}" | sort -n | uniq -c
-     24 192.168.10.107
-     38 192.168.10.109
-     17 192.168.10.201
-      6 192.168.10.210
-      2 192.168.10.220
-```
+ ```
+ $ last | grep vagrant | tr -s " " | cut -d " " -f 3 | grep -E "([0-9]{1,3}\.){1,3}[0-9]{1,3}" | sort -n | uniq -c
+      24 192.168.10.107
+      38 192.168.10.109
+      17 192.168.10.201
+       6 192.168.10.210
+       2 192.168.10.220
+ ```
 
 
 * 利用扩展正则表达式分别表示0-9、10-99、100-199、200-249、250-255。
-```
-[0-9]|[0-9]{2}|1[0-9]{2}|2[0-4][0-9]|25[0-5]
-```
+ ```
+ [0-9]|[0-9]{2}|1[0-9]{2}|2[0-4][0-9]|25[0-5]
+ ```
 
 
 * 显示`ifconfig`命令结果中所有IPv4地址。
-```
-$ ifconfig | grep -Eo "([0-9]{1,3}\.){3}[0-9]{1,3}" | grep -v "^255"
-192.168.10.210
-192.168.10.255
-127.0.0.1
-
-```
+ ```
+ $ ifconfig | grep -Eo "([0-9]{1,3}\.){3}[0-9]{1,3}" | grep -v "^255"
+ 192.168.10.210
+ 192.168.10.255
+ 127.0.0.1
+ ```
 
 
 * 显示`ip addr`命令结果中所有IPv4地址。
-```
-$ ip addr show eth0 | grep inet | grep eth0 | tr -s " " | cut -d " " -f 3 | cut -d "/" -f 1
-192.168.10.210
-
-$ ip addr show | grep -Eo "([0-9]{1,3}\.){3}[0-9]{1,3}" | grep -v "^255"
-127.0.0.1
-192.168.10.210
-192.168.10.255
-```
+ ```
+ $ ip addr show eth0 | grep inet | grep eth0 | tr -s " " | cut -d " " -f 3 | cut -d "/" -f 1
+ 192.168.10.210
+ 
+ $ ip addr show | grep -Eo "([0-9]{1,3}\.){3}[0-9]{1,3}" | grep -v "^255"
+ 127.0.0.1
+ 192.168.10.210
+ 192.168.10.255
+ ```
 
 
 * 将此字符串Welcome to the linux world中的每个字符去重并排序，重复次数多的排到前面。
-```
-$ echo "Welcome to the linux world" | grep -o [[:alpha:]] | sort | uniq -c | sort -nr
-      3 o
-      3 l
-      3 e
-      2 t
-      1 x
-      1 W
-      1 w
-      1 u
-      1 r
-      1 n
-      1 m
-      1 i
-      1 h
-      1 d
-      1 c
-
-```
+ ```
+ $ echo "Welcome to the linux world" | grep -o [[:alpha:]] | sort | uniq -c | sort -nr
+       3 o
+       3 l
+       3 e
+       2 t
+       1 x
+       1 W
+       1 w
+       1 u
+       1 r
+       1 n
+       1 m
+       1 i
+       1 h
+       1 d
+       1 c
+ 
+ ```
 
 
 
@@ -1064,8 +1058,10 @@ $ ls | grep -Ev '(3|5|7)file\.txt'
 6file.txt
 8file.txt
 9file.txt
+```
 
-# 下面四种方法实现同样的功能
+下面四种方法实现同样的功能
+```
 $ rm `ls | grep -Ev '(3|5|7)file\.txt'`
 $ ls | sed -n '/^[357]file.txt/!p' | xargs rm
 $ ls | grep -Ev '(3|5|7)file\.txt' | sed -n 's/.*/rm &/p' | bash
@@ -1106,6 +1102,7 @@ $ df | sed -En '/^\/dev\/sd/s#.*([0-9]+)%.*#\1#p'
 8
 8
 ```
+
 体会下面空格和括弧带来的不同。
 ```
 $ df | sed -En '/^\/dev\/sd/s# .*([0-9]+)%.*# \1#p'
@@ -1180,11 +1177,8 @@ $ ifconfig eth0 | sed -En '2s/(.*inet )([0-9].*)(netmask.*)/\2/p'
 192.168.10.210
 192.168.10.210
 192.168.10.210
-
-
-
-
 ```
+
 使用`\0`输出全部变量。
 ```
 $ ifconfig eth0 | sed -En '2s/(.*inet )([0-9].*)(netmask.*)/\0/p'
@@ -1199,6 +1193,7 @@ $ ifconfig eth0 | sed -En '2s/(.*inet )([0-9].*)(netmask.*)/\2/p'
 $ ifconfig eth0 | sed -En '2s/(.*inet )([0-9].*)(netmask.*)/\3/p'
 netmask 255.255.255.0  broadcast 192.168.10.255
 ```
+
 对比下面两个指令的匹配差异。
 ```
 $ ifconfig eth0 | sed -n '2s/^.*inet //p' | sed -n 's/ netmask.*//p'

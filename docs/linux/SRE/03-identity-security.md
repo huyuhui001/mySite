@@ -1229,203 +1229,202 @@ $ sudo useradd -G bin,root -s /bin/csh -c "Gentoo Distribution" gentoo
 * 用户`varnish`，也使用`webs`作为附属组
 * 用户`mysql`，不可交互登录系统，且不是`webs`的成员，`nginx`，`varnish`，`mysql`密码都是`opensuse`。
 
-```
-$ sudo groupadd webs
-$ sudo useradd -G webs nginx
-$ sudo useradd -G webs varnish
-$ sudo useradd -s /sbin/nologin mysql
-
-$ echo "nginx:opensuse" | sudo chpasswd
-$ echo -e "opensuse\nopensuse" | sudo passwd varnish
-$ echo "mysql:opensuse" | sudo chpasswd
-```
+ ```
+ $ sudo groupadd webs
+ $ sudo useradd -G webs nginx
+ $ sudo useradd -G webs varnish
+ $ sudo useradd -s /sbin/nologin mysql
+ 
+ $ echo "nginx:opensuse" | sudo chpasswd
+ $ echo -e "opensuse\nopensuse" | sudo passwd varnish
+ $ echo "mysql:opensuse" | sudo chpasswd
+ ```
 
 
 3. 查看UID、GID范围的配置文件,修改为501-60000。并查看密码加密算法
-```
-$ cat /etc/login.defs
-...
-GID_MIN			 1000
-GID_MAX			60000
-...
-UID_MIN			 1000
-UID_MAX			60000
-...
-ENCRYPT_METHOD SHA512
-...
-```
+ ```
+ $ cat /etc/login.defs
+ ...
+ GID_MIN			 1000
+ GID_MAX			60000
+ ...
+ UID_MIN			 1000
+ UID_MAX			60000
+ ...
+ ENCRYPT_METHOD SHA512
+ ...
+ ```
 
 
 4. 查看创建用户时的模板配置文件
-```
-$ cat /etc/default/useradd
-# useradd defaults file
-GROUP=100
-HOME=/home
-INACTIVE=-1
-EXPIRE=
-SHELL=/bin/bash
-SKEL=/etc/skel
-USRSKEL=/usr/etc/skel
-CREATE_MAIL_SPOOL=yes
-```
+ ```
+ $ cat /etc/default/useradd
+ # useradd defaults file
+ GROUP=100
+ HOME=/home
+ INACTIVE=-1
+ EXPIRE=
+ SHELL=/bin/bash
+ SKEL=/etc/skel
+ USRSKEL=/usr/etc/skel
+ CREATE_MAIL_SPOOL=yes
+ ```
 
 
 
 5. 创建一个新用户`webuser`，指定登录时起始目录`/www`，同时加入`apache`附加组中,指定UID为`999`且不检查uid唯一性。
-```
-$ sudo useradd -d /www -G apache -u 999 -o webuser
-```
+ ```
+ $ sudo useradd -d /www -G apache -u 999 -o webuser
+ ```
 
 
 6. 修改创建用户时的默认设置，主目录/www，默认shell `csh`。查看创建用户的配置文件是否更改，若更改则恢复默认值
-```
-$ sudo useradd -Db /www -s /bin/csh
-
-$ sudo cat /etc/default/useradd
-# useradd defaults file
-GROUP=100
-HOME=/www
-INACTIVE=-1
-EXPIRE=
-SHELL=/bin/csh
-SKEL=/etc/skel
-USRSKEL=/usr/etc/skel
-CREATE_MAIL_SPOOL=yes
-
-$ sudo useradd -Db /home -s /bin/bash
-```
+ ```
+ $ sudo useradd -Db /www -s /bin/csh
+ 
+ $ sudo cat /etc/default/useradd
+ # useradd defaults file
+ GROUP=100
+ HOME=/www
+ INACTIVE=-1
+ EXPIRE=
+ SHELL=/bin/csh
+ SKEL=/etc/skel
+ USRSKEL=/usr/etc/skel
+ CREATE_MAIL_SPOOL=yes
+ 
+ $ sudo useradd -Db /home -s /bin/bash
+ ```
 
 
 7. 批量创建用户`admin1`、`admin2`、`admin3`。
-```
-$ cat > user.txt <<EOF
-admin1
-admin2
-admin3
-EOF
-
-$ for i in $(cat user.txt); do sudo useradd $i; echo "$i:"`pwgen -s -1 15 1` | tee passwd_$i.txt | sudo chpasswd; done
-```
+ ```
+ $ cat > user.txt <<EOF
+ admin1
+ admin2
+ admin3
+ EOF
+ 
+ $ for i in $(cat user.txt); do sudo useradd $i; echo "$i:"`pwgen -s -1 15 1` | tee passwd_$i.txt | sudo chpasswd; done
+ ```
 
 8. 只查看用户`admin2`、`admin3`在`/etc/passwd`的配置信息。
-```
-$ getent passwd admin2 admin3
-admin2:x:1019:100::/home/admin2:/bin/bash
-admin3:x:1020:100::/home/admin3:/bin/bash
-```
+ ```
+ $ getent passwd admin2 admin3
+ admin2:x:1019:100::/home/admin2:/bin/bash
+ admin3:x:1020:100::/home/admin3:/bin/bash
+ ```
 
 
 9. 修改`admin2`用户UID为`2002`、主组`root`、添加新的附加组`apache`且保留旧的附加组。然后锁定用户。
-```
-$ sudo usermod -u 2002 -g root -G apache -a admin2
-$ sudo usermod -L admin2
-
-$ getent passwd admin2
-admin2:x:2002:0::/home/admin2:/bin/bash
-
-$ sudo passwd -S admin2
-admin2 L 11/27/2022 0 99999 7 -1
-```
+ ```
+ $ sudo usermod -u 2002 -g root -G apache -a admin2
+ $ sudo usermod -L admin2
+ 
+ $ getent passwd admin2
+ admin2:x:2002:0::/home/admin2:/bin/bash
+ 
+ $ sudo passwd -S admin2
+ admin2 L 11/27/2022 0 99999 7 -1
+ ```
 
 
 10. 修改用户`admin2`用户名为`smith`，设置账号过期时间为`2022-12-31`。
-```
-$ sudo usermod -l smith -e 2022-12-31 admin2
-
-$ sudo chage -l smith
-Last password change					: Nov 27, 2022
-Password expires					: never
-Password inactive					: never
-Account expires						: Dec 31, 2022
-Minimum number of days between password change		: 0
-Maximum number of days between password change		: 99999
-Number of days of warning before password expires	: 7
-```
+ ```
+ $ sudo usermod -l smith -e 2022-12-31 admin2
+ 
+ $ sudo chage -l smith
+ Last password change					: Nov 27, 2022
+ Password expires					: never
+ Password inactive					: never
+ Account expires						: Dec 31, 2022
+ Minimum number of days between password change		: 0
+ Maximum number of days between password change		: 99999
+ Number of days of warning before password expires	: 7
+ ```
 
 
 11. 给`admin1`设置密码`hello`，然后指定新的主目录并把旧目录移动过去。
-```
-$ sudo usermod -d /home/admin_new -m admin1
-$ echo "admin1:hello" | sudo chpasswd 
-```
+ ```
+ $ sudo usermod -d /home/admin_new -m admin1
+ $ echo "admin1:hello" | sudo chpasswd 
+ ```
 
 
 12. 显示`smith`用户UID、GID、显示用户名、显示用户所属组ID
-```
-$ id -u smith
-2002
-
-$ id -g smith
-0
-
-$ id -un smith
-smith
-
-$ id -gn smith
-root
-```
+ ```
+ $ id -u smith
+ 2002
+ 
+ $ id -g smith
+ 0
+ 
+ $ id -un smith
+ smith
+ 
+ $ id -gn smith
+ root
+ ```
 
 13. 锁定`smith`用两种方法
-```
-$ sudo passwd -l smith
-
-$ sudo usermod -L smith
-```
+ ```
+ $ sudo passwd -l smith
+ $ sudo usermod -L smith
+ ```
 
 
 14. 指定`admin3`的密码最短使用日期为5天，最常使用日期为10天，提前2天提示修改密码。
-```
-$ sudo chage -M 10 -m 5 -W 2 admin3
-
-$ sudo chage -l admin3
-Last password change					: Nov 27, 2022
-Password expires					: Dec 07, 2022
-Password inactive					: never
-Account expires						: never
-Minimum number of days between password change		: 5
-Maximum number of days between password change		: 10
-Number of days of warning before password expires	: 2
-```
+ ```
+ $ sudo chage -M 10 -m 5 -W 2 admin3
+ 
+ $ sudo chage -l admin3
+ Last password change					: Nov 27, 2022
+ Password expires					: Dec 07, 2022
+ Password inactive					: never
+ Account expires						: never
+ Minimum number of days between password change		: 5
+ Maximum number of days between password change		: 10
+ Number of days of warning before password expires	: 2
+ ```
 
 
 15. 创建系统组`newadm`，指定GID为`66`。
-```
-$ sudo groupadd -r -g 66 newadm
-```
+ ```
+ $ sudo groupadd -r -g 66 newadm
+ ```
 
 
 16. 修改`newadm`组名为`newgrp` 修改GID为`67`。
-```
-$ sudo groupmod -n newgrp -g 67 newadm
-```
+ ```
+ $ sudo groupmod -n newgrp -g 67 newadm
+ ```
 
 
 17. 将用户`admin1`添加进组`newgrp`，然后删除组`newgrp`。
-```
-$ sudo usermod -g newgrp admin1
-$ sudo groupdel -f newgrp
-```
+ ```
+ $ sudo usermod -g newgrp admin1
+ $ sudo groupdel -f newgrp
+ ```
 
 
 18. 设置`smith`用户的详细描述，然后用finger查看。
-```
-$ chfn smith
-
-$ finger smith
-Login: smith          			Name:
-Directory: /home/admin2             	Shell: /bin/bash
-Never logged in.
-No Mail.
-No Plan.
-```
+ ```
+ $ chfn smith
+ 
+ $ finger smith
+ Login: smith          			Name:
+ Directory: /home/admin2             	Shell: /bin/bash
+ Never logged in.
+ No Mail.
+ No Plan.
+ ```
 
 
 19. 删除用户`admin1`，并删除其主目录。
-```
-$ sudo userdel -r admin1
-$ sudo userdel -r admin2
-```
+ ```
+ $ sudo userdel -r admin1
+ $ sudo userdel -r admin2
+ ```
 
 
 
