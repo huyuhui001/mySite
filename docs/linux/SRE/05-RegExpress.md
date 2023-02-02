@@ -1594,19 +1594,95 @@ $ seq 10 | sed -n '1!G;h;$p'
 
 `awk`把文件逐行读入，以空格为默认分隔符将每行切片，再对切片进行分析处理。
 
-命令格式：`awk '{pattern + action}' {filenames}`
+
+
+### 命令格式：
+
+`awk 'pattern{action statements;...}' {filenames}`
 
 - `pattern`表示`awk`在数据中查找的内容。是要表示的正则表达式，用斜杠括起来。
 
-- `action`是在找到匹配内容时所执行的一系列命令。花括号`{}`不需要在程序中始终出现，但它们用于根据特定的模式`pattern`对指令集进行分组。 
+- `action`是在找到匹配内容时所执行的一系列命令。 
+
+- `-F`：指定分隔符，后面紧跟单引号，单引号内是分隔符。如不加`-F`选项，则以空格或者tab作为分隔符。
+
+- `-v`：var=value，变量赋值。
+
+
+
+### 工作过程：
+
+1. 执行BEGIN{action;...}语句块中的语句。
+   
+   1. BEGIN语句块再awk读入输入流之前被执行。
+   
+   2. 是可选语句块。
+   
+   3. 包含初始化变量，打印输出表格的表头等语句。
+
+2. 从文件或者标准输入stdin读取一行，然后执行pattern{action;...}语句块。从第一行开始到最后一行，逐行扫描文件，重复这个动作，直到文件或者输入流全部被读取完毕。
+   
+   1. 可选语句块。
+   
+   2. 如果没有提供pattern语句块，则默认执行{print}。
+
+3. 当读至文件或者输入流末尾时，执行END{action;...}语句块，比如打印所有行的分析结果这类汇总信息。也是一个可选语句块。
+
+
+
+### 分隔符、域和记录
+
+- 有分隔符分隔的字段（列column，域field），标记`$1`、`$2`、`$3`、...、`$n`称为域标识，`$0`为所有域。注意，和shell变量中的`$`不同。
+
+- 每一行成为记录（record）。
+
+- 如果省略action，则默认执行`print $0`操作。 
+
+
+
+### 常用action分类
+
+- Output statements: `print`, `printf`
+
+- Expressions: 算术、比较表达式
+
+- Compund statements: 组合语句
+
+- Control statements: `if`, `while`语句
+
+- Input statements: 
+
+
+
+### 常用控制语句
+
+- {statements;...} 组合语句
+
+- if(condition){statements;...}
+
+- if(condition){statements;...} else(statements;...)
+
+- while(condition){statements;...}
+
+- do(statements;...) while{condition}
+
+- for(expr1;expr2;expr3) {statements;...}
+
+- break
+
+- continue
+
+- exit
+
+
+
+
+
+
 
 ### 截取片段
 
 示例：
-
-- `-F`选项是指定分隔符，后面紧跟单引号，单引号内是分隔符。如不加`-F`选项，则以空格或者tab作为分隔符。
-
-- `print`是打印某个字段。动作要用 `{}` 括起来，自定义的动作要用双引号括起来。`$1` 为第`1`个字段，`$2` 为第2个字段，以此类推。`$0`表示整行。 
 
 ```
 $ head -n2 /etc/passwd |awk -F ':' '{print $0}'
