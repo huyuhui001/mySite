@@ -256,162 +256,6 @@ $ grep '^[^$#]' /etc/profile
 grep -v '^[$#]' /etc/profile
 ```
 
-## 正则小练习
-
-* 显示`/proc/meminfo`文件中以大小s开头的行，要求使用两种方法。
-  
-  ```
-  $ cat /proc/meminfo | grep -i "^s"
-  $ cat /proc/meminfo | grep "^[sS]"
-  ```
-
-* 显示`/etc/passwd`文件中不以`/bin/bash`结尾的行。
-  
-  ```
-  $ grep -v "/bin/bash$" /etc/passwd
-  ```
-
-* 显示用户`rpc`默认的shell程序。
-  
-  ```
-  $ grep "rpc" /etc/passwd | cut -d ":" -f 7
-  /sbin/nologin
-  ```
-
-* 找出`/etc/passwd`中的两位或三位数。
-  
-  ```
-  $ grep -Eo "[:digit:]{2,3}" /etc/passwd
-  $ grep -Eo "[0-9]{2,3}" /etc/passwd
-  ```
-  
-  这里用到了`{}`，属于扩展正则符号，所以要用`-E`。
-
-* 显示Rocky 9的`/etc/grub2.cfg`文件中，至少以一个空白字符开头的且后面有非空白字符的行。（注：`/etc/grub2.cfg`在openSUSE和Ubuntu中没有）
-  
-  ```
-  # 不含首字符为tab
-  $ sudo grep "^ " /etc/grub2.cfg
-  
-  # 包含首字符为tab
-  $ sudo grep "^[[:space:]]" /etc/grub2.cfg
-  ```
-
-* 找出`netstat -tan`命令结果中以`LISTEN`后跟任意多个空白字符结尾的行。
-  
-  ```
-  $ netstat -tan | grep -E "LISTEN[[:space:]]+"
-  ```
-
-* 显示Rocky 9上所有UID小于1000以内的用户名和UID。
-  
-  ```
-  $ cat /etc/passwd | cut -d ":" -f 1,3 | grep -E "\:[0-9]{1,3}$"
-  $ grep -E "\:[0-9]{1,3}\:[0-9]{1,}" /etc/passwd | cut -d ":" -f 1,3
-  ```
-
-* 在Rocky 9上显示文件`/etc/passwd`用户名和shell同名的行。
-  
-  ```
-  $ grep -E "^([[:alnum:]]+\b).*\1$" /etc/passwd
-  sync:x:5:0:sync:/sbin:/bin/sync
-  shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown
-  halt:x:7:0:halt:/sbin:/sbin/halt
-  ```
-
-* 利用`df`和`grep`，取出磁盘各分区利用率,并从大到小排序。
-  
-  ```
-  $ df | tr -s " " | cut -d " " -f 1,5 | sort -n -t " " -k 2
-  devtmpfs 0%
-  Filesystem Use%
-  tmpfs 0%
-  tmpfs 0%
-  /dev/mapper/rl-home 1%
-  tmpfs 2%
-  /dev/mapper/rl-root 5%
-  /dev/nvme0n1p1 23%
-  ```
-
-* 显示三个用户`root`，`sync`，`bin`的UID和默认shell。
-  
-  ```
-  $ grep "^root:\|^sync:\|^bin:" /etc/passwd | cut -d ":" -f 1,7
-  root:/bin/bash
-  bin:/usr/sbin/nologin
-  ```
-
-* 使用`egrep`取出`/etc/default-1/text_2/local.3/grub`中其基名和目录名。
-  
-  ```
-  # 基名
-  $ echo "/etc/default-1/text_2/local.3/grub" | egrep -io "[[:alpha:]]+$"
-  grub
-  
-  # 目录名
-  $  echo "/etc/default-1/text_2/local.3/grub" | egrep -io "/([[:alpha:]]+.|_?[[:alpha:]]|[[:alnum:]]+/){7}"
-  /etc/default-1/text_2/local.3/ 
-  ```
-
-* 统计`last`命令中以`vagrant`登录的每个主机IP地址登录次数。
-  
-  ```
-  $ last | grep vagrant | tr -s " " | cut -d " " -f 3 | grep -E "([0-9]{1,3}\.){1,3}[0-9]{1,3}" | sort -n | uniq -c
-      24 192.168.10.107
-      38 192.168.10.109
-      17 192.168.10.201
-       6 192.168.10.210
-       2 192.168.10.220
-  ```
-
-* 利用扩展正则表达式分别表示0-9、10-99、100-199、200-249、250-255。
-  
-  ```
-  [0-9]|[0-9]{2}|1[0-9]{2}|2[0-4][0-9]|25[0-5]
-  ```
-
-* 显示`ifconfig`命令结果中所有IPv4地址。
-  
-  ```
-  $ ifconfig | grep -Eo "([0-9]{1,3}\.){3}[0-9]{1,3}" | grep -v "^255"
-  192.168.10.210
-  192.168.10.255
-  127.0.0.1
-  ```
-
-* 显示`ip addr`命令结果中所有IPv4地址。
-  
-  ```
-  $ ip addr show eth0 | grep inet | grep eth0 | tr -s " " | cut -d " " -f 3 | cut -d "/" -f 1
-  192.168.10.210
-  
-  $ ip addr show | grep -Eo "([0-9]{1,3}\.){3}[0-9]{1,3}" | grep -v "^255"
-  127.0.0.1
-  192.168.10.210
-  192.168.10.255
-  ```
-
-* 将此字符串Welcome to the linux world中的每个字符去重并排序，重复次数多的排到前面。
-  
-  ```
-  $ echo "Welcome to the linux world" | grep -o [[:alpha:]] | sort | uniq -c | sort -nr
-       3 o
-       3 l
-       3 e
-       2 t
-       1 x
-       1 W
-       1 w
-       1 u
-       1 r
-       1 n
-       1 m
-       1 i
-       1 h
-       1 d
-       1 c
-  ```
-
 ## 三剑客`grep`命令
 
 格式：
@@ -1594,8 +1438,6 @@ $ seq 10 | sed -n '1!G;h;$p'
 
 `awk`把文件逐行读入，以空格为默认分隔符将每行切片，再对切片进行分析处理。
 
-
-
 ### 命令格式：
 
 `awk 'pattern{action statements;...}' {filenames}`
@@ -1607,8 +1449,6 @@ $ seq 10 | sed -n '1!G;h;$p'
 - `-F`：指定分隔符，后面紧跟单引号，单引号内是分隔符。如不加`-F`选项，则以空格或者tab作为分隔符。
 
 - `-v`：var=value，变量赋值。
-
-
 
 ### 工作过程：
 
@@ -1628,8 +1468,6 @@ $ seq 10 | sed -n '1!G;h;$p'
 
 3. 当读至文件或者输入流末尾时，执行END{action;...}语句块，比如打印所有行的分析结果这类汇总信息。也是一个可选语句块。
 
-
-
 ### 分隔符、域和记录
 
 - 有分隔符分隔的字段（列column，域field），标记`$1`、`$2`、`$3`、...、`$n`称为域标识，`$0`为所有域。注意，和shell变量中的`$`不同。
@@ -1637,8 +1475,6 @@ $ seq 10 | sed -n '1!G;h;$p'
 - 每一行成为记录（record）。
 
 - 如果省略action，则默认执行`print $0`操作。 
-
-
 
 ### 常用action分类
 
@@ -1651,8 +1487,6 @@ $ seq 10 | sed -n '1!G;h;$p'
 - Control statements: `if`, `while`语句
 
 - Input statements: 
-
-
 
 ### 常用控制语句
 
@@ -1673,6 +1507,14 @@ $ seq 10 | sed -n '1!G;h;$p'
 - continue
 
 - exit
+
+
+
+### 动作`print`
+
+
+
+
 
 
 
@@ -1894,3 +1736,247 @@ nobody 65534 65534 131068
 $ awk -F ':' '{(total=total+$3)}; END {print total}' /etc/passwd
 103011
 ```
+
+## 小练习
+
+- 显示`/proc/meminfo`文件中以大小s开头的行，要求使用两种方法。
+  
+  ```
+  $ cat /proc/meminfo | grep -i "^s"
+  $ cat /proc/meminfo | grep "^[sS]"
+  ```
+
+- 显示`/etc/passwd`文件中不以`/bin/bash`结尾的行。
+  
+  ```
+  $ grep -v "/bin/bash$" /etc/passwd
+  ```
+
+- 显示用户`rpc`默认的shell程序。
+  
+  ```
+  $ grep "rpc" /etc/passwd | cut -d ":" -f 7
+  /sbin/nologin
+  ```
+
+- 找出`/etc/passwd`中的两位或三位数。
+  
+  ```
+  $ grep -Eo "[:digit:]{2,3}" /etc/passwd
+  $ grep -Eo "[0-9]{2,3}" /etc/passwd
+  ```
+  
+  这里用到了`{}`，属于扩展正则符号，所以要用`-E`。
+
+- 显示Rocky 9的`/etc/grub2.cfg`文件中，至少以一个空白字符开头的且后面有非空白字符的行。（注：`/etc/grub2.cfg`在openSUSE和Ubuntu中没有）
+  
+  ```
+  # 不含首字符为tab
+  $ sudo grep "^ " /etc/grub2.cfg
+  
+  # 包含首字符为tab
+  $ sudo grep "^[[:space:]]" /etc/grub2.cfg
+  ```
+
+- 找出`netstat -tan`命令结果中以`LISTEN`后跟任意多个空白字符结尾的行。
+  
+  ```
+  $ netstat -tan | grep -E "LISTEN[[:space:]]+"
+  ```
+
+- 显示Rocky 9上所有UID小于1000以内的用户名和UID。
+  
+  ```
+  $ cat /etc/passwd | cut -d ":" -f 1,3 | grep -E "\:[0-9]{1,3}$"
+  $ grep -E "\:[0-9]{1,3}\:[0-9]{1,}" /etc/passwd | cut -d ":" -f 1,3
+  ```
+
+- 在Rocky 9上显示文件`/etc/passwd`用户名和shell同名的行。
+  
+  ```
+  $ grep -E "^([[:alnum:]]+\b).*\1$" /etc/passwd
+  sync:x:5:0:sync:/sbin:/bin/sync
+  shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown
+  halt:x:7:0:halt:/sbin:/sbin/halt
+  ```
+
+- 利用`df`和`grep`，取出磁盘各分区利用率,并从大到小排序。
+  
+  ```
+  $ df | tr -s " " | cut -d " " -f 1,5 | sort -n -t " " -k 2
+  devtmpfs 0%
+  Filesystem Use%
+  tmpfs 0%
+  tmpfs 0%
+  /dev/mapper/rl-home 1%
+  tmpfs 2%
+  /dev/mapper/rl-root 5%
+  /dev/nvme0n1p1 23%
+  ```
+
+- 显示三个用户`root`，`sync`，`bin`的UID和默认shell。
+  
+  ```
+  $ grep "^root:\|^sync:\|^bin:" /etc/passwd | cut -d ":" -f 1,7
+  root:/bin/bash
+  bin:/usr/sbin/nologin
+  ```
+
+- 使用`egrep`取出`/etc/default-1/text_2/local.3/grub`中其基名和目录名。
+  
+  ```
+  # 基名
+  $ echo "/etc/default-1/text_2/local.3/grub" | egrep -io "[[:alpha:]]+$"
+  grub
+  
+  # 目录名
+  $  echo "/etc/default-1/text_2/local.3/grub" | egrep -io "/([[:alpha:]]+.|_?[[:alpha:]]|[[:alnum:]]+/){7}"
+  /etc/default-1/text_2/local.3/ 
+  ```
+
+- 统计`last`命令中以`vagrant`登录的每个主机IP地址登录次数。
+  
+  ```
+  $ last | grep vagrant | tr -s " " | cut -d " " -f 3 | grep -E "([0-9]{1,3}\.){1,3}[0-9]{1,3}" | sort -n | uniq -c
+      24 192.168.10.107
+      38 192.168.10.109
+      17 192.168.10.201
+       6 192.168.10.210
+       2 192.168.10.220
+  ```
+
+- 利用扩展正则表达式分别表示0-9、10-99、100-199、200-249、250-255。
+  
+  ```
+  [0-9]|[0-9]{2}|1[0-9]{2}|2[0-4][0-9]|25[0-5]
+  ```
+
+- 显示`ifconfig`命令结果中所有IPv4地址。
+  
+  ```
+  $ ifconfig | grep -Eo "([0-9]{1,3}\.){3}[0-9]{1,3}" | grep -v "^255"
+  192.168.10.210
+  192.168.10.255
+  127.0.0.1
+  ```
+
+- 显示`ip addr`命令结果中所有IPv4地址。
+  
+  ```
+  $ ip addr show eth0 | grep inet | grep eth0 | tr -s " " | cut -d " " -f 3 | cut -d "/" -f 1
+  192.168.10.210
+  
+  $ ip addr show | grep -Eo "([0-9]{1,3}\.){3}[0-9]{1,3}" | grep -v "^255"
+  127.0.0.1
+  192.168.10.210
+  192.168.10.255
+  ```
+
+- 将此字符串Welcome to the linux world中的每个字符去重并排序，重复次数多的排到前面。
+  
+  ```
+  $ echo "Welcome to the linux world" | grep -o [[:alpha:]] | sort | uniq -c | sort -nr
+       3 o
+       3 l
+       3 e
+       2 t
+       1 x
+       1 W
+       1 w
+       1 u
+       1 r
+       1 n
+       1 m
+       1 i
+       1 h
+       1 d
+       1 c
+  ```
+
+- 删除`/etc/default/grub`文件中所有以空白开头的行行首的空白字符。
+  
+  ```
+  $ sed '/^$/d' /etc/default/grub
+  ```
+
+- 删除`/etc/default/grub`文件中所有以`#`开头，后面至少跟一个空白字符的行的行首的`#`和空白字符。
+  
+  ```
+  $ sed -r '/#[[:space:]]+/d;/#/d' /etc/default/grub
+  ```
+  
+  上面输出结果中包含空白行。
+  
+  若输出中删除空白行，则：
+  
+  ```
+  $ sed -r '/#[[:space:]]+/d;/#/d;/^$/d' /etc/default/grub
+  ```
+
+- 在`/etc/fstab`每一行行首增加`#`号。
+  
+  ```
+  $ sed -r 's/(.*)/#&/' /etc/fstab
+  ```
+
+- 在`/etc/fstab`文件中不以`#`开头的行的行首增加`#`号（包括空行）。
+  
+  ```
+  $ sed -r 's/^[^#].*/#&/' -r 's/^$/#/' /etc/default/grub
+  ```
+
+- 通过命令`rpm -qa --last |awk -F ' ' '{print $1}'`得到最新安装的包列表。统计所有`x86_64`结尾的安装包名以`.`分隔倒数第二个字段的重复次数。
+  
+  ```
+  $ rpm -qa --last |awk -F ' ' '{print $1}' |sed -nr '/x86_64$/s@.*\.(.*)\.x86_64@\1@p' |sort -r |uniq -c
+       75 el9_0
+      563 el9
+        3 7
+        1 5
+        2 4
+        2 3
+       10 2
+       29 1
+  ```
+  
+  
+
+- 在openSUSE中统计`/etc/rc.status`文件中每个单词的出现次数，并排序（用grep和sed两种方法分别实现）。
+  
+  ```
+  $ grep -Eo "[a-zA-Z]+" /etc/rc.status |sort |uniq -c
+  
+  
+  $ cat /etc/rc.status |sed -r 's/[^[:alpha:]]+/\n/g' |sed '/^$/d' |sort |uniq -c |sort -nr
+  ```
+  
+  
+  
+
+- 将文本文件的n和n+1行合并为一行，n为奇数行。
+  
+  ```
+  $ cat <<EOF > sed.txt
+  1aa
+  2bb
+  3cc
+  4dd
+  5ee
+  6ff
+  7gg
+  EOF
+  
+  $ sed -n 'N;s/\n//p' sed.txt
+  1aa2bb
+  3cc4dd
+  5ee6ff
+  
+  $ sed 'N;s/\n//' sed.txt
+  1aa2bb
+  3cc4dd
+  5ee6ff
+  7gg
+  ```
+  
+  
+  
