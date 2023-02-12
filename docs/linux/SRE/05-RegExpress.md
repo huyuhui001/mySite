@@ -1488,6 +1488,148 @@ $ seq 10 | sed -n '1!G;h;$p'
 
 - Input statements: 
 
+#### 动作`print`
+
+格式：`print item1, item2, ...`
+
+说明：
+
+- 逗号分隔符
+
+- 输出item可以是字符串，也可以是数值，是当前记录的字段、变量或`awk`表达式。
+
+- 如果省略item，相当于`print $0`
+
+- 固定字符需要用双引号，而变量和数字不需要。
+
+示例：
+
+```
+$ seq 5 |awk '{print "hello awk"}'
+hello awk
+hello awk
+hello awk
+hello awk
+hello awk
+
+$ seq 5 |awk '{print 3*5}'
+15
+15
+15
+15
+15
+
+$ awk -F':' '{print "hello"}' /etc/passwd |head -5
+hello
+hello
+hello
+hello
+hello
+
+$ awk -F':' '{print}' /etc/passwd |head -5
+root:x:0:0:root:/root:/bin/bash
+messagebus:x:499:499:User for D-Bus:/run/dbus:/usr/bin/false
+systemd-network:x:497:497:systemd Network Management:/:/usr/sbin/nologin
+systemd-timesync:x:496:496:systemd Time Synchronization:/:/usr/sbin/nologin
+nobody:x:65534:65534:nobody:/var/lib/nobody:/bin/bash
+
+$ awk -F':' '{print $0}' /etc/passwd |head -5
+root:x:0:0:root:/root:/bin/bash
+messagebus:x:499:499:User for D-Bus:/run/dbus:/usr/bin/false
+systemd-network:x:497:497:systemd Network Management:/:/usr/sbin/nologin
+systemd-timesync:x:496:496:systemd Time Synchronization:/:/usr/sbin/nologin
+nobody:x:65534:65534:nobody:/var/lib/nobody:/bin/bash
+
+$ awk -F':' '{print $1,$3}' /etc/passwd |head -5
+root 0
+messagebus 499
+systemd-network 497
+systemd-timesync 496
+nobody 65534
+
+$ awk -F':' '{print $1"\t"$3}' /etc/passwd |head -5
+root    0
+messagebus    499
+systemd-network    497
+systemd-timesync    496
+nobody    65534
+
+
+$ grep "^UUID" /etc/fstab |awk '{print $2,$3}'
+/ btrfs
+/var btrfs
+/usr/local btrfs
+/tmp btrfs
+/srv btrfs
+/root btrfs
+/opt btrfs
+/home btrfs
+/boot/grub2/x86_64-efi btrfs
+/boot/grub2/i386-pc btrfs
+/.snapshots btrfs
+swap swap
+
+```
+
+
+
+示例：读取分区利用率。
+
+分隔符中的定义`[[:space:]]+|%`的含义，一个或多个空格或者`%`作为分隔符。
+
+```
+$ df |awk '{print $1,$5}'
+Filesystem Use%
+devtmpfs 0%
+tmpfs 0%
+tmpfs 2%
+tmpfs 0%
+/dev/sda2 8%
+/dev/sda2 8%
+/dev/sda2 8%
+/dev/sda2 8%
+/dev/sda2 8%
+/dev/sda2 8%
+/dev/sda2 8%
+/dev/sda2 8%
+/dev/sda2 8%
+/dev/sda2 8%
+/dev/sda2 8%
+tmpfs 0%
+
+$ df |grep '^/dev/sd' |awk -F'[[:space:]]+|%' '{print $1,$5}'
+$ df |grep '^/dev/sd' |awk -F' +|%' '{print $1,$5}'
+/dev/sda2 8
+/dev/sda2 8
+/dev/sda2 8
+/dev/sda2 8
+/dev/sda2 8
+/dev/sda2 8
+/dev/sda2 8
+/dev/sda2 8
+/dev/sda2 8
+/dev/sda2 8
+/dev/sda2 8
+
+
+
+
+```
+
+示例：读取ifconfig输出结果中的ip地址。
+
+```
+$ ifconfig eth0 | sed -n '2p' |awk '/netmask/{print $2}'
+192.168.10.210
+
+$ ifconfig eth0 | sed -n '2p' |awk '{print $2}'
+192.168.10.210
+```
+
+
+
+
+
 ### 常用控制语句
 
 - {statements;...} 组合语句
@@ -1507,20 +1649,6 @@ $ seq 10 | sed -n '1!G;h;$p'
 - continue
 
 - exit
-
-
-
-### 动作`print`
-
-
-
-
-
-
-
-
-
-
 
 ### 截取片段
 
@@ -1938,24 +2066,19 @@ $ awk -F ':' '{(total=total+$3)}; END {print total}' /etc/passwd
        10 2
        29 1
   ```
-  
-  
 
 - 在openSUSE中统计`/etc/rc.status`文件中每个单词的出现次数，并排序（用grep和sed两种方法分别实现）。
   
   ```
   $ grep -Eo "[a-zA-Z]+" /etc/rc.status |sort |uniq -c
-  
+  ```
   
   $ cat /etc/rc.status |sed -r 's/[^[:alpha:]]+/\n/g' |sed '/^$/d' |sort |uniq -c |sort -nr
-  ```
-  
-  
-  
 
+```
 - 将文本文件的n和n+1行合并为一行，n为奇数行。
-  
-  ```
+```
+
   $ cat <<EOF > sed.txt
   1aa
   2bb
@@ -1965,18 +2088,18 @@ $ awk -F ':' '{(total=total+$3)}; END {print total}' /etc/passwd
   6ff
   7gg
   EOF
-  
+
   $ sed -n 'N;s/\n//p' sed.txt
   1aa2bb
   3cc4dd
   5ee6ff
-  
+
   $ sed 'N;s/\n//' sed.txt
   1aa2bb
   3cc4dd
   5ee6ff
   7gg
-  ```
-  
-  
-  
+
+```
+
+```
