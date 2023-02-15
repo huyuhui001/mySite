@@ -931,7 +931,43 @@ bin:x:1:1:bin:/bin:/usr/sbin/nologin
 $ awk -F &#39;:&#39; &#39;$3&lt;$2&#39; /etc/passwd
 </code></pre></div> <p>使用 <code>&amp;&amp;</code> 表示“并且”和 <code>||</code>表示“或者”。</p> <div class=highlight><pre><span></span><code>$ awk -F &#39;:&#39; &#39;$3&gt;10 &amp;&amp; $3&lt;100&#39; /etc/passwd
 $ awk -F &#39;:&#39; &#39;$3&gt;10 || $3&lt;100&#39; /etc/passwd
-</code></pre></div> <h3 id=_16>内置变量<a class=headerlink href=#_16 title="Permanent link"> ¶</a></h3> <p><code>awk</code>常用的变量有<code>OFS</code>、<code>NF</code> 和 <code>NR</code>。</p> <p><code>OFS</code> 和 <code>-F</code> 选项功能类似，用来定义分隔符。区别在于<code>OFS</code>是在输出的时候定义的。</p> <p><code>NF</code> 表示用分隔符分隔后一共有多少列。</p> <p><code>NR</code> 表示行号。</p> <p><code>OFS</code>的用法：</p> <p>以<code>:</code>为分隔符，打印第1、3、4列第内容，并以<code>#</code>为分隔符。</p> <div class=highlight><pre><span></span><code>$ awk -F &#39;:&#39; &#39;{OFS=&quot;#&quot;} {print $1,$3,$4}&#39; /etc/passwd | head -n5
+</code></pre></div> <h3 id=_16>内置变量<a class=headerlink href=#_16 title="Permanent link"> ¶</a></h3> <p><code>awk</code>常用的变量有<code>FS</code>、<code>OFS</code>、<code>NF</code> 和 <code>NR</code>。</p> <p><code>FS</code>用来定义输入字段分隔符，默认为空白字符。与<code>-F</code> 选项功能类似，同时使用会报错。</p> <p><code>OFS</code>用来定义输出字段分隔符，默认为空白字符。</p> <p><code>RS</code>指定输入时的换行符。</p> <p><code>ORS</code>指定符号在输出时替换换行符。</p> <p><code>NF</code> 表示用分隔符分隔后一共有多少列。</p> <p><code>NR</code> 表示行号。</p> <p><code>FNR</code>表示个文件分别计数各自记录的编号。</p> <p><code>FILENAME</code>表示当前文件名。</p> <p><code>ARGC</code>表示命令行参数的个数。</p> <p><code>FS</code>的用法：</p> <div class=highlight><pre><span></span><code>$ awk -v FS=&#39;:&#39; &#39;{print $1, FS, $3}&#39; /etc/passwd | head -n5
+root : 0
+messagebus : 499
+systemd-network : 497
+
+$ awk -F: &#39;{print $1FS$3}&#39; /etc/passwd | head -n3
+root:0
+messagebus:499
+systemd-network:497
+</code></pre></div> <div class=highlight><pre><span></span><code>$ S=:;awk -v FS=$S &#39;{print $1FS$3}&#39; /etc/passwd | head -n3
+root:0
+messagebus:499
+systemd-network:497
+systemd-timesync:496
+nobody:65534
+
+$ S=:;awk -F$S &#39;{print $1FS$3}&#39; /etc/passwd | head -n3
+root:0
+messagebus:499
+systemd-network:497
+</code></pre></div> <p><code>FS</code>和 <code>-F</code> 选项功同时使用会冲突，<code>-F</code>的优先级更高。</p> <div class=highlight><pre><span></span><code>$ awk -v FS=&#39;:&#39; -F&#39;;&#39; &#39;{print $1FS$3}&#39; /etc/passwd | head -n3
+root:x:0:0:root:/root:/bin/bash;
+messagebus:x:499:499:User for D-Bus:/run/dbus:/usr/bin/false;
+systemd-network:x:497:497:systemd Network Management:/:/usr/sbin/nologin;
+
+$ awk -v FS=&#39;;&#39; -F&#39;:&#39; &#39;{print $1FS$3}&#39; /etc/passwd | head -n3
+root:0
+messagebus:499
+systemd-network:497
+</code></pre></div> <p><code>OFS</code>的用法：</p> <p>以<code>:</code>为分隔符，打印第1、3、4列第内容，并以<code>#</code>为分隔符。</p> <div class=highlight><pre><span></span><code>$ awk -F &#39;:&#39; &#39;{OFS=&quot;#&quot;} {print $1,$3,$4}&#39; /etc/passwd | head -n5
+root#0#0
+messagebus#499#499
+systemd-network#497#497
+systemd-timesync#496#496
+nobody#65534#65534
+
+$ awk -v FS=&#39;:&#39; -v OFS=&#39;#&#39; &#39;{print $1,$3,$4}&#39; /etc/passwd | head -n5
 root#0#0
 messagebus#499#499
 systemd-network#497#497
@@ -939,6 +975,22 @@ systemd-timesync#496#496
 nobody#65534#65534
 </code></pre></div> <p>以<code>:</code>为分隔符，当第三列大于等于5000时，打印第1、2、3、4列第内容，并以<code>#</code>为分隔符。</p> <div class=highlight><pre><span></span><code>$ awk -F &#39;:&#39; &#39;{OFS=&quot;#&quot;} {if ($3&gt;=5000) {print $1,$2,$3,$4}}&#39; /etc/passwd
 nobody#x#65534#65534
+</code></pre></div> <p><code>RS</code>的用法：</p> <div class=highlight><pre><span></span><code># 以空格为换行标志
+$ awk -v RS=&#39; &#39; &#39;{print $0}&#39; /etc/passwd |head -n3
+root:x:0:0:root:/root:/bin/bash
+messagebus:x:499:499:User
+for
+
+# 以冒号为换行标志
+$ awk -v RS=&#39;:&#39; &#39;{print $0}&#39; /etc/passwd |head -n3
+root
+x
+0
+</code></pre></div> <p><code>ORS</code>的用法：</p> <div class=highlight><pre><span></span><code># 以冒号为换行标志，替换成###
+$ awk -v RS=&#39;:&#39; -v ORS=&#39;###&#39; &#39;{print $0}&#39; /etc/passwd |head -n3
+root###x###0###0###root###/root###/bin/bash
+messagebus###x###499###499###User for D-Bus###/run/dbus###/usr/bin/false
+systemd-network###x###497###497###systemd Network Management###/###/usr/sbin/nologin
 </code></pre></div> <p><code>NF</code> 的用法：</p> <p>其中 <code>NF</code> 是多少列，<code>$NF</code> 是最后一列的值。</p> <p>下例中以<code>:</code>为分隔符一共分为7列，最后一列的值是<code>$NF</code>。</p> <div class=highlight><pre><span></span><code>$ awk -F &#39;:&#39; &#39;{print $NF}&#39; /etc/passwd | head -n2
 /bin/bash
 /usr/bin/false
@@ -946,6 +998,11 @@ nobody#x#65534#65534
 $ awk -F &#39;:&#39; &#39;{print NF}&#39; /etc/passwd | head -n2
 7
 7
+</code></pre></div> <div class=highlight><pre><span></span><code>$ ss -nt |grep &quot;^ESTAB&quot; |awk -F&quot;[[:space:]]+|:&quot; &#39;{print $(NF-2)}&#39;
+192.168.10.103
+
+$ ss -nt |awk -F&quot;[[:space:]]+|:&quot; &#39;/^ESTAB/{print $(NF-2)}&#39;
+192.168.10.103
 </code></pre></div> <p><code>NR</code> 的用法：</p> <p>通过<code>NR</code>输出行号。以<code>:</code>为分隔符，打印前三行的行号。</p> <div class=highlight><pre><span></span><code>$ awk -F &#39;:&#39; &#39;{print NR}&#39; /etc/passwd |head -n3
 1
 2
@@ -970,8 +1027,139 @@ $ awk -F &#39;:&#39; &#39;NR&gt;45 {print NR,$1,$3}&#39; /etc/passwd
 48 pm1 2003
 49 tm1 2004
 50 tm2 2005
+
+$ awk -F &#39;:&#39; &#39;BEGIN{print NR}&#39; /etc/passwd
+0
+
+$ awk -F &#39;:&#39; &#39;END{print NR}&#39; /etc/passwd
+50
+</code></pre></div> <div class=highlight><pre><span></span><code>$ ifconfig eth0 |awk &#39;/netmask/{print $0}&#39;
+        inet 192.168.10.210  netmask 255.255.255.0  broadcast 192.168.10.255
+
+$ ifconfig eth0 |awk &#39;/netmask/{print $1}&#39;
+inet
+
+$ ifconfig eth0 |awk &#39;/netmask/{print $2}&#39;
+192.168.10.210
+
+$ ifconfig eth0 |awk &#39;NR==2{print $0}&#39;
+        inet 192.168.10.210  netmask 255.255.255.0  broadcast 192.168.10.255
+
+$ ifconfig eth0 |awk &#39;NR==2{print $1}&#39;
+inet
+
+$ ifconfig eth0 |awk &#39;NR==2{print $2}&#39;
+192.168.10.210
 </code></pre></div> <p>通过<code>NR</code> 与列匹配一起使用。</p> <div class=highlight><pre><span></span><code>$ awk -F &#39;:&#39; &#39;NR&lt;5 &amp;&amp; $1 ~/roo/&#39; /etc/passwd
 root:x:0:0:root:/root:/bin/bash
+</code></pre></div> <p><code>FNR</code>的用法：</p> <div class=highlight><pre><span></span><code>$ awk &#39;{print FNR}&#39; /etc/fstab /etc/networks
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+</code></pre></div> <div class=highlight><pre><span></span><code>$ awk &#39;{print NR, $0}&#39; /etc/fstab /etc/networks
+1 UUID=5ffa8dbd-473e-4308-804a-0033c3b5f7af  /                       btrfs  defaults                      0  0
+2 UUID=5ffa8dbd-473e-4308-804a-0033c3b5f7af  /var                    btrfs  subvol=/@/var                 0  0
+3 UUID=5ffa8dbd-473e-4308-804a-0033c3b5f7af  /usr/local              btrfs  subvol=/@/usr/local           0  0
+4 UUID=5ffa8dbd-473e-4308-804a-0033c3b5f7af  /tmp                    btrfs  subvol=/@/tmp                 0  0
+5 UUID=5ffa8dbd-473e-4308-804a-0033c3b5f7af  /srv                    btrfs  subvol=/@/srv                 0  0
+6 UUID=5ffa8dbd-473e-4308-804a-0033c3b5f7af  /root                   btrfs  subvol=/@/root                0  0
+7 UUID=5ffa8dbd-473e-4308-804a-0033c3b5f7af  /opt                    btrfs  subvol=/@/opt                 0  0
+8 UUID=5ffa8dbd-473e-4308-804a-0033c3b5f7af  /home                   btrfs  subvol=/@/home                0  0
+9 UUID=5ffa8dbd-473e-4308-804a-0033c3b5f7af  /boot/grub2/x86_64-efi  btrfs  subvol=/@/boot/grub2/x86_64-efi  0  0
+10 UUID=5ffa8dbd-473e-4308-804a-0033c3b5f7af  /boot/grub2/i386-pc     btrfs  subvol=/@/boot/grub2/i386-pc  0  0
+11 UUID=5ffa8dbd-473e-4308-804a-0033c3b5f7af  /.snapshots             btrfs  subvol=/@/.snapshots          0  0
+12 UUID=47c36ad7-f49f-4ecd-9b72-4801c5bb3a04  swap                    swap   defaults                      0  0
+13 #
+14 # networks    This file describes a number of netname-to-address
+15 #        mappings for the TCP/IP subsystem.  It is mostly
+16 #        used at boot time, when no name servers are running.
+17 #
+18
+19 loopback    127.0.0.0
+20 link-local    169.254.0.0
+21
+22 # End.
+
+$ awk &#39;{print FNR, $0}&#39; /etc/fstab /etc/networks
+1 UUID=5ffa8dbd-473e-4308-804a-0033c3b5f7af  /                       btrfs  defaults                      0  0
+2 UUID=5ffa8dbd-473e-4308-804a-0033c3b5f7af  /var                    btrfs  subvol=/@/var                 0  0
+3 UUID=5ffa8dbd-473e-4308-804a-0033c3b5f7af  /usr/local              btrfs  subvol=/@/usr/local           0  0
+4 UUID=5ffa8dbd-473e-4308-804a-0033c3b5f7af  /tmp                    btrfs  subvol=/@/tmp                 0  0
+5 UUID=5ffa8dbd-473e-4308-804a-0033c3b5f7af  /srv                    btrfs  subvol=/@/srv                 0  0
+6 UUID=5ffa8dbd-473e-4308-804a-0033c3b5f7af  /root                   btrfs  subvol=/@/root                0  0
+7 UUID=5ffa8dbd-473e-4308-804a-0033c3b5f7af  /opt                    btrfs  subvol=/@/opt                 0  0
+8 UUID=5ffa8dbd-473e-4308-804a-0033c3b5f7af  /home                   btrfs  subvol=/@/home                0  0
+9 UUID=5ffa8dbd-473e-4308-804a-0033c3b5f7af  /boot/grub2/x86_64-efi  btrfs  subvol=/@/boot/grub2/x86_64-efi  0  0
+10 UUID=5ffa8dbd-473e-4308-804a-0033c3b5f7af  /boot/grub2/i386-pc     btrfs  subvol=/@/boot/grub2/i386-pc  0  0
+11 UUID=5ffa8dbd-473e-4308-804a-0033c3b5f7af  /.snapshots             btrfs  subvol=/@/.snapshots          0  0
+12 UUID=47c36ad7-f49f-4ecd-9b72-4801c5bb3a04  swap                    swap   defaults                      0  0
+1 #
+2 # networks    This file describes a number of netname-to-address
+3 #        mappings for the TCP/IP subsystem.  It is mostly
+4 #        used at boot time, when no name servers are running.
+5 #
+6
+7 loopback    127.0.0.0
+8 link-local    169.254.0.0
+9
+10 # End.
+</code></pre></div> <p><code>FILENAME</code>的用法：</p> <div class=highlight><pre><span></span><code>$ awk &#39;{print FILENAME}&#39; /etc/fstab
+/etc/fstab
+/etc/fstab
+/etc/fstab
+/etc/fstab
+/etc/fstab
+/etc/fstab
+/etc/fstab
+/etc/fstab
+/etc/fstab
+/etc/fstab
+/etc/fstab
+/etc/fstab
+
+$ awk &#39;{print FNR, FILENAME, $0}&#39; /etc/fstab /etc/networks
+1 /etc/fstab UUID=5ffa8dbd-473e-4308-804a-0033c3b5f7af  /                       btrfs  defaults                      0  0
+2 /etc/fstab UUID=5ffa8dbd-473e-4308-804a-0033c3b5f7af  /var                    btrfs  subvol=/@/var                 0  0
+3 /etc/fstab UUID=5ffa8dbd-473e-4308-804a-0033c3b5f7af  /usr/local              btrfs  subvol=/@/usr/local           0  0
+4 /etc/fstab UUID=5ffa8dbd-473e-4308-804a-0033c3b5f7af  /tmp                    btrfs  subvol=/@/tmp                 0  0
+5 /etc/fstab UUID=5ffa8dbd-473e-4308-804a-0033c3b5f7af  /srv                    btrfs  subvol=/@/srv                 0  0
+6 /etc/fstab UUID=5ffa8dbd-473e-4308-804a-0033c3b5f7af  /root                   btrfs  subvol=/@/root                0  0
+7 /etc/fstab UUID=5ffa8dbd-473e-4308-804a-0033c3b5f7af  /opt                    btrfs  subvol=/@/opt                 0  0
+8 /etc/fstab UUID=5ffa8dbd-473e-4308-804a-0033c3b5f7af  /home                   btrfs  subvol=/@/home                0  0
+9 /etc/fstab UUID=5ffa8dbd-473e-4308-804a-0033c3b5f7af  /boot/grub2/x86_64-efi  btrfs  subvol=/@/boot/grub2/x86_64-efi  0  0
+10 /etc/fstab UUID=5ffa8dbd-473e-4308-804a-0033c3b5f7af  /boot/grub2/i386-pc     btrfs  subvol=/@/boot/grub2/i386-pc  0  0
+11 /etc/fstab UUID=5ffa8dbd-473e-4308-804a-0033c3b5f7af  /.snapshots             btrfs  subvol=/@/.snapshots          0  0
+12 /etc/fstab UUID=47c36ad7-f49f-4ecd-9b72-4801c5bb3a04  swap                    swap   defaults                      0  0
+1 /etc/networks #
+2 /etc/networks # networks    This file describes a number of netname-to-address
+3 /etc/networks #        mappings for the TCP/IP subsystem.  It is mostly
+4 /etc/networks #        used at boot time, when no name servers are running.
+5 /etc/networks #
+6 /etc/networks
+7 /etc/networks loopback    127.0.0.0
+8 /etc/networks link-local    169.254.0.0
+9 /etc/networks
+10 /etc/networks # End.
+</code></pre></div> <p><code>ARGC</code>的用法：</p> <div class=highlight><pre><span></span><code>
 </code></pre></div> <h3 id=_17>数学运算<a class=headerlink href=#_17 title="Permanent link"> ¶</a></h3> <p>列值之间进行算术运算。</p> <div class=highlight><pre><span></span><code>$ awk -F &#39;:&#39; &#39;{$7=$3+$4;print $1,$3,$4,$7}&#39; /etc/passwd |head -n5
 root 0 0 0
 messagebus 499 499 998
