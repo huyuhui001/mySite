@@ -1488,7 +1488,9 @@ $ seq 10 | sed -n '1!G;h;$p'
 
 - Input statements: 
 
-#### 动作`print`
+
+
+动作`print`
 
 格式：`print item1, item2, ...`
 
@@ -1702,7 +1704,7 @@ root 0
 bin 1
 ```
 
-### 条件操作符
+### 操作符
 
 以`:`为分隔符，匹配第三列的值为`1000`的行。
 
@@ -1766,6 +1768,10 @@ $ awk -F ':' '$3>10 || $3<100' /etc/passwd
 `FILENAME`表示当前文件名。
 
 `ARGC`表示命令行参数的个数。
+
+`ARVC`以数组形式保存命令行所给定的各参数，每个参数：`ARGV[0]`，......。
+
+
 
 `FS`的用法：
 
@@ -2077,9 +2083,201 @@ $ awk '{print FNR, FILENAME, $0}' /etc/fstab /etc/networks
 
 `ARGC`的用法：
 
+每个变量的名字通过`ARGV`获取。
+
+```
+$ awk '{print ARGC}' /etc/fstab /etc/issue
+3
+3
+3
+3
+3
+3
+3
+3
+3
+3
+3
+3
+3
+3
+3
+3
+3
+
+$ awk 'BEGIN{print ARGC}' /etc/fstab /etc/issue
+3
+```
+
+`ARGV`的用法：
+
+```
+$ awk 'BEGIN{print ARGV[0]}' /etc/fstab /etc/issue
+awk
+$ awk 'BEGIN{print ARGV[1]}' /etc/fstab /etc/issue
+/etc/fstab
+$ awk 'BEGIN{print ARGV[2]}' /etc/fstab /etc/issue
+/etc/issue
+$ awk 'BEGIN{print ARGV[3]}' /etc/fstab /etc/issue
+
+```
+
+
+
+### 自定义变量
+
+自定义变量是区分字符大小写的，使用下面的方式进行赋值。
+
+- -v var=value
+
+- 在program中直接定义
+
+
+
+举例：
+
+```
+$ awk -v t1=t2="hello awk" 'BEGIN{print t1, t2}'
+t2=hello awk
+$ awk -v t1=t2="hello awk" 'BEGIN{t1=t2="gawk"; print t1, t2}'
+gawk gawk
+$ awk 'BEGIN{t1=t2="hello awk"; print t1, t2}'
+hello awk hello awk
 ```
 
 ```
+$ awk -v t1="hello awk" '{print t1}' /etc/issue
+hello awk
+hello awk
+hello awk
+hello awk
+hello awk
+$ awk -v t1="hello awk" 'BEGIN{print t1}' /etc/issue
+hello awk
+$ awk -v t1="hello awk" 'BEGIN{print t1}'
+hello awk
+```
+
+```
+$ awk -F: '{sex="male"; print $1, sex, age; age=28}' /etc/passwd |head -n3
+root male
+messagebus male 28
+systemd-network male 28
+```
+
+```
+$ cat <<EOF > awkscript
+{print script,$1,$2}
+EOF
+
+$ awk -F: -f awkscript script="awk" /etc/passwd |head -n2
+awk root x
+awk messagebus x
+```
+
+
+
+动作`printf`。
+
+动作printf可以实现格式化输出。
+
+格式：`printf "FORMAT", item1, item2, ......`
+
+说明：
+
+- 必须指定FORMAT
+
+- 不会自动换行，需要显式给出换行控制符`\n`。
+
+- FORMAT中需要分别为后面每个item指定格式符。
+
+
+
+格式符：与item是一一对应的
+
+- `%s`：显示字符串
+
+- `%d`, `%i`：显示十进制整数
+
+- `%f`：显示为浮点数
+
+- `%e`, `%E`：显示科学计数法数值
+
+- `%c`：显示字符的ASCII码
+
+- `%g`, `%G`：以科学计数法或浮点形式显示数值
+
+- `%u`：无符号整数
+
+- `%%`：显示`%`自身
+
+
+
+修饰符：
+
+- #[.#]：第一个数字控制显示的宽度，第二个#表示小数点后精度，如`%3.1f`
+
+- -：左对齐（默认右对齐），如`%-15s`
+
+- +：显示数值的正负符号，如`%+d`
+
+
+
+示例：
+
+```
+$ awk -F: '{printf "%s", $1}' /etc/passwd |head -n3
+rootmessagebussystemd-networksystemd-timesyncnobodymailchronypostfixmanlpgamesftpdaemonrpcnscdpolkitdattftpftpsecurebinstatdsshdvagrantpesignsvntester1tester2tester3tester4tester5user0user1user2user3user4user5user6user7user8user9gentoonginxvarnishmysqlwebuseradmin3smithpm1tm1tm2
+
+$ awk -F: '{printf "%s\n", $1}' /etc/passwd |head -n3
+root
+messagebus
+systemd-network
+
+$ awk -F: '{printf "%20s\n", $1}' /etc/passwd |head -n3
+                root
+          messagebus
+     systemd-network
+
+$ awk -F: '{printf "%-20s\n", $1}' /etc/passwd |head -n3
+root
+messagebus
+systemd-network
+
+$ awk -F: '{printf "%-20s %10d\n", $1, $3}' /etc/passwd |head -n3
+root                          0
+messagebus                  499
+systemd-network             497
+
+```
+
+```
+$ awk -F: '{printf "Username: %s\n", $1}' /etc/passwd |head -n3
+Username: root
+Username: messagebus
+Username: systemd-network
+
+$ awk -F: '{printf "Username: %s UID:%d\n", $1, $3}' /etc/passwd |head -n3
+Username: root UID:0
+Username: messagebus UID:499
+Username: systemd-network UID:497
+
+$ awk -F: '{printf "Username: %25s UID:%d\n", $1, $3}' /etc/passwd |head -n3
+Username:                      root UID:0
+Username:                messagebus UID:499
+Username:           systemd-network UID:497
+
+$ awk -F: '{printf "Username: %-25s UID:%d\n", $1, $3}' /etc/passwd |head -n3
+Username: root                      UID:0
+Username: messagebus                UID:499
+Username: systemd-network           UID:497
+```
+
+
+
+
+
+
 
 ### 数学运算
 
@@ -2307,14 +2505,13 @@ $ awk -F ':' '{(total=total+$3)}; END {print total}' /etc/passwd
   
   ```
   $ grep -Eo "[a-zA-Z]+" /etc/rc.status |sort |uniq -c
-  ```
   
   $ cat /etc/rc.status |sed -r 's/[^[:alpha:]]+/\n/g' |sed '/^$/d' |sort |uniq -c |sort -nr
+  ```
 
-```
 - 将文本文件的n和n+1行合并为一行，n为奇数行。
-```
-
+  
+  ```
   $ cat <<EOF > sed.txt
   1aa
   2bb
@@ -2324,18 +2521,15 @@ $ awk -F ':' '{(total=total+$3)}; END {print total}' /etc/passwd
   6ff
   7gg
   EOF
-
+  
   $ sed -n 'N;s/\n//p' sed.txt
   1aa2bb
   3cc4dd
   5ee6ff
-
+  
   $ sed 'N;s/\n//' sed.txt
   1aa2bb
   3cc4dd
   5ee6ff
   7gg
-
-```
-
-```
+  ```
