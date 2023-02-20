@@ -1488,8 +1488,6 @@ $ seq 10 | sed -n '1!G;h;$p'
 
 - Input statements: 
 
-
-
 动作`print`
 
 格式：`print item1, item2, ...`
@@ -1706,14 +1704,127 @@ bin 1
 
 ### 操作符
 
+**算数操作符**：
+
+`x+y`，`x-y`，`x*y`，`x/y`，`x^y`，`x%y`。
+
+`-x`：转换为负数
+
+`+x`：将字符串转换为数值
+
+**字符串操作符**：
+
+没有操作符号，字符串连接。
+
+**赋值操作符**：
+
+`=`，`+=`，`-=`，`*=`，`/=`，`%=`，`^=`，`++`，`--`。
+
+示例：
+
+```
+$ awk 'BEGIN{print i}'
+
+$ awk 'BEGIN{print i++}' #从0开始
+0
+$ awk 'BEGIN{print ++i}'
+1
+
+$ awk 'BEGIN{print i++, i}'
+0 1
+$ awk 'BEGIN{i=0;print i++, i}'
+0 1
+
+$ awk 'BEGIN{print ++i, i}'
+1 1
+$ awk 'BEGIN{i=0;print ++i, i}'
+1 1
+
+$ awk 'BEGIN{i=0;print i, i++}'
+0 0
+$ awk 'BEGIN{i=0;print i, ++i}'
+0 1
+```
+
+```
+$ seq 10
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+$ seq 10 |awk '{print n++}' # n从0开始计数
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+$ seq 10 |awk 'n++' # seq=1时n++为空，seq=2时n++为2
+2
+3
+4
+5
+6
+7
+8
+9
+10
+$ seq 10 |awk '++n' # seq=1时++n为1，seq=2时++n为2
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+```
+
+```
+# n=0时++n=1，!++n=0，输出第0行
+$ awk -v n=0 '!++n' /etc/passwd
+
+# n=0时n++=1，!n++=1，输出第1行
+$ awk -v n=0 '!n++' /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+
+$ awk -v n=0 '!n++{print n}' /etc/passwd
+1
+# 无结果输出
+$ awk -v n=0 '!++n{print n}' /etc/passwd
+$ awk -v n=1 '!n++{print n}' /etc/passwd
+
+$ awk -v n=0 '!n++' /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+# 无结果输出
+$ awk -v n=1 '!n++' /etc/passwd
+$ awk -v n=2 '!n++' /etc/passwd
+```
+
+
+
+**比较操作符**：
+
+使用 `==` 代表等于，即精确匹配。类似还有 `>`、`>=`、`<`、`<=`、`!=`符号。
+
 以`:`为分隔符，匹配第三列的值为`1000`的行。
 
 ```
 $ awk -F ':' '$3=="100"' /etc/passwd
 vagrant:x:1000:478:vagrant:/home/vagrant:/bin/bash
 ```
-
-使用 `==` 代表等于，即精确匹配。类似还有 `>`、`>=`、`<`、`<=`、`!=`符号。
 
 在和数字比较时，若把要比较的数字用双引号引起来，`awk`会按字符处理，不加双引号，则会按数字处理。
 
@@ -1747,6 +1858,37 @@ $ awk -F ':' '$3>10 && $3<100' /etc/passwd
 $ awk -F ':' '$3>10 || $3<100' /etc/passwd
 ```
 
+取奇、偶数行。
+
+```
+$ seq 10 |awk 'NR%2==0'
+2
+4
+6
+8
+10
+$ seq 10 |awk 'NR%2==1'
+1
+3
+5
+7
+9
+```
+
+
+
+**模式匹配符**：
+
+`~`：左右是否匹配
+
+`!~`：左右是否不匹配
+
+
+
+
+
+
+
 ### 内置变量
 
 `awk`常用的变量有`FS`、`OFS`、`NF` 和 `NR`。
@@ -1770,8 +1912,6 @@ $ awk -F ':' '$3>10 || $3<100' /etc/passwd
 `ARGC`表示命令行参数的个数。
 
 `ARVC`以数组形式保存命令行所给定的各参数，每个参数：`ARGV[0]`，......。
-
-
 
 `FS`的用法：
 
@@ -2119,10 +2259,7 @@ $ awk 'BEGIN{print ARGV[1]}' /etc/fstab /etc/issue
 $ awk 'BEGIN{print ARGV[2]}' /etc/fstab /etc/issue
 /etc/issue
 $ awk 'BEGIN{print ARGV[3]}' /etc/fstab /etc/issue
-
 ```
-
-
 
 ### 自定义变量
 
@@ -2131,8 +2268,6 @@ $ awk 'BEGIN{print ARGV[3]}' /etc/fstab /etc/issue
 - -v var=value
 
 - 在program中直接定义
-
-
 
 举例：
 
@@ -2175,8 +2310,6 @@ awk root x
 awk messagebus x
 ```
 
-
-
 动作`printf`。
 
 动作printf可以实现格式化输出。
@@ -2190,8 +2323,6 @@ awk messagebus x
 - 不会自动换行，需要显式给出换行控制符`\n`。
 
 - FORMAT中需要分别为后面每个item指定格式符。
-
-
 
 格式符：与item是一一对应的
 
@@ -2211,8 +2342,6 @@ awk messagebus x
 
 - `%%`：显示`%`自身
 
-
-
 修饰符：
 
 - #[.#]：第一个数字控制显示的宽度，第二个#表示小数点后精度，如`%3.1f`
@@ -2220,8 +2349,6 @@ awk messagebus x
 - -：左对齐（默认右对齐），如`%-15s`
 
 - +：显示数值的正负符号，如`%+d`
-
-
 
 示例：
 
@@ -2248,7 +2375,6 @@ $ awk -F: '{printf "%-20s %10d\n", $1, $3}' /etc/passwd |head -n3
 root                          0
 messagebus                  499
 systemd-network             497
-
 ```
 
 ```
@@ -2272,12 +2398,6 @@ Username: root                      UID:0
 Username: messagebus                UID:499
 Username: systemd-network           UID:497
 ```
-
-
-
-
-
-
 
 ### 数学运算
 
