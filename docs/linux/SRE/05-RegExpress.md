@@ -1438,7 +1438,7 @@ $ seq 10 | sed -n '1!G;h;$p'
 
 `awk`把文件逐行读入，以空格为默认分隔符将每行切片，再对切片进行分析处理。
 
-### 命令格式：
+### 命令格式
 
 `awk 'pattern{action statements;...}' {filenames}`
 
@@ -1450,7 +1450,7 @@ $ seq 10 | sed -n '1!G;h;$p'
 
 - `-v`：var=value，变量赋值。
 
-### 工作过程：
+### 工作过程
 
 1. 执行BEGIN{action;...}语句块中的语句。
    
@@ -1663,48 +1663,11 @@ root#x#0#0
 messagebus#x#499#499
 ```
 
-### 匹配字符
-
-示例：
-
-匹配文件中指定字符串`oo`的所有行，类似grep命令，但没有高亮显示。
-
-```
-$ awk '/oo/' /etc/passwd
-root:x:0:0:root:/root:/bin/bash
-mail:x:495:482:Mailer daemon:/var/spool/clientmqueue:/usr/sbin/nologin
-postfix:x:51:51:Postfix Daemon:/var/spool/postfix:/usr/sbin/nologin
-lp:x:493:487:Printing daemon:/var/spool/lpd:/usr/sbin/nologin
-at:x:25:25:Batch jobs daemon:/var/spool/atjobs:/usr/sbin/nologin
-tftp:x:487:474:TFTP account:/srv/tftpboot:/bin/false
-gentoo:x:1014:100:Gentoo Distribution:/home/gentoo:/bin/csh
-```
-
-以`:`为分隔符，匹配第一列中包含指定字符串`oo`的行。`~`是代表匹配。
-
-```
-$ awk -F ':' '$1 ~/oo/' /etc/passwd
-root:x:0:0:root:/root:/bin/bash
-gentoo:x:1014:100:Gentoo Distribution:/home/gentoo:/bin/csh
-```
-
-多条件匹配，以`:`为分隔符，匹配所有含有`root`或`ftp`的行，并打印第1、3列。
-
-```
-$ awk -F ':' '/root/ {print $1,$3} /bin/ {print $1,$3}' /etc/passwd
-```
-
-多条件匹配，以`:`为分隔符，匹配第一列中含有`root`或`bin`的行，并打印第1、3列。
-
-```
-$ awk -F ':' '$1 ~/root/ {print $1,$3} $1 ~/bin/ {print $1,$3}' /etc/passwd
-root 0
-bin 1
-```
+ 
 
 ### 操作符
 
-**算数操作符**：
+#### 算数操作符
 
 `x+y`，`x-y`，`x*y`，`x/y`，`x^y`，`x%y`。
 
@@ -1712,11 +1675,15 @@ bin 1
 
 `+x`：将字符串转换为数值
 
-**字符串操作符**：
+
+
+#### 字符串操作符
 
 没有操作符号，字符串连接。
 
-**赋值操作符**：
+
+
+#### 赋值操作符
 
 `=`，`+=`，`-=`，`*=`，`/=`，`%=`，`^=`，`++`，`--`。
 
@@ -1813,9 +1780,9 @@ $ awk -v n=1 '!n++' /etc/passwd
 $ awk -v n=2 '!n++' /etc/passwd
 ```
 
+ 
 
-
-**比较操作符**：
+#### 比较操作符
 
 使用 `==` 代表等于，即精确匹配。类似还有 `>`、`>=`、`<`、`<=`、`!=`符号。
 
@@ -1851,33 +1818,78 @@ $ awk -F ':' '$7!="/bin/false"' /etc/passwd
 $ awk -F ':' '$3<$2' /etc/passwd
 ```
 
-使用 `&&` 表示“并且”和 `||`表示“或者”。
+
+
+#### 逻辑操作符
+
+ `&&` 表示“并且”
+
+ `||`表示“或者”
+
+ `!`表示“非”（取反）
 
 ```
 $ awk -F ':' '$3>10 && $3<100' /etc/passwd
 $ awk -F ':' '$3>10 || $3<100' /etc/passwd
+$ awk -F ':' '($3==0)' /etc/passwd
+$ awk -F ':' '!($3==0)' /etc/passwd
 ```
 
-取奇、偶数行。
+注意下面对字符和数值进行取反操作的结果。
 
 ```
-$ seq 10 |awk 'NR%2==0'
-2
-4
-6
-8
-10
-$ seq 10 |awk 'NR%2==1'
+$ awk 'BEGIN{print i}'
+
+$ awk 'BEGIN{print !i}'
 1
-3
-5
-7
-9
+$ awk -v i=10 'BEGIN{print i}'
+10
+$ awk -v i=10 'BEGIN{print !i}'
+0
+$ awk -v i=-5 'BEGIN{print i}'
+-5
+$ awk -v i=-5 'BEGIN{print !i}'
+0
+$ awk -v i="abc" 'BEGIN{print i}'
+abc
+$ awk -v i="abc" 'BEGIN{print !i}'
+0
+$ awk -v i=abc 'BEGIN{print i}'
+abc
+$ awk -v i=abc 'BEGIN{print !i}'
+0
+$ awk -v i="" 'BEGIN{print i}'
+
+$ awk -v i="" 'BEGIN{print !i}'
+1
 ```
 
 
 
-**模式匹配符**：
+#### 三目条件表达式
+
+格式：`selector?if-true-expression:if-false-expression`
+
+
+
+```
+$ awk -F':' '{$3>1000?usertype="Common User":usertype="Superuser";printf"%-20s:%12s\n", $1, usertype}' /etc/passwd |head -n5
+root                :   Superuser
+messagebus          :   Superuser
+systemd-network     :   Superuser
+systemd-timesync    :   Superuser
+nobody              : Common User
+```
+
+
+
+
+
+
+
+
+
+#### 模式匹配符
 
 `~`：左右是否匹配
 
@@ -1885,11 +1897,100 @@ $ seq 10 |awk 'NR%2==1'
 
 
 
+示例：
+
+匹配文件中指定字符串`root`的所有行，类似grep命令，但没有高亮显示。
+
+```
+$ awk '/root/' /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+```
+
+以`:`为分隔符，匹配第一列`$1`中包含指定字符串`oo`的行。`~`是代表左右匹配。
+
+```
+$ awk -F ':' '$1 ~/oo/' /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+gentoo:x:1014:100:Gentoo Distribution:/home/gentoo:/bin/csh
+```
+
+以`:`为分隔符，匹配所有列`$0`（整行）中包含`root`行的第一列`$1`。
+
+```
+$ awk -F: '$0 ~/root/{print $1}' /etc/passwd
+$ awk -F: '$0 ~"root"{print $1}' /etc/passwd
+root
+daemon
+_cvmsroot
+```
+
+以`:`为分隔符，匹配所有列`$0`（整行）中以`root`开头行的第一列`$1`。
+
+```
+$ awk -F: '$0 ~"^root"{print $1}' /etc/passwd
+$ awk -F: '$0 ~/^root/{print $1}' /etc/passwd
+root
+```
+
+以`:`为分隔符，匹配所有列`$0`（整行）中不以`root`开头行的第一列`$1`。
+
+```
+$ awk -F: '$0 !~/^root/{print $1}' /etc/passwd
+$ awk -F: '$0 ~/^[^root]/{print $1}' /etc/passwd
+```
+
+多条件匹配，以`:`为分隔符，匹配所有含有`root`或`ftp`的行，并打印第1、3列。
+
+```
+$ awk -F ':' '/root/ {print $1,$3} /bin/ {print $1,$3}' /etc/passwd
+```
+
+多条件匹配，以`:`为分隔符，匹配第一列中含有`root`或`bin`的行，并打印第1、3列。
+
+```
+$ awk -F ':' '$1 ~/root/ {print $1,$3} $1 ~/bin/ {print $1,$3}' /etc/passwd
+root 0
+bin 1
+```
+
+以`:`为分隔符，匹配第三列`$3`中值为`0`的行。
+
+```
+$ awk -F":" '$3==0' /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+```
+
+以至少一个空格或%为分隔符，匹配以`/dev/sd`开头的行，打印第五列。
+
+```
+$ df |awk -F"[[:space:]]+|%" '$0 ~ /^\/dev\/sd/{print $5}'
+8
+8
+8
+8
+8
+8
+8
+8
+8
+8
+8
+```
+
+读取`ifconfig eth0`输出结果的第二行`NR==2`的第二列`$2`。
+
+```
+$ ifconfig eth0 |awk 'NR==2{print $2}'
+192.168.10.210
+```
 
 
 
 
-### 内置变量
+
+### 变量
+
+#### 内置变量
 
 `awk`常用的变量有`FS`、`OFS`、`NF` 和 `NR`。
 
@@ -2042,6 +2143,25 @@ $ awk -F ':' '{print NR}' /etc/passwd |head -n3
 2
 3
 ```
+
+取奇、偶数行。
+
+```
+$ seq 10 |awk 'NR%2==0'
+2
+4
+6
+8
+10
+$ seq 10 |awk 'NR%2==1'
+1
+3
+5
+7
+9
+```
+
+
 
 通过`NR`设定行号条件。以`:`为分隔符，打印第40行以后的行内容。
 
@@ -2261,7 +2381,7 @@ $ awk 'BEGIN{print ARGV[2]}' /etc/fstab /etc/issue
 $ awk 'BEGIN{print ARGV[3]}' /etc/fstab /etc/issue
 ```
 
-### 自定义变量
+#### 自定义变量
 
 自定义变量是区分字符大小写的，使用下面的方式进行赋值。
 
