@@ -1639,6 +1639,175 @@ $ ifconfig eth0 | sed -n '2p' |awk '{print $2}'
 
 - exit
 
+### 模式Pattern
+
+根据pattern条件，过滤匹配的行，再做处理。
+
+- 如果未指定，即空模式，则匹配每一行。
+
+- `/regular expression/`，仅处理能够模式匹配到的行（即结果为真），需要用`/`进行括起来。
+  
+  - 结果为真，即非0值、非空字符串
+  
+  - 结果为假，即0值、空字符串
+
+
+
+示例：空模式
+
+```
+awk -F":" '{print $1, $3}' /etc/passwd |head -n5
+root 0
+messagebus 499
+systemd-network 497
+systemd-timesync 496
+nobody 65534
+```
+
+示例：非空模式
+
+```
+$ seq 5 | awk '0'
+$ seq 5 | awk '1'
+1
+2
+3
+4
+5
+$ seq 5 | awk '2'
+1
+2
+3
+4
+5
+$ seq 5 | awk '"true"'
+1
+2
+3
+4
+5
+$ seq 5 | awk '"false"'
+1
+2
+3
+4
+5
+$ seq 5 | awk 'true'
+$ seq 5 | awk 'false'
+$ seq 5 | awk ''
+$ seq 5 | awk '""'
+$ seq 5 | awk '"0"'
+1
+2
+3
+4
+5
+```
+
+体会下面变量的值和正确使用变量（字符串还是变量？）
+
+```
+$ seq 5 | awk '"test"'
+1
+2
+3
+4
+5
+$ seq 5 | awk 'test'
+$ seq 5 | awk -v test=0 '"test"'
+$ seq 5 | awk -v test=0 'test'
+$ seq 5 | awk -v test="0" 'test'
+$ seq 5 | awk -v test="0" '"test"'
+1
+2
+3
+4
+5
+$ seq 5 | awk -v test=1 'test'
+1
+2
+3
+4
+5
+```
+
+体会下面的与非判断。
+
+```
+$ awk '1' /etc/passwd |head -n3
+root:x:0:0:root:/root:/bin/bash
+messagebus:x:499:499:User for D-Bus:/run/dbus:/usr/bin/false
+systemd-network:x:497:497:systemd Network Management:/:/usr/sbin/nologin
+$ awk '0' /etc/passwd |head -n3
+$ awk '!1' /etc/passwd |head -n3
+$ awk '!0' /etc/passwd |head -n3
+root:x:0:0:root:/root:/bin/bash
+messagebus:x:499:499:User for D-Bus:/run/dbus:/usr/bin/false
+systemd-network:x:497:497:systemd Network Management:/:/usr/sbin/nologin
+```
+
+
+
+```
+# i没有赋值，为假，没有输出
+$ seq 5 |awk 'i'
+# i赋值为0，为假，没有输出
+$ seq 5 |awk 'i=0'
+# i赋值为1，为真，输出第一行结果，以此类推，每行都为真，输出全部seq的结果
+$ seq 5 |awk 'i=1'
+1
+2
+3
+4
+5
+# 第一次初始i未赋值，为假，!i则为真，赋值给i，所以i为真,输出seq第1行结果
+# 第二次初始i为真，!i则为假，赋值给i，所以i为假，不输出seq第2行结果
+# 第三次初始i为假，!i则为真，赋值给i，所以i为真，输出seq第3行结果
+# 以此类推，输出seq结果的奇数行
+$ seq 5 |awk 'i=!i'
+1
+3
+5
+# 与上例的区别在于i初始值未真，第一次的i值为假，不输出seq第1行结果
+# 第二次i的初始值为假，通过i=!i变为真，所以输出seq的第2行结果
+# 以此类推，输出seq结果的偶数行
+$ seq 5 |awk -v i=1 'i=!i'
+2
+4
+# 输出计数行
+$ seq 5 |awk -v i=0 'i=!i'
+1
+3
+5
+# 只输出i的值，不输出seq的值
+$ seq 5 |awk '{i=!i;print i}'
+1
+0
+1
+0
+1
+$ seq 5 |awk '{i=!i}'
+$ seq 5 |awk '(i=!i)'
+1
+3
+5
+$ seq 5 |awk '!(i=!i)'
+2
+4
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
 ### 截取片段
 
 示例：
@@ -1663,8 +1832,6 @@ root#x#0#0
 messagebus#x#499#499
 ```
 
- 
-
 ### 操作符
 
 #### 算数操作符
@@ -1677,11 +1844,27 @@ messagebus#x#499#499
 
 
 
+列值之间进行算术运算。
+
+```
+$ awk -F ':' '{$7=$3+$4;print $1,$3,$4,$7}' /etc/passwd |head -n5
+root 0 0 0
+messagebus 499 499 998
+systemd-network 497 497 994
+systemd-timesync 496 496 992
+nobody 65534 65534 131068
+```
+
+计算某个列的总和。 `END`表示所有的行都已经执行。
+
+```
+$ awk -F ':' '{(total=total+$3)}; END {print total}' /etc/passwd
+103011
+```
+
 #### 字符串操作符
 
 没有操作符号，字符串连接。
-
-
 
 #### 赋值操作符
 
@@ -1725,7 +1908,8 @@ $ seq 10
 8
 9
 10
-$ seq 10 |awk '{print n++}' # n从0开始计数
+# n从0开始计数，输出的是n值，不是seq的输出结果
+$ seq 10 |awk '{print n++}'
 0
 1
 2
@@ -1736,7 +1920,10 @@ $ seq 10 |awk '{print n++}' # n从0开始计数
 7
 8
 9
-$ seq 10 |awk 'n++' # seq=1时n++为空，seq=2时n++为2
+# seq=1时，初始n未赋值，为假，不输出seq结果，n++为真
+# seq=2时，n为真，输出seq结果，n++为真
+# 后续n++都为真，所以seq的结果出了第一行由于n为假没有输出，其他行都输出
+$ seq 10 |awk 'n++'
 2
 3
 4
@@ -1746,7 +1933,8 @@ $ seq 10 |awk 'n++' # seq=1时n++为空，seq=2时n++为2
 8
 9
 10
-$ seq 10 |awk '++n' # seq=1时++n为1，seq=2时++n为2
+# 参考上例，n初始未赋值，但执行++n后为真，所以输出第一行，后续行都输出因为n一直为真
+$ seq 10 |awk '++n'
 1
 2
 3
@@ -1818,8 +2006,6 @@ $ awk -F ':' '$7!="/bin/false"' /etc/passwd
 $ awk -F ':' '$3<$2' /etc/passwd
 ```
 
-
-
 #### 逻辑操作符
 
  `&&` 表示“并且”
@@ -1864,13 +2050,52 @@ $ awk -v i="" 'BEGIN{print !i}'
 1
 ```
 
+在分隔符定义中使用正则表达式。
+
+```
+$ df |awk -F" +|%" '{print $5}'
+Use
+0
+0
+2
+0
+8
+8
+8
+8
+8
+8
+8
+8
+8
+8
+8
+0
+$ df |awk -F"[[:space:]]+|%" '{print $5}'
+Use
+0
+0
+2
+0
+8
+8
+8
+8
+8
+8
+8
+8
+8
+8
+8
+0
+```
+
 
 
 #### 三目条件表达式
 
 格式：`selector?if-true-expression:if-false-expression`
-
-
 
 ```
 $ awk -F':' '{$3>1000?usertype="Common User":usertype="Superuser";printf"%-20s:%12s\n", $1, usertype}' /etc/passwd |head -n5
@@ -1881,21 +2106,11 @@ systemd-timesync    :   Superuser
 nobody              : Common User
 ```
 
-
-
-
-
-
-
-
-
 #### 模式匹配符
 
 `~`：左右是否匹配
 
 `!~`：左右是否不匹配
-
-
 
 示例：
 
@@ -1983,10 +2198,6 @@ $ df |awk -F"[[:space:]]+|%" '$0 ~ /^\/dev\/sd/{print $5}'
 $ ifconfig eth0 |awk 'NR==2{print $2}'
 192.168.10.210
 ```
-
-
-
-
 
 ### 变量
 
@@ -2160,8 +2371,6 @@ $ seq 10 |awk 'NR%2==1'
 7
 9
 ```
-
-
 
 通过`NR`设定行号条件。以`:`为分隔符，打印第40行以后的行内容。
 
@@ -2519,25 +2728,25 @@ Username: messagebus                UID:499
 Username: systemd-network           UID:497
 ```
 
-### 数学运算
 
-列值之间进行算术运算。
 
-```
-$ awk -F ':' '{$7=$3+$4;print $1,$3,$4,$7}' /etc/passwd |head -n5
-root 0 0 0
-messagebus 499 499 998
-systemd-network 497 497 994
-systemd-timesync 496 496 992
-nobody 65534 65534 131068
-```
+### 
 
-计算某个列的总和。 `END`表示所有的行都已经执行。
 
-```
-$ awk -F ':' '{(total=total+$3)}; END {print total}' /etc/passwd
-103011
-```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## 小练习
 
