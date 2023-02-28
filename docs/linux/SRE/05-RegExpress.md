@@ -2730,7 +2730,7 @@ end
 
 - exit
 
-示例：
+if-else示例：
 
 ```
 $ cat <<EOF > score.txt
