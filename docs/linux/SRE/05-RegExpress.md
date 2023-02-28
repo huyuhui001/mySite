@@ -1619,26 +1619,6 @@ $ ifconfig eth0 | sed -n '2p' |awk '{print $2}'
 192.168.10.210
 ```
 
-### 常用控制语句
-
-- {statements;...} 组合语句
-
-- if(condition){statements;...}
-
-- if(condition){statements;...} else(statements;...)
-
-- while(condition){statements;...}
-
-- do(statements;...) while{condition}
-
-- for(expr1;expr2;expr3) {statements;...}
-
-- break
-
-- continue
-
-- exit
-
 ### 模式Pattern
 
 根据pattern条件，过滤匹配的行，再做处理。
@@ -1650,8 +1630,6 @@ $ ifconfig eth0 | sed -n '2p' |awk '{print $2}'
   - 结果为真，即非0值、非空字符串
   
   - 结果为假，即0值、空字符串
-
-
 
 示例：空模式
 
@@ -1746,8 +1724,6 @@ messagebus:x:499:499:User for D-Bus:/run/dbus:/usr/bin/false
 systemd-network:x:497:497:systemd Network Management:/:/usr/sbin/nologin
 ```
 
-
-
 ```
 # i没有赋值，为假，没有输出
 $ seq 5 |awk 'i'
@@ -1796,18 +1772,6 @@ $ seq 5 |awk '!(i=!i)'
 4
 ```
 
-
-
-
-
-
-
-
-
-
-
-
-
 ### 截取片段
 
 示例：
@@ -1841,8 +1805,6 @@ messagebus#x#499#499
 `-x`：转换为负数
 
 `+x`：将字符串转换为数值
-
-
 
 列值之间进行算术运算。
 
@@ -2090,8 +2052,6 @@ Use
 8
 0
 ```
-
-
 
 #### 三目条件表达式
 
@@ -2728,25 +2688,66 @@ Username: messagebus                UID:499
 Username: systemd-network           UID:497
 ```
 
+### BEGIN/END
 
+示例：
 
-### 
+```
+awk -F":" 'BEGIN{printf "--------------------------------\n%-20s|%10s|\n--------------------------------\n", "Username", "UID"}{printf "%-20s|%-10d|\n--------------------------------\n", $1, $3}END{print "end"}' /etc/passwd
+--------------------------------
+Username            |       UID|
+--------------------------------
+root                |0         |
+--------------------------------
+daemon              |1         |
+--------------------------------
+bin                 |2         |
+-------------------------------
+... ...
+--------------------------------
+mfe                 |997       |
+--------------------------------
+end
+```
 
+### 常用控制语句
 
+- {statements;...} 组合语句
 
+- if(condition){statements;...}
 
+- if(condition){statements;...} else(statements;...)
 
+- while(condition){statements;...}
 
+- do(statements;...) while{condition}
 
+- for(expr1;expr2;expr3) {statements;...}
 
+- break
 
+- continue
 
+- exit
 
+示例：
 
+```
+$ cat <<EOF > score.txt
+Name  Score
+Tom   100
+Jack  91
+Bill  81
+Jim   51
+EOF
 
-
-
-
+$ awk 'NR!=1{score=$2;if($2>=80){print $1, "Good"}else if($2>=60){print $1, "Pass"}else{print $1, "failed"}}'
+score.txt
+Tom Good
+Jack Good
+Bill Good
+Jim failed
+```
 
 ## 小练习
 
