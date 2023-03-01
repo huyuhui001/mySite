@@ -2718,6 +2718,8 @@ end
 
 - if(condition){statements;...} else(statements;...)
 
+- switch(expression){case VALUE1 or /REGEXP/: statement1; case VALUE2 or /REGEXP2/: statement2;......;default: statementn}
+
 - while(condition){statements;...}
 
 - do(statements;...) while{condition}
@@ -2747,6 +2749,64 @@ Tom Good
 Jack Good
 Bill Good
 Jim failed
+```
+
+switch示例：
+
+```bash
+$ awk 'NR!=1{switch($2){case 100:print $1,"good"; case 60:print $1,"Pass"; default:print $1,"others"}}' score.txt
+Tom good
+Tom Pass
+Tom others
+Jack others
+Bill others
+Jim others
+```
+
+while示例：
+
+```bash
+$ awk 'BEGIN{i=0;sum=0;while(i<=100){sum+=i;i++};print sum}'
+5050
+```
+
+do-while示例：
+
+```
+$ awk 'BEGIN{i=0;sum=0;do{sum+=i;i++}while(i<101);print sum}'
+5050
+```
+
+for示例：
+
+```
+$ awk 'BEGIN{i=0;sum=0;for(i=1;i<=100;i++){sum+=i};print sum}'
+5050
+```
+
+命令效率比较：
+
+```
+$ time(awk 'BEGIN{i=0;sum=0;while(i<=100000){sum+=i;i++};print sum}')
+5000050000
+
+real    0m0.028s
+user    0m0.027s
+sys    0m0.001s
+
+$ time(seq -s+ 1000000 |bc)
+500000500000
+
+real    0m0.329s
+user    0m0.240s
+sys    0m0.094s
+
+$ time(awk 'BEGIN{i=0;sum=0;for(i=1;i<=1000000;i++){sum+=i};print sum}')
+500000500000
+
+real    0m0.050s
+user    0m0.046s
+sys    0m0.004s
 ```
 
 ## 小练习
@@ -2982,4 +3042,38 @@ Jim failed
   3cc4dd
   5ee6ff
   7gg
+  ```
+
+- 对一串数字进行求和。
+  
+  ```
+  $ cat <<EOF > number.txt
+  1 2 3 4 5 6
+  EOF
+  ```
+  
+  ```bash
+  $ tr ' ' + < number.txt | bc
+  21
+  $ sum=0;for i in `cat number.txt`;do let sum+=i;done;echo $sum
+  21
+  $ awk '{sum=0;for(i=1;i<=NF;i++){sum+=i};print sum}' number.txt
+  21
+  ```
+
+- 取出字符串中的数字。
+  
+  ```bash
+  $ echo 'kdajl;3k8jd33la5kj23f90ld02sakjflakjdslf' | awk -F "" '
+  {
+    for(i=1;i<=NF;i++)
+    {
+      if($i ~ /[0-9]/)
+      {
+        str=(str $i)
+      }
+    };
+    print str
+  }'
+  38335239002
   ```
