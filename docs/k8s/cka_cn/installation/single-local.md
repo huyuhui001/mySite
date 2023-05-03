@@ -253,7 +253,7 @@ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 ```
 
-安装Flannel。如果需要考虑网络策略，则安装Calico。参照[阿里云ECS](./installation/aliyun-ubuntu.md)中Install Calico or Flannel部分。
+安装Flannel。如果需要考虑网络策略，则安装Calico。参照[阿里云ECS](./aliyun-ubuntu.md)中Install Calico or Flannel部分。
 
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml

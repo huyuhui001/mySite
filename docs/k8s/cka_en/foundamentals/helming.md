@@ -2,7 +2,8 @@
 
 ## Install Helm
 
-Install Helm on `cka001`. 
+Install Helm on `cka001`.
+
 ```console
 # https://github.com/helm/helm/releases
 wget https://get.helm.sh/helm-v3.8.2-linux-amd64.tar.gz
@@ -12,9 +13,11 @@ rm -rf linux-amd64 helm-v3.8.2-linux-amd64.tar.gz
 ```
 
 Or manually download the file via link `https://get.helm.sh/helm-v3.8.2-linux-amd64.tar.gz`, and remote copy to `cka001`.
+
 ```console
 scp -i cka-key-pair.pem ./Package/helm-v3.8.2-linux-amd64.tar.gz root@cka001:/root/
 ```
+
 ```console
 ssh -i cka-key-pair.pem root@cka001
 tar -zxvf helm-v3.8.2-linux-amd64.tar.gz
@@ -22,68 +25,77 @@ cp linux-amd64/helm /usr/bin/
 rm -rf linux-amd64 helm-v3.8.2-linux-amd64.tar.gz
 ```
 
-
-
 ## Usage of Helm
 
 Check `helm` version
+
 ```console
 helm version
 ```
-```
+
+```console
 version.BuildInfo{Version:"v3.8.2", GitCommit:"6e3701edea09e5d55a8ca2aae03a68917630e91b", GitTreeState:"clean", GoVersion:"go1.17.5"}
 ```
 
 Get help of `helm`.
+
 ```console
 helm help
 ```
 
 Configure auto-completion for `helm`.
+
 ```console
 echo "source <(helm completion bash)" >> ~/.bashrc
 source <(helm completion bash)
 ```
 
-
-
 ## Install MySQL from Helm
 
 Add bitnami Chartes Repository.
+
 ```console
 helm repo add bitnami https://charts.bitnami.com/bitnami
 ```
 
 Get current Charts repositories.
+
 ```console
 helm repo list
 ```
-```
+
+```console
 NAME    URL
 bitnami https://charts.bitnami.com/bitnami
 ```
 
 Sync up local Charts repositories.
+
 ```console
 helm repo update
 ```
 
 Search bitnami Charts in repositories.
+
 ```console
 helm search repo bitnami
 ```
 
 Search bitnami/mysql Charts in repositories.
+
 ```console
 helm search repo bitnami/mysql
 ```
 
 Install MySQL Chart on namespace `dev`：
+
 ```console
 helm install mysql bitnami/mysql -n dev
 ```
+
 Output
-```
+
+```console
 NAME: mysql
 LAST DEPLOYED: Sun Jul 24 19:37:20 2022
 NAMESPACE: dev
@@ -122,30 +134,36 @@ To connect to your database:
 ```
 
 Check installed release：
+
 ```console
 helm list
 ```
+
 Result
-```
+
+```console
 NAME    NAMESPACE       REVISION        UPDATED                                 STATUS          CHART           APP VERSION
 mysql   dev             1               2022-07-24 19:37:20.710988009 +0800 CST deployed        mysql-9.2.1     8.0.29 
 ```
 
 Check installed mysql release information.
+
 ```console
 helm status mysql
 ```
 
 Check mysql Pod status.
+
 ```console
 kubectl get pod
 ```
+
 Result
-```
+
+```console
 NAME                                      READY   STATUS    RESTARTS   AGE
 mysql-0                                   1/1     Running   0          72s
 ```
-
 
 ## Develop a Chart
 
@@ -159,11 +177,14 @@ helm create cka-demo
 ```
 
 A folder `cka-demo` was created. Check the folder structure.
+
 ```console
 tree cka-demo/
 ```
+
 Output
-```
+
+```console
 cka-demo/
 ├── charts
 ├── Chart.yaml
@@ -181,6 +202,7 @@ cka-demo/
 ```
 
 Delete or empty some files, which will be re-created later.
+
 ```console
 cd cka-demo
 rm -rf charts
@@ -193,11 +215,14 @@ cd ..
 ```
 
 Now new structure looks like below.
+
 ```console
 tree cka-demo/
 ```
+
 Output
-```
+
+```console
 cka-demo/
 ├── Chart.yaml
 ├── templates
@@ -206,17 +231,19 @@ cka-demo/
 └── values.yaml
 ```
 
-
 ## NOTES.txt
 
-NOTES.txt is used to provide summary information to Chart users. 
+NOTES.txt is used to provide summary information to Chart users.
 In the demo, we will use NOTES.txt to privide summary info about whether the user passed CKA certificate or not.
+
 ```console
 cd cka-demo/
 vi templates/NOTES.txt
 ```
+
 Add below info.
-```
+
+```console
 {{- if .Values.passExam }}
 Congratulations!
 
@@ -232,21 +259,22 @@ Come on! you can do it next time!
 {{- end }}
 ```
 
-
-
 ## Deployment Template
 
-Let's use Busybox service to generate information. 
+Let's use Busybox service to generate information.
 We use `kubectl create deployment --dry-run=client -oyaml` to generate Deployment yaml file and write it the yaml file content into file `templates/deployment.yaml`.
+
 ```console
 kubectl create deployment cka-demo-busybox --image=busybox:latest --dry-run=client -oyaml > templates/deployment.yaml
 ```
 
 Check content of deployment yaml file `templates/deployment.yaml`.
+
 ```console
 cat templates/deployment.yaml
 ```
-```
+
+```yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -274,11 +302,14 @@ status: {}
 ```
 
 Edit file `templates/deployment.yaml`.
+
 ```console
 vi templates/deployment.yaml
 ```
+
 Let's replace value of `.spec.replicas` from `1` to a variable `{{ .Values.replicaCount }}`, so we can dynamicly assign replicas number for other Deployment.
-```
+
+```yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -305,14 +336,16 @@ spec:
 status: {}
 ```
 
-The `.spec.replicas` will be replaced by actula value of `.Values.replicaCount` during deployment. 
+The `.spec.replicas` will be replaced by actula value of `.Values.replicaCount` during deployment.
 
 Let's create another file `values.yaml` and add a variable `replicaCount` with default value 1 into the file.
 Strong recommended to add comments for each value we defined in file `values.yaml`.
+
 ```console
 vi values.yaml
 ```
-```
+
+```console
 # Number of deployment replicas
 replicaCount: 1
 ```
@@ -331,9 +364,9 @@ Let's add more variables into file `templates/deployment.yaml`.
 
 The `.Release.Name` is built-in object, no need to be specified in file `values.yaml`. It's generated by Release by `helm install`.
 
-
 Remove unused lines and final one looks like below.
-```
+
+```yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -379,15 +412,15 @@ spec:
       restartPolicy: Always
 ```
 
-
-
 Update file `values.yaml` with variables default values.
 Suggestions：add variables one and test one, don't add all at one time.
+
 ```console
 vi values.yaml
 ```
-```
-# Number of deployment replicas	
+
+```console
+# Number of deployment replicas 
 replicaCount: 1
 
 # Image repository and tag
@@ -421,10 +454,6 @@ studentName: whoareyou
 passExam: true
 ```
 
-
-
-
-
 ## ConfigMap Template
 
 ConfigMap is referred in the Deployment, hence we need define the ConfigMap template.
@@ -433,7 +462,8 @@ We will combine name of ConfigMap and `cka_score` as a variable, like `name-cka-
 ```console
 vi templates/configmap.yaml
 ```
-```
+
+```yaml
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -445,23 +475,25 @@ data:
 ```
 
 The `studentName` was already defined in file `values.yaml`, we just need add `ckaScore` with default value.
+
 ```console
 vi values.yaml
 ```
-```
+
+```console
 # Student CKA Score
 ckaScore: 100
 ```
 
-
-
 ## _helpers.tpl
 
 Define a common template `_helpers.tpl` to add labels and labels of Selector for labels of Deployment and ConfigMap.
+
 ```console
 vi templates/_helpers.tpl
 ```
-```
+
+```console
 {{/*
 Common labels
 */}}
@@ -483,35 +515,40 @@ release: {{ .Release.Name }}
 {{- end -}}
 ```
 
-
-
 ## Chart.yaml
 
 We use CKA logo as the icon of Chart
+
 ```console
 wget https://www.cncf.io/wp-content/uploads/2021/09/kubernetes-cka-color.svg
 ```
 
 Edit Chart.yaml file.
+
 ```console
 vi Chart.yaml
 ```
+
 Append icon info in the file.
-```
+
+```console
 icon: file://./kubernetes-cka-color.svg
 ```
 
 Add author info for the Chart
+
 ```console
 vi Chart.yaml
 ```
-```
+
+```console
 maintainers:
   - name: James.H
 ```
 
 Final `Chart.yaml` looks like below. Don't forget to update `appVersion: "v1.23"` to current Kubernetes API version.
-```
+
+```yaml
 apiVersion: v2
 name: cka-demo
 description: A Helm chart for CKA demo.
@@ -523,26 +560,28 @@ maintainers:
 icon: file://./kubernetes-cka-color.svg
 ```
 
-
-
 ## Chart Debug
 
 Use `helm lint` to verify above change.
+
 ```console
 helm lint
 ```
-```
+
+```console
 1 chart(s) linted, 0 chart(s) failed
 ```
 
 `helm lint` only check format of Chart, won't check Manifest file.
 
 We can use `helm install --debug --dry-run` or `helm template` to check Manifest output in order to verify all yaml files are correct or not.
-```
+
+```console
 helm template cka-demo ./
 ```
 
 Use `helm install --debug --dry-run` to simulate the installation. We can get expected results from two different options (passed or failed the CKA certificate).
+
 ```console
 helm install --debug --dry-run cka-demo ./ --create-namespace \
   -n cka \
@@ -558,15 +597,18 @@ helm install --debug --dry-run cka-demo ./ --create-namespace \
 ```
 
 Package Chart to .tgz file, and upload to repository, e.g., Chart Museum or OCI Repo.
+
 ```console
 cd ../
 helm package cka-demo
 ```
-```
+
+```console
 Successfully packaged chart and saved it to: /root/cka-demo-0.1.0.tgz
 ```
 
 Till now, we have done our task to develop a Chart. Let's install the Chart.
+
 ```console
 helm install cka-demo cka-demo-0.1.0.tgz --create-namespace \
   -n cka \
@@ -574,8 +616,10 @@ helm install cka-demo cka-demo-0.1.0.tgz --create-namespace \
   --set ckaScore=0 \
   --set passExam=false
 ```
+
 Result
-```
+
+```console
 NAME: cka-demo
 LAST DEPLOYED: Sun Jul 24 19:58:36 2022
 NAMESPACE: cka
@@ -587,31 +631,39 @@ Come on! you can do it next time!
 ```
 
 Check the deployment
+
 ```console
 helm list --all-namespaces
 ```
+
 Result
-```
+
+```console
 NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART           APP VERSION
 cka-demo        cka             1               2022-07-24 19:58:36.272093383 +0800 CST deployed        cka-demo-0.1.0  v1.23      
 mysql           dev             1               2022-07-24 19:37:20.710988009 +0800 CST deployed        mysql-9.2.1     8.0.29  
 ```
 
 If any error, need to unstall `cka-demo` and reinstall it.
+
 ```console
 helm uninstall cka-demo -n <your_namespace>
 ```
 
-Check log of `cka-demo `.
+Check log of `cka-demo`.
+
 ```console
 kubectl logs -n cka -l app=cka-demo
 ```
+
 Result
-```
+
+```console
 Your CKA score is 0, Come on! you can do it next time!
 ```
 
 Install `cka-demo` with different options.
+
 ```console
 helm uninstall cka-demo -n cka
 
@@ -621,7 +673,8 @@ helm install cka-demo cka-demo-0.1.0.tgz --create-namespace \
   --set ckaScore=100 \
   --set passExam=true
 ```
-```
+
+```console
 NAME: cka-demo
 LAST DEPLOYED: Sun Jul 24 20:01:34 2022
 NAMESPACE: cka
@@ -640,44 +693,40 @@ Click the link below to view and download your certificate.
 https://trainingportal.linuxfoundation.org/learn/dashboard
 ```
 
-Check log of `cka-demo `.
+Check log of `cka-demo`.
+
 ```console
 kubectl logs -n cka -l app=cka-demo
 ```
-```
+
+```console
 Your CKA score is 100 and your CKA certificate ID number is BQKoVYVhjzl3G
 ```
 
+Built-in Objects:
 
+```console
+Release.Name                              # 发布名称
+Release.Namespace                         # 发布Namespace
+Release.Service                           # 渲染模板的服务，在Helm中默认值为"Helm"
+Release.IsUpgrade                         # 如果当前是升级或回滚，设置为true
+Release.IsInstall                         # 如果当前是安装，设置为true
+Release.Revision                          # 发布版本号
+Values                                    # 从values.yaml和--set传入，默认为空
+Chart                                     # 所有Chart.yaml中的内容
+Chart.Version                             #
+Chart.Maintainers                         #
+Files                                     # 在chart中访问非特殊文件
+Capabilities                              # 提供关于支持能力的信息（K8s API版本、K8s版本、Helm版本）
+Capabilities.KubeVersion                  # Kubernetes的版本号
+Capabilities.APIVersions.Has "batch/v1"   # K8s API版本包含"batch/v1"
+Template                                  # 当前模板信息
+Template.Name                             # 当前模板文件路径
+Template.BasePath                         # 当前模板目录路径
+```
 
+Reference:
 
-!!! Built-in Objects
-    ```
-    Release.Name                              # 发布名称
-    Release.Namespace                         # 发布Namespace
-    Release.Service                           # 渲染模板的服务，在Helm中默认值为"Helm"
-    Release.IsUpgrade                         # 如果当前是升级或回滚，设置为true
-    Release.IsInstall                         # 如果当前是安装，设置为true
-    Release.Revision                          # 发布版本号
-    Values                                    # 从values.yaml和--set传入，默认为空
-    Chart                                     # 所有Chart.yaml中的内容
-    Chart.Version                             # 
-    Chart.Maintainers                         # 
-    Files                                     # 在chart中访问非特殊文件
-    Capabilities                              # 提供关于支持能力的信息（K8s API版本、K8s版本、Helm版本）
-    Capabilities.KubeVersion                  # Kubernetes的版本号
-    Capabilities.APIVersions.Has "batch/v1"   # K8s API版本包含"batch/v1"
-    Template                                  # 当前模板信息
-    Template.Name                             # 当前模板文件路径
-    Template.BasePath                         # 当前模板目录路径
-    ```
-
-
-
-!!! Reference
-    * [Helm 官网](https://helm.sh/)
-    * [Helm 版本支持策略](https://helm.sh/zh/docs/topics/version_skew/)
-    * [Helm Chart 资源对象安装顺序](https://github.com/helm/helm/blob/484d43913f97292648c867b56768775a55e4bba6/pkg/releaseutil/kind_sorter.go)
-
-
-
+* [Helm 官网](https://helm.sh/)
+* [Helm 版本支持策略](https://helm.sh/zh/docs/topics/version_skew/)
+* [Helm Chart 资源对象安装顺序](https://github.com/helm/helm/blob/484d43913f97292648c867b56768775a55e4bba6/pkg/releaseutil/kind_sorter.go)

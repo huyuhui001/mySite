@@ -977,7 +977,7 @@ docker image ls
 
 下面的例子是演示一个多阶段（Multi-stage）构建的例子。在Docker的上下文中，多阶段（Multi-stage）意味着我们可以有多个带有`FROM`关键字的行。
 
-创建文件夹`/opt/tmp-2`和`/opt/tmp-2/tmpl`。创建文件`edit.html`，`view.html`，`wiki.go`。
+创建文件夹`/opt/tmp-2`和`/opt/tmp-2/tmpl`。创建文件[edit.html](../../../assets/edit.html)，[view.html](../../../assets/view.html)，[wiki.go](../../../assets/wiki.go)。
 
 文件结构如下：
 

@@ -1,32 +1,39 @@
 # Deployment
 
-!!! Scenario
-    * Modify Existing Deployment, e.g., add port number in below demo.
+Scenario:
+
+* Modify Existing Deployment, e.g., add port number in below demo.
 
 Demo:
 
 Create Deployment `nginx`.
-```
+
+```bash
 kubectl create deployment nginx --image=nginx
 ```
 
 Execute command below to get yaml template with port number.
 The option `--port=8080` specified the port that this container exposes.
-```
+
+```bash
 kubectl create deployment nginx --image=nginx --port=8080 --dry-run=client -o yaml
 ```
 
 Then we get to know the path to add port number, like below.
-```
+
+```bash
 kubectl explain deployment.spec.template.spec.containers.ports.containerPort
 ```
 
 Execute command below to edit the Deployemnt.
-```
+
+```bash
 kubectl edit deployment nginx
 ```
+
 Add below two lines to specify port number with `8080` and protocol is `TCP`.
-```
+
+```yaml
 spec:
   template:
     spec:
@@ -38,9 +45,9 @@ spec:
           protocol: TCP
 ```
 
-
 Use command `kubectl describe deployment <deployment_name>`, we can see the port number was added.
-```
+
+```yaml
 Pod Template:
   Labels:  app=nginx
   Containers:
@@ -54,7 +61,8 @@ Pod Template:
 ```
 
 With command `kubectl describe pod <pod_name>`, we can see the port number was added.
-```
+
+```yaml
 Containers:
   nginx:
     Container ID:   containerd://af4a1243f981497074b5c006ac55fcf795688399871d1dfe91a095321f5c91aa
@@ -71,12 +79,10 @@ Containers:
       /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-hftdt (ro)
 ```
 
+Info: Some key fields of deployment (use `kubectl explain`):
 
-!!! Info
-    Some key fields of deployment (use `kubectl explain`):
-    
-    * `deployment.spec.revisionHistoryLimit`: The number of old ReplicaSets to retain to allow rollback. Defaults to `10`.
-    * `deployment.spec.strategy.type`: Type of deployment. Can be `Recreate` or `RollingUpdate`. Default is `RollingUpdate`.
-    * `deployment.spec.strategy.rollingUpdate.maxUnavailable`: The maximum number of pods that can be unavailable during the update. Defaults to 25%.
-    * `deployment.spec.strategy.rollingUpdate.maxSurge`: The maximum number of pods that can be scheduled above the desired number of pods. Defaults to 25%. This can not be 0 if MaxUnavailable is 0.
-    * `deployment.spec.minReadySeconds`: Minimum number of seconds for which a newly created pod should be ready without any of its container crashing, for it to be considered available. Defaults to 0 (pod will be considered available as soon as it is ready).
+* `deployment.spec.revisionHistoryLimit`: The number of old ReplicaSets to retain to allow rollback. Defaults to `10`.
+* `deployment.spec.strategy.type`: Type of deployment. Can be `Recreate` or `RollingUpdate`. Default is `RollingUpdate`.
+* `deployment.spec.strategy.rollingUpdate.maxUnavailable`: The maximum number of pods that can be unavailable during the update. Defaults to 25%.
+* `deployment.spec.strategy.rollingUpdate.maxSurge`: The maximum number of pods that can be scheduled above the desired number of pods. Defaults to 25%. This can not be 0 if MaxUnavailable is 0.
+* `deployment.spec.minReadySeconds`: Minimum number of seconds for which a newly created pod should be ready without any of its container crashing, for it to be considered available. Defaults to 0 (pod will be considered available as soon as it is ready).

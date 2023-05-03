@@ -3,11 +3,14 @@
 ## Demo environment
 
 Linux: openSUSE 15.3
-```console
+
+```bash
 cat /etc/os-release
 ```
+
 Output
-```
+
+```console
 NAME="openSUSE Leap"
 VERSION="15.3"
 ID="opensuse-leap"
@@ -29,12 +32,12 @@ chroot(using pivot_root)
 namespaces
 
 - Different processes see different environments even though they are on the same host/OS
-    - mnt (mount points)
-    - pid (process tree)
-    - net (network interfaces and connectivity)
-    - ipc (interprocess communication framework)
-    - uts (unix timesharing - domain name, hostname, etc.)
-    - uid (user IDs and mappings)
+  - mnt (mount points)
+  - pid (process tree)
+  - net (network interfaces and connectivity)
+  - ipc (interprocess communication framework)
+  - uts (unix timesharing - domain name, hostname, etc.)
+  - uid (user IDs and mappings)
 
 cgroups(control groups)
 
@@ -42,6 +45,7 @@ cgroups(control groups)
 - Prioritization of processes
 
 Apparmor and SELinux profiles
+
 - Security profiles to govern access to resources
 
 Kernel capabilities
@@ -55,7 +59,8 @@ seccomp policies
 - Unallowed syscalls lead to process termination
 
 Netlink
-- A Linux kernel interface used for inter-process communication (IPC) between both the kernel and userspace processes, and between different userspace processes. 
+
+- A Linux kernel interface used for inter-process communication (IPC) between both the kernel and userspace processes, and between different userspace processes.
 
 Netfilter
 
@@ -66,7 +71,8 @@ Netfilter
 More inforamtion could refer to [LXC/LXD](https://linuxcontainers.org/)
 
 Let's download an image `alpine` to simulate an root file system under `/opt/test` folder.
-```console
+
+```bash
 mkdir test
 cd test
 wget https://dl-cdn.alpinelinux.org/alpine/v3.13/releases/x86_64/alpine-minirootfs-3.13.4-x86_64.tar.gz
@@ -74,11 +80,14 @@ tar zxvf alpine-minirootfs-3.13.4-x86_64.tar.gz -C alpine-minirootfs/
 ```
 
 Current directory structure.
-```console
+
+```bash
 tree ./test -L 1
 ```
+
 Output
-```
+
+```console
 ./test
 ├── alpine-minirootfs-3.13.4-x86_64.tar.gz
 ├── bin
@@ -101,10 +110,12 @@ Output
 ```
 
 Mount folder `/opt/test/proc` to a file and use command `unshare` to build a guest system.
-```console
+
+```bash
 sudo mount -t tmpfs tmpfs /opt/test/proc
 ```
-```console
+
+```bash
 sudo unshare --pid --mount-proc=$PWD/test/proc --fork chroot ./test/ /bin/sh
 / # ps -ef
 PID   USER     TIME  COMMAND
@@ -116,26 +127,30 @@ PID   USER     TIME  COMMAND
 ```
 
 The file `123` created in guest system is accessable and writable from host system.
-```console
+
+```bash
 su -
 ls 123
 echo hello > 123
 ```
 
 We will see above change in guest system.
-```console
+
+```bash
 / # cat 123
 hello
 ```
 
 Let's create two folders `/opt/test-1` and `/opt/test-2`.
-```console
+
+```bash
 mkdir test-1
 mkdir test-2
 ```
 
 Create two guests system. Mount `/opt/test/home/` to different folders for different guests.
-```console
+
+```bash
 sudo mount --bind /opt/test-1 /opt/test/home/
 sudo unshare --pid --mount-proc=$PWD/test/proc --fork chroot ./test/ /bin/sh
 / # cd /home
@@ -143,7 +158,8 @@ sudo unshare --pid --mount-proc=$PWD/test/proc --fork chroot ./test/ /bin/sh
 /home # cat 123.1
 test-1
 ```
-```console
+
+```bash
 sudo mount --bind /opt/test-2 /opt/test/home/
 sudo unshare --pid --mount-proc=$PWD/test/proc --fork chroot ./test/ /bin/sh
 / # cd /home
@@ -151,7 +167,8 @@ sudo unshare --pid --mount-proc=$PWD/test/proc --fork chroot ./test/ /bin/sh
 /home # cat 123.2
 test-2
 ```
-```console
+
+```bash
 ll test/home
 ll test-1/
 ll test-2/
@@ -159,45 +176,41 @@ ll test-2/
 
 With above demo, the conclusion is that two guests share same home folder on host system and will impact each other.
 
-
-
-
 ## Installing Docker
 
 Install Docker engine by referring the [guide](https://docs.docker.com/engine/), and Docker Desktop by referring the [guide](https://docs.docker.com/desktop/).
 
 Install engine via openSUSE repository automatically.
-```console
+
+```bash
 sudo zypper in docker
 ```
 
-The docker group is automatically created at package installation time. 
-The user can communicate with the local Docker daemon upon its next login. 
-The Docker daemon listens on a local socket which is accessible only by the root user and by the members of the docker group. 
+The docker group is automatically created at package installation time.
+The user can communicate with the local Docker daemon upon its next login.
+The Docker daemon listens on a local socket which is accessible only by the root user and by the members of the docker group.
 
 Add current user to `docker` group.
-```console
+
+```bash
 sudo usermod -aG docker $USER
 ```
 
 Enable and start Docker engine.
-```console
+
+```bash
 sudo systemctl enable docker.service 
 sudo systemctl start docker.service 
 sudo systemctl status docker.service
 ```
 
-
-
-
-
 ## Container lifecycle
-
 
 ### Overview
 
 Pull down below images in advance.
-```console
+
+```bash
 docker image pull busybox
 docker image pull nginx
 docker image pull alpine
@@ -208,9 +221,10 @@ docker image pull golang
 
 Download some docker images.
 Create and run a new busybox container interactively and connect a pseudo terminal to it.
-Inside the container, use the top command to find out that `/bin/sh` is running as process with the PID 1 and `top` process is also running. 
+Inside the container, use the top command to find out that `/bin/sh` is running as process with the PID 1 and `top` process is also running.
 After that, just exit.
-```console
+
+```bash
 docker image ls
 docker run -d -it --name busybox_v1 -v /opt/test:/docker busybox:latest /bin/sh
 docker container ps -a
@@ -227,9 +241,10 @@ Load average: 0.38 1.09 1.29 2/277 14
 ```
 
 Start a new nginx container in detached mode.
-Use the `docker exec` command to start another shell (`/bin/sh`) in the nginx container. 
+Use the `docker exec` command to start another shell (`/bin/sh`) in the nginx container.
 Use ps to find out that `sh` and `ps` commands are running in your container.
-```console
+
+```bash
 docker run -d -it --name nginx_v1 -v /opt/test:/docker nginx:latest /bin/sh
 docker container ps -a
 docker exec -it edb640127a0d /bin/sh
@@ -244,28 +259,33 @@ docker exec -it edb640127a0d /bin/sh
 ```
 
 Now we have two running containers below.
-```console
+
+```bash
 docker container ps -a
 ```
 
-Let's use `docker logs` to display the logs of the container we just exited from. 
+Let's use `docker logs` to display the logs of the container we just exited from.
 The option `--since 35m` means display log in last 35 minutes.
-```console
+
+```bash
 docker logs nginx_v1 --details --since 35m
 docker logs busybox_v1 --details --since 35m
 ```
+
 Let's make use of this to create a new stage:
 
 Use the `docker stop` command to end your nginx container.
+
 ```console
 docker stop busybox_v1
 docker stop nginx_v1 
 docker container ps -a
 ```
 
-With above command `docker container ps -a`, we get a list of all running and exited containers. 
+With above command `docker container ps -a`, we get a list of all running and exited containers.
 Remove them with docker rm.
 Use `docker rm $(docker ps -aq)` to clean up all containers on your host. Use it with caution!
+
 ```console
 docker rm busybox_v1
 docker container ps -a
@@ -275,9 +295,10 @@ docker container ps -a
 
 Now, let's run an nginx webserver in a container and serve a website to the outside world.
 
-Start a new nginx container and export the port of the nginx webserver to a random port that is chosen by Docker. 
+Start a new nginx container and export the port of the nginx webserver to a random port that is chosen by Docker.
 
 Use command `docker ps` to find you which port the webserver is forwarded. Access the docker with the forwarded port number on host `http://localhost:<port#>`.
+
 ```console
 docker container ps -a
 docker run -d -P --name nginx_v2 nginx:latest
@@ -285,19 +306,23 @@ docker container ps -a
 ```
 
 Start another nginx container and expose port to `1080` on host as an example via `http://localhost:1080`.
+
 ```console
 docker run -d -p 1080:80 --name nginx_v3 nginx:latest
 docker container ps -a
 ```
+
 Let's make use of this to create a new stage:
 
 Use command `docker inspect` to find out which port is exposed by the image. Network information (ip, gateway, ports, etc.) is part of the output JSON format.
+
 ```console
 docker inspect nginx_v3 
 ```
 
-Create a file `index.html` in folder `/opt/test` with below sample content. 
+Create a file `index.html` in folder `/opt/test` with below sample content.
 
+```html
     <html>
     <head>
         <title>Sample Website from my container</title>
@@ -307,15 +332,17 @@ Create a file `index.html` in folder `/opt/test` with below sample content.
         <p>This website is served from my <a href="http://www.docker.com" target="_blank">Docker</a> container.</p>
     </body>
     </html>
-
+```
 
 Start a new container that bind-mounts host directory `/opt/test` to container directory `/usr/share/nginx/html` as a volume, so that NGINX will publish the HTML file wee just created instead of its default message via `http://localhost:49159/` below.
+
 ```console
 docker run -d -P --mount type=bind,source=/opt/test/,target=/usr/share/nginx/html --name nginx_v3-1 nginx:latest
 docker container ps -a
 ```
 
 Check nginx config file on where is the html home page stored in container.
+
 ```console
 docker exec -it nginx_v3-1 /bin/sh
 # cd /etc/nginx/conf.d
@@ -380,40 +407,37 @@ server {
 # 
 ```
 
-
 It's recommendable to add a persistence with volumes API, instead of storing data in a docker container. Docker supports 2 ways of mount:
 
-* Bind mounts: 
-    * mount a local host directory onto a certain path in the container. 
-    * Everything that was present before in the target directory is hidden (nature of the bind mount). 
-    * For example, if you have some configuration you want to inject, write your config file, store it on your docker host at `/home/container/config` and mount the content of this directory to `/usr/application/config` (assuming the application reads config from there). 
-    * Command: `docker run --mount type=bind,source=<source path>,target=<container path> …`
-* Named volumes: 
-    * docker can create a separated storage volume. 
-    * Its lifecycle is independent from the container but still managed by docker. 
-    * Upon creation, the content of the mount target is merged into the volume. 
-    * Command: `docker run --mount source=<vol name>,target=<container path> …`
+- Bind mounts:
+  - mount a local host directory onto a certain path in the container.
+  - Everything that was present before in the target directory is hidden (nature of the bind mount).
+  - For example, if you have some configuration you want to inject, write your config file, store it on your docker host at `/home/container/config` and mount the content of this directory to `/usr/application/config` (assuming the application reads config from there).
+  - Command: `docker run --mount type=bind,source=<source path>,target=<container path> …`
+- Named volumes:
+  - docker can create a separated storage volume.
+  - Its lifecycle is independent from the container but still managed by docker.
+  - Upon creation, the content of the mount target is merged into the volume.
+  - Command: `docker run --mount source=<vol name>,target=<container path> …`
 
+How to differentiate between bind mountbuild s and named volumes?
 
-How to differentiate between bind mountbuild s and named volumes? 
-
-* When specifying an absolute path, docker assumes a bind mount. 
-* When you just give a name (like in a relative path “config”), it will assume a named volume and create a volume “config”.
-* Note: Persistent storage is 'provided' by the host. It can be a part of the file system on the host directly but also an NFS mount. 
-
-
+- When specifying an absolute path, docker assumes a bind mount.
+- When you just give a name (like in a relative path “config”), it will assume a named volume and create a volume “config”.
+- Note: Persistent storage is 'provided' by the host. It can be a part of the file system on the host directly but also an NFS mount.
 
 ### Dockerfile
 
-Let's build an image with a Dockerfile,build  tag it and upload it to a registry. 
+Let's build an image with a Dockerfile,build  tag it and upload it to a registry.
 
 Get docker image build history.
+
 ```console
 docker image history nginx:latest 
 ```
 
-
 Create an empty directory `/opt/tmp-1`, change to the directory and create an sample `index.html` file in `/opt/tmp-1`.
+
 ```console
 /opt/tmp-1> cat index.html 
   <html>
@@ -433,6 +457,7 @@ Use `COPY` to copy a new default website into the image, e.g., `/usr/share/nginx
 
 Create SSL configuration `/opt/tmp-1/ssl.conf` for nginx.
 
+```conf
     server {
         listen       443 ssl;
         server_name  localhost;
@@ -445,24 +470,27 @@ Create SSL configuration `/opt/tmp-1/ssl.conf` for nginx.
             index  index.html index.htm;
         }
     }
-
-
+```
 
 Use OpenSSL to create a self-signed certificate so SSL/TLS to work would work.
 
 Use the following command to create an encryption key and a certificate.
+
 ```console
 openssl req -x509 -nodes -newkey rsa:4096 -keyout nginx.key -out nginx.crt -days 365 -subj "/CN=$(hostname)"
 ```
 
 To enable encrypted HTTPS, we need to expose port 443 with the EXPOSE directive. The default nginx image only exposes port 80 for unencrypted HTTP.
 
-In summary, we create below Dockerfile in foder `/opt/tmp-1`. 
+In summary, we create below Dockerfile in foder `/opt/tmp-1`.
+
 ```console
 cat Dockerfile
 ```
+
 Output
-```
+
+```Dockerfile
 FROM nginx:latest
 
 # copy the custom website into the image
@@ -480,15 +508,19 @@ EXPOSE 443
 ```
 
 We have five files in foder `/opt/tmp-1` till now.
+
 ```console
 ls /opt/tmp-1
 ```
+
 Output
-```
+
+```console
 Dockerfile  index.html  nginx.crt  nginx.key  ssl.conf
 ```
 
 Now let's use the `docker build` command to build the image, forward the containers ports 80 and 443.
+
 ```console
 docker build -t nginx:my1 /opt/tmp-1/
 docker image ls
@@ -498,45 +530,45 @@ docker run -d -p 1086:80 -p 1088:443 --name nginx_v5 nginx:my1
 docker container ps -a
 ```
 
-
 Above changes can be validated via below links:
 
-    http://localhost:1086/
-    https://localhost:1088/
-
-
-
+- <http://localhost:1086/>
+- <https://localhost:1088/>
 
 Register an account in [DockerHub](https://hub.docker.com/) and enable access token in Docker Hub for CLI client authentication.
+
 ```console
 docker login
 ```
 
 Input username and password.
-```
+
+```console
 Username: <your account id>
 Password: <token>
 ```
 
 Tag the image to give image a nice name and a release number as tag, e.g., name is `secure_nginx_0001`, tag is `v1`.
+
 ```console
 docker tag nginx:my1 <your account id>secure_nginx_0001:v1
 docker push <your account id>secure_nginx_0001:v1
 docker image ls
 ```
 
-
 ### Multi-stage Dockerfile
 
-Let's show an example of multi-stage build. The multi-stage in the context of Docker means, we can have more than one line with a FROM keyword. 
+Let's show an example of multi-stage build. The multi-stage in the context of Docker means, we can have more than one line with a FROM keyword.
 
-Create folder `/opt/tmp-2` and `/opt/tmp-2/tmpl`. 
+Create folder `/opt/tmp-2` and `/opt/tmp-2/tmpl`.
 
-Create files [edit.html](../../assets/edit.html), [view.html](../../assets/view.html), [wiki.go](../../assets/wiki.go) and structure likes below.
-```
+Create files [edit.html](../../../assets/edit.html), [view.html](../../../assets/view.html), [wiki.go](../../../assets/wiki.go) and structure likes below.
+
+```bash
 tree -l /opt/tmp-2
 ```
-```
+
+```console
 .
 ├── tmpl
 │   ├── edit.html
@@ -544,12 +576,13 @@ tree -l /opt/tmp-2
 └── wiki.go
 ```
 
+Create an new Dockerfile that starts
 
-Create an new Dockerfile that starts 
 ```console
 cat Dockerfile
 ```
-```
+
+```Dockerfile
 # app builder stage
 FROM golang:1.12-alpine as builder
 
@@ -580,28 +613,22 @@ CMD ["/app/wiki"]
 ```
 
 Build the images by Dockerfile we created above.
+
 ```console
 docker build -t lizard/golang:my1 /opt/tmp-2/
 ```
 
 Run the image in detached mode, create a port forwarding from port 8080 in the container to port 1090 on the host.
+
 ```console
 docker run -d -p 1090:8080 --name golan_v1 lizard/golang:my1
 ```
 
-Access the container via link http://localhost:1090
+Access the container via link <http://localhost:1090>
 
 Tab the golang image we created and push it to DockerHub.
+
 ```console
 docker tag lizard/golang:my1 <your acccount id>/golang_0001:v1
 docker push <your acccount id>/golang_0001:v1
 ```
-
-
-
-
-
-
-
-
-

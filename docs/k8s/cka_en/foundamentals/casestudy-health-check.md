@@ -1,18 +1,19 @@
 
 # Case Study: Health Check
 
-!!! Scenario
-    * Create Deployment and Service
-    * Simulate an error (delete index.html)
-    * Pod is in unhealth status and is removed from endpoint list
-    * Fix the error (revert the index.html)
-    * Pod is back to normal and in endpoint list
+Scenario:
 
+* Create Deployment and Service
+* Simulate an error (delete index.html)
+* Pod is in unhealth status and is removed from endpoint list
+* Fix the error (revert the index.html)
+* Pod is back to normal and in endpoint list
 
 ## Create Deployment and Service
 
 Create Deployment `nginx-healthcheck` and Service `nginx-healthcheck`.
-```console
+
+```bash
 kubectl apply -f - <<EOF
 apiVersion: apps/v1
 kind: Deployment
@@ -66,29 +67,37 @@ EOF
 ```
 
 Check Pod `nginx-healthcheck`.
+
 ```console
 kubectl get pod -owide
 ```
+
 Result
-```
+
+```console
 NAME                                 READY   STATUS    RESTARTS   AGE   IP              NODE     NOMINATED NODE   READINESS GATES
 nginx-healthcheck-79fc55d944-jw887   1/1     Running   0          9s    10.244.102.14   cka003   <none>           <none>
 nginx-healthcheck-79fc55d944-nwwjc   1/1     Running   0          9s    10.244.112.13   cka002   <none>           <none>
 ```
 
 Access Pod IP via `curl` command, e.g., above example.
+
 ```console
 curl 10.244.102.14
 curl 10.244.112.13
 ```
+
 We see a successful `index.html` content of Nginx below with above example.
 
 Check details of Service craeted in above example.
+
 ```console
 kubectl describe svc nginx-healthcheck
 ```
+
 We will see below output. There are two Pods information listed in `Endpoints`.
-```
+
+```console
 Name:                     nginx-healthcheck
 Namespace:                dev
 Labels:                   <none>
@@ -109,23 +118,26 @@ Events:                   <none>
 ```
 
 We can also get information of Endpoints.
+
 ```console
 kubectl get endpoints nginx-healthcheck
 ```
+
 Result
-```
+
+```console
 NAME                ENDPOINTS                           AGE
 nginx-healthcheck   10.244.102.14:80,10.244.112.13:80   72s
 ```
 
-Till now, two `nginx-healthcheck` Pods are working and providing service as expected. 
-
+Till now, two `nginx-healthcheck` Pods are working and providing service as expected.
 
 ## Simulate readinessProbe Failure
 
 Let's simulate an error by deleting and `index.html` file in on of `nginx-healthcheck` Pod and see what's readinessProbe will do.
 
 First, execute `kubectl exec -it <your_pod_name> -- bash` to log into `nginx-healthcheck` Pod, and delete the `index.html` file.
+
 ```console
 kubectl exec -it nginx-healthcheck-79fc55d944-jw887 -- bash
 cd /usr/share/nginx/html/
@@ -134,11 +146,14 @@ exit
 ```
 
 After that, let's check the status of above Pod that `index.html` file was deleted.
+
 ```console
 kubectl describe pod nginx-healthcheck-79fc55d944-jw887
 ```
+
 We can now see `Readiness probe failed` error event message.
-```
+
+```console
 ......
 Events:
   Type     Reason     Age              From               Message
@@ -150,12 +165,15 @@ Events:
   Warning  Unhealthy  2s (x2 over 7s)  kubelet            Readiness probe failed: HTTP probe failed with statuscode: 403
 ```
 
-Let's check another Pod. 
+Let's check another Pod.
+
 ```console
 kubectl describe pod nginx-healthcheck-79fc55d944-nwwjc
 ```
+
 There is no error info.
-```
+
+```console
 ......
 Events:
   Type    Reason     Age    From               Message
@@ -167,24 +185,26 @@ Events:
 ```
 
 Now, access Pod IP via `curl` command and see what the result of each Pod.
+
 ```console
 curl 10.244.102.14
 curl 10.244.112.13
 ```
 
-Result: 
+Result:
 
-* `curl 10.244.102.14` failed with `403 Forbidden` error below. 
+* `curl 10.244.102.14` failed with `403 Forbidden` error below.
 * `curl 10.244.112.13` works well.
 
+Let's check current status of Nginx Service after one of Pods runs into failure.
 
-Let's check current status of Nginx Service after one of Pods runs into failure. 
 ```console
 kubectl describe svc nginx-healthcheck
 ```
 
 In below output, there is only one Pod information listed in Endpoint.
-```
+
+```console
 Name:                     nginx-healthcheck
 Namespace:                dev
 Labels:                   <none>
@@ -205,20 +225,23 @@ Events:                   <none>
 ```
 
 Same result we can get by checking information of Endpoints, which is only Pod is running.
+
 ```console
 kubectl get endpoints nginx-healthcheck 
 ```
+
 Output:
-```
+
+```console
 NAME                ENDPOINTS          AGE
 nginx-healthcheck   10.244.112.13:80   6m5s
 ```
 
-
 ## Fix readinessProbe Failure
 
-Let's re-create the `index.html` file again in the Pod. 
-```console
+Let's re-create the `index.html` file again in the Pod.
+
+```bash
 kubectl exec -it nginx-healthcheck-79fc55d944-jw887 -- bash
 
 cd /usr/share/nginx/html/
@@ -255,54 +278,58 @@ exit
 ```
 
 We now can see that two Pods are back to Endpoints to provide service now.
+
 ```console
 kubectl describe svc nginx-healthcheck
 kubectl get endpoints nginx-healthcheck
 ```
 
 Re-access Pod IP via `curl` command and we can see both are back to normal status.
+
 ```console
 curl 10.244.102.14
 curl 10.244.112.13
 ```
 
-Verify the Pod status again. 
+Verify the Pod status again.
+
 ```console
 kubectl describe pod nginx-healthcheck-79fc55d944-jw887
 ```
 
-!!! Conclusion
+Conclusion:
 
-    By delete the `index.html` file, the Pod is in unhealth status and is removed from endpoint list. 
-
-    One one health Pod can provide normal service.
-
+* By delete the `index.html` file, the Pod is in unhealth status and is removed from endpoint list.
+* One one health Pod can provide normal service.
 
 Clean up
-```console
+
+```bash
 kubectl delete service nginx-healthcheck
 kubectl delete deployment nginx-healthcheck
 ```
-
 
 ## Simulate livenessProbe Failure
 
 Re-create Deployment `nginx-healthcheck` and Service `nginx-healthcheck`.
 
 Deployment:
-```
+
+```console
 NAME                     READY   UP-TO-DATE   AVAILABLE   AGE
 nginx-healthcheck        0/2     2            0           7s
 ```
 
 Pods:
-```
+
+```console
 NAME                                      READY   STATUS    RESTARTS   AGE
 nginx-healthcheck-79fc55d944-lknp9        1/1     Running   0          96s
 nginx-healthcheck-79fc55d944-wntmg        1/1     Running   0          96s
 ```
 
-Change nginx default listening port from `80` to `90` to simulate livenessProbe Failure. livenessProbe check the live status via port `80`. 
+Change nginx default listening port from `80` to `90` to simulate livenessProbe Failure. livenessProbe check the live status via port `80`.
+
 ```console
 kubectl exec -it nginx-healthcheck-79fc55d944-lknp9 -- bash
 root@nginx-healthcheck-79fc55d944-lknp9:/# cd /etc/nginx/conf.d
@@ -312,11 +339,14 @@ root@nginx-healthcheck-79fc55d944-lknp9:/etc/nginx/conf.d# nginx -s reload
 ```
 
 The Pod runs into failure.
+
 ```console
 kubectl describe pod nginx-healthcheck-79fc55d944-lknp9
 ```
+
 We can see `livenessProbe` failed error event message.
-```
+
+```console
 Events:
   Type     Reason     Age                    From               Message
   ----     ------     ----                   ----               -------
@@ -329,6 +359,5 @@ Events:
   Normal   Killing    2m47s                  kubelet            Container nginx-healthcheck failed liveness probe, will be restarted
 ```
 
-Once failure detected by `livenessProbe`, the container will restarted again automatically. 
+Once failure detected by `livenessProbe`, the container will restarted again automatically.
 The `default.conf` we modified will be replaced by default file and the container status is up and normal.
-

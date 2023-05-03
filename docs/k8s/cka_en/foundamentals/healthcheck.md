@@ -2,12 +2,12 @@
 
 ## Status of Pod and Container
 
-!!! Scenario
-    Create a pod with two containers.
+Scenario: Create a pod with two containers.
 
 Demo:
 
-Create a Pod `multi-pods` with two containers `nginx` and `busybox`. 
+Create a Pod `multi-pods` with two containers `nginx` and `busybox`.
+
 ```console
 kubectl apply -f - << EOF
 apiVersion: v1
@@ -28,16 +28,20 @@ EOF
 ```
 
 Minotor the status with option `--watch`. The status of Pod was changed from `ContainerCreating` to `NotReady` to `CrashLoopBackOff`.
+
 ```console
 kubectl get pod multi-pods --watch
 ```
 
 Get details of the Pod `multi-pods`, focus on Container's state under segment `Containers` and Conditions of Pod under segment `Conditions`.
+
 ```console
 kubectl describe pod multi-pods
 ```
+
 Result
-```
+
+```console
 ......
 Containers:
   nginx:
@@ -62,20 +66,16 @@ Conditions:
 ...... 
 ```
 
-
-
-
-
 ## LivenessProbe
 
-!!! Scenario
-    Create pod with `livenessProbe` check.
+Scenario: Create pod with `livenessProbe` check.
 
 Detail description of the demo can be found on the [Kubernetes document](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/).
 
 Demo:
 
 Create a yaml file `liveness.yaml` with `livenessProbe` setting and apply it.
+
 ```console
 kubectl apply -f - <<EOF
 apiVersion: v1
@@ -110,9 +110,10 @@ Let's see what happened in the Pod `liveness-exec`.
 * After `35` seconds, execute command `rm -rf /tmp/healthy` to delete the folder. The probe `livenessProbe` detects the failure and return error message.
 * The kubelet kills the container and restarts it. The folder is created again `touch /tmp/healthy`.
 
-By command `kubectl describe pod liveness-exec`, wec can see below event message. 
+By command `kubectl describe pod liveness-exec`, wec can see below event message.
 Once failure detected, image will be pulled again and the folder `/tmp/healthy` is in place again.
-```
+
+```console
 ......
 Events:
   Type     Reason     Age                From               Message
@@ -126,20 +127,17 @@ Events:
   Normal   Killing    12s                kubelet            Container liveness failed liveness probe, will be restarted
 ```
 
-
-
-
 ## ReadinessProbe
 
-!!! Scenario
-    Create a pod with `readinessProbe` check.
+Scenario: Create a pod with `readinessProbe` check.
 
-Demo: 
+Demo:
 
-Readiness probes are configured similarly to liveness probes. 
+Readiness probes are configured similarly to liveness probes.
 The only difference is that you use the readinessProbe field instead of the livenessProbe field.
 
 Create a yaml file `readiness.yaml` with `readinessProbe` setting and apply it.
+
 ```console
 kubectl apply -f - <<EOF
 apiVersion: v1
@@ -166,18 +164,22 @@ EOF
 ```
 
 The ready status of the Pod is 0/1, that is, the Pod is not up successfully.
+
 ```console
 kubectl get pod readiness --watch
 ```
+
 Result
-```
+
+```console
 NAME        READY   STATUS    RESTARTS   AGE
 readiness   0/1     Running   0          15s
 ```
 
-Execute command `kubectl describe pod readiness` to check status of Pod. 
+Execute command `kubectl describe pod readiness` to check status of Pod.
 We see failure message `Readiness probe failed`.
-```
+
+```console
 ......
 Events:
   Type     Reason     Age               From               Message
@@ -190,20 +192,13 @@ Events:
   Warning  Unhealthy  1s (x7 over 31s)  kubelet            Readiness probe failed: cat: can't open '/tmp/healthy': No such file or directory
 ```
 
-
-Liveness probes do not wait for readiness probes to succeed. 
+Liveness probes do not wait for readiness probes to succeed.
 If we want to wait before executing a liveness probe you should use initialDelaySeconds or a startupProbe.
 
-
 Clean up.
+
 ```console
 kubectl delete pod liveness-exec
 kubectl delete pod multi-pods 
 kubectl delete pod readiness
 ```
-
-
-
-
-
-

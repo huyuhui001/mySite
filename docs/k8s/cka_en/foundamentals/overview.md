@@ -5,39 +5,45 @@
 - [Container Layer](#container-layer)
 - [Kubernetes Layer](#kubernetes-layer)
 
-!!! Information
-    For environment setup, refer to [Installation on Aliyun Ubuntu](../installation/aliyun-ubuntu.md)
+Information:
+
+- For environment setup, refer to [Installation on Aliyun Ubuntu](../installation/aliyun-ubuntu.md)
 
 ## Container Layer
 
-!!! Scenario
-    Use Containerd service to manage our images and containers via command `nerdctl`, which is same concept with Docker.
+Scenario: Use Containerd service to manage our images and containers via command `nerdctl`, which is same concept with Docker.
 
-    * Get namespace.
-    * Get containers.
-    * Get images.
-    * Get volumes.
-    * Get overall status.
-    * Get network status.
+- Get namespace.
+- Get containers.
+- Get images.
+- Get volumes.
+- Get overall status.
+- Get network status.
 
-Demo: 
+Demo:
 
 Get namespaces.
+
 ```console
 sudo nerdctl namespace ls
 ```
+
 Result
-```
+
+```console
 NAME      CONTAINERS    IMAGES    VOLUMES    LABELS
 k8s.io    21            30        0      
 ```
 
 Get containers under specific namespace `k8s.io`.
+
 ```console
 sudo nerdctl -n k8s.io ps
 ```
+
 Result
-```
+
+```console
 CONTAINER ID    IMAGE                                                                      COMMAND                   CREATED         STATUS    PORTS    NAMES
 0a3625f22f65    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  16 hours ago    Up                 k8s://kube-system/coredns-74586cf9b6-4jwmk
 121af2ecd1a1    registry.aliyuncs.com/google_containers/coredns:v1.8.6                     "/coredns -conf /etc…"    16 hours ago    Up                 k8s://kube-system/coredns-74586cf9b6-c5mll/coredns
@@ -57,30 +63,35 @@ e0c59abadf2e    registry.aliyuncs.com/google_containers/pause:3.6               
 e0d2e5f6ccff    registry.aliyuncs.com/google_containers/pause:3.6                          "/pause"                  16 hours ago    Up                 k8s://kube-system/kube-apiserver-cka001
 ```
 
-
 Get images.
+
 ```console
 sudo nerdctl -n k8s.io image ls -a
 ```
 
 Get volumes. After inintial installation, no volume within namespaces.
+
 ```console
 sudo nerdctl -n k8s.io volume ls
 ```
 
 Get overall status
+
 ```console
 sudo nerdctl stats
 ```
 
 Get network status.
+
 ```console
 sudo nerdctl network ls
 sudo nerdctl network inspect bridge
 sudo nerdctl network inspect k8s-pod-network
 ```
+
 Result
-```
+
+```console
 NETWORK ID    NAME               FILE
               k8s-pod-network    /etc/cni/net.d/10-calico.conflist
 0             bridge             /etc/cni/net.d/nerdctl-bridge.conflist
@@ -91,7 +102,8 @@ NETWORK ID    NAME               FILE
 Get network interface in host `cka001` with command `ip addr list`.
 
 IP pool of `10.4.0.1/24` is `ipam` and defined in `/etc/cni/net.d/nerdctl-bridge.conflist`.
-```
+
+```console
 lo                   : inet 127.0.0.1/8 qlen 1000
 eth0                 : inet <cka001_ip>/24 brd xxx.xxx.xxx.255 scope global dynamic eth0
 tunl0@NONE           : inet 10.244.228.192/32 scope global tunl0
@@ -99,33 +111,35 @@ cali96e32d88db2@if4  :
 cali93613212490@if4  :
 ```
 
-
-
-
-
 ## Kubernetes Layer
 
-!!! Scenario
-    * Nodes
-    * Namespaces
-    * System Pods
+Scenario:
+
+- Nodes
+- Namespaces
+- System Pods
 
 Demo:
 
-!!! information
-    In the demo, there are three nodes, `cka001`, `cka002`, and `cka003`.
+Information:
+
+- In the demo, there are three nodes, `cka001`, `cka002`, and `cka003`.
 
 Get nodes status.
+
 ```console
 kubectl get node -o wide
 ```
 
 There are four initial namespaces across three nodes.
+
 ```console
 kubectl get namespace -A
 ```
+
 Result
-```
+
+```console
 NAME              STATUS   AGE
 default           Active   56m
 kube-node-lease   Active   56m
@@ -133,12 +147,15 @@ kube-public       Active   56m
 kube-system       Active   56m
 ```
 
-There are some initial pods. 
+There are some initial pods.
+
 ```console
 kubectl get pod -A -o wide
 ```
+
 Result
-```
+
+```console
 NAMESPACE     NAME                                       READY   STATUS    RESTARTS   AGE   NODE     NOMINATED NODE   READINESS GATES
 kube-system   calico-kube-controllers-555bc4b957-l8bn2   1/1     Running   0          15h   cka003   <none>           <none>
 kube-system   calico-node-255pc                          1/1     Running   0          15h   cka003   <none>           <none>
@@ -155,30 +172,22 @@ kube-system   kube-proxy-qs6rf                           1/1     Running   0    
 kube-system   kube-scheduler-cka001                      1/1     Running   0          15h   cka001   <none>           <none>
 ```
 
-!!! Summary 
-    Below shows the relationship between containers and pods. 
-    
-    * Master node:
-        * CoreDNS: 2 Pod
-        * etcd: 1 Pod
-        * apiserver: 1 Pod
-        * controller-manager: 1 Pod
-        * scheduler: 1 Pod
-        * Calico Controller: 1 Pod
-    * All nodes:
-        * Calico Node: 1 Pod each
-        * Proxy: 1 Pod each
+Summary:
 
+Below shows the relationship between containers and pods.
 
+- Master node:
+  - CoreDNS: 2 Pod
+  - etcd: 1 Pod
+  - apiserver: 1 Pod
+  - controller-manager: 1 Pod
+  - scheduler: 1 Pod
+  - Calico Controller: 1 Pod
+- All nodes:
+  - Calico Node: 1 Pod each
+  - Proxy: 1 Pod each
 
-!!! Reference
-    - Container pause: [article](https://zhuanlan.zhihu.com/p/464712164) and [artical](https://cloud.tencent.com/developer/article/1583919).
-    - [nerdctl](https://github.com/containerd/nerdctl)
+Reference
 
-
-
-
-
-
-
-
+- Container pause: [article](https://zhuanlan.zhihu.com/p/464712164) and [artical](https://cloud.tencent.com/developer/article/1583919).
+- [nerdctl](https://github.com/containerd/nerdctl)
