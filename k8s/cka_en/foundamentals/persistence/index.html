@@ -1,0 +1,567 @@
+<!doctype html><html lang=en class=no-js> <head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><link href=https://huyuhui001.github.io/mySite/k8s/cka_en/foundamentals/persistence/ rel=canonical><link rel=icon href=../../../../assets/images/favicon.png><meta name=generator content="mkdocs-1.3.1, mkdocs-material-8.4.3"><title>Persistence - UPSkilling</title><link rel=stylesheet href=../../../../assets/stylesheets/main.6b80c2a2.min.css><link rel=stylesheet href=../../../../assets/stylesheets/palette.cbb835fc.min.css><meta name=theme-color content=#009485><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback"><style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style><link rel=stylesheet href=../../../../extra.css><script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script></head> <body dir=ltr data-md-color-scheme data-md-color-primary=teal data-md-color-accent=green> <input class=md-toggle data-md-toggle=drawer type=checkbox id=__drawer autocomplete=off> <input class=md-toggle data-md-toggle=search type=checkbox id=__search autocomplete=off> <label class=md-overlay for=__drawer></label> <div data-md-component=skip> <a href=#persistence class=md-skip> Skip to content </a> </div> <div data-md-component=announce> </div> <header class="md-header md-header--lifted" data-md-component=header> <nav class="md-header__inner md-grid" aria-label=Header> <a href=../../../.. title=UPSkilling class="md-header__button md-logo" aria-label=UPSkilling data-md-component=logo> <img src=../../../../assets/logo.jpg alt=logo> </a> <label class="md-header__button md-icon" for=__drawer> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg> </label> <div class=md-header__title data-md-component=header-title> <div class=md-header__ellipsis> <div class=md-header__topic> <span class=md-ellipsis> UPSkilling </span> </div> <div class=md-header__topic data-md-component=header-topic> <span class=md-ellipsis> Persistence </span> </div> </div> </div> <label class="md-header__button md-icon" for=__search> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg> </label> <div class=md-search data-md-component=search role=dialog> <label class=md-search__overlay for=__search></label> <div class=md-search__inner role=search> <form class=md-search__form name=search> <input type=text class=md-search__input name=query aria-label=Search placeholder=Search autocapitalize=off autocorrect=off autocomplete=off spellcheck=false data-md-component=search-query required> <label class="md-search__icon md-icon" for=__search> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg> </label> <nav class=md-search__options aria-label=Search> <button type=reset class="md-search__icon md-icon" aria-label=Clear tabindex=-1> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg> </button> </nav> </form> <div class=md-search__output> <div class=md-search__scrollwrap data-md-scrollfix> <div class=md-search-result data-md-component=search-result> <div class=md-search-result__meta> Initializing search </div> <ol class=md-search-result__list></ol> </div> </div> </div> </div> </div> <div class=md-header__source> <a href=https://github.com/huyuhui001/mySite title="Go to repository" class=md-source data-md-component=source> <div class="md-source__icon md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 448 512"><!-- Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg> </div> <div class=md-source__repository> huyuhui001/mySite </div> </a> </div> </nav> <nav class=md-tabs aria-label=Tabs data-md-component=tabs> <div class="md-tabs__inner md-grid"> <ul class=md-tabs__list> <li class=md-tabs__item> <a href=../../../.. class=md-tabs__link> UPSkilling </a> </li> <li class=md-tabs__item> <a href=../../../../linux/ class=md-tabs__link> Linux </a> </li> <li class=md-tabs__item> <a href=../../../ class="md-tabs__link md-tabs__link--active"> Kubernetes </a> </li> <li class=md-tabs__item> <a href=../../../../python/ class=md-tabs__link> Python </a> </li> </ul> </div> </nav> </header> <div class=md-container data-md-component=container> <main class=md-main data-md-component=main> <div class="md-main__inner md-grid"> <div class="md-sidebar md-sidebar--primary" data-md-component=sidebar data-md-type=navigation> <div class=md-sidebar__scrollwrap> <div class=md-sidebar__inner> <nav class="md-nav md-nav--primary md-nav--lifted" aria-label=Navigation data-md-level=0> <label class=md-nav__title for=__drawer> <a href=../../../.. title=UPSkilling class="md-nav__button md-logo" aria-label=UPSkilling data-md-component=logo> <img src=../../../../assets/logo.jpg alt=logo> </a> UPSkilling </label> <div class=md-nav__source> <a href=https://github.com/huyuhui001/mySite title="Go to repository" class=md-source data-md-component=source> <div class="md-source__icon md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 448 512"><!-- Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg> </div> <div class=md-source__repository> huyuhui001/mySite </div> </a> </div> <ul class=md-nav__list data-md-scrollfix> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_1 type=checkbox id=__nav_1> <label class=md-nav__link for=__nav_1> UPSkilling <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label=UPSkilling data-md-level=1> <label class=md-nav__title for=__nav_1> <span class="md-nav__icon md-icon"></span> UPSkilling </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../.. class=md-nav__link> Welcome </a> </li> <li class=md-nav__item> <a href=../../../../about/ class=md-nav__link> About </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_2 type=checkbox id=__nav_2> <label class=md-nav__link for=__nav_2> Linux <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label=Linux data-md-level=1> <label class=md-nav__title for=__nav_2> <span class="md-nav__icon md-icon"></span> Linux </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../../linux/ class=md-nav__link> Index </a> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_2_2 type=checkbox id=__nav_2_2> <label class=md-nav__link for=__nav_2_2> Linux SRE <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label="Linux SRE" data-md-level=2> <label class=md-nav__title for=__nav_2_2> <span class="md-nav__icon md-icon"></span> Linux SRE </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../../linux/SRE/01-fundamentals/ class=md-nav__link> Linux Fundamentals </a> </li> <li class=md-nav__item> <a href=../../../../linux/SRE/02-filesystem/ class=md-nav__link> File System </a> </li> <li class=md-nav__item> <a href=../../../../linux/SRE/03-identity-security/ class=md-nav__link> Identity & Security </a> </li> <li class=md-nav__item> <a href=../../../../linux/SRE/04-TextTools/ class=md-nav__link> Text Tools </a> </li> <li class=md-nav__item> <a href=../../../../linux/SRE/05-RegExpress/ class=md-nav__link> Regular Expression </a> </li> <li class=md-nav__item> <a href=../../../../linux/SRE/06-FileLookup/ class=md-nav__link> File Lookup </a> </li> <li class=md-nav__item> <a href=../../../../linux/SRE/07-FilePacking/ class=md-nav__link> FIle Packing & Unpacking </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_2_3 type=checkbox id=__nav_2_3> <label class=md-nav__link for=__nav_2_3> SUSE Linux Administration <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label="SUSE Linux Administration" data-md-level=2> <label class=md-nav__title for=__nav_2_3> <span class="md-nav__icon md-icon"></span> SUSE Linux Administration </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../../linux/Administration/01/ class=md-nav__link> Linux File System Overview </a> </li> <li class=md-nav__item> <a href=../../../../linux/Administration/02/ class=md-nav__link> Useful Commands </a> </li> <li class=md-nav__item> <a href=../../../../linux/Administration/03/ class=md-nav__link> Shell </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_2_4 type=checkbox id=__nav_2_4> <label class=md-nav__link for=__nav_2_4> SUSE Enterprise Storage Foundation <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label="SUSE Enterprise Storage Foundation" data-md-level=2> <label class=md-nav__title for=__nav_2_4> <span class="md-nav__icon md-icon"></span> SUSE Enterprise Storage Foundation </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../../linux/SES/linux_ses_memo/ class=md-nav__link> SUSE Enterprise Storage Foundation </a> </li> <li class=md-nav__item> <a href=../../../../linux/SES/linux_ses_demo/ class=md-nav__link> SUSE Enterprise Storage Basic Operation </a> </li> </ul> </nav> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--active md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_3 type=checkbox id=__nav_3 checked> <label class=md-nav__link for=__nav_3> Kubernetes <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label=Kubernetes data-md-level=1> <label class=md-nav__title for=__nav_3> <span class="md-nav__icon md-icon"></span> Kubernetes </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../ class=md-nav__link> Index </a> </li> <li class="md-nav__item md-nav__item--active md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_3_2 type=checkbox id=__nav_3_2 checked> <label class=md-nav__link for=__nav_3_2> CKA Learning Memo <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label="CKA Learning Memo" data-md-level=2> <label class=md-nav__title for=__nav_3_2> <span class="md-nav__icon md-icon"></span> CKA Learning Memo </label> <ul class=md-nav__list data-md-scrollfix> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_3_2_1 type=checkbox id=__nav_3_2_1> <label class=md-nav__link for=__nav_3_2_1> Installation <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label=Installation data-md-level=3> <label class=md-nav__title for=__nav_3_2_1> <span class="md-nav__icon md-icon"></span> Installation </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../installation/single-local/ class=md-nav__link> Single Node Installation </a> </li> <li class=md-nav__item> <a href=../../installation/multiple-local/ class=md-nav__link> Multiple Nodes Installation </a> </li> <li class=md-nav__item> <a href=../../installation/aliyun-ubuntu/ class=md-nav__link> Installation on Aliyun ECS </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_3_2_2 type=checkbox id=__nav_3_2_2> <label class=md-nav__link for=__nav_3_2_2> Docker <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label=Docker data-md-level=3> <label class=md-nav__title for=__nav_3_2_2> <span class="md-nav__icon md-icon"></span> Docker </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../docker/ class=md-nav__link> Fundamentals </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_3_2_3 type=checkbox id=__nav_3_2_3> <label class=md-nav__link for=__nav_3_2_3> Foundamentals <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label=Foundamentals data-md-level=3> <label class=md-nav__title for=__nav_3_2_3> <span class="md-nav__icon md-icon"></span> Foundamentals </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../memo/ class=md-nav__link> Memo </a> </li> <li class=md-nav__item> <a href=../overview/ class=md-nav__link> Overview </a> </li> <li class=md-nav__item> <a href=../basics/ class=md-nav__link> kubectl basics </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_3_2_4 type=checkbox id=__nav_3_2_4> <label class=md-nav__link for=__nav_3_2_4> Core Kubernetes <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label="Core Kubernetes" data-md-level=3> <label class=md-nav__title for=__nav_3_2_4> <span class="md-nav__icon md-icon"></span> Core Kubernetes </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../pod/ class=md-nav__link> Pod </a> </li> <li class=md-nav__item> <a href=../deployment/ class=md-nav__link> Deployment </a> </li> <li class=md-nav__item> <a href=../service/ class=md-nav__link> Service </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--active md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_3_2_5 type=checkbox id=__nav_3_2_5 checked> <label class=md-nav__link for=__nav_3_2_5> Application Modeling <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label="Application Modeling" data-md-level=3> <label class=md-nav__title for=__nav_3_2_5> <span class="md-nav__icon md-icon"></span> Application Modeling </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../namespace/ class=md-nav__link> Namespace </a> </li> <li class=md-nav__item> <a href=../statefulset/ class=md-nav__link> StatefulSet </a> </li> <li class=md-nav__item> <a href=../daemonset/ class=md-nav__link> DaemonSet </a> </li> <li class=md-nav__item> <a href=../job/ class=md-nav__link> Job and Cronjob </a> </li> <li class=md-nav__item> <a href=../configuration/ class=md-nav__link> Configuration </a> </li> <li class=md-nav__item> <a href=../secrets/ class=md-nav__link> Secrets </a> </li> <li class="md-nav__item md-nav__item--active"> <input class="md-nav__toggle md-toggle" data-md-toggle=toc type=checkbox id=__toc> <label class="md-nav__link md-nav__link--active" for=__toc> Persistence <span class="md-nav__icon md-icon"></span> </label> <a href=./ class="md-nav__link md-nav__link--active"> Persistence </a> <nav class="md-nav md-nav--secondary" aria-label="Table of contents"> <label class=md-nav__title for=__toc> <span class="md-nav__icon md-icon"></span> Table of contents </label> <ul class=md-nav__list data-md-component=toc data-md-scrollfix> <li class=md-nav__item> <a href=#emptydir class=md-nav__link> emptyDir </a> </li> <li class=md-nav__item> <a href=#hostpath class=md-nav__link> hostPath </a> </li> <li class=md-nav__item> <a href=#pv-and-pvc class=md-nav__link> PV and PVC </a> <nav class=md-nav aria-label="PV and PVC"> <ul class=md-nav__list> <li class=md-nav__item> <a href=#set-up-nfs-share class=md-nav__link> Set up NFS Share </a> </li> <li class=md-nav__item> <a href=#create-pv class=md-nav__link> Create PV </a> </li> <li class=md-nav__item> <a href=#create-pvc class=md-nav__link> Create PVC </a> </li> <li class=md-nav__item> <a href=#consume-pvc class=md-nav__link> Consume PVC </a> </li> </ul> </nav> </li> <li class=md-nav__item> <a href=#storageclass class=md-nav__link> StorageClass </a> <nav class=md-nav aria-label=StorageClass> <ul class=md-nav__list> <li class=md-nav__item> <a href=#configure-rbac-authorization class=md-nav__link> Configure RBAC Authorization </a> </li> <li class=md-nav__item> <a href=#create-provisioners-deloyment class=md-nav__link> Create Provisioner's Deloyment </a> </li> <li class=md-nav__item> <a href=#create-nfs-storageclass class=md-nav__link> Create NFS StorageClass </a> </li> <li class=md-nav__item> <a href=#create-pvc_1 class=md-nav__link> Create PVC </a> </li> <li class=md-nav__item> <a href=#consume-pvc_1 class=md-nav__link> Consume PVC </a> </li> </ul> </nav> </li> <li class=md-nav__item> <a href=#configuration class=md-nav__link> Configuration </a> <nav class=md-nav aria-label=Configuration> <ul class=md-nav__list> <li class=md-nav__item> <a href=#configmap class=md-nav__link> ConfigMap </a> </li> <li class=md-nav__item> <a href=#secret class=md-nav__link> Secret </a> </li> <li class=md-nav__item> <a href=#additional-cases class=md-nav__link> Additional Cases </a> <nav class=md-nav aria-label="Additional Cases"> <ul class=md-nav__list> <li class=md-nav__item> <a href=#various-way-to-create-configmap class=md-nav__link> Various way to create ConfigMap </a> </li> <li class=md-nav__item> <a href=#set-environment-variable-via-configmap class=md-nav__link> Set environment variable via ConfigMap </a> </li> </ul> </nav> </li> </ul> </nav> </li> </ul> </nav> </li> <li class=md-nav__item> <a href=../rbac/ class=md-nav__link> Role Based Access Control (RBAC) </a> </li> <li class=md-nav__item> <a href=../ingress/ class=md-nav__link> Ingress </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_3_2_6 type=checkbox id=__nav_3_2_6> <label class=md-nav__link for=__nav_3_2_6> Advanced Kubernetes <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label="Advanced Kubernetes" data-md-level=3> <label class=md-nav__title for=__nav_3_2_6> <span class="md-nav__icon md-icon"></span> Advanced Kubernetes </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../scheduling/ class=md-nav__link> Scheduling </a> </li> <li class=md-nav__item> <a href=../hpa/ class=md-nav__link> Horizontal Pod Autoscaling </a> </li> <li class=md-nav__item> <a href=../policy/ class=md-nav__link> Policy </a> </li> <li class=md-nav__item> <a href=../networkpolicy/ class=md-nav__link> Network Policy </a> </li> <li class=md-nav__item> <a href=../clustermgt/ class=md-nav__link> Cluster Management </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_3_2_7 type=checkbox id=__nav_3_2_7> <label class=md-nav__link for=__nav_3_2_7> Operating Kubernetes <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label="Operating Kubernetes" data-md-level=3> <label class=md-nav__title for=__nav_3_2_7> <span class="md-nav__icon md-icon"></span> Operating Kubernetes </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../troubleshooting/ class=md-nav__link> Troubleshooting </a> </li> <li class=md-nav__item> <a href=../healthcheck/ class=md-nav__link> Health Check </a> </li> <li class=md-nav__item> <a href=../helming/ class=md-nav__link> Helming </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_3_2_8 type=checkbox id=__nav_3_2_8> <label class=md-nav__link for=__nav_3_2_8> Topics <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label=Topics data-md-level=3> <label class=md-nav__title for=__nav_3_2_8> <span class="md-nav__icon md-icon"></span> Topics </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../casestudy-operation-resources/ class=md-nav__link> Operations on Resources </a> </li> <li class=md-nav__item> <a href=../casestudy-health-check/ class=md-nav__link> Health Check </a> </li> <li class=md-nav__item> <a href=../casestudy-calico/ class=md-nav__link> Calico Installation </a> </li> <li class=md-nav__item> <a href=../kyma/ class=md-nav__link> Kyma </a> </li> </ul> </nav> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_3_3 type=checkbox id=__nav_3_3> <label class=md-nav__link for=__nav_3_3> CKA学习笔记 <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label=CKA学习笔记 data-md-level=2> <label class=md-nav__title for=__nav_3_3> <span class="md-nav__icon md-icon"></span> CKA学习笔记 </label> <ul class=md-nav__list data-md-scrollfix> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_3_3_1 type=checkbox id=__nav_3_3_1> <label class=md-nav__link for=__nav_3_3_1> 安装 <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label=安装 data-md-level=3> <label class=md-nav__title for=__nav_3_3_1> <span class="md-nav__icon md-icon"></span> 安装 </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../cka_cn/installation/single-local/ class=md-nav__link> 单节点虚拟机安装Kubernetes </a> </li> <li class=md-nav__item> <a href=../../../cka_cn/installation/multiple-local/ class=md-nav__link> 多节点虚拟机安装Kubernetes </a> </li> <li class=md-nav__item> <a href=../../../cka_cn/installation/aliyun-ubuntu/ class=md-nav__link> 阿里云ECS安装Kubernetes </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_3_3_2 type=checkbox id=__nav_3_3_2> <label class=md-nav__link for=__nav_3_3_2> Docker <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label=Docker data-md-level=3> <label class=md-nav__title for=__nav_3_3_2> <span class="md-nav__icon md-icon"></span> Docker </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../cka_cn/foundamentals/docker/ class=md-nav__link> Docker基础 </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_3_3_3 type=checkbox id=__nav_3_3_3> <label class=md-nav__link for=__nav_3_3_3> 基础知识 <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label=基础知识 data-md-level=3> <label class=md-nav__title for=__nav_3_3_3> <span class="md-nav__icon md-icon"></span> 基础知识 </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../cka_cn/foundamentals/memo/ class=md-nav__link> Kubernetes随笔 </a> </li> <li class=md-nav__item> <a href=../../../cka_cn/foundamentals/overview/ class=md-nav__link> Kubernetes集群概览 </a> </li> <li class=md-nav__item> <a href=../../../cka_cn/foundamentals/basics/ class=md-nav__link> kubectl基础 </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_3_3_4 type=checkbox id=__nav_3_3_4> <label class=md-nav__link for=__nav_3_3_4> 核心概念 <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label=核心概念 data-md-level=3> <label class=md-nav__title for=__nav_3_3_4> <span class="md-nav__icon md-icon"></span> 核心概念 </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../cka_cn/foundamentals/pod/ class=md-nav__link> Pod </a> </li> <li class=md-nav__item> <a href=../../../cka_cn/foundamentals/deployment/ class=md-nav__link> Deployment </a> </li> <li class=md-nav__item> <a href=../../../cka_cn/foundamentals/service/ class=md-nav__link> Service </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_3_3_5 type=checkbox id=__nav_3_3_5> <label class=md-nav__link for=__nav_3_3_5> 应用体系 <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label=应用体系 data-md-level=3> <label class=md-nav__title for=__nav_3_3_5> <span class="md-nav__icon md-icon"></span> 应用体系 </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../cka_cn/foundamentals/namespace/ class=md-nav__link> Namespace </a> </li> <li class=md-nav__item> <a href=../../../cka_cn/foundamentals/statefulset/ class=md-nav__link> StatefulSet </a> </li> <li class=md-nav__item> <a href=../../../cka_cn/foundamentals/daemonset/ class=md-nav__link> DaemonSet </a> </li> <li class=md-nav__item> <a href=../../../cka_cn/foundamentals/job/ class=md-nav__link> Job and Cronjob </a> </li> <li class=md-nav__item> <a href=../../../cka_cn/foundamentals/configuration/ class=md-nav__link> Configuration </a> </li> <li class=md-nav__item> <a href=../../../cka_cn/foundamentals/secrets/ class=md-nav__link> secrets </a> </li> <li class=md-nav__item> <a href=../../../cka_cn/foundamentals/persistence/ class=md-nav__link> Persistence </a> </li> <li class=md-nav__item> <a href=../../../cka_cn/foundamentals/rbac/ class=md-nav__link> RBAC鉴权 </a> </li> <li class=md-nav__item> <a href=../../../cka_cn/foundamentals/ingress/ class=md-nav__link> Ingress-nginx </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_3_3_6 type=checkbox id=__nav_3_3_6> <label class=md-nav__link for=__nav_3_3_6> 进阶概念 <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label=进阶概念 data-md-level=3> <label class=md-nav__title for=__nav_3_3_6> <span class="md-nav__icon md-icon"></span> 进阶概念 </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../cka_cn/foundamentals/scheduling/ class=md-nav__link> Scheduling </a> </li> <li class=md-nav__item> <a href=../../../cka_cn/foundamentals/hpa/ class=md-nav__link> Horizontal Pod Autoscaling (HPA) </a> </li> <li class=md-nav__item> <a href=../../../cka_cn/foundamentals/policy/ class=md-nav__link> Policy </a> </li> <li class=md-nav__item> <a href=../../../cka_cn/foundamentals/networkpolicy/ class=md-nav__link> Network Policy </a> </li> <li class=md-nav__item> <a href=../../../cka_cn/foundamentals/clustermgt/ class=md-nav__link> Cluster Management </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_3_3_7 type=checkbox id=__nav_3_3_7> <label class=md-nav__link for=__nav_3_3_7> 日常维护 <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label=日常维护 data-md-level=3> <label class=md-nav__title for=__nav_3_3_7> <span class="md-nav__icon md-icon"></span> 日常维护 </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../cka_cn/foundamentals/troubleshooting/ class=md-nav__link> Troubleshooting </a> </li> <li class=md-nav__item> <a href=../../../cka_cn/foundamentals/healthcheck/ class=md-nav__link> 健康检查 </a> </li> <li class=md-nav__item> <a href=../../../cka_cn/foundamentals/helming/ class=md-nav__link> Helm Chart </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_3_3_8 type=checkbox id=__nav_3_3_8> <label class=md-nav__link for=__nav_3_3_8> 主题讨论 <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label=主题讨论 data-md-level=3> <label class=md-nav__title for=__nav_3_3_8> <span class="md-nav__icon md-icon"></span> 主题讨论 </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../cka_cn/foundamentals/casestudy-operation-resources/ class=md-nav__link> Kubernetes资源常见操作 </a> </li> <li class=md-nav__item> <a href=../../../cka_cn/foundamentals/casestudy-health-check/ class=md-nav__link> 健康检查 </a> </li> <li class=md-nav__item> <a href=../../../cka_cn/foundamentals/casestudy-calico/ class=md-nav__link> 安装Calico </a> </li> </ul> </nav> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_3_4 type=checkbox id=__nav_3_4> <label class=md-nav__link for=__nav_3_4> Demos <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label=Demos data-md-level=2> <label class=md-nav__title for=__nav_3_4> <span class="md-nav__icon md-icon"></span> Demos </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../demo/cap_on_kyma/ class=md-nav__link> Build CAP Application on Kyma </a> </li> </ul> </nav> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_4 type=checkbox id=__nav_4> <label class=md-nav__link for=__nav_4> Python <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label=Python data-md-level=1> <label class=md-nav__title for=__nav_4> <span class="md-nav__icon md-icon"></span> Python </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../../python/ class=md-nav__link> Index </a> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_4_2 type=checkbox id=__nav_4_2> <label class=md-nav__link for=__nav_4_2> Python基础 <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label=Python基础 data-md-level=2> <label class=md-nav__title for=__nav_4_2> <span class="md-nav__icon md-icon"></span> Python基础 </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../../python/Foundation/ch00/ class=md-nav__link> 安装 </a> </li> <li class=md-nav__item> <a href=../../../../python/Foundation/ch01/ class=md-nav__link> 语言基础 </a> </li> <li class=md-nav__item> <a href=../../../../python/Foundation/ch02/ class=md-nav__link> 打包和拆包 </a> </li> <li class=md-nav__item> <a href=../../../../python/Foundation/ch03/ class=md-nav__link> 函数及文件 </a> </li> <li class=md-nav__item> <a href=../../../../python/Foundation/ch04/ class=md-nav__link> 面向对象概念 </a> </li> <li class=md-nav__item> <a href=../../../../python/Foundation/ch05/ class=md-nav__link> 面向对象特性 </a> </li> <li class=md-nav__item> <a href=../../../../python/Foundation/Algorithms/ class=md-nav__link> 数据结构和算法 </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_4_3 type=checkbox id=__nav_4_3> <label class=md-nav__link for=__nav_4_3> Python数据分析基础 <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label=Python数据分析基础 data-md-level=2> <label class=md-nav__title for=__nav_4_3> <span class="md-nav__icon md-icon"></span> Python数据分析基础 </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../../python/DataAnalysis/ch01/ class=md-nav__link> NumPy基础 </a> </li> <li class=md-nav__item> <a href=../../../../python/DataAnalysis/ch10/ class=md-nav__link> NumPy进阶 </a> </li> <li class=md-nav__item> <a href=../../../../python/DataAnalysis/ch02/ class=md-nav__link> Pandas入门 </a> </li> <li class=md-nav__item> <a href=../../../../python/DataAnalysis/ch03/ class=md-nav__link> 数据载入、存储及文件格式 </a> </li> <li class=md-nav__item> <a href=../../../../python/DataAnalysis/ch04/ class=md-nav__link> 数据清洗与准备 </a> </li> <li class=md-nav__item> <a href=../../../../python/DataAnalysis/ch05/ class=md-nav__link> 数据规整：连接、联合与重塑 </a> </li> <li class=md-nav__item> <a href=../../../../python/DataAnalysis/ch06/ class=md-nav__link> 绘图与可视化 </a> </li> <li class=md-nav__item> <a href=../../../../python/DataAnalysis/ch07/ class=md-nav__link> 数据聚合与分组操作 </a> </li> <li class=md-nav__item> <a href=../../../../python/DataAnalysis/ch08/ class=md-nav__link> 时间序列 </a> </li> <li class=md-nav__item> <a href=../../../../python/DataAnalysis/ch09/ class=md-nav__link> 高阶pandas </a> </li> <li class=md-nav__item> <a href=../../../../python/DataAnalysis/ch11/ class=md-nav__link> Python建模库介绍 </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_4_4 type=checkbox id=__nav_4_4> <label class=md-nav__link for=__nav_4_4> Demos <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label=Demos data-md-level=2> <label class=md-nav__title for=__nav_4_4> <span class="md-nav__icon md-icon"></span> Demos </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../../python/Demo/CourseSystem/ class=md-nav__link> 选课系统 </a> </li> </ul> </nav> </li> </ul> </nav> </li> </ul> </nav> </div> </div> </div> <div class="md-sidebar md-sidebar--secondary" data-md-component=sidebar data-md-type=toc> <div class=md-sidebar__scrollwrap> <div class=md-sidebar__inner> <nav class="md-nav md-nav--secondary" aria-label="Table of contents"> <label class=md-nav__title for=__toc> <span class="md-nav__icon md-icon"></span> Table of contents </label> <ul class=md-nav__list data-md-component=toc data-md-scrollfix> <li class=md-nav__item> <a href=#emptydir class=md-nav__link> emptyDir </a> </li> <li class=md-nav__item> <a href=#hostpath class=md-nav__link> hostPath </a> </li> <li class=md-nav__item> <a href=#pv-and-pvc class=md-nav__link> PV and PVC </a> <nav class=md-nav aria-label="PV and PVC"> <ul class=md-nav__list> <li class=md-nav__item> <a href=#set-up-nfs-share class=md-nav__link> Set up NFS Share </a> </li> <li class=md-nav__item> <a href=#create-pv class=md-nav__link> Create PV </a> </li> <li class=md-nav__item> <a href=#create-pvc class=md-nav__link> Create PVC </a> </li> <li class=md-nav__item> <a href=#consume-pvc class=md-nav__link> Consume PVC </a> </li> </ul> </nav> </li> <li class=md-nav__item> <a href=#storageclass class=md-nav__link> StorageClass </a> <nav class=md-nav aria-label=StorageClass> <ul class=md-nav__list> <li class=md-nav__item> <a href=#configure-rbac-authorization class=md-nav__link> Configure RBAC Authorization </a> </li> <li class=md-nav__item> <a href=#create-provisioners-deloyment class=md-nav__link> Create Provisioner's Deloyment </a> </li> <li class=md-nav__item> <a href=#create-nfs-storageclass class=md-nav__link> Create NFS StorageClass </a> </li> <li class=md-nav__item> <a href=#create-pvc_1 class=md-nav__link> Create PVC </a> </li> <li class=md-nav__item> <a href=#consume-pvc_1 class=md-nav__link> Consume PVC </a> </li> </ul> </nav> </li> <li class=md-nav__item> <a href=#configuration class=md-nav__link> Configuration </a> <nav class=md-nav aria-label=Configuration> <ul class=md-nav__list> <li class=md-nav__item> <a href=#configmap class=md-nav__link> ConfigMap </a> </li> <li class=md-nav__item> <a href=#secret class=md-nav__link> Secret </a> </li> <li class=md-nav__item> <a href=#additional-cases class=md-nav__link> Additional Cases </a> <nav class=md-nav aria-label="Additional Cases"> <ul class=md-nav__list> <li class=md-nav__item> <a href=#various-way-to-create-configmap class=md-nav__link> Various way to create ConfigMap </a> </li> <li class=md-nav__item> <a href=#set-environment-variable-via-configmap class=md-nav__link> Set environment variable via ConfigMap </a> </li> </ul> </nav> </li> </ul> </nav> </li> </ul> </nav> </div> </div> </div> <div class=md-content data-md-component=content> <article class="md-content__inner md-typeset"> <a href=https://github.com/huyuhui001/mySite/edit/main/docs/k8s/cka_en/foundamentals/persistence.md title="Edit this page" class="md-content__button md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg> </a> <h1 id=persistence>Persistence<a class=headerlink href=#persistence title="Permanent link"> ¶</a></h1> <p>Scenario</p> <ul> <li>Creat Pod with <code>emptyDir</code> type Volume. Container in the Pod will mount default directory <code>/var/lib/kubelet/pods/</code> on running node.</li> <li>Create Deployment <code>Deployment</code> with <code>hostPath</code> type volume. Container in the Deployment will mount directory defined in <code>hostPath:</code> on running node.</li> <li>PV and PVC.</li> <li>Set up NFS Server and share folder <code>/nfsdata/</code>.</li> <li>Create PV <code>mysql-pv</code> to link to the share folder <code>/nfsdata/</code> and set StorageClassName <code>nfs</code>.</li> <li>Create PVC <code>mysql-pvc</code> mapped with StorageClassName <code>nfs</code>.</li> <li>Create Deployment <code>mysql</code> to consume PVC <code>mysql-pvc</code>.</li> <li>StorageClass</li> <li>Create ServiceAccount <code>nfs-client-provisioner</code>.</li> <li>Create ClusterRole <code>nfs-client-provisioner-runner</code> and Role <code>leader-locking-nfs-client-provisioner</code> and bind them to the ServiceAccount so the ServiceAccount has authorization to operate the Deployment created in next step.</li> <li>Create Deployment <code>nfs-client-provisioner</code> to to add connection information for your NFS server, e.g, <code>PROVISIONER_NAME</code> is <code>k8s-sigs.io/ nfs-subdir-external-provisioner</code></li> <li>Create StorageClass <code>nfs-client</code> link to <code>provisioner: k8s-sigs.io/nfs-subdir-external-provisioner</code>. Releated PV is created automatically.</li> <li>Create PVC <code>nfs-pvc-from-sc</code> mapped to PV and StorageClass <code>nfs-client</code>.</li> <li>Configuration</li> <li>Create a ConfigMap for content of a file, and mount this ConfigMap to a specific file in a Pod.</li> <li>Create a ConfigMap for username and password, and consume them within a Pod.</li> <li>Use ConfigMap as environment variables in Pod.</li> </ul> <p>Tips</p> <ul> <li>Delete PVC first, then delete PV.</li> <li>If facing <code>Terminating</code> status when delete a PVC, use <code>kubectl edit pvc &lt;your_pvc_name&gt;</code> and remove <code>finalize: &lt;your_value&gt;</code>.</li> </ul> <h2 id=emptydir>emptyDir<a class=headerlink href=#emptydir title="Permanent link"> ¶</a></h2> <p>Create a Pod <code>hello-producer</code> with <code>emptyDir</code> type Volume.</p> <div class=highlight><pre><span></span><code><span class=go>cat &gt; pod-emptydir.yaml &lt;&lt;EOF</span>
+<span class=go>apiVersion: v1</span>
+<span class=go>kind: Pod</span>
+<span class=go>metadata:</span>
+<span class=go> name: hello-producer</span>
+<span class=go>spec:</span>
+<span class=go> containers:</span>
+<span class=go> - image: busybox</span>
+<span class=go>   name: producer</span>
+<span class=go>   volumeMounts:</span>
+<span class=go>   - mountPath: /producer_dir</span>
+<span class=go>     name: shared-volume</span>
+<span class=go>   args:</span>
+<span class=go>   - /bin/sh</span>
+<span class=go>   - -c</span>
+<span class=go>   - echo &quot;hello world&quot; &gt; /producer_dir/hello; sleep 30000</span>
+<span class=go> volumes:</span>
+<span class=go> - name: shared-volume</span>
+<span class=go>   emptyDir: {}</span>
+<span class=go>EOF</span>
+
+
+<span class=go>kubectl apply -f pod-emptydir.yaml</span>
+</code></pre></div> <p>The Pod <code>hello-producer</code> is running on node <code>cka003</code>.</p> <div class=highlight><pre><span></span><code><span class=go>kubectl get pod hello-producer -owide</span>
+</code></pre></div> <p>The Pod is running on node <code>cka003</code>.</p> <div class=highlight><pre><span></span><code><span class=go>NAME             READY   STATUS    RESTARTS   AGE   IP              NODE     NOMINATED NODE   READINESS GATES</span>
+<span class=go>hello-producer   1/1     Running   0          6s    10.244.102.24   cka003   &lt;none&gt;           &lt;none&gt;</span>
+</code></pre></div> <p>Log onto <code>cka003</code> because the Pod <code>hello-producer</code> is running on the node.</p> <p>Set up the environment <code>CONTAINER_RUNTIME_ENDPOINT</code> for command <code>crictl</code>. Suggest to do the same for all nodes.</p> <div class=highlight><pre><span></span><code><span class=go>export CONTAINER_RUNTIME_ENDPOINT=unix:///run/containerd/containerd.sock</span>
+</code></pre></div> <p>Run command <code>crictl ps</code> to get the container ID of Pod <code>hello-producer</code>.</p> <div class=highlight><pre><span></span><code><span class=go>crictl ps |grep hello-producer</span>
+</code></pre></div> <p>The ID of container <code>producer</code> is <code>05f5e1bb6a1bb</code>.</p> <div class=highlight><pre><span></span><code><span class=go>CONTAINER           IMAGE               CREATED             STATE               NAME                ATTEMPT             POD ID              POD</span>
+<span class=go>50058afb3cba5       62aedd01bd852       About an hour ago   Running             producer            0                   e6953bd4833a7       hello-producer</span>
+</code></pre></div> <p>Run command <code>crictl inspect</code> to get the path of mounted <code>shared-volume</code>, which is <code>emptyDir</code>.</p> <div class=highlight><pre><span></span><code><span class=go>crictl inspect 50058afb3cba5 | grep source | grep empty</span>
+</code></pre></div> <p>The result is below.</p> <div class=highlight><pre><span></span><code><span class=go>&quot;source&quot;: &quot;/var/lib/kubelet/pods/d7424f86-534a-48f9-9001-9d2a6e822b12/volumes/kubernetes.io~empty-dir/shared-volume&quot;,</span>
+</code></pre></div> <p>Change the path to the path of mounted <code>shared-volume</code> we get above. We will see the content <code>hello world</code> of file <code>hello</code>.</p> <div class=highlight><pre><span></span><code><span class=go>cd /var/lib/kubelet/pods/d7424f86-534a-48f9-9001-9d2a6e822b12/volumes/kubernetes.io~empty-dir/shared-volume</span>
+<span class=go>cat hello</span>
+</code></pre></div> <p>The path <code>/producer_dir</code> inside the Pod is mounted to the local host path <code>/var/lib/kubelet/pods/d7424f86-534a-48f9-9001-9d2a6e822b12/volumes/kubernetes.io~empty-dir/shared-volume</code>.</p> <p>The file <code>/producer_dir/hello</code> we created inside the Pod is actually in the host local path.</p> <p>Let's delete the container <code>producer</code>, the container <code>producer</code> will be started again with new container ID and the file <code>hello</code> is still there.</p> <div class=highlight><pre><span></span><code><span class=go>crictl ps</span>
+<span class=go>crictl stop &lt;your_container_id&gt;</span>
+<span class=go>crictl rm &lt;your_container_id&gt;</span>
+</code></pre></div> <p>Let's delete the Pod <code>hello-producer</code>, the container <code>producer</code> is deleted, file <code>hello</code> is deleted.</p> <div class=highlight><pre><span></span><code><span class=go>kubectl delete pod hello-producer </span>
+</code></pre></div> <h2 id=hostpath>hostPath<a class=headerlink href=#hostpath title="Permanent link"> ¶</a></h2> <p>Apply below yaml file to create a MySQL Pod and mount a <code>hostPath</code>. It'll mount host directory <code>/tmp/mysql</code> to Pod directory <code>/var/lib/mysql</code>. Check locally if directory <code>/tmp/mysql</code> is in place. If not, create it using <code>mkdir /tmp/mysql</code>.</p> <div class=highlight><pre><span></span><code><span class=go>cat &gt; mysql-hostpath.yaml &lt;&lt;EOF</span>
+<span class=go>apiVersion: apps/v1</span>
+<span class=go>kind: Deployment</span>
+<span class=go>metadata:</span>
+<span class=go> name: mysql</span>
+<span class=go>spec:</span>
+<span class=go> selector:</span>
+<span class=go>   matchLabels:</span>
+<span class=go>     app: mysql</span>
+<span class=go> template:</span>
+<span class=go>   metadata:</span>
+<span class=go>     labels:</span>
+<span class=go>       app: mysql</span>
+<span class=go>   spec:</span>
+<span class=go>     containers:</span>
+<span class=go>     - image: mysql:8.0</span>
+<span class=go>       name: mysql</span>
+<span class=go>       env:</span>
+<span class=go>       - name: MYSQL_ROOT_PASSWORD</span>
+<span class=go>         value: password</span>
+<span class=go>       ports:</span>
+<span class=go>       - containerPort: 3306</span>
+<span class=go>         name: mysql</span>
+<span class=go>       volumeMounts:</span>
+<span class=go>       - name: mysql-vol</span>
+<span class=go>         mountPath: /var/lib/mysql</span>
+<span class=go>     volumes:</span>
+<span class=go>     - hostPath:</span>
+<span class=go>         path: /tmp/mysql</span>
+<span class=go>       name: mysql-vol</span>
+<span class=go>EOF</span>
+
+<span class=go>kubectl apply -f mysql-hostpath.yaml</span>
+</code></pre></div> <p>Verify MySQL Availability</p> <p>Check status of MySQL Pod. Need document the Pod name and node it's running on.</p> <div class=highlight><pre><span></span><code><span class=go>kubectl get pod -l app=mysql -o wide</span>
+</code></pre></div> <p>Result</p> <div class=highlight><pre><span></span><code><span class=go>NAME                     READY   STATUS              RESTARTS   AGE   IP       NODE     NOMINATED NODE   READINESS GATES</span>
+<span class=go>mysql-749c8ddd67-h2rgs   0/1     ContainerCreating   0          28s   &lt;none&gt;   cka003   &lt;none&gt;           &lt;none&gt;</span>
+</code></pre></div> <p>Attach into the MySQL Pod on the running node.</p> <div class=highlight><pre><span></span><code><span class=go>kubectl exec -it &lt;your_pod_name&gt; -- bash</span>
+</code></pre></div> <p>Within the Pod, go to directory <code>/var/lib/mysql</code>, all files in the directory are same with all files in directory <code>/tmp/mysql</code> on node <code>cka003</code>.</p> <p>Connect to the database in the Pod.</p> <div class=highlight><pre><span></span><code><span class=go>mysql -h 127.0.0.1 -uroot -ppassword</span>
+</code></pre></div> <p>Operate the database.</p> <div class=highlight><pre><span></span><code><span class=go>mysql&gt; show databases;</span>
+<span class=go>mysql&gt; connect mysql;</span>
+<span class=go>mysql&gt; show tables;</span>
+<span class=go>mysql&gt; exit</span>
+</code></pre></div> <h2 id=pv-and-pvc>PV and PVC<a class=headerlink href=#pv-and-pvc title="Permanent link"> ¶</a></h2> <p>Here we will use NFS as backend storage to demo how to deploy PV and PVC.</p> <h3 id=set-up-nfs-share>Set up NFS Share<a class=headerlink href=#set-up-nfs-share title="Permanent link"> ¶</a></h3> <ol> <li>Install nfs-kernel-server</li> </ol> <p>Log onto <code>cka002</code>.</p> <p>Choose one Worker <code>cka002</code> to build NFS server.</p> <div class=highlight><pre><span></span><code><span class=go>sudo apt-get install -y nfs-kernel-server</span>
+</code></pre></div> <ol> <li>Configure Share Folder</li> </ol> <p>Create share folder. </p> <div class=highlight><pre><span></span><code><span class=go>mkdir /nfsdata</span>
+</code></pre></div> <p>Append one line in file <code>/etc/exports</code>.</p> <div class=highlight><pre><span></span><code><span class=go>cat &gt;&gt; /etc/exports &lt;&lt; EOF</span>
+<span class=go>/nfsdata *(rw,sync,no_root_squash)</span>
+<span class=go>EOF</span>
+</code></pre></div> <p>There are many different NFS sharing options, including these:</p> <ul> <li><code>*</code>: accessable to all IPs, or specific IPs.</li> <li><code>rw</code>: Share as read-write. Keep in mind that normal Linux permissions still apply. (Note that this is a default option.)</li> <li><code>ro</code>: Share as read-only.</li> <li><code>sync</code>: File data changes are made to disk immediately, which has an impact on performance, but is less likely to result in data loss. On som* `distributions this is the default.</li> <li><code>async</code>: The opposite of sync; file data changes are made initially to memory. This speeds up performance but is more likely to result in data loss. O* `some distributions this is the default.</li> <li><code>root_squash</code>: Map the root user and group account from the NFS client to the anonymous accounts, typically either the nobody account or the nfsnobod* `account. See the next section, “User ID Mapping,” for more details. (Note that this is a default option.)</li> <li><code>no_root_squash</code>: Map the root user and group account from the NFS client to the local root and group accounts.</li> </ul> <p>We will use password-free remote mount based on <code>nfs</code> and <code>rpcbind</code> services between Linux servers, not based on <code>smb</code> service. The two servers must first grant credit, install and set up nfs and rpcbind services on the server side, set the common directory, start the service, and mount it on the client</p> <p>Start <code>rpcbind</code> service.</p> <div class=highlight><pre><span></span><code><span class=go>sudo systemctl enable rpcbind</span>
+<span class=go>sudo systemctl restart rpcbind</span>
+</code></pre></div> <p>Start <code>nfs</code> service.</p> <div class=highlight><pre><span></span><code><span class=go>sudo systemctl enable nfs-server</span>
+<span class=go>sudo systemctl start nfs-server</span>
+</code></pre></div> <p>Once <code>/etc/exports</code> is changed, we need run below command to make change effected.</p> <div class=highlight><pre><span></span><code><span class=go>exportfs -ra</span>
+</code></pre></div> <p>Result</p> <div class=highlight><pre><span></span><code><span class=go>exportfs: /etc/exports [1]: Neither &#39;subtree_check&#39; or &#39;no_subtree_check&#39; specified for export &quot;*:/nfsdata&quot;.</span>
+<span class=go>  Assuming default behaviour (&#39;no_subtree_check&#39;).</span>
+<span class=go>  NOTE: this default has changed since nfs-utils version 1.0.x</span>
+</code></pre></div> <p>Check whether sharefolder is configured.</p> <div class=highlight><pre><span></span><code><span class=go>showmount -e</span>
+</code></pre></div> <p>And see below output.</p> <div class=highlight><pre><span></span><code><span class=go>Export list for cka002:</span>
+<span class=go>/nfsdata *</span>
+</code></pre></div> <ol> <li>Install NFS Client</li> </ol> <p>Install NFS client on all nodes.</p> <div class=highlight><pre><span></span><code><span class=go>sudo apt-get install -y nfs-common</span>
+</code></pre></div> <ol> <li>Verify NFS Server</li> </ol> <p>Log onto any nodes to verify NFS service and sharefolder list.</p> <p>Log onto <code>cka001</code> and check sharefolder status on <code>cka002</code>.</p> <div class=highlight><pre><span></span><code><span class=go>showmount -e cka002</span>
+</code></pre></div> <p>Below result will be shown if no issues.</p> <div class=highlight><pre><span></span><code><span class=go>Export list for cka002:</span>
+<span class=go>/nfsdata *</span>
+</code></pre></div> <ol> <li>Mount NFS</li> </ol> <p>Execute below command to mount remote NFS folder on any other non-NFS-server node, e.g., <code>cka001</code> or <code>cka003</code>.</p> <div class=highlight><pre><span></span><code><span class=go>mkdir /remote-nfs-dir</span>
+<span class=go>mount -t nfs cka002:/nfsdata /remote-nfs-dir/</span>
+</code></pre></div> <p>Use command <code>df -h</code> to verify mount point. Below is the sample output.</p> <div class=highlight><pre><span></span><code><span class=go>Filesystem       Size  Used Avail Use% Mounted on</span>
+<span class=go>cka002:/nfsdata   40G  5.8G   32G  16% /remote-nfs-dir</span>
+</code></pre></div> <h3 id=create-pv>Create PV<a class=headerlink href=#create-pv title="Permanent link"> ¶</a></h3> <p>Create a PV <code>mysql-pv</code>. Replace the NFS Server IP with actual IP (here is <code>&lt;cka002_ip&gt;</code>) that NFS server <code>cka002</code> is running on.</p> <div class=highlight><pre><span></span><code><span class=go>kubectl apply -f - &lt;&lt;EOF</span>
+<span class=go>apiVersion: v1</span>
+<span class=go>kind: PersistentVolume</span>
+<span class=go>metadata:</span>
+<span class=go> name: mysql-pv</span>
+<span class=go>spec:</span>
+<span class=go> accessModes:</span>
+<span class=go>     - ReadWriteOnce</span>
+<span class=go> capacity:</span>
+<span class=go>   storage: 1Gi</span>
+<span class=go> persistentVolumeReclaimPolicy: Retain</span>
+<span class=go> storageClassName: nfs</span>
+<span class=go> nfs:</span>
+<span class=go>   path: /nfsdata/</span>
+<span class=go>   server: &lt;cka002_ip&gt;</span>
+<span class=go>EOF</span>
+</code></pre></div> <p>Check the PV.</p> <div class=highlight><pre><span></span><code><span class=go>kubectl get pv</span>
+</code></pre></div> <p>The result:</p> <div class=highlight><pre><span></span><code><span class=go>NAME       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS      CLAIM   STORAGECLASS   REASON   AGE</span>
+<span class=go>mysql-pv   1Gi        RWO            Retain           Available           nfs                     19s</span>
+</code></pre></div> <h3 id=create-pvc>Create PVC<a class=headerlink href=#create-pvc title="Permanent link"> ¶</a></h3> <p>Create a PVC <code>mysql-pvc</code> and specify storage size, access mode, and storage class. The PVC <code>mysql-pvc</code> will be binded with PV automatically via storage class name.</p> <div class=highlight><pre><span></span><code><span class=go>kubectl apply -f - &lt;&lt;EOF</span>
+<span class=go>apiVersion: v1</span>
+<span class=go>kind: PersistentVolumeClaim</span>
+<span class=go>metadata:</span>
+<span class=go>  name: mysql-pvc</span>
+<span class=go>spec:</span>
+<span class=go>  accessModes:</span>
+<span class=go>    - ReadWriteOnce</span>
+<span class=go>  resources:</span>
+<span class=go>    requests:</span>
+<span class=go>      storage: 1Gi</span>
+<span class=go>  storageClassName: nfs</span>
+<span class=go>EOF</span>
+</code></pre></div> <h3 id=consume-pvc>Consume PVC<a class=headerlink href=#consume-pvc title="Permanent link"> ¶</a></h3> <p>Update the Deployment <code>mysql</code> to consume the PVC created.</p> <div class=highlight><pre><span></span><code><span class=go>kubectl apply -f - &lt;&lt;EOF</span>
+<span class=go>apiVersion: apps/v1</span>
+<span class=go>kind: Deployment</span>
+<span class=go>metadata:</span>
+<span class=go> name: mysql</span>
+<span class=go>spec:</span>
+<span class=go> selector:</span>
+<span class=go>   matchLabels:</span>
+<span class=go>     app: mysql</span>
+<span class=go> template:</span>
+<span class=go>   metadata:</span>
+<span class=go>     labels:</span>
+<span class=go>       app: mysql</span>
+<span class=go>   spec:</span>
+<span class=go>     containers:</span>
+<span class=go>     - image: mysql:8.0</span>
+<span class=go>       name: mysql</span>
+<span class=go>       env:</span>
+<span class=go>       - name: MYSQL_ROOT_PASSWORD</span>
+<span class=go>         value: password</span>
+<span class=go>       ports:</span>
+<span class=go>       - containerPort: 3306</span>
+<span class=go>         name: mysql</span>
+<span class=go>       volumeMounts:</span>
+<span class=go>       - name: mysql-persistent-storage</span>
+<span class=go>         mountPath: /var/lib/mysql</span>
+<span class=go>         subPath: mysqldata</span>
+<span class=go>     volumes:</span>
+<span class=go>     - name: mysql-persistent-storage</span>
+<span class=go>       persistentVolumeClaim:</span>
+<span class=go>        claimName: mysql-pvc</span>
+<span class=go>EOF</span>
+</code></pre></div> <p>Now we can see MySQL files were moved to directory <code>/nfsdata</code> on <code>cka002</code></p> <h2 id=storageclass>StorageClass<a class=headerlink href=#storageclass title="Permanent link"> ¶</a></h2> <h3 id=configure-rbac-authorization>Configure RBAC Authorization<a class=headerlink href=#configure-rbac-authorization title="Permanent link"> ¶</a></h3> <p>RBAC authorization uses the rbac.authorization.k8s.io API group to drive authorization decisions, allowing you to dynamically configure policies through the Kubernetes API.</p> <ul> <li>ServiceAccount: <code>nfs-client-provisioner</code></li> <li> <p>namespace: <code>dev</code></p> </li> <li> <p>ClusterRole: <code>nfs-client-provisioner-runner</code>. Grant authorization on node, pv, pvc, sc, event.</p> </li> <li> <p>ClusterRoleBinding: <code>run-nfs-client-provisioner</code>, bind above ClusterRole to above ServiceAccount.</p> </li> <li> <p>Role: <code>leader-locking-nfs-client-provisioner</code>. Grant authorization on endpoint.</p> </li> <li>RoleBinding: <code>leader-locking-nfs-client-provisioner</code>, bind above Role to above ServiceAccount.</li> </ul> <p>Create RBAC Authorization.</p> <div class=highlight><pre><span></span><code>cat &gt; nfs-provisioner-rbac.yaml <span class=s>&lt;&lt;EOF</span>
+<span class=s>apiVersion: v1</span>
+<span class=s>kind: ServiceAccount</span>
+<span class=s>metadata:</span>
+<span class=s>  name: nfs-client-provisioner</span>
+<span class=s>  # replace with namespace where provisioner is deployed</span>
+<span class=s>  namespace: dev</span>
+<span class=s>---</span>
+<span class=s>kind: ClusterRole</span>
+<span class=s>apiVersion: rbac.authorization.k8s.io/v1</span>
+<span class=s>metadata:</span>
+<span class=s>  name: nfs-client-provisioner-runner</span>
+<span class=s>rules:</span>
+<span class=s>  - apiGroups: [&quot;&quot;]</span>
+<span class=s>    resources: [&quot;nodes&quot;]</span>
+<span class=s>    verbs: [&quot;get&quot;, &quot;list&quot;, &quot;watch&quot;]</span>
+<span class=s>  - apiGroups: [&quot;&quot;]</span>
+<span class=s>    resources: [&quot;persistentvolumes&quot;]</span>
+<span class=s>    verbs: [&quot;get&quot;, &quot;list&quot;, &quot;watch&quot;, &quot;create&quot;, &quot;delete&quot;]</span>
+<span class=s>  - apiGroups: [&quot;&quot;]</span>
+<span class=s>    resources: [&quot;persistentvolumeclaims&quot;]</span>
+<span class=s>    verbs: [&quot;get&quot;, &quot;list&quot;, &quot;watch&quot;, &quot;update&quot;]</span>
+<span class=s>  - apiGroups: [&quot;storage.k8s.io&quot;]</span>
+<span class=s>    resources: [&quot;storageclasses&quot;]</span>
+<span class=s>    verbs: [&quot;get&quot;, &quot;list&quot;, &quot;watch&quot;]</span>
+<span class=s>  - apiGroups: [&quot;&quot;]</span>
+<span class=s>    resources: [&quot;events&quot;]</span>
+<span class=s>    verbs: [&quot;create&quot;, &quot;update&quot;, &quot;patch&quot;]</span>
+<span class=s>---</span>
+<span class=s>kind: ClusterRoleBinding</span>
+<span class=s>apiVersion: rbac.authorization.k8s.io/v1</span>
+<span class=s>metadata:</span>
+<span class=s>  name: run-nfs-client-provisioner</span>
+<span class=s>subjects:</span>
+<span class=s>  - kind: ServiceAccount</span>
+<span class=s>    name: nfs-client-provisioner</span>
+<span class=s>    # replace with namespace where provisioner is deployed</span>
+<span class=s>    namespace: dev</span>
+<span class=s>roleRef:</span>
+<span class=s>  kind: ClusterRole</span>
+<span class=s>  name: nfs-client-provisioner-runner</span>
+<span class=s>  apiGroup: rbac.authorization.k8s.io</span>
+<span class=s>---</span>
+<span class=s>kind: Role</span>
+<span class=s>apiVersion: rbac.authorization.k8s.io/v1</span>
+<span class=s>metadata:</span>
+<span class=s>  name: leader-locking-nfs-client-provisioner</span>
+<span class=s>  # replace with namespace where provisioner is deployed</span>
+<span class=s>  namespace: dev</span>
+<span class=s>rules:</span>
+<span class=s>  - apiGroups: [&quot;&quot;]</span>
+<span class=s>    resources: [&quot;endpoints&quot;]</span>
+<span class=s>    verbs: [&quot;get&quot;, &quot;list&quot;, &quot;watch&quot;, &quot;create&quot;, &quot;update&quot;, &quot;patch&quot;]</span>
+<span class=s>---</span>
+<span class=s>kind: RoleBinding</span>
+<span class=s>apiVersion: rbac.authorization.k8s.io/v1</span>
+<span class=s>metadata:</span>
+<span class=s>  name: leader-locking-nfs-client-provisioner</span>
+<span class=s>  # replace with namespace where provisioner is deployed</span>
+<span class=s>  namespace: dev</span>
+<span class=s>subjects:</span>
+<span class=s>  - kind: ServiceAccount</span>
+<span class=s>    name: nfs-client-provisioner</span>
+<span class=s>    # replace with namespace where provisioner is deployed</span>
+<span class=s>    namespace: dev</span>
+<span class=s>roleRef:</span>
+<span class=s>  kind: Role</span>
+<span class=s>  name: leader-locking-nfs-client-provisioner</span>
+<span class=s>  apiGroup: rbac.authorization.k8s.io</span>
+<span class=s>EOF</span>
+
+
+kubectl apply -f nfs-provisioner-rbac.yaml
+</code></pre></div> <h3 id=create-provisioners-deloyment>Create Provisioner's Deloyment<a class=headerlink href=#create-provisioners-deloyment title="Permanent link"> ¶</a></h3> <p>Create Deloyment <code>nfs-client-provisioner</code> by consuming volume <code>nfs-client-root</code> mapped to <code>/nfsdata</code> on <code>&lt;cka002_ip&gt;</code>(<code>cka002</code>). Replace NFS server IP with actual IP (here is <code>&lt;cka002_ip&gt;</code>)</p> <div class=highlight><pre><span></span><code><span class=go>cat &gt; nfs-provisioner-deployment.yaml &lt;&lt;EOF</span>
+<span class=go>apiVersion: apps/v1</span>
+<span class=go>kind: Deployment</span>
+<span class=go>metadata:</span>
+<span class=go>  name: nfs-client-provisioner</span>
+<span class=go>spec:</span>
+<span class=go>  replicas: 1</span>
+<span class=go>  selector:</span>
+<span class=go>    matchLabels:</span>
+<span class=go>      app: nfs-client-provisioner</span>
+<span class=go>  strategy:</span>
+<span class=go>    type: Recreate</span>
+<span class=go>  template:</span>
+<span class=go>    metadata:</span>
+<span class=go>      labels:</span>
+<span class=go>        app: nfs-client-provisioner</span>
+<span class=go>    spec:</span>
+<span class=go>      serviceAccountName: nfs-client-provisioner</span>
+<span class=go>      containers:</span>
+<span class=go>        - name: nfs-client-provisioner</span>
+<span class=go>          image: liyinlin/nfs-subdir-external-provisioner:v4.0.2</span>
+<span class=go>          volumeMounts:</span>
+<span class=go>            - name: nfs-client-root</span>
+<span class=go>              mountPath: /persistentvolumes</span>
+<span class=go>          env:</span>
+<span class=go>            - name: PROVISIONER_NAME</span>
+<span class=go>              value: k8s-sigs.io/nfs-subdir-external-provisioner</span>
+<span class=go>            - name: NFS_SERVER</span>
+<span class=go>              value: &lt;cka002_ip&gt;</span>
+<span class=go>            - name: NFS_PATH</span>
+<span class=go>              value: /nfsdata</span>
+<span class=go>      volumes:</span>
+<span class=go>        - name: nfs-client-root</span>
+<span class=go>          nfs:</span>
+<span class=go>            server: &lt;cka002_ip&gt;</span>
+<span class=go>            path: /nfsdata</span>
+<span class=go>EOF</span>
+
+<span class=go>kubectl apply -f nfs-provisioner-deployment.yaml</span>
+</code></pre></div> <h3 id=create-nfs-storageclass>Create NFS StorageClass<a class=headerlink href=#create-nfs-storageclass title="Permanent link"> ¶</a></h3> <p>Create StorageClass <code>nfs-client</code>. Define the NFS subdir external provisioner's Kubernetes Storage Class.</p> <div class=highlight><pre><span></span><code><span class=go>vi nfs-storageclass.yaml</span>
+</code></pre></div> <p>And add below info to create NFS StorageClass.</p> <div class=highlight><pre><span></span><code><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">storage.k8s.io/v1</span><span class=w></span>
+<span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">StorageClass</span><span class=w></span>
+<span class=nt>metadata</span><span class=p>:</span><span class=w></span>
+<span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">nfs-client</span><span class=w></span>
+<span class=w>  </span><span class=nt>annotations</span><span class=p>:</span><span class=w></span>
+<span class=w>    </span><span class=nt>storageclass.kubernetes.io/is-default-class</span><span class=p>:</span><span class=w> </span><span class=s>&quot;true&quot;</span><span class=w></span>
+<span class=nt>provisioner</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">k8s-sigs.io/nfs-subdir-external-provisioner</span><span class=w></span>
+<span class=nt>parameters</span><span class=p>:</span><span class=w></span>
+<span class=w>  </span><span class=nt>pathPattern</span><span class=p>:</span><span class=w> </span><span class=s>&quot;${.PVC.namespace}/${.PVC.annotations.nfs.io/storage-path}&quot;</span><span class=w></span>
+<span class=w>  </span><span class=nt>onDelete</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">delete</span><span class=w></span>
+</code></pre></div> <p>Apply the yaml file.</p> <div class=highlight><pre><span></span><code><span class=go>kubectl apply -f nfs-storageclass.yaml</span>
+</code></pre></div> <h3 id=create-pvc_1>Create PVC<a class=headerlink href=#create-pvc_1 title="Permanent link"> ¶</a></h3> <p>Create PVC <code>nfs-pvc-from-sc</code>.</p> <div class=highlight><pre><span></span><code><span class=go>kubectl apply -f - &lt;&lt;EOF</span>
+<span class=go>kind: PersistentVolumeClaim</span>
+<span class=go>apiVersion: v1</span>
+<span class=go>metadata:</span>
+<span class=go>  name: nfs-pvc-from-sc</span>
+<span class=go>spec:</span>
+<span class=go>  storageClassName: nfs-client</span>
+<span class=go>  accessModes:</span>
+<span class=go>    - ReadWriteMany</span>
+<span class=go>  resources:</span>
+<span class=go>    requests:</span>
+<span class=go>      storage: 1Gi</span>
+<span class=go>EOF</span>
+</code></pre></div> <p>Check the PVC status we ceated.</p> <div class=highlight><pre><span></span><code><span class=go>kubectl get pvc nfs-pvc-from-sc</span>
+</code></pre></div> <p>The status is <code>Pending</code>.</p> <div class=highlight><pre><span></span><code><span class=go>NAME              STATUS    VOLUME   CAPACITY   ACCESS MODES   STORAGECLASS   AGE</span>
+<span class=go>nfs-pvc-from-sc   Pending                                      nfs-client     112s</span>
+</code></pre></div> <p>Check pending reason</p> <div class=highlight><pre><span></span><code><span class=go>kubectl describe pvc nfs-pvc-from-sc</span>
+</code></pre></div> <p>It's pending on waiting for a volume to be created.</p> <div class=highlight><pre><span></span><code><span class=go>Events:</span>
+<span class=go>  Type    Reason                Age               From                         Message</span>
+<span class=go>  ----    ------                ----              ----                         -------</span>
+<span class=go>  Normal  ExternalProvisioning  9s (x6 over 84s)  persistentvolume-controller  waiting for a volume to be created, either by external provisioner &quot;k8s-sigs.io/nfs-subdir-external-provisioner&quot; or manually created by system administrator</span>
+</code></pre></div> <h3 id=consume-pvc_1>Consume PVC<a class=headerlink href=#consume-pvc_1 title="Permanent link"> ¶</a></h3> <p>Create Deployment <code>mysql-with-sc-pvc</code> to consume the PVC <code>nfs-pvc-from-sc</code>.</p> <div class=highlight><pre><span></span><code><span class=go>kubectl apply -f - &lt;&lt;EOF</span>
+<span class=go>apiVersion: apps/v1</span>
+<span class=go>kind: Deployment</span>
+<span class=go>metadata:</span>
+<span class=go>  name: mysql-with-sc-pvc</span>
+<span class=go>spec:</span>
+<span class=go>  selector:</span>
+<span class=go>    matchLabels:</span>
+<span class=go>      app: mysql</span>
+<span class=go>  template:</span>
+<span class=go>    metadata:</span>
+<span class=go>      labels:</span>
+<span class=go>        app: mysql</span>
+<span class=go>    spec:</span>
+<span class=go>      containers:</span>
+<span class=go>      - image: mysql:8.0</span>
+<span class=go>        name: mysql</span>
+<span class=go>        env:</span>
+<span class=go>        - name: MYSQL_ROOT_PASSWORD</span>
+<span class=go>          value: password</span>
+<span class=go>        ports:</span>
+<span class=go>        - containerPort: 3306</span>
+<span class=go>          name: mysql</span>
+<span class=go>        volumeMounts:</span>
+<span class=go>        - name: mysql-pv</span>
+<span class=go>          mountPath: /var/lib/mysql</span>
+<span class=go>      volumes:</span>
+<span class=go>      - name: mysql-pv</span>
+<span class=go>        persistentVolumeClaim:</span>
+<span class=go>          claimName: nfs-pvc-from-sc</span>
+<span class=go>EOF</span>
+</code></pre></div> <p>Check the Deployment status.</p> <div class=highlight><pre><span></span><code><span class=go>kubectl get deployment mysql-with-sc-pvc -o wide</span>
+</code></pre></div> <p>Result</p> <div class=highlight><pre><span></span><code><span class=go>NAME                READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS   IMAGES      SELECTOR</span>
+<span class=go>mysql-with-sc-pvc   1/1     1            1           16s   mysql        mysql:8.0   app=mysql</span>
+</code></pre></div> <p>With the comsumption from Deployment <code>mysql-with-sc-pvc</code>, the status of PVC <code>nfs-pvc-from-sc</code> is now status <code>Bound</code> from <code>Pending</code>.</p> <div class=highlight><pre><span></span><code><span class=go>kubectl get pvc nfs-pvc-from-sc</span>
+</code></pre></div> <p>Result</p> <div class=highlight><pre><span></span><code><span class=go>NAME              STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE</span>
+<span class=go>nfs-pvc-from-sc   Bound    pvc-edf70dff-7407-4b38-aac9-9c2dd6a84316   1Gi        RWX            nfs-client     52m</span>
+</code></pre></div> <p>Check related Pods status. Be noted that the Pod <code>mysql-with-sc-pvc-7c97d875f8-dwfkc</code> is running on <code>cka003</code>.</p> <div class=highlight><pre><span></span><code><span class=go>kubectl get pod -o wide -l app=mysql</span>
+</code></pre></div> <p>Result</p> <div class=highlight><pre><span></span><code><span class=go>NAME                                 READY   STATUS    RESTARTS   AGE     IP              NODE     NOMINATED NODE   READINESS GATES</span>
+<span class=go>mysql-774db46945-h82kk               1/1     Running   0          69m     10.244.112.26   cka002   &lt;none&gt;           &lt;none&gt;</span>
+<span class=go>mysql-with-sc-pvc-7c97d875f8-wkvr9   1/1     Running   0          3m37s   10.244.102.27   cka003   &lt;none&gt;           &lt;none&gt;</span>
+</code></pre></div> <p>Let's check directory <code>/nfsdata/</code> on NFS server <code>cka002</code>.</p> <div class=highlight><pre><span></span><code><span class=go>ll /nfsdata/</span>
+</code></pre></div> <p>Two folders were created. Same content of <code>/remote-nfs-dir/</code> on other nodes.</p> <div class=highlight><pre><span></span><code><span class=go>drwxrwxrwx  6 systemd-coredump root 4096 Jul 23 23:35 dev/</span>
+<span class=go>drwxr-xr-x  6 systemd-coredump root 4096 Jul 23 22:29 mysqldata/</span>
+</code></pre></div> <p>Namespace name is used as folder name under directory <code>/nfsdata/</code> and it is mounted to Pod. By default, namespace name will be used at mount point. If we want to use customized folder for that purpose, we need claim an annotation <code>nfs.io/storage-path</code>, e.g., below example.</p> <p>Create PVC test-claim on Namespace <code>kube-system</code> and consume volume <code>nfs-client</code>.</p> <div class=highlight><pre><span></span><code><span class=go>kubectl apply -f - &lt;&lt;EOF</span>
+<span class=go>kind: PersistentVolumeClaim</span>
+<span class=go>apiVersion: v1</span>
+<span class=go>metadata:</span>
+<span class=go>  name: test-claim</span>
+<span class=go>  namespace: kube-system</span>
+<span class=go>  annotations:</span>
+<span class=go>    nfs.io/storage-path: &quot;test-path&quot;</span>
+<span class=go>spec:</span>
+<span class=go>  storageClassName: nfs-client</span>
+<span class=go>  accessModes:</span>
+<span class=go>    - ReadWriteMany</span>
+<span class=go>  resources:</span>
+<span class=go>    requests:</span>
+<span class=go>      storage: 1Gi</span>
+<span class=go>EOF</span>
+</code></pre></div> <p>In above case, the PVC was created in <code>kube-system</code> Namespace, hence we can see directory <code>test-path</code> is under directory<code>kube-system</code> on node <code>cka002</code>.</p> <p>Overall directory structure of folder <code>/nfsdata/</code> looks like below.</p> <div class=highlight><pre><span></span><code><span class=go>tree -L 1 /nfsdata/ </span>
+</code></pre></div> <p>Result</p> <div class=highlight><pre><span></span><code><span class=go>/nfsdata/</span>
+<span class=go>├── dev</span>
+<span class=go>├── kube-system</span>
+<span class=go>└── mysqldata</span>
+</code></pre></div> <p>Please be noted that above rule is following <code>nfs-subdir-external-provisioner</code> implementation. It's may be different with other <code>provisioner</code>.</p> <p>Detail about <code>nfs-subdir-external-provisioner</code> project is <a href=https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner>here</a></p> <h2 id=configuration>Configuration<a class=headerlink href=#configuration title="Permanent link"> ¶</a></h2> <h3 id=configmap>ConfigMap<a class=headerlink href=#configmap title="Permanent link"> ¶</a></h3> <p>Create ConfigMap <code>cm-nginx</code> to define content of <code>nginx.conf</code>.</p> <div class=highlight><pre><span></span><code><span class=go>vi configmap.yaml</span>
+</code></pre></div> <p>Paste below content.</p> <div class=highlight><pre><span></span><code><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">v1</span><span class=w></span>
+<span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">ConfigMap</span><span class=w></span>
+<span class=nt>metadata</span><span class=p>:</span><span class=w></span>
+<span class=w>  </span><span class=nt>labels</span><span class=p>:</span><span class=w></span>
+<span class=w>    </span><span class=nt>cattle.io/creator</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">norman</span><span class=w></span>
+<span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">cm-nginx</span><span class=w></span>
+<span class=w>  </span><span class=nt>namespace</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">dev</span><span class=w></span>
+<span class=nt>data</span><span class=p>:</span><span class=w></span>
+<span class=w>  </span><span class=nt>nginx.conf</span><span class=p>:</span><span class=w> </span><span class="p p-Indicator">|-</span><span class=w></span>
+<span class=w>    </span><span class=no>user  nginx;</span><span class=w></span>
+<span class=w>    </span><span class=no>worker_processes  2;</span><span class=w></span>
+
+<span class=w>    </span><span class=no>error_log  /var/log/nginx/error.log warn;</span><span class=w></span>
+<span class=w>    </span><span class=no>pid        /var/run/nginx.pid;</span><span class=w></span>
+
+
+<span class=w>    </span><span class=no>events {</span><span class=w></span>
+<span class=w>        </span><span class=no>worker_connections  1024;</span><span class=w></span>
+<span class=w>    </span><span class=no>}</span><span class=w></span>
+
+
+<span class=w>    </span><span class=no>http {</span><span class=w></span>
+<span class=w>        </span><span class=no>include       /etc/nginx/mime.types;</span><span class=w></span>
+<span class=w>        </span><span class=no>default_type  application/octet-stream;</span><span class=w></span>
+
+<span class=w>        </span><span class=no>log_format  main  &#39;$remote_addr - $remote_user [$time_local] &quot;$request&quot; &#39;</span><span class=w></span>
+<span class=w>                          </span><span class=no>&#39;$status $body_bytes_sent &quot;$http_referer&quot; &#39;</span><span class=w></span>
+<span class=w>                          </span><span class=no>&#39;&quot;$http_user_agent&quot; &quot;$http_x_forwarded_for&quot;&#39;;</span><span class=w></span>
+
+<span class=w>        </span><span class=no>access_log  /var/log/nginx/access.log  main;</span><span class=w></span>
+
+<span class=w>        </span><span class=no>sendfile        on;</span><span class=w></span>
+<span class=w>        </span><span class=no>#tcp_nopush     on;</span><span class=w></span>
+
+<span class=w>        </span><span class=no>keepalive_timeout  65;</span><span class=w></span>
+
+<span class=w>        </span><span class=no>#gzip  on;</span><span class=w></span>
+
+<span class=w>        </span><span class=no>include /etc/nginx/conf.d/*.conf;</span><span class=w></span>
+<span class=w>    </span><span class=no>}</span><span class=w></span>
+</code></pre></div> <p>Apply the ConfigMap.</p> <div class=highlight><pre><span></span><code><span class=go>kubectl apply -f configmap.yaml</span>
+</code></pre></div> <p>Create Pod <code>nginx-with-cm</code>.</p> <div class=highlight><pre><span></span><code><span class=go>kubectl apply -f - &lt;&lt;EOF</span>
+<span class=go>apiVersion: v1</span>
+<span class=go>kind: Pod</span>
+<span class=go>metadata:</span>
+<span class=go>  name: nginx-with-cm</span>
+<span class=go>spec:</span>
+<span class=go> containers:</span>
+<span class=go> - name: nginx</span>
+<span class=go>   image: nginx</span>
+<span class=go>   volumeMounts:</span>
+<span class=go>   - name: foo</span>
+<span class=go>     mountPath: &quot;/etc/nginx/nginx.conf&quot;</span>
+<span class=go>     subPath:  nginx.conf</span>
+<span class=go> volumes:</span>
+<span class=go> - name: foo</span>
+<span class=go>   configMap:</span>
+<span class=go>     name: cm-nginx</span>
+<span class=go>EOF</span>
+</code></pre></div> <p>Note:</p> <ul> <li>By default to mount ConfigMap, Kubernetes will overwrite all content of the mount point. We can use <code>volumeMounts.subPath</code> to specify that only overwrite the file <code>nginx.conf</code> defined in <code>mountPath</code>.</li> <li>Is we use <code>volumeMounts.subPath</code> to mount a Container Volume, Kubernetes won't do hot update to reflect real-time update.</li> </ul> <p>Verify if the <code>nginx.conf</code> mounted from outside is in the Container by comparing with above file.</p> <div class=highlight><pre><span></span><code><span class=go>kubectl exec -it nginx-with-cm -- sh </span>
+<span class=go>cat /etc/nginx/nginx.conf</span>
+</code></pre></div> <h3 id=secret>Secret<a class=headerlink href=#secret title="Permanent link"> ¶</a></h3> <p>Encode password with base64 </p> <div class=highlight><pre><span></span><code><span class=go>echo -n admin | base64  </span>
+<span class=go>YWRtaW4=</span>
+
+<span class=go>echo -n 123456 | base64</span>
+<span class=go>MTIzNDU2</span>
+</code></pre></div> <p>Create Secret <code>mysecret</code>.</p> <div class=highlight><pre><span></span><code><span class=go>kubectl apply -f - &lt;&lt;EOF</span>
+<span class=go>apiVersion: v1</span>
+<span class=go>kind: Secret</span>
+<span class=go>metadata:</span>
+<span class=go>  name: mysecret</span>
+<span class=go>data:</span>
+<span class=go>  username: YWRtaW4=</span>
+<span class=go>  password: MTIzNDU2</span>
+<span class=go>EOF</span>
+</code></pre></div> <p>Using Volume to mount (injection) Secret to a Pod.</p> <div class=highlight><pre><span></span><code><span class=go>kubectl apply -f - &lt;&lt;EOF</span>
+<span class=go>apiVersion: v1</span>
+<span class=go>kind: Pod</span>
+<span class=go>metadata:</span>
+<span class=go>  name: busybox-with-secret</span>
+<span class=go>spec:</span>
+<span class=go> containers:</span>
+<span class=go> - name: mypod</span>
+<span class=go>   image: busybox</span>
+<span class=go>   args:</span>
+<span class=go>    - /bin/sh</span>
+<span class=go>    - -c</span>
+<span class=go>    - sleep 1000000;</span>
+<span class=go>   volumeMounts:</span>
+<span class=go>   - name: foo</span>
+<span class=go>     mountPath: &quot;/tmp/secret&quot;</span>
+<span class=go> volumes:</span>
+<span class=go> - name: foo</span>
+<span class=go>   secret:</span>
+<span class=go>    secretName: mysecret</span>
+<span class=go>EOF</span>
+</code></pre></div> <p>Let's attach to the Pod <code>busybox-with-secret</code> to verify if two data elements of <code>mysecret</code> are successfully mounted to the path <code>/tmp/secret</code> within the Pod.</p> <div class=highlight><pre><span></span><code><span class=go>kubectl exec -it busybox-with-secret -- sh</span>
+</code></pre></div> <p>By executing below command, we can see two data elements are in the directory <code>/tmp/secret</code> as file type.</p> <div class=highlight><pre><span></span><code><span class=go>/ # ls -l /tmp/secret/</span>
+<span class=go>lrwxrwxrwx    1 root     root            15 Jul 23 16:30 password -&gt; ..data/password</span>
+<span class=go>lrwxrwxrwx    1 root     root            15 Jul 23 16:30 username -&gt; ..data/username</span>
+</code></pre></div> <p>And we can get the content of each element, which are predefined before.</p> <div class=highlight><pre><span></span><code><span class=go>/ # cat /tmp/secret/username</span>
+<span class=go>admin</span>
+
+<span class=go>/ # cat /tmp/secret/password</span>
+<span class=go>123456</span>
+</code></pre></div> <h3 id=additional-cases>Additional Cases<a class=headerlink href=#additional-cases title="Permanent link"> ¶</a></h3> <h4 id=various-way-to-create-configmap>Various way to create ConfigMap<a class=headerlink href=#various-way-to-create-configmap title="Permanent link"> ¶</a></h4> <p>ConfigMap can be created by file, directory, or value.</p> <p>Let's create a ConfigMap <code>colors</code> includes:</p> <ul> <li>Four files with four color names.</li> <li>One file with favorite color name.</li> </ul> <div class=highlight><pre><span></span><code><span class=go>mkdir configmap</span>
+<span class=go>cd configmap</span>
+<span class=go>mkdir primary</span>
+
+<span class=go>echo c &gt; primary/cyan</span>
+<span class=go>echo m &gt; primary/magenta</span>
+<span class=go>echo y &gt; primary/yellow</span>
+<span class=go>echo k &gt; primary/black</span>
+<span class=go>echo &quot;known as key&quot; &gt;&gt; primary/black</span>
+<span class=go>echo blue &gt; favorite</span>
+</code></pre></div> <p>Final structure looks like below via command <code>tree configmap</code>.</p> <div class=highlight><pre><span></span><code><span class=go>configmap</span>
+<span class=go>├── favorite</span>
+<span class=go>└── primary</span>
+<span class=go>    ├── black</span>
+<span class=go>    ├── cyan</span>
+<span class=go>    ├── magenta</span>
+<span class=go>    └── yellow</span>
+</code></pre></div> <p>Create ConfigMap referring above files we created. Make sure we are now in the path <code>~/configmap</code>.</p> <div class=highlight><pre><span></span><code><span class=go>kubectl create configmap colors \</span>
+<span class=go>--from-literal=text=black  \</span>
+<span class=go>--from-file=./favorite  \</span>
+<span class=go>--from-file=./primary/</span>
+</code></pre></div> <p>Check content of the ConfigMap <code>colors</code>.</p> <div class=highlight><pre><span></span><code><span class=go>kubectl get configmap colors -o yaml</span>
+</code></pre></div> <div class=highlight><pre><span></span><code><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">v1</span><span class=w></span>
+<span class=nt>data</span><span class=p>:</span><span class=w></span>
+<span class=w>  </span><span class=nt>black</span><span class=p>:</span><span class=w> </span><span class="p p-Indicator">|</span><span class=w></span>
+<span class=w>    </span><span class=no>k</span><span class=w></span>
+<span class=w>    </span><span class=no>known as key</span><span class=w></span>
+<span class=w>  </span><span class=nt>cyan</span><span class=p>:</span><span class=w> </span><span class="p p-Indicator">|</span><span class=w></span>
+<span class=w>    </span><span class=no>c</span><span class=w></span>
+<span class=w>  </span><span class=nt>favorite</span><span class=p>:</span><span class=w> </span><span class="p p-Indicator">|</span><span class=w></span>
+<span class=w>    </span><span class=no>blue</span><span class=w></span>
+<span class=w>  </span><span class=nt>magenta</span><span class=p>:</span><span class=w> </span><span class="p p-Indicator">|</span><span class=w></span>
+<span class=w>    </span><span class=no>m</span><span class=w></span>
+<span class=w>  </span><span class=nt>text</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">black</span><span class=w></span>
+<span class=w>  </span><span class=nt>yellow</span><span class=p>:</span><span class=w> </span><span class="p p-Indicator">|</span><span class=w></span>
+<span class=w>    </span><span class=no>y</span><span class=w></span>
+<span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">ConfigMap</span><span class=w></span>
+<span class=nt>metadata</span><span class=p>:</span><span class=w></span>
+<span class=w>  </span><span class=nt>creationTimestamp</span><span class=p>:</span><span class=w> </span><span class=s>&quot;2022-07-12T16:38:27Z&quot;</span><span class=w></span>
+<span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">colors</span><span class=w></span>
+<span class=w>  </span><span class=nt>namespace</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">dev</span><span class=w></span>
+<span class=w>  </span><span class=nt>resourceVersion</span><span class=p>:</span><span class=w> </span><span class=s>&quot;2377258&quot;</span><span class=w></span>
+<span class=w>  </span><span class=nt>uid</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">d5ab133f-5e4d-41d4-bc9e-2bbb22a872a1</span><span class=w></span>
+</code></pre></div> <h4 id=set-environment-variable-via-configmap>Set environment variable via ConfigMap<a class=headerlink href=#set-environment-variable-via-configmap title="Permanent link"> ¶</a></h4> <p>Here we will create a Pod <code>pod-configmap-env</code> and set the environment variable <code>ilike</code> and assign value of <code>favorite</code> from ConfigMap <code>colors</code>.</p> <div class=highlight><pre><span></span><code><span class=go>kubectl apply -f - &lt;&lt; EOF</span>
+<span class=go>apiVersion: v1</span>
+<span class=go>kind: Pod</span>
+<span class=go>metadata:</span>
+<span class=go>  name: pod-configmap-env</span>
+<span class=go>spec:</span>
+<span class=go>  containers:</span>
+<span class=go>  - name: nginx</span>
+<span class=go>    image: nginx</span>
+<span class=go>    env:</span>
+<span class=go>    - name: ilike</span>
+<span class=go>      valueFrom:</span>
+<span class=go>        configMapKeyRef:</span>
+<span class=go>          name: colors</span>
+<span class=go>          key: favorite</span>
+<span class=go>EOF</span>
+</code></pre></div> <p>Attach to the Pod <code>pod-configmap-env</code>.</p> <div class=highlight><pre><span></span><code><span class=go>kubectl exec -it pod-configmap-env -- bash</span>
+</code></pre></div> <p>Verify the value of env variable <code>ilike</code> is <code>blue</code>, which is the value of <code>favorite</code> of ConfigMap <code>colors</code>.</p> <div class=highlight><pre><span></span><code><span class=gp>root@pod-configmap-env:/# echo $</span>ilike
+<span class=go>blue</span>
+</code></pre></div> <p>We can also use all key-value of ConfigMap to set up environment variables of Pod.</p> <div class=highlight><pre><span></span><code><span class=go>kubectl apply -f - &lt;&lt; EOF</span>
+<span class=go>apiVersion: v1</span>
+<span class=go>kind: Pod</span>
+<span class=go>metadata:</span>
+<span class=go> name: pod-configmap-env-2</span>
+<span class=go>spec:</span>
+<span class=go> containers:</span>
+<span class=go> - name: nginx</span>
+<span class=go>   image: nginx</span>
+<span class=go>   envFrom:</span>
+<span class=go>    - configMapRef:</span>
+<span class=go>        name: colors</span>
+<span class=go>EOF</span>
+</code></pre></div> <p>Attach to the Pod <code>pod-configmap-env-2</code>.</p> <div class=highlight><pre><span></span><code><span class=go>kubectl exec -it pod-configmap-env-2 -- bash</span>
+</code></pre></div> <p>Verify the value of env variables based on key-values we defined in ConfigMap <code>colors</code>.</p> <div class=highlight><pre><span></span><code><span class=gp>root@pod-configmap-env-2:/# echo $</span>black
+<span class=go>k known as key</span>
+<span class=gp>root@pod-configmap-env-2:/# echo $</span>cyan
+<span class=go>c</span>
+<span class=gp>root@pod-configmap-env-2:/# echo $</span>favorite
+<span class=go>blue</span>
+</code></pre></div> </article> </div> </div> <a href=# class="md-top md-icon" data-md-component=top hidden> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg> Back to top </a> </main> <footer class=md-footer> <nav class="md-footer__inner md-grid" aria-label=Footer> <a href=../secrets/ class="md-footer__link md-footer__link--prev" aria-label="Previous: Secrets" rel=prev> <div class="md-footer__button md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg> </div> <div class=md-footer__title> <div class=md-ellipsis> <span class=md-footer__direction> Previous </span> Secrets </div> </div> </a> <a href=../rbac/ class="md-footer__link md-footer__link--next" aria-label="Next: Role Based Access Control (RBAC)" rel=next> <div class=md-footer__title> <div class=md-ellipsis> <span class=md-footer__direction> Next </span> Role Based Access Control (RBAC) </div> </div> <div class="md-footer__button md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg> </div> </a> </nav> <div class="md-footer-meta md-typeset"> <div class="md-footer-meta__inner md-grid"> <div class=md-copyright> Made with <a href=https://squidfunk.github.io/mkdocs-material/ target=_blank rel=noopener> Material for MkDocs </a> </div> </div> </div> </footer> </div> <div class=md-dialog data-md-component=dialog> <div class="md-dialog__inner md-typeset"></div> </div> <script id=__config type=application/json>{"base": "../../../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.instant", "navigation.top"], "search": "../../../../assets/javascripts/workers/search.ecf98df9.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script> <script src=../../../../assets/javascripts/bundle.2ab50757.min.js></script> </body> </html>
