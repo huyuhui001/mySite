@@ -2,7 +2,7 @@
 
 Kubernetes
 
-* Local Installation
+* Installation
 * Foundamentals
 
 Linux
