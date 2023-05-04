@@ -14,15 +14,11 @@
 
 使用版本：`Rocky 9.0`。
 
-从网站下载Rocky系统ISO镜像：
-
-```
-https://www.rockylinux.org/download/
-```
+从网站下载Rocky系统[ISO镜像](https://www.rockylinux.org/download/)。
 
 通过`wget`命令下载Rocky系统ISO镜像。
 
-```
+```bash
 wget https://download.rockylinux.org/pub/rocky/9.0/isos/x86_64/Rocky-9.0-x86_64-dvd.iso
 ```
 
@@ -30,19 +26,19 @@ wget https://download.rockylinux.org/pub/rocky/9.0/isos/x86_64/Rocky-9.0-x86_64-
 
 以`root`登录，执行下面命令修改`sudo`权限。
 
-```
+```bash
 visudo
 ```
 
 并激活下面一行（不设密码，方便练习）：
 
-```
+```bash
 %wheel  ALL=(ALL)       NOPASSWD: ALL
 ```
 
 创建用户`vagrant`，并设置`wheel`为主要组和修改密码。
 
-```
+```bash
 adduser vagrant
 usermod -g wheel vagrant
 passwd vagrant
@@ -50,7 +46,7 @@ passwd vagrant
 
 设定hostname（包括别名），并查看结果。
 
-```
+```bash
 hostnamectl set-hostname --static "rocky9"
 hostnamectl set-hostname --pretty "rocky9"
 
@@ -58,14 +54,14 @@ hostnamectl
 cat /etc/hostname
 ```
 
-!!! Info
-    由systemd控制的主机名的服务配置信息：`/usr/lib/systemd/system/systemd-hostnamed.service`
+小贴士：
+> 由systemd控制的主机名的服务配置信息：`/usr/lib/systemd/system/systemd-hostnamed.service`
 
 Rocky的软件源的配置信息保存在目录`/etc/yum.repos.d/`下。如果访问默认源比较慢，可以更新阿里源或者科大源。
 
 更换阿里源。
 
-```
+```bash
 sed -e 's|^mirrorlist=|#mirrorlist=|g' \
     -e 's|^#baseurl=http://dl.rockylinux.org/$contentdir|baseurl=https://mirrors.aliyun.com/rockylinux|g' \
     -i.bak \
@@ -74,7 +70,7 @@ sed -e 's|^mirrorlist=|#mirrorlist=|g' \
 
 更换科大源。
 
-```
+```bash
 sed -e 's|^mirrorlist=|#mirrorlist=|g' \
     -e 's|^#baseurl=http://dl.rockylinux.org/$contentdir|baseurl=https://mirrors.ustc.edu.cn/rocky|g' \
     -i.bak \
@@ -84,7 +80,7 @@ sed -e 's|^mirrorlist=|#mirrorlist=|g' \
 
 刷新缓存。
 
-```
+```bash
 dnf makecache
 ```
 
@@ -94,19 +90,19 @@ dnf makecache
 
 设定root用户的密码。
 
-```
+```bash
 sudo passwd root
 ```
 
 通过安装时已创建的用户`vagrant`登录。执行下面命令修改`sudo`权限。
 
-```
+```bash
 sudo visudo
 ```
 
 添加`vagrant`到特权用户（Rocky和openSUSE不需要添加），并激活sudo一行（不设密码，方便练习）：
 
-```
+```bash
 # User privilege specification
 root    ALL=(ALL:ALL) ALL
 vagrant ALL=(ALL:ALL) ALL
@@ -117,31 +113,31 @@ sudo    ALL=(ALL:ALL) NOPASSWD: ALL
 
 修改用户`vagrant`的主要组为`sudo`。
 
-```
+```bash
 sudo usermod -g sudo vagrant
 ```
 
 修改主机名和别名。
 
-```
+```bash
 sudo hostnamectl set-hostname ubuntu2204
 sudo hostnamectl set-hostname ubuntu2204 --pretty
 ```
 
-!!! Tips
-    如何处理`Username is not in the sudoers file. This incident will be reported`问题。
-
-    如果没有初始化`root`用户的密码，且当前用户也无法执行`sudo`命令，可以通过下面步骤通过recovery救援模式进行恢复。
-    
-    * 按`shift`键开机，进入grub启动菜单。（VMWare也适用）
-    * 向下移动高亮条，选择菜单`Advanced options for Ubuntu`，并确认回车。
-    * 选择带有`recovery mode`的内核，确认回车。
-    * 向下移动高亮条，选择菜单`root   Drop to root shell prompt`，并确认回车。
-    * 回车确认`press Enter for maintenance`。
-    * 出现`root`的命令提示符后，执行命令`mount -o rw,remount /`。
-    * 执行命令`passwd`给`root`设定密码。
-    * 执行命令`adduser username sudo`把指定用户加入`sudo`组。
-    * 执行命令`visudo`进行必要的修正或修改。
+小贴士：
+> 如何处理`Username is not in the sudoers file. This incident will be reported`问题。
+>
+> 如果没有初始化`root`用户的密码，且当前用户也无法执行`sudo`命令，可以通过下面步骤通过recovery救援模式进行恢复。
+>
+> * 按`shift`键开机，进入grub启动菜单。（VMWare也适用）
+> * 向下移动高亮条，选择菜单`Advanced options for Ubuntu`，并确认回车。
+> * 选择带有`recovery mode`的内核，确认回车。
+> * 向下移动高亮条，选择菜单`root   Drop to root shell prompt`，并确认回车。
+> * 回车确认`press Enter for maintenance`。
+> * 出现`root`的命令提示符后，执行命令`mount -o rw,remount /`。
+> * 执行命令`passwd`给`root`设定密码。
+> * 执行命令`adduser username sudo`把指定用户加入`sudo`组。
+> * 执行命令`visudo`进行必要的修正或修改。
 
 ### openSUSE
 
@@ -151,40 +147,40 @@ sudo hostnamectl set-hostname ubuntu2204 --pretty
 
 创建用户`vagrant`，并设置`wheel`为主要组。
 
-```
+```bash
 useradd -m -g wheel -G root -c "vagrant" vagrant
 passwd vagrant
 ```
 
 执行`visudo`命令，激活下面一行，添加`sudo`权限。
 
-```
+```console
 %wheel ALL=(ALL) NOPASSWD: ALL
 ```
 
 修改主机名和别名。
 
-```
+```bash
 sudo hostnamectl set-hostname lizard
 sudo hostnamectl set-hostname lizard --pretty
 ```
 
 ## 常用命令
 
-!!! info
-    默认当前操作用户为`vagrant`。
+说明：
+> 默认当前操作用户为`vagrant`。
 
 ### 修改提示符风格
 
 执行下面命令可以看到当前系统的命令提示符格式。
 
-```
+```bash
 echo $PS1
 ```
 
 各系统默认设置是有差异的。
 
-```
+```bash
 # Rocky
 [\u@\h \W]\$
 
@@ -195,57 +191,56 @@ echo $PS1
 \u@\h:\w>
 ```
 
-!!! reference
-
-    bash可识别的转义序列有下面这些：
-    
-    * `\u` : 当前用户的账号名称
-    * `\h` : 主机名第一部分
-    * `\H` : 完整的主机名称
-    * `\w` : 完整的工作目录名称（如 "/home/username/mywork"）
-    * `\W` : 当前工作目录的"基名 (basename)"（如 "mywork")
-    * `\t` : 显示时间为24小时格式，如：HH:MM:SS
-    * `\T` : 显示时间为12小时格式
-    * `\A` : 显示时间为24小时格式：HH:MM
-    * `\@` : 带有 am/pm 的 12 小时制时间
-    * `\d` : 代表日期，格式为weekday month date，例如："Mon Aug 1"
-    * `\s` : shell 的名称（如 "bash")
-    * `\v` : bash的版本（如 2.04）
-    * `\V` : bash的版本（包括补丁级别）
-    * `\n` : 换行符
-    * `\r` : 回车符
-    * `\\` : 反斜杠
-    * `\a` : ASCII 响铃字符（也可以键入`07`）
-    * `\e` : ASCII 转义字符（也可以键入`33`)
-    * `\[` : 这个序列应该出现在不移动光标的字符序列（如颜色转义序列）之前。它使bash能够正确计算自动换行
-    * `\]` : 这个序列应该出现在非打印字符序列之后
-    * `\#` : 下达的第几个命令
-    * `\$` : 提示字符，如果是root用户，提示符为`#` ，普通用户则为`$`
+小贴士：
+> bash可识别的转义序列有下面这些：
+>
+> * `\u` : 当前用户的账号名称
+> * `\h` : 主机名第一部分
+> * `\H` : 完整的主机名称
+> * `\w` : 完整的工作目录名称（如 "/home/username/mywork"）
+> * `\W` : 当前工作目录的"基名 (basename)"（如 "mywork")
+> * `\t` : 显示时间为24小时格式，如：HH:MM:SS
+> * `\T` : 显示时间为12小时格式
+> * `\A` : 显示时间为24小时格式：HH:MM
+> * `\@` : 带有 am/pm 的 12 小时制时间
+> * `\d` : 代表日期，格式为weekday month date，例如："Mon Aug 1"
+> * `\s` : shell 的名称（如 "bash")
+> * `\v` : bash的版本（如 2.04）
+> * `\V` : bash的版本（包括补丁级别）
+> * `\n` : 换行符
+> * `\r` : 回车符
+> * `\\` : 反斜杠
+> * `\a` : ASCII 响铃字符（也可以键入`07`）
+> * `\e` : ASCII 转义字符（也可以键入`33`)
+> * `\[` : 这个序列应该出现在不移动光标的字符序列（如颜色转义序列）之前。它使bash能够正确计算自动换行
+> * `\]` : 这个序列应该出现在非打印字符序列之后
+> * `\#` : 下达的第几个命令
+> * `\$` : 提示字符，如果是root用户，提示符为`#` ，普通用户则为`$`
 
 在PS1中设置字符颜色的格式为：`[\e[F;Bm]........[\e[0m]`，其中`[\e[0m]`作为颜色设定的结束。
 其中"F"为字体颜色，编号为30-37，"B"为背景颜色，编号为40-47。
 
-!!! info
-    颜色对照表:
-
-    * F:30 , B:40 : 黑色
-    * F:31 , B:41 : 红色
-    * F:32 , B:42 : 绿色
-    * F:33 , B:43 : 黄色
-    * F:34 , B:44 : 蓝色
-    * F:35 , B:45 : 紫红色
-    * F:36 , B:46 : 青蓝色
-    * F:37 , B:47 : 白色
+小贴士：
+> 颜色对照表:
+>
+> * F:30 , B:40 : 黑色
+> * F:31 , B:41 : 红色
+> * F:32 , B:42 : 绿色
+> * F:33 , B:43 : 黄色
+> * F:34 , B:44 : 蓝色
+> * F:35 , B:45 : 紫红色
+> * F:36 , B:46 : 青蓝色
+> * F:37 , B:47 : 白色
 
 以下面的PS1设定为例说明颜色设定。
 
-```
+```bash
 PS1="\[\e[37;40m\][\[\e[32;40m\]\u\[\e[37;40m\]@\h:\[\e[36;40m\]\w\[\e[0m\]]\$ "
 ```
 
 拆解分析：
 
-```
+```console
 PS1="
   \[\e[37;40m\]  # 整个提示符区域前景白色，背景黑色
   [              # 显示字符[
@@ -264,7 +259,7 @@ PS1="
 
 对不同主机做不同设置：
 
-```
+```bash
 # Rocky
 PS1="\[\e[37;40m\][\[\e[32;40m\]\u\[\e[37;40m\]@\h:\[\e[36;40m\]\w\[\e[0m\]]\$ "
 
@@ -293,7 +288,7 @@ PS1="\[\e[37;40m\][\[\e[32;40m\]\u\[\e[35;40m\]@\h:\[\e[36;40m\]\w\[\e[0m\]]\$ "
 
 对于内部命令，可以通过enable命令来启用或者禁用。
 
-```
+```bash
 # 禁用cd命令
 enable -n cd
 
@@ -306,34 +301,34 @@ enable cd
 
 对于命令，可以通过`whereis`命令来查看路径。
 
-```
+```bash
 whereis cp
 whereis cd
 ```
 
 ### CPU信息
 
-```
+```bash
 lscpu
 cat /proc/cpuinfo
 ```
 
 ### 内存使用状态
 
-```
+```bash
 free
 cat /proc/meminfo
 ```
 
 ### 硬盘和分区情况
 
-```
+```bash
 lsblk
 ```
 
 openSUSE在VMWare默认安装的状态：
 
-```
+```bash
 NAME   MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTS
 sda      8:0    0  200G  0 disk 
 ├─sda1   8:1    0    8M  0 part 
@@ -354,7 +349,7 @@ sr0     11:0    1  3.8G  0 rom
 
 Ubuntu在VMWare默认安装的状态：
 
-```
+```bash
 NAME                      MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTS
 loop0                       7:0    0 61.9M  1 loop /snap/core20/1405
 loop1                       7:1    0 63.2M  1 loop /snap/core20/1623
@@ -372,7 +367,7 @@ sr0                        11:0    1  1.4G  0 rom
 
 Rocky在VMWare默认安装的状态：
 
-```
+```bash
 NAME        MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTS
 sda           8:0    0   50G  0 disk 
 ├─sda1        8:1    0    1G  0 part /boot
@@ -384,7 +379,7 @@ sr0          11:0    1  7.9G  0 rom
 
 ### 系统架构信息
 
-```
+```bash
 arch
 ```
 
@@ -392,13 +387,13 @@ openSUSE，Ubuntu和Rocky的返回结果都是`x86_64`。
 
 ### 内核版本
 
-```
+```bash
 uname -r
 ```
 
 三个发行版返回的结果不尽相同：
 
-```
+```bash
 # openSUSE
 5.14.21-150400.24.21-default
 
@@ -411,7 +406,7 @@ uname -r
 
 ### 操作系统版本
 
-```
+```bash
 cat /etc/os-release
 cat /etc/issue
 
@@ -419,7 +414,7 @@ cat /etc/issue
 sudo cat /etc/redhat-release
 ```
 
-```
+```bash
 lsb-release -a
 lsb_release -cs
 lsb_release -is
@@ -428,13 +423,13 @@ lsb_release -rs
 
 在openSUSE中，需要安装`lsb-release`包。执行`lsb-release -a`和`lsb_release -a`返回的结果是一样的。
 
-```
+```bash
 sudo zypper in lsb-release
 ```
 
 在Ubuntu中，需要安装`lsb-release`包。只能执行`lsb_release -a`。
 
-```
+```bash
 sudo apt install lsb-release
 ```
 
@@ -444,13 +439,13 @@ sudo apt install lsb-release
 
 显示默认格式的当前日期。
 
-```
+```bash
 date
 ```
 
 三个系统的默认日期格式略有不同。
 
-```
+```bash
 # openSUSE
 Mon 24 Oct 2022 09:28:06 AM CST
 
@@ -463,13 +458,13 @@ Mon Oct 24 09:24:01 AM CST 2022
 
 显示自1970-01-01 00:00:00 UTC到当前的秒数。
 
-```
+```bash
 date +%s
 ```
 
 将上一命令中的描述转换为系统默认日期格式。
 
-```
+```bash
 date -d @`date +%s`
 date --date=@'1666575347'
 ```
@@ -480,14 +475,14 @@ date --date=@'1666575347'
 
 在Rocky9中，`clock`有一个软连接指向`hwclock`：`/usr/sbin/clock -> hwclock`。在openSUSE和Ubuntu中只有`hwclock`。
 
-```
+```bash
 ll /usr/sbin/clock
 ll /usr/sbin/hwclock
 ```
 
 读取RTC时间。
 
-```
+```bash
 sudo hwclock --get
 sudo hwclock -r
 ```
@@ -499,40 +494,40 @@ sudo hwclock -r
 
 显示当前系统时区。
 
-```
+```bash
 ll /etc/localtime
 ```
 
 系统可能会返回不同结果，例如：
 
-```
+```bash
 /etc/localtime -> /usr/share/zoneinfo/Asia/Shanghai
 /etc/localtime -> /usr/share/zoneinfo/Etc/UTC
 ```
 
 显示当前可以时区列表。
 
-```
+```bash
 timedatectl list-timezones
 timedatectl list-timezones | grep -i Asia
 ```
 
 修改当前系统时区。
 
-```
+```bash
 sudo timedatectl set-timezone Asia/Shanghai
 ```
 
 显示日历。
 
-```
+```bash
 cal -y
 ```
 
 openSUSE和Rocky中，使用`cal`命令需要安装`util-linux`包。
 Ubuntu中，使用`cal`命令需要安装`ncal`包。
 
-```
+```bash
 sudo apt install ncal
 
 sudo zypper se util-linux
@@ -545,7 +540,9 @@ sudo yum install util-linux
 * `who`：系统当前所有的登录会话
 * `w`：系统当前所有的登录会话及所作的操作
 
-MOTD is the abbreviation of "Message Of The Day", and it is used to display a message when a remote user login to the Linux Operating system using SSH. Linux administrators often need to display different messages on the login of the user, like displaying custom information about the server or any necessary information. 
+提示：
+> MOTD is the abbreviation of "Message Of The Day", and it is used to display a message when a remote user login to the Linux Operating system using SSH.
+> Linux administrators often need to display different messages on the login of the user, like displaying custom information about the server or any necessary information.
 
 编辑文件`/etc/motd`可以自定义"Message Of The Day"的信息。
 
@@ -568,7 +565,7 @@ Rocky9 新安装后有该文件，空白文件无内容。
 
 安装`tmux`工具。
 
-```
+```bash
 # Rocky
 sudo yum install tmux
 
@@ -604,75 +601,76 @@ sudo zypper in tmux
 * `echo -e "a\x0Ab"`，输出字符`a`和`b`，中间`\x0A`代表十六进制`OA`（即回车）
 * `echo -e "\x4A \x41 \x4D \x45 \x53"`，输出结果是`J A M E S`
 
-!!! Tips
-    可以通过man 7 ascii来查看各进制的含义。
+提示：
+> 以通过man 7 ascii来查看各进制的含义。
 
 `echo -e`输出带颜色字符。
 
 示例：
 
-```
+```bash
 echo -e "\e[35m 紫色 \e[0m"
 echo -e "\e[43m 黄底 \e[0m"
 echo -e "\e[93m 黑底黄字 \e[0m"
 ```
 
-!!! Reference
-    字体颜色：
+参考信息：
 
-    * `\e[30m`： 黑色
-    * `\e[31m`： 红色
-    * `\e[32m`： 绿色
-    * `\e[33m`： 黄色
-    * `\e[34m`： 蓝色
-    * `\e[35m`： 紫色
-    * `\e[36m`： 青色
-    * `\e[37m`： 白色
-    * `\e[40m`： 黑底
-    * `\e[41m`： 红底
-    * `\e[42m`： 绿底
-    * `\e[43m`： 黄底
-    * `\e[44m`： 蓝底
-    * `\e[45m`： 紫底
-    * `\e[46m`： 青底
-    * `\e[47m`： 白底
-    
-    背景颜色：
-    
-    * `\e[90m`： 黑底黑字
-    * `\e[91m`： 黑底红字
-    * `\e[92m`： 黑底绿字
-    * `\e[93m`： 黑底黄字
-    * `\e[94m`： 黑底蓝字
-    * `\e[95m`： 黑底紫字
-    * `\e[96m`： 黑底青字
-    * `\e[97m`： 黑底白字
-    
-    控制属性：
-    
-    * `\e[0m` 关闭所有属性
-    * `\e[1m` 设置高亮度
-    * `\e[4m` 下划线
-    * `\e[5m` 闪烁
-    * `\e[7m` 反显，撞色显示，显示为白字黑底，或者显示为黑底白字
-    * `\e[8m` 消影，字符颜色将会与背景颜色相同
-    * `\e[nA` 光标上移 n 行
-    * `\e[nB` 光标下移 n 行
-    * `\e[nC` 光标右移 n 行
-    * `\e[nD` 光标左移 n 行
-    * `\e[y;xH` 设置光标位置
-    * `\e[2J` 清屏
-    * `\e[K` 清除从光标到行尾的内容
-    * `\e[s` 保存光标位置
-    * `\e[u` 恢复光标位置
-    * `\e[?25` 隐藏光标
-    * `\e[?25h` 显示光标
+> 字体颜色：
+>
+> * `\e[30m`： 黑色
+> * `\e[31m`： 红色
+> * `\e[32m`： 绿色
+> * `\e[33m`： 黄色
+> * `\e[34m`： 蓝色
+> * `\e[35m`： 紫色
+> * `\e[36m`： 青色
+> * `\e[37m`： 白色
+> * `\e[40m`： 黑底
+> * `\e[41m`： 红底
+> * `\e[42m`： 绿底
+> * `\e[43m`： 黄底
+> * `\e[44m`： 蓝底
+> * `\e[45m`： 紫底
+> * `\e[46m`： 青底
+> * `\e[47m`： 白底
+>
+> 背景颜色：
+>
+> * `\e[90m`： 黑底黑字
+> * `\e[91m`： 黑底红字
+> * `\e[92m`： 黑底绿字
+> * `\e[93m`： 黑底黄字
+> * `\e[94m`： 黑底蓝字
+> * `\e[95m`： 黑底紫字
+> * `\e[96m`： 黑底青字
+> * `\e[97m`： 黑底白字
+>
+> 控制属性：
+>
+> * `\e[0m` 关闭所有属性
+> * `\e[1m` 设置高亮度
+> * `\e[4m` 下划线
+> * `\e[5m` 闪烁
+> * `\e[7m` 反显，撞色显示，显示为白字黑底，或者显示为黑底白字
+> * `\e[8m` 消影，字符颜色将会与背景颜色相同
+> * `\e[nA` 光标上移 n 行
+> * `\e[nB` 光标下移 n 行
+> * `\e[nC` 光标右移 n 行
+> * `\e[nD` 光标左移 n 行
+> * `\e[y;xH` 设置光标位置
+> * `\e[2J` 清屏
+> * `\e[K` 清除从光标到行尾的内容
+> * `\e[s` 保存光标位置
+> * `\e[u` 恢复光标位置
+> * `\e[?25` 隐藏光标
+> * `\e[?25h` 显示光标
 
 ### `man`命令
 
 安装包：
 
-```
+```bash
 # openSUSE
 sudo zypper install man-pages man-pages-zh_CN man-pages-posix
 
@@ -686,13 +684,13 @@ sudo apt install manpages-dev manpages-posix-dev
 
 更新mandb
 
-```
+```bash
 mandb
 ```
 
 查找某个命令的man信息，例如查找`crontab`命令的信息。
 
-```
+```bash
 # 精确查找
 man -f crontab
 whatis crontab
@@ -704,7 +702,7 @@ apropos crontab
 
 输出结果如下：
 
-```
+```console
 crontab (5)          - files used to schedule the execution of programs
 crontab (1)          - maintains crontab files for individual users
 crontab (1p)         - schedule periodic background work
@@ -712,7 +710,7 @@ crontab (1p)         - schedule periodic background work
 
 查找crontab第5章的内容，则可以执行：
 
-```
+```console
 man 5 crontab
 ```
 
@@ -732,7 +730,7 @@ man 5 crontab
 
 举例：
 
-```
+```bash
 # 将输入字符由大写转换为小写
 $ echo "HELLO WORLD" | tr 'A-Z' 'a-z'
 hello world
@@ -767,7 +765,7 @@ hello 1234 world 4567
 
 举例：
 
-```
+```bash
 # ping命令的输出，不仅输出到屏幕，也同时写入文件output.txt中（覆盖式写入）。
 $ ping www.baidu.com | tee output.txt
 
@@ -787,7 +785,8 @@ output.txt
 test.txt
 ```
 
-技巧：在vi使用中，通过`tee`命令提升文件写入权限。
+技巧：
+> 在vi使用中，通过`tee`命令提升文件写入权限。
 
 比如非root用户执行`vi /etc/hosts`，在vi中使用`:w !sudo tee %`可以提高权限保存这个文件。
 
@@ -795,7 +794,7 @@ test.txt
 
 安装语言包。
 
-```
+```bash
 # Ubuntu
 sudo apt install locales-all
 
@@ -808,7 +807,7 @@ sudo zypper install glibc-locale glibc-locale-32bit glibc-locale-base
 
 查看当前语言设置：
 
-```
+```bash
 echo $LANG
 
 locale -a
@@ -820,7 +819,7 @@ localectl list-locales
 
 全局locale配置(Global locale settings)。
 
-```
+```bash
 # openSUSE & Rocky
 sudo cat /etc/locale.conf
 
@@ -830,30 +829,27 @@ sudo cat /etc/default/locale
 
 临时修改当前session的locale。
 
-```
+```bash
 LANG="zh_CN.utf8" 
 ```
 
 永久修改locale设置。
 
-```
+```bash
 sudo localectl set-locale LANG=zh_CN.utf8
 ```
 
 修改回原设置。
 
-```
+```bash
 sudo localectl set-locale LANG=en_US.utf8
 ```
 
-!!! Tips
-    Mac OS ssh登陆Linux是终端提示`/usr/bin/manpath: can't set the locale; make sure $LC_* and $LANG are correct`
+Tips:
 
-    解决方法：在本地mac电脑上修改/etc/ssh/ssh_config或者/etc/ssh/ssh_config文件，删除掉或者注释掉以下配置内容：
-    
-    `#    SendEnv LANG LC_*`
-    
-    如果使用的是`Iterm2`，可以打开`iterm2`的`preferences` -> `Profiles` -> `Terminal`菜单里关闭`Set locale variables automatically`选项。
+> * Mac OS ssh登陆Linux是终端提示`/usr/bin/manpath: can't set the locale; make sure $LC_* and $LANG are correct`
+> * 解决方法：在本地mac电脑上修改/etc/ssh/ssh_config或者/etc/ssh/ssh_config文件，删除掉或者注释掉这一行配置内容 `#    SendEnv LANG LC_*`。
+> * 如果使用的是`Iterm2`，可以打开`iterm2`的`preferences` -> `Profiles` -> `Terminal`菜单里关闭`Set locale variables automatically`选项。
 
 ### 符号`$`用法
 
@@ -861,7 +857,7 @@ sudo localectl set-locale LANG=en_US.utf8
 
 * `$`，获取变零值。
   
-  ```
+  ```bash
   x=1
   echo $x
   echo "$x"
@@ -869,7 +865,7 @@ sudo localectl set-locale LANG=en_US.utf8
 
 建议使用"$x"，以避免shell编程中产生歧义。如下例：
 
-```
+```bash
 s="this is a string"
 echo $s
 echo "this is a string"
@@ -882,20 +878,20 @@ echo "this is a string"
 
 生成一个测试脚本。
 
-```
+```bash
 echo 'echo $0 $1 $2 $#' > test.sh
 chmod 755 test.sh
 ```
 
 验证各个参数位置。
 
-```
+```bash
 ./test.sh a b c d e
 ```
 
 输出结果：
 
-```
+```bash
 ./test.sh a b 5
 ```
 
@@ -912,7 +908,7 @@ chmod 755 test.sh
 
 下面例子中，`$abc`无结果输出，`${a}bc`输出结果`stringbc`，通过{}指定了某个字符属于变量。
 
-```
+```bash
 a="string"
 echo ${a}bc
 echo $abc
@@ -922,7 +918,7 @@ echo $abc
 
 `${#}`是返回变量值的长度。
 
-```
+```bash
 s='this is a string'
 echo "$s"
 echo "${#s}"
@@ -936,7 +932,7 @@ echo "${#s}"
 
 `ls`是一个命令，所以返回值是`0`。`tom`是一个不存在的命令，则返回`127`。
 
-```
+```bash
 ls
 echo $?
 
@@ -952,7 +948,7 @@ echo $?
 
 `$()`的优势是直观，在转移处理时，比反引号直观容易些。
 
-```
+```bash
 echo $(ls)
 # test.sh
 
@@ -966,7 +962,7 @@ echo $(cat $(ls))
 
 `$[]`是表达式计算。
 
-```
+```bash
 echo $[3 + 2]
 ```
 
@@ -995,7 +991,7 @@ echo $[3 + 2]
 
 `!!`会先输出上一条命令`cat test.sh`，然后再执行这条命令，第二行即执行结果。
 
-```
+```bash
 [vagrant@lizard:~]$ cat test.sh 
 echo $0 $1 $2 $#
 [vagrant@lizard:~]$ !!
@@ -1007,7 +1003,7 @@ echo $0 $1 $2 $#
 
 `$$` 输出当前进程的pid。
 
-```
+```bash
 echo $$
 ```
 
@@ -1017,7 +1013,7 @@ echo $$
 
 创建一个文件`script.sh`包含下面的脚本。并添加执行权限`chmod 755 script.sh`。
 
-```
+```bash
 echo '$@以变量方式引用传入参数：'
 
 for x in "$@"
@@ -1035,7 +1031,7 @@ done
 
 输出结果：
 
-```
+```bash
 $@以变量方式引用传入参数：
 a
 b

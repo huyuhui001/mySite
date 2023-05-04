@@ -7,13 +7,6 @@
 
     SUSE Enterprise Storage Foundation is the learning memo for certificate of SES Basic Ops and Data Access. 
 
-
-
 * Linux SRE
 * SUSE Linux Adminstration
 * SUSE Enterprise Storage Foundation
-
-
-
-
-
