@@ -1,6 +1,6 @@
-# Linux 基础
+# 第一章 Linux基础
 
-## 官方文档
+## 1.官方文档
 
 [Rocky Linux Instructional Books](https://docs.rockylinux.org/books/)
 
@@ -8,15 +8,13 @@
 
 [Ubuntu Documentation](https://docs.ubuntu.com/)
 
-## 系统环境
+## 2.系统环境
 
-### Rocky
+### 2.1.Rocky
 
 使用版本：`Rocky 9.0`。
 
-从网站下载Rocky系统[ISO镜像](https://www.rockylinux.org/download/)。
-
-通过`wget`命令下载Rocky系统ISO镜像。
+从网站下载Rocky系统[ISO镜像](https://www.rockylinux.org/download/)，或者通过`wget`命令下载Rocky系统ISO镜像。
 
 ```bash
 wget https://download.rockylinux.org/pub/rocky/9.0/isos/x86_64/Rocky-9.0-x86_64-dvd.iso
@@ -84,7 +82,7 @@ sed -e 's|^mirrorlist=|#mirrorlist=|g' \
 dnf makecache
 ```
 
-### Ubuntu
+### 2.2.Ubuntu
 
 使用版本：`Ubuntu 2204`。
 
@@ -139,7 +137,7 @@ sudo hostnamectl set-hostname ubuntu2204 --pretty
 > * 执行命令`adduser username sudo`把指定用户加入`sudo`组。
 > * 执行命令`visudo`进行必要的修正或修改。
 
-### openSUSE
+### 2.3.openSUSE
 
 使用版本：`Leap 15.4`。
 
@@ -165,12 +163,12 @@ sudo hostnamectl set-hostname lizard
 sudo hostnamectl set-hostname lizard --pretty
 ```
 
-## 常用命令
+## 3.常用命令
 
 说明：
 > 默认当前操作用户为`vagrant`。
 
-### 修改提示符风格
+### 3.1.修改提示符风格
 
 执行下面命令可以看到当前系统的命令提示符格式。
 
@@ -272,7 +270,7 @@ PS1="\[\e[37;40m\][\[\e[32;40m\]\u\[\e[35;40m\]@\h:\[\e[36;40m\]\w\[\e[0m\]]\$ "
 
 将上述PS1的设定，追加到当前用户的`~/.bashrc`文件末尾，以实现对当前用户的提示符风格做持久保存。
 
-### Linux的内外部命令
+### 3.2.Linux的内外部命令
 
 *内部命令* (internal command)实际上是shell程序的一部分，包含的是一些比较简单的linux系统命令，这些命令由shell程序识别并在shell程序内部完成运行，通常在linux系统加载运行时shell就被加载并驻留在系统内存中。
 
@@ -306,21 +304,21 @@ whereis cp
 whereis cd
 ```
 
-### CPU信息
+### 3.3.CPU信息
 
 ```bash
 lscpu
 cat /proc/cpuinfo
 ```
 
-### 内存使用状态
+### 3.4.内存使用状态
 
 ```bash
 free
 cat /proc/meminfo
 ```
 
-### 硬盘和分区情况
+### 3.5.硬盘和分区情况
 
 ```bash
 lsblk
@@ -377,7 +375,7 @@ sda           8:0    0   50G  0 disk
 sr0          11:0    1  7.9G  0 rom
 ```
 
-### 系统架构信息
+### 3.6.系统架构信息
 
 ```bash
 arch
@@ -385,7 +383,7 @@ arch
 
 openSUSE，Ubuntu和Rocky的返回结果都是`x86_64`。
 
-### 内核版本
+### 3.7.内核版本
 
 ```bash
 uname -r
@@ -404,7 +402,7 @@ uname -r
 5.14.0-70.17.1.el9_0.x86_64
 ```
 
-### 操作系统版本
+### 3.8.操作系统版本
 
 ```bash
 cat /etc/os-release
@@ -435,7 +433,7 @@ sudo apt install lsb-release
 
 在Rocky 9中，找不到`lsb-release`相关的包。
 
-### 日期和时间
+### 3.9.日期和时间
 
 显示默认格式的当前日期。
 
@@ -534,7 +532,7 @@ sudo zypper se util-linux
 sudo yum install util-linux
 ```
 
-### 用户登录信息
+### 3.10.用户登录信息
 
 * `whoami`：当前登录用户
 * `who`：系统当前所有的登录会话
@@ -550,7 +548,7 @@ Ubuntu 2204新安装后没有这个文件，需要自己创建。
 openSUSE新安装后有预定义的信息。
 Rocky9 新安装后有该文件，空白文件无内容。
 
-### 会话管理工具
+### 3.11.会话管理工具
 
 `screen`工具
 
@@ -589,7 +587,7 @@ sudo zypper in tmux
 * `tmux info`                   (List all sessions info)
 * `tmux split-window`           (Split window)
 
-### `echo`命令
+### 3.12.`echo`命令
 
 `echo`命令中可以输出变量，如果变量是用是单引号引起来，表示这个变量不用IFS替换！！
 
@@ -666,7 +664,7 @@ echo -e "\e[93m 黑底黄字 \e[0m"
 > * `\e[?25` 隐藏光标
 > * `\e[?25h` 显示光标
 
-### `man`命令
+### 3.13.`man`命令
 
 安装包：
 
@@ -722,7 +720,7 @@ man 5 crontab
 * `/^SELinux` : search the word SELinux
 * `/section OPTIONS` : go to the section OPTIONS
 
-### `tr`命令
+### 3.14.`tr`命令
 
 `tr`命令可以对来自标准输入的字符进行替换、压缩和删除。它可以将一组字符变成另一组字符。
 
@@ -759,7 +757,7 @@ $ echo "HELLO 1234 WORLD 4567" | tr '[:upper:]' '[:lower:]'
 hello 1234 world 4567
 ```
 
-### `tee`命令
+### 3.15.`tee`命令
 
 `tee`命令基于标准输入读取数据，标准输出或文件写入数据。
 
@@ -790,7 +788,7 @@ test.txt
 
 比如非root用户执行`vi /etc/hosts`，在vi中使用`:w !sudo tee %`可以提高权限保存这个文件。
 
-### 语言环境LANG
+### 3.16.语言环境LANG
 
 安装语言包。
 
@@ -851,7 +849,7 @@ Tips:
 > * 解决方法：在本地mac电脑上修改/etc/ssh/ssh_config或者/etc/ssh/ssh_config文件，删除掉或者注释掉这一行配置内容 `#    SendEnv LANG LC_*`。
 > * 如果使用的是`Iterm2`，可以打开`iterm2`的`preferences` -> `Profiles` -> `Terminal`菜单里关闭`Set locale variables automatically`选项。
 
-### 符号`$`用法
+### 3.17.符号`$`用法
 
 符号`$`的用法：
 

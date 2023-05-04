@@ -1,4 +1,4 @@
-# 正则表达式
+# 第五章 正则表达式
 
 正则表达式分两类：
 
@@ -28,8 +28,8 @@
 `()`：匹配一个整体信息，也可以接后项引用
 `{}`：定义前边字符出现几次
 
-!!! Tips
-    `grep -E` 或者`egrep`只是表示扩展正则，不代表加了e就表示转义了。 当`grep`使用扩展正则的符号时候需要用`\`转义为通配符才能使用。
+提示：
+> `grep -E` 或者`egrep`只是表示扩展正则，不代表加了e就表示转义了。 当`grep`使用扩展正则的符号时候需要用`\`转义为通配符才能使用。
 
 ## 字符匹配
 
@@ -51,27 +51,19 @@
 位置标记锚点（position marker anchor）是标识字符串位置的正则表达式。默认情况下，正则表达式所匹配的字符可以出现在字符串中任何位置。
 
 * `^`：行首锚定，指定了匹配正则表达式的文本必须起始于字符串的首部。
-  
-  * 例如：`^tux`能够匹配以`tux`起始的行
-
+      * 例如：`^tux`能够匹配以`tux`起始的行
 * `$`：行尾锚定，指定了匹配正则表达式的文本必须结束于目标字符串的尾部。
-
 * `\<`或`\b`：词首锚定，用于单词模式匹配左侧。（单词是有字母、数字、下划线组成）
-
 * `\>`或`\b`：词尾锚定，用于单词模式匹配右侧。（单词是有字母、数字、下划线组成）
-
 * `^PATTERN$`：用模式PATTERN匹配整行。
-
 * `^$`：匹配空行。
-
 * `^[[:space:]]*$`：匹配空白行（整行）。
-
 * `\<PATTERN\>`：匹配整个单词。（单词是有字母、数字、下划线组成）
 
 关于行首锚定和词首锚定，对比下面例子。词尾锚定也是类似情况。
 `;`和`-`都被认定为单词分隔符。
 
-```
+```bash
 # 符合词首匹配
 $ echo "tux_01-tux02" | grep '\<tux'
 tux_01-tux02
@@ -97,21 +89,21 @@ $ echo "xut_01-tux02" | grep '^tux'
 标识符是正则表达式的基础组成部分。它定义了那些为了匹配正则表达式，必须存在（或不存在）的字符。
 
 * `A`字符：正则表达式必须匹配该字符。
-  
+
   * 例如：`A`能够匹配字符`A`。
 
 * `.`：匹配任意一个字符。
-  
+
   * 例如：`Hack.`能够匹配`Hackl`和`Hacki`，但是不能匹配`Hackl2`或`Hackil`，它只能匹配单个字符。
 
-* `[]`：匹配中括号内的任意一个字符。中括号内可以是一个字符组或字符范围     
-  
+* `[]`：匹配中括号内的任意一个字符。中括号内可以是一个字符组或字符范围
+
   * 例如：`coo[kl]`能够匹配`cook`或`cool`
   * 例如：`[0-9]`匹配任意单个数字
   * 例如：`[.0-9]`匹配`.`或任意单个数字（中括号内的`.`就代表字符`.`，不代表任意单个字符）
 
-* `[^]`：匹配不在中括号内的任意一个字符。中括号内可以是一个字符组或字符范围     
-  
+* `[^]`：匹配不在中括号内的任意一个字符。中括号内可以是一个字符组或字符范围
+
   * 例如：`9[^01]`能够匹配`92`和`93`，但是不匹配`91`和`90`。
   * 例如：`A[^0-9]`匹配A以及随后除数字外的任意单个字符
 
@@ -128,7 +120,7 @@ $ echo "xut_01-tux02" | grep '^tux'
 一个标识符可以出现一次、多次或是不出现。数量修饰符定义了模式可以出现的次数。
 
 * `?`：匹配之前的项0次或1次。
-  
+
   * 例如：`colou?r`能够匹配`color`或`colour`，但是不能匹配`colouur`。
 
 * `*`：匹配之前的项0次或多次。
@@ -184,7 +176,7 @@ $ echo "xut_01-tux02" | grep '^tux'
 
 举例：匹配正负数
 
-```
+```bash
 $ echo -1 -2 12 -125 23 | grep '\-\?[0-9]\+' 
 -1 -2 12 -125 3log 23 it4u
 
@@ -206,7 +198,7 @@ $ echo -1 -2 12 -125 3log 23 it4u | grep -E '(-)?[0-9]+'
 
 举例：获取IP地址
 
-```
+```bash
 ifconfig eth0
 eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
         inet 192.168.10.210  netmask 255.255.255.0  broadcast 192.168.10.255
@@ -236,23 +228,23 @@ ifconfig eth0 | grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}'
 
 匹配空行和非空行：
 
-```
-$ grep '^$' /etc/profile
-$ grep -v '^$' /etc/profile
+```bash
+grep '^$' /etc/profile
+grep -v '^$' /etc/profile
 ```
 
 匹配非空行和非#开头的行：（三种方法）
 
-```
-$ grep -v '^$' /etc/profile | grep -v '^#'
-$ grep -v '^$\|#' /etc/profile
-$ grep '^[^$#]' /etc/profile
+```bash
+grep -v '^$' /etc/profile | grep -v '^#'
+grep -v '^$\|#' /etc/profile
+grep '^[^$#]' /etc/profile
 ```
 
 注意，如果写成下面这样，则不会过滤掉空行，`[$]`会被视为`$`符号。
 所以正则表达式的元字符放在中括号`[]`内就被视为普通字符。
 
-```
+```bash
 grep -v '^[$#]' /etc/profile
 ```
 
@@ -287,7 +279,7 @@ grep -v '^[$#]' /etc/profile
 
 匹配用户：
 
-```
+```bash
 grep root /etc/passwd
 root:x:0:0:root:/root:/bin/bash
 
@@ -301,7 +293,7 @@ $ grep '$USER' /etc/passwd
 
 匹配关键字：
 
-```
+```bash
 $ grep processor /proc/cpuinfo
 processor       : 0
 processor       : 1
@@ -321,7 +313,7 @@ cpu family
 
 通过grep进行文件比较。
 
-```
+```bash
 # 最后一行是空行
 $ cat f1
 a
@@ -364,14 +356,14 @@ f
 2
 ```
 
-!!! Tips
-    `grep -wvf f1 f2` 或者`grep -w -v -f f1 f2`中，`-f`只能作为最后一个参数，否则会报错。
+提示：
+> `grep -wvf f1 f2` 或者`grep -w -v -f f1 f2`中，`-f`只能作为最后一个参数，否则会报错。
 
 体会基本正则和扩展正则的差异。
 
 例1：转义。
 
-```
+```bash
 # 下面几个命令返回的结果是一样的。
 $ grep "root\|bash" /etc/passwd
 $ grep -E "root|bash" /etc/passwd
@@ -383,16 +375,16 @@ $ grep "root|bash" /etc/passwd
 
 例2：下面4个命令返回同样的结果。
 
-```
-$ grep "root" /etc/passwd
-$ grep -E "root" /etc/passwd
-$ grep "\<root\>" /etc/passwd
-$ grep -E "\<root\>" /etc/passwd
+```bash
+grep "root" /etc/passwd
+grep -E "root" /etc/passwd
+grep "\<root\>" /etc/passwd
+grep -E "\<root\>" /etc/passwd
 ```
 
 例3：行首行尾锚定。
 
-```
+```bash
 $ grep "^\(.*\)\>.*\<\1$" /etc/passwd
 $ grep -E "^(.*)\>.*\<\1$" /etc/passwd
 $ egrep "^(.*)\>.*\<\1$" /etc/passwd
@@ -403,7 +395,7 @@ halt:x:7:0:halt:/sbin:/sbin/halt
 
 例4：三种方法求和计算，运用`grep`，`cut`，`bc`和`paste`命令。
 
-```
+```bash
 $cat age
 Jason=20
 Tom=30
@@ -440,8 +432,8 @@ $  grep -Eo "[0-9]+" age | paste -s -d "+" | bc
 
 `sed`命令格式：
 
-```
-$ sed [option] command file
+```bash
+sed [option] command file
 ```
 
 `option`常用选项：
@@ -484,7 +476,7 @@ $ sed [option] command file
 
 创建一个`testfile`文件。
 
-```
+```bash
 $ cat <<EOF > testfile
 HELLO LINUX!
 Linux is a free unix-type opterating system.
@@ -500,7 +492,7 @@ EOF
 
 匹配定位文件`testfile`第二行，并输出（包含匹配第二行和输出第二行）。
 
-```
+```bash
 # nl testfile | sed '2p'
      1    HELLO LINUX!
      2    Linux is a free unix-type opterating system.
@@ -516,28 +508,28 @@ EOF
 
 匹配定位文件`testfile`第二行，不输出。
 
-```
+```bash
 # nl testfile | sed -n '2p'
      2    Linux is a free unix-type opterating system.
 ```
 
 匹配定位文件`testfile`最后一行。
 
-```
+```bash
 $ nl testfile | sed -n '$p'
      9    Wiki
 ```
 
 匹配定位文件`testfile`倒数第二行。
 
-```
+```bash
 # sed -n "$(echo $[`cat testfile | wc -l`-1])p" testfile
 Tesetfile
 ```
 
 将`testfile`的内容列出第2～3行，并且打印行号。
 
-```
+```bash
 $  nl testfile | sed -n '2,3p'
      2  Linux is a free unix-type opterating system.
      3  This is a linux testfile!
@@ -545,7 +537,7 @@ $  nl testfile | sed -n '2,3p'
 
 将`testfile`的内容从第2行开始，向后输出额外的3行，并且打印行号。
 
-```
+```bash
 $ nl testfile | sed -n '2,+3p'
      2  Linux is a free unix-type opterating system.
      3  This is a linux testfile!
@@ -555,7 +547,7 @@ $ nl testfile | sed -n '2,+3p'
 
 将`testfile`的内容从第2行开始，向后以2为步进单位输出所有匹配行，并且打印行号（即，从第2行开始输出偶数行）。
 
-```
+```bash
 nl testfile | sed -n '2~2p'
      2  Linux is a free unix-type opterating system.
      4  Linux test
@@ -565,7 +557,7 @@ nl testfile | sed -n '2~2p'
 
 将`testfile`的内容从第2行开始，向后以2为步进单位删除所有匹配行，输出剩余行，并且打印行号（即，从第2行开始删除偶数行，输出奇数行）。
 
-```
+```bash
 $ nl testfile | sed '2~2d'
      1  HELLO LINUX!
      3  This is a linux testfile!
@@ -576,7 +568,7 @@ $ nl testfile | sed '2~2d'
 
 将`testfile`的内容输出，删除第2行和第5行，并打印行号。
 
-```
+```bash
 $ nl testfile | sed -e '2d' -e '5d'
 $ nl testfile | sed -e '2d;5d'
 $ nl testfile | sed '2d;5d'
@@ -592,7 +584,7 @@ $ nl testfile | sed '2d;5d'
 将`testfile`的内容输出，输出区间是从行首`L`的行到行首`G`的行结束。不修改原文件。
 如果行首匹配不到，则无结果输出；如果行尾匹配不到，则输出到文件结束。
 
-```
+```bash
 $ sed -n '/^L/,/^G/p' testfile
 Linux is a free unix-type opterating system.
 This is a linux testfile!
@@ -602,7 +594,7 @@ Google
 
 将`testfile`的内容输出，且在第6行后加上`I love Linux`。不修改原文件。
 
-```
+```bash
 $ sed -e '6a I love Linux' testfile
 HELLO LINUX!
 Linux is a free unix-type opterating system.
@@ -618,7 +610,7 @@ Wiki
 
 将`testfile`的内容列出并且打印行号，且在第6行后添加`I love Linux`。不修改原文件。
 
-```
+```bash
 $ nl testfile | sed '6a I love Linux'
 $ nl testfile | sed '6a\I love Linux'
      1    HELLO LINUX!
@@ -635,7 +627,7 @@ I love Linux
 
 将`testfile`的内容列出并且打印行号，且在第3行前添加`I am a journer learner`。不修改原文件。
 
-```
+```bash
 $ nl testfile | sed '3i\I am a journer learner'
      1    HELLO LINUX!
      2    Linux is a free unix-type opterating system.
@@ -651,7 +643,7 @@ I am a journer learner
 
 将`testfile`的内容列出并且打印行号，且在第3行前添加三行内容`Add line 1`，`Add line 2`，`Add line 3`。用符合`\`进行换行。不修改原文件。
 
-```
+```bash
 $ nl testfile | sed '3i\Add line 1 \
 Add line 2 \
 Add line 3'
@@ -671,7 +663,7 @@ Add line 3
 
 将`testfile`的内容列出并且打印行号，且将第2-5行的内容取代成为`replaced`。不修改原文件。
 
-```
+```bash
 $ nl testfile | sed '2,5c\replaced'
 $ nl testfile | sed '2,5c replaced'
 $ nl testfile | sed '2,5creplaced'
@@ -685,7 +677,7 @@ replaced
 
 将`testfile`的内容列出并且打印行号，且删除第2~5行。不修改原文件。
 
-```
+```bash
 $ nl testfile | sed '2,5d'
      1    HELLO LINUX!
      6    Taobao
@@ -696,7 +688,7 @@ $ nl testfile | sed '2,5d'
 
 将`testfile`的内容列出并且打印行号，且删除第5行到最后一行。
 
-```
+```bash
 $ nl testfile | sed '5,$d'
      1    HELLO LINUX!
      2    Linux is a free unix-type opterating system.
@@ -706,14 +698,14 @@ $ nl testfile | sed '5,$d'
 
 匹配定位文件`testfile`中包含关键字`linux`的行。
 
-```
+```bash
 $ sed -n '/linux/p' testfile
 This is a linux testfile!
 ```
 
 匹配定位命令`df`输出中以`/dev/sd`关键字开头的行。（需要转义符`\`）
 
-```
+```bash
 $ df | sed -n '/^\/dev\/sd/p'
 /dev/sda2      102750208 7077280  92055312   8% /
 /dev/sda2      102750208 7077280  92055312   8% /.snapshots
@@ -730,7 +722,7 @@ $ df | sed -n '/^\/dev\/sd/p'
 
 匹配定位命令`df`输出中不以`/dev/sd`关键字开头的行。通过`!p`进行求反输出。
 
-```
+```bash
 $ df | sed -n '/^\/dev\/sd/!p'
 Filesystem     1K-blocks    Used Available Use% Mounted on
 devtmpfs            4096       0      4096   0% /dev
@@ -742,7 +734,7 @@ tmpfs             394240       0    394240   0% /run/user/1000
 
 匹配定位命令`df`输出中不以`/dev/sd`和`tmp`关键字开头的行。
 
-```
+```bash
 $ df | sed '/^\/dev\/sd/d;/^tmp/d'
 Filesystem     1K-blocks    Used Available Use% Mounted on
 devtmpfs            4096       0      4096   0% /dev
@@ -754,7 +746,7 @@ devtmpfs            4096       0      4096   0% /dev
 
 搜索文件`testfile`所有包含`oo`关键字的行并匹配输出。不修改原文件。
 
-```
+```bash
 $ sed -n '/ooo/p' testfile
 Banbooob
 
@@ -765,7 +757,7 @@ Banbooob
 
 搜索文件`testfile`所有包含`oo`关键字的行并删除。不修改原文件。
 
-```
+```bash
 $ sed '/oo/d' testfile
 HELLO LINUX!
 Linux is a free unix-type opterating system.
@@ -778,7 +770,7 @@ Wiki
 
 搜索文件`testfile`所有包含`oo`的行，把`oo`替换为`kk`，再输出这行。不修改原文件。
 
-```
+```bash
 $ sed -n '/oo/{s/oo/kk/;p;q}' testfile
 $ sed -ne '/oo/{s/oo/kk/;p;q}' testfile
 Gkkgle
@@ -786,7 +778,7 @@ Gkkgle
 
 将`testfile`的每行中第一次出现`ao`的替换成`HH`。
 
-```
+```bash
 $ sed 's/ao/HH/' testfile
 HELLO LINUX!
 Linux is a free unix-type opterating system.
@@ -801,7 +793,7 @@ Wiki
 
 下面是把`testfile`的匹配到`ao`的行替换成`HH`。
 
-```
+```bash
 sed '/ao/cHH' testfile
 HELLO LINUX!
 SUSE
@@ -816,7 +808,7 @@ Wiki
 
 搜索文件`testfile`所有包含`ao`的全部替换成`HH`。`g`表示全局匹配。不修改原文件。
 
-```
+```bash
 $ sed -e 's/ao/HH/g' testfile
 $ sed 's/ao/HH/g' testfile
 HELLO LINUX!
@@ -832,7 +824,7 @@ Wiki
 
 在文件`/etc/passwd`中查找匹配所有符合`r`开头`t`结尾且中间含任意两个字符的行，并在`t`字母后添加`er`。
 
-```
+```bash
 $ sed -nr 's/r..t/&er/gp' /etc/passwd
 rooter:x:0:0:rooter:/rooter:/bin/bash
 lp:x:493:487:Printering daemon:/var/spool/lpd:/usr/sbin/nologin
@@ -843,7 +835,7 @@ tester1:x:600:1530:"Test User1,terestuser1@abc.com":/home/tester1:/bin/bash
 
 将上述结果和原始内容进行对比，能更好的理解`s/r..t/&er`的操作。
 
-```
+```bash
 rooter:x:0:0:rooter:/rooter:/bin/bash
 root:x:0:0:root:/root:/bin/bash
 
@@ -862,7 +854,7 @@ tester1:x:600:1530:"Test User1,testuser1@abc.com":/home/tester1:/bin/bash
 
 体会`&`的位置不同的不同含义。
 
-```
+```bash
 # 附加在root单词后
 $ sed -n 's/root/&superman/p' /etc/passwd
 rootsuperman:x:0:0:root:/root:/bin/bash
@@ -874,7 +866,7 @@ supermanroot:x:0:0:root:/root:/bin/bash
 
 使用参数`-i`进行源文件修改。
 
-```
+```bash
 $ sed -i 's/ao/HH/' testfile
 $ cat testfile
 HELLO LINUX!
@@ -890,7 +882,7 @@ Wiki
 
 源文件修改前，备份在新文件`testfile.new`。
 
-```
+```bash
 $ sed -i.new 's/ao/HH/' testfile
 
 $ cat testfile.new
@@ -918,7 +910,7 @@ Wiki
 
 范例：除指定文件外，其余都删除。
 
-```
+```bash
 $ touch {1..9}file.txt
 
 $ ls
@@ -940,7 +932,7 @@ $ ls | grep -Ev '(3|5|7)file\.txt'
 
 下面四种方法实现同样的功能
 
-```
+```bash
 $ rm `ls | grep -Ev '(3|5|7)file\.txt'`
 $ ls | sed -n '/^[357]file.txt/!p' | xargs rm
 $ ls | grep -Ev '(3|5|7)file\.txt' | sed -n 's/.*/rm &/p' | bash
@@ -953,7 +945,7 @@ $ ls
 
 后向引用`\0` `\1` `\2`等。
 
-```
+```bash
 $ $echo 123456789 | sed -nE 's/(123)(456)(789)/\1/p'
 123
 
@@ -972,7 +964,7 @@ $ echo 123456789 | sed -nE 's/(123)(456)(789)/\1xyz\2/p'
 
 范例：获取分区利用率
 
-```
+```bash
 $ df | sed -En '/^\/dev\/sd/p'
 /dev/sda2      102750208 7079236  92053692   8% /
 /dev/sda2      102750208 7079236  92053692   8% /.snapshots
@@ -1004,7 +996,7 @@ $ df | sed -En '/^\/dev\/sd/s#.*([0-9]+)%.*#\1#p'
 
 体会下面空格和括弧带来的不同。
 
-```
+```bash
 $ df | sed -En '/^\/dev\/sd/s# .*([0-9]+)%.*# \1#p'
 /dev/sda2 8
 /dev/sda2 8
@@ -1047,7 +1039,7 @@ $ df | sed -En '/^\/dev\/sd/s#( .*)([0-9]+)%.*# \2#p'
 
 范例：取得当前IP地址。
 
-```
+```bash
 $ ifconfig eth0
 eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
         inet 192.168.10.210  netmask 255.255.255.0  broadcast 192.168.10.255
@@ -1082,7 +1074,7 @@ $ ifconfig eth0 | sed -En '2s/(.*inet )([0-9].*)(netmask.*)/\2/p'
 
 使用`\0`输出全部变量。
 
-```
+```bash
 $ ifconfig eth0 | sed -En '2s/(.*inet )([0-9].*)(netmask.*)/\0/p'
         inet 192.168.10.210  netmask 255.255.255.0  broadcast 192.168.10.255
 
@@ -1098,7 +1090,7 @@ netmask 255.255.255.0  broadcast 192.168.10.255
 
 对比下面两个指令的匹配差异。
 
-```
+```bash
 $ ifconfig eth0 | sed -n '2s/^.*inet //p' | sed -n 's/ netmask.*//p'
 192.168.10.210
 
@@ -1115,7 +1107,7 @@ $ ifconfig eth0 | sed -n '2s/^.*inet //p' | sed -n 's/netmask.*//p'
 范例：取基名和目录名。
 （`/etc/sysconfig/network-scripts/`目录在Rocky9中默认已创建，在openSUSE和Ubuntu中没有）
 
-```
+```bash
 # 取目录名
 $ echo "/etc/sysconfig/network-scripts/" | sed -E 's#(^/.*/)([^/]+/?)#\1#'
 $ echo "/etc/sysconfig/network-scripts/" | sed -E 's/(^\/.*\/)([^\/]+\/?)/\1/'
@@ -1137,7 +1129,7 @@ dummyfille
 
 范例：取文件名和文件扩展名
 
-```
+```bash
 $ echo 1_.file.tar.gz | sed -En 's/(.*)\.([^.]+)$/\1/p'
 $ echo 1_.file.tar.gz | sed -En 's@(.*)\.([^.]+)$@\1@p'
 1_.file.tar
@@ -1147,7 +1139,7 @@ $ echo 1_.file.tar.gz | sed -En 's@(.*)\.([^.]+)$@\2@p'
 gz
 ```
 
-```
+```bash
 $ echo 1_.file.tar.gz | grep -Eo '.*\.'
 1_.file.tar.
 
@@ -1157,7 +1149,7 @@ gz
 
 范例：将非`#`开头的行添加`#`
 
-```
+```bash
 $ cat <<EOF > testfile
 HELLO LINUX!
 Linux is a free unix-type opterating system.
@@ -1183,7 +1175,7 @@ $ sed -En 's/^[^#](.*)/#\1/p' testfile
 
 范例：将`#`开头的行删除`#`
 
-```
+```bash
 $ cat <<EOF > testfile
 HELLO LINUX!
 Linux is a free unix-type opterating system.
@@ -1212,21 +1204,21 @@ Wiki
 
 `sed`保持空间（hold space）的例子：
 
-- `d`：删除pattern space的内容，开始下一个循环。
+* `d`：删除pattern space的内容，开始下一个循环。
 
-- `D`：如果模式空间保护换行符，则删除直到第一个换行符到模式空间中的文本，并不读取新的输入行，而使用合成的模式空间重新启动循环。如果模式空间不包含换行符，则类似`d`命令启动正常的新循环。
+* `D`：如果模式空间保护换行符，则删除直到第一个换行符到模式空间中的文本，并不读取新的输入行，而使用合成的模式空间重新启动循环。如果模式空间不包含换行符，则类似`d`命令启动正常的新循环。
 
-- `h`、 `H`：复制/追加模式空间的内容到保持空间。
+* `h`、 `H`：复制/追加模式空间的内容到保持空间。
 
-- `g`、 `G`：复制/追加保持空间的内容到模式空间。
+* `g`、 `G`：复制/追加保持空间的内容到模式空间。
 
-- `n`、`N`：复制/追加匹配到的下一行到模式空间。
+* `n`、`N`：复制/追加匹配到的下一行到模式空间。
 
-- p：打印当前模式空间内容。
+* p：打印当前模式空间内容。
 
-- P：打印模式空间开头至`\n`的内容，并追加到默认输出之前。
+* P：打印模式空间开头至`\n`的内容，并追加到默认输出之前。
 
-- `x`：交换保持空间和模式空间的内容.
+* `x`：交换保持空间和模式空间的内容.
 
 举例解读1：
 
@@ -1242,7 +1234,7 @@ Wiki
 
 6. 以此类推。
 
-```
+```bash
 $ seq 10 | sed -n 'n;p'
 2
 4
@@ -1270,23 +1262,23 @@ seq 10 | sed 'n;p'
 
 举例解读2：
 
-- `seq 10`命令输出1～10个数字，每个数字一行。
+* `seq 10`命令输出1～10个数字，每个数字一行。
 
-- `sed`命令读取第一行到`1`到模式空间（覆盖）。
+* `sed`命令读取第一行到`1`到模式空间（覆盖）。
 
-- 执行命令`N`，即读取下一行，即第二行的`2`，追加到模式空间。所以当前模式空间有`1`和`2`这2行记录。
+* 执行命令`N`，即读取下一行，即第二行的`2`，追加到模式空间。所以当前模式空间有`1`和`2`这2行记录。
 
-- 执行`s/\n//`，把模式空间中的第一行的`1`后面的`\n`替换为空，即，原来模式空间的两行`1`和`2`现在合并为一行，即`12`。
+* 执行`s/\n//`，把模式空间中的第一行的`1`后面的`\n`替换为空，即，原来模式空间的两行`1`和`2`现在合并为一行，即`12`。
 
-- 读取第三行的`3`到模式空间（覆盖）。
+* 读取第三行的`3`到模式空间（覆盖）。
 
-- 执行命令`N`，即读取下一行，即第四行的`4`，追加到模式空间。所以当前模式空间有`3`和`4`这2行记录。
+* 执行命令`N`，即读取下一行，即第四行的`4`，追加到模式空间。所以当前模式空间有`3`和`4`这2行记录。
 
-- 执行`s/\n//`，把模式空间中的第一行`3`后面的`\n`替换为空，即，原来模式空间的两行`3`和`4`现在合并为一行，即`34`。
+* 执行`s/\n//`，把模式空间中的第一行`3`后面的`\n`替换为空，即，原来模式空间的两行`3`和`4`现在合并为一行，即`34`。
 
-- 以此类推。
+* 以此类推。
 
-```
+```bash
 $ seq 10 | sed 'N;s/\n//'
 12
 34
@@ -1297,35 +1289,35 @@ $ seq 10 | sed 'N;s/\n//'
 
 举例解读3：
 
-- `seq 10`命令输出1～10个数字，每个数字一行。
+* `seq 10`命令输出1～10个数字，每个数字一行。
 
-- `sed`命令读取第一行到`1`到模式空间（覆盖）。
+* `sed`命令读取第一行到`1`到模式空间（覆盖）。
 
-- 执行`!G`，即对第一行的`1`不执行`G`命令。
+* 执行`!G`，即对第一行的`1`不执行`G`命令。
 
-- 执行`h`命令，即把`1`从模式空间覆盖至保持空间。至此，保持空间和模式空间都存有`1`。
+* 执行`h`命令，即把`1`从模式空间覆盖至保持空间。至此，保持空间和模式空间都存有`1`。
 
-- 执行`$!d`，即不是最后一行就从模式空间删除，所以把`1`从模式空间中删除。
+* 执行`$!d`，即不是最后一行就从模式空间删除，所以把`1`从模式空间中删除。
 
-- `sed`命令读取第二行到`2`到模式空间（覆盖）。
+* `sed`命令读取第二行到`2`到模式空间（覆盖）。
 
-- 执行`!G`，即对第二行的`2`执行`G`命令，把`1`从保持空间追加到模式空间。至此，保持空间存有`1`，模式空间存有`2`和`1`。
+* 执行`!G`，即对第二行的`2`执行`G`命令，把`1`从保持空间追加到模式空间。至此，保持空间存有`1`，模式空间存有`2`和`1`。
 
-- 执行`h`命令，即把`2`和`1`从模式空间覆盖至保持空间。至此，保持空间和模式空间都存有`2`和`1`。
+* 执行`h`命令，即把`2`和`1`从模式空间覆盖至保持空间。至此，保持空间和模式空间都存有`2`和`1`。
 
-- 执行`$!d`，即不是最后一行就从模式空间删除，所以把`2`和`1`从模式空间中删除。
+* 执行`$!d`，即不是最后一行就从模式空间删除，所以把`2`和`1`从模式空间中删除。
 
-- 以此类推，直至读取最后一行10。此时，模式空间是`10`，保持空间存有`9`、`8`、`7`、`6`、`5`、`4`、`3`、`2`、`1`。
+* 以此类推，直至读取最后一行10。此时，模式空间是`10`，保持空间存有`9`、`8`、`7`、`6`、`5`、`4`、`3`、`2`、`1`。
 
-- 执行`!G`，即对最后一行的`10`执行`G`命令，把`9`、`8`、`7`、`6`、`5`、`4`、`3`、`2`、`1`从保持空间追加到模式空间。至此，保持空间存有`9`、`8`、`7`、`6`、`5`、`4`、`3`、`2`、`1`。，模式空间存有`10`、`9`、`8`、`7`、`6`、`5`、`4`、`3`、`2`、`1`。
+* 执行`!G`，即对最后一行的`10`执行`G`命令，把`9`、`8`、`7`、`6`、`5`、`4`、`3`、`2`、`1`从保持空间追加到模式空间。至此，保持空间存有`9`、`8`、`7`、`6`、`5`、`4`、`3`、`2`、`1`。，模式空间存有`10`、`9`、`8`、`7`、`6`、`5`、`4`、`3`、`2`、`1`。
 
-- 执行`h`命令，即把`10`、`9`、`8`、`7`、`6`、`5`、`4`、`3`、`2`、`1`从模式空间覆盖至保持空间。至此，保持空间和模式空间都存有`10`、`9`、`8`、`7`、`6`、`5`、`4`、`3`、`2`、`1`。
+* 执行`h`命令，即把`10`、`9`、`8`、`7`、`6`、`5`、`4`、`3`、`2`、`1`从模式空间覆盖至保持空间。至此，保持空间和模式空间都存有`10`、`9`、`8`、`7`、`6`、`5`、`4`、`3`、`2`、`1`。
 
-- 执行`$!d`，当前是最后一行，所以不从模式空间删除当前内容。
+* 执行`$!d`，当前是最后一行，所以不从模式空间删除当前内容。
 
-- 输出模式空间内容至屏幕。即10～1。
+* 输出模式空间内容至屏幕。即10～1。
 
-```
+```bash
 $ seq 10 | sed '1!G;h;$!d'
 10
 9
@@ -1341,7 +1333,7 @@ $ seq 10 | sed '1!G;h;$!d'
 
 其他一些例子：
 
-```
+```bash
 $ seq 10 | sed -n '/3/{g;1!p;};h'
 2
 $ seq 10 | sed -nr '/3/{n;p}'
@@ -1442,51 +1434,51 @@ $ seq 10 | sed -n '1!G;h;$p'
 
 `awk 'pattern{action statements;...}' {filenames}`
 
-- `pattern`表示`awk`在数据中查找的内容。是要表示的正则表达式，用斜杠括起来。
+* `pattern`表示`awk`在数据中查找的内容。是要表示的正则表达式，用斜杠括起来。
 
-- `action`是在找到匹配内容时所执行的一系列命令。 
+* `action`是在找到匹配内容时所执行的一系列命令。
 
-- `-F`：指定分隔符，后面紧跟单引号，单引号内是分隔符。如不加`-F`选项，则以空格或者tab作为分隔符。
+* `-F`：指定分隔符，后面紧跟单引号，单引号内是分隔符。如不加`-F`选项，则以空格或者tab作为分隔符。
 
-- `-v`：var=value，变量赋值。
+* `-v`：var=value，变量赋值。
 
 ### 工作过程
 
 1. 执行BEGIN{action;...}语句块中的语句。
-   
+
    1. BEGIN语句块再awk读入输入流之前被执行。
-   
+
    2. 是可选语句块。
-   
+
    3. 包含初始化变量，打印输出表格的表头等语句。
 
 2. 从文件或者标准输入stdin读取一行，然后执行pattern{action;...}语句块。从第一行开始到最后一行，逐行扫描文件，重复这个动作，直到文件或者输入流全部被读取完毕。
-   
+
    1. 可选语句块。
-   
+
    2. 如果没有提供pattern语句块，则默认执行{print}。
 
 3. 当读至文件或者输入流末尾时，执行END{action;...}语句块，比如打印所有行的分析结果这类汇总信息。也是一个可选语句块。
 
 ### 分隔符、域和记录
 
-- 有分隔符分隔的字段（列column，域field），标记`$1`、`$2`、`$3`、...、`$n`称为域标识，`$0`为所有域。注意，和shell变量中的`$`不同。
+* 有分隔符分隔的字段（列column，域field），标记`$1`、`$2`、`$3`、...、`$n`称为域标识，`$0`为所有域。注意，和shell变量中的`$`不同。
 
-- 每一行成为记录（record）。
+* 每一行成为记录（record）。
 
-- 如果省略action，则默认执行`print $0`操作。 
+* 如果省略action，则默认执行`print $0`操作。
 
 ### 常用action分类
 
-- Output statements: `print`, `printf`
+* Output statements: `print`, `printf`
 
-- Expressions: 算术、比较表达式
+* Expressions: 算术、比较表达式
 
-- Compund statements: 组合语句
+* Compund statements: 组合语句
 
-- Control statements: `if`, `while`语句
+* Control statements: `if`, `while`语句
 
-- Input statements: 
+* Input statements:
 
 动作`print`
 
@@ -1494,17 +1486,17 @@ $ seq 10 | sed -n '1!G;h;$p'
 
 说明：
 
-- 逗号分隔符
+* 逗号分隔符
 
-- 输出item可以是字符串，也可以是数值，是当前记录的字段、变量或`awk`表达式。
+* 输出item可以是字符串，也可以是数值，是当前记录的字段、变量或`awk`表达式。
 
-- 如果省略item，相当于`print $0`
+* 如果省略item，相当于`print $0`
 
-- 固定字符需要用双引号，而变量和数字不需要。
+* 固定字符需要用双引号，而变量和数字不需要。
 
 示例：
 
-```
+```bash
 $ seq 5 |awk '{print "hello awk"}'
 hello awk
 hello awk
@@ -1574,7 +1566,7 @@ swap swap
 
 分隔符中的定义`[[:space:]]+|%`的含义，一个或多个空格或者`%`作为分隔符。
 
-```
+```bash
 $ df |awk '{print $1,$5}'
 Filesystem Use%
 devtmpfs 0%
@@ -1611,7 +1603,7 @@ $ df |grep '^/dev/sd' |awk -F' +|%' '{print $1,$5}'
 
 示例：读取ifconfig输出结果中的ip地址。
 
-```
+```bash
 $ ifconfig eth0 | sed -n '2p' |awk '/netmask/{print $2}'
 192.168.10.210
 
@@ -1623,17 +1615,17 @@ $ ifconfig eth0 | sed -n '2p' |awk '{print $2}'
 
 根据pattern条件，过滤匹配的行，再做处理。
 
-- 如果未指定，即空模式，则匹配每一行。
+* 如果未指定，即空模式，则匹配每一行。
 
-- `/regular expression/`，仅处理能够模式匹配到的行（即结果为真），需要用`/`进行括起来。
+* `/regular expression/`，仅处理能够模式匹配到的行（即结果为真），需要用`/`进行括起来。
   
-  - 结果为真，即非0值、非空字符串
+  * 结果为真，即非0值、非空字符串
   
-  - 结果为假，即0值、空字符串
+  * 结果为假，即0值、空字符串
 
 示例：空模式
 
-```
+```bash
 awk -F":" '{print $1, $3}' /etc/passwd |head -n5
 root 0
 messagebus 499
@@ -1644,7 +1636,7 @@ nobody 65534
 
 示例：非空模式
 
-```
+```bash
 $ seq 5 | awk '0'
 $ seq 5 | awk '1'
 1
@@ -1684,7 +1676,7 @@ $ seq 5 | awk '"0"'
 
 体会下面变量的值和正确使用变量（字符串还是变量？）
 
-```
+```bash
 $ seq 5 | awk '"test"'
 1
 2
@@ -1711,7 +1703,7 @@ $ seq 5 | awk -v test=1 'test'
 
 体会下面的与非判断。
 
-```
+```bash
 $ awk '1' /etc/passwd |head -n3
 root:x:0:0:root:/root:/bin/bash
 messagebus:x:499:499:User for D-Bus:/run/dbus:/usr/bin/false
@@ -1724,7 +1716,7 @@ messagebus:x:499:499:User for D-Bus:/run/dbus:/usr/bin/false
 systemd-network:x:497:497:systemd Network Management:/:/usr/sbin/nologin
 ```
 
-```
+```bash
 # i没有赋值，为假，没有输出
 $ seq 5 |awk 'i'
 # i赋值为0，为假，没有输出
@@ -1776,7 +1768,7 @@ $ seq 5 |awk '!(i=!i)'
 
 示例：
 
-```
+```bash
 $ head -n2 /etc/passwd |awk -F ':' '{print $0}'
 root:x:0:0:root:/root:/bin/bash
 messagebus:x:499:499:User for D-Bus:/run/dbus:/usr/bin/false
@@ -1790,7 +1782,7 @@ root
 messagebus
 ```
 
-```
+```bash
 $ head -n2 /etc/passwd |awk -F ':' '{print $1"#"$2"#"$3"#"$4}'
 root#x#0#0
 messagebus#x#499#499
@@ -1808,7 +1800,7 @@ messagebus#x#499#499
 
 列值之间进行算术运算。
 
-```
+```bash
 $ awk -F ':' '{$7=$3+$4;print $1,$3,$4,$7}' /etc/passwd |head -n5
 root 0 0 0
 messagebus 499 499 998
@@ -1819,7 +1811,7 @@ nobody 65534 65534 131068
 
 计算某个列的总和。 `END`表示所有的行都已经执行。
 
-```
+```bash
 $ awk -F ':' '{(total=total+$3)}; END {print total}' /etc/passwd
 103011
 ```
@@ -1834,7 +1826,7 @@ $ awk -F ':' '{(total=total+$3)}; END {print total}' /etc/passwd
 
 示例：
 
-```
+```bash
 $ awk 'BEGIN{print i}'
 
 $ awk 'BEGIN{print i++}' #从0开始
@@ -1858,7 +1850,7 @@ $ awk 'BEGIN{i=0;print i, ++i}'
 0 1
 ```
 
-```
+```bash
 $ seq 10
 1
 2
@@ -1909,7 +1901,7 @@ $ seq 10 |awk '++n'
 10
 ```
 
-```
+```bash
 # n=0时++n=1，!++n=0，输出第0行
 $ awk -v n=0 '!++n' /etc/passwd
 
@@ -1930,22 +1922,20 @@ $ awk -v n=1 '!n++' /etc/passwd
 $ awk -v n=2 '!n++' /etc/passwd
 ```
 
- 
-
 #### 比较操作符
 
 使用 `==` 代表等于，即精确匹配。类似还有 `>`、`>=`、`<`、`<=`、`!=`符号。
 
 以`:`为分隔符，匹配第三列的值为`1000`的行。
 
-```
+```bash
 $ awk -F ':' '$3=="100"' /etc/passwd
 vagrant:x:1000:478:vagrant:/home/vagrant:/bin/bash
 ```
 
 在和数字比较时，若把要比较的数字用双引号引起来，`awk`会按字符处理，不加双引号，则会按数字处理。
 
-```
+```bash
 $ awk -F ':' '$3<="100"' /etc/passwd
 root:x:0:0:root:/root:/bin/bash
 bin:x:1:1:bin:/bin:/usr/sbin/nologin
@@ -1959,13 +1949,13 @@ at:x:25:25:Batch jobs daemon:/var/spool/atjobs:/usr/sbin/nologin
 bin:x:1:1:bin:/bin:/usr/sbin/nologin
 ```
 
-```
-$ awk -F ':' '{if ($1=="root") {print $0}}' /etc/passwd
+```bash
+awk -F ':' '{if ($1=="root") {print $0}}' /etc/passwd
 ```
 
-```
-$ awk -F ':' '$7!="/bin/false"' /etc/passwd
-$ awk -F ':' '$3<$2' /etc/passwd
+```bash
+awk -F ':' '$7!="/bin/false"' /etc/passwd
+awk -F ':' '$3<$2' /etc/passwd
 ```
 
 #### 逻辑操作符
@@ -1976,16 +1966,16 @@ $ awk -F ':' '$3<$2' /etc/passwd
 
  `!`表示“非”（取反）
 
-```
-$ awk -F ':' '$3>10 && $3<100' /etc/passwd
-$ awk -F ':' '$3>10 || $3<100' /etc/passwd
-$ awk -F ':' '($3==0)' /etc/passwd
-$ awk -F ':' '!($3==0)' /etc/passwd
+```bash
+awk -F ':' '$3>10 && $3<100' /etc/passwd
+awk -F ':' '$3>10 || $3<100' /etc/passwd
+awk -F ':' '($3==0)' /etc/passwd
+awk -F ':' '!($3==0)' /etc/passwd
 ```
 
 注意下面对字符和数值进行取反操作的结果。
 
-```
+```bash
 $ awk 'BEGIN{print i}'
 
 $ awk 'BEGIN{print !i}'
@@ -2014,7 +2004,7 @@ $ awk -v i="" 'BEGIN{print !i}'
 
 在分隔符定义中使用正则表达式。
 
-```
+```bash
 $ df |awk -F" +|%" '{print $5}'
 Use
 0
@@ -2057,7 +2047,7 @@ Use
 
 格式：`selector?if-true-expression:if-false-expression`
 
-```
+```bash
 $ awk -F':' '{$3>1000?usertype="Common User":usertype="Superuser";printf"%-20s:%12s\n", $1, usertype}' /etc/passwd |head -n5
 root                :   Superuser
 messagebus          :   Superuser
@@ -2076,14 +2066,14 @@ nobody              : Common User
 
 匹配文件中指定字符串`root`的所有行，类似grep命令，但没有高亮显示。
 
-```
+```bash
 $ awk '/root/' /etc/passwd
 root:x:0:0:root:/root:/bin/bash
 ```
 
 以`:`为分隔符，匹配第一列`$1`中包含指定字符串`oo`的行。`~`是代表左右匹配。
 
-```
+```bash
 $ awk -F ':' '$1 ~/oo/' /etc/passwd
 root:x:0:0:root:/root:/bin/bash
 gentoo:x:1014:100:Gentoo Distribution:/home/gentoo:/bin/csh
@@ -2091,7 +2081,7 @@ gentoo:x:1014:100:Gentoo Distribution:/home/gentoo:/bin/csh
 
 以`:`为分隔符，匹配所有列`$0`（整行）中包含`root`行的第一列`$1`。
 
-```
+```bash
 $ awk -F: '$0 ~/root/{print $1}' /etc/passwd
 $ awk -F: '$0 ~"root"{print $1}' /etc/passwd
 root
@@ -2101,7 +2091,7 @@ _cvmsroot
 
 以`:`为分隔符，匹配所有列`$0`（整行）中以`root`开头行的第一列`$1`。
 
-```
+```bash
 $ awk -F: '$0 ~"^root"{print $1}' /etc/passwd
 $ awk -F: '$0 ~/^root/{print $1}' /etc/passwd
 root
@@ -2109,20 +2099,20 @@ root
 
 以`:`为分隔符，匹配所有列`$0`（整行）中不以`root`开头行的第一列`$1`。
 
-```
-$ awk -F: '$0 !~/^root/{print $1}' /etc/passwd
-$ awk -F: '$0 ~/^[^root]/{print $1}' /etc/passwd
+```bash
+awk -F: '$0 !~/^root/{print $1}' /etc/passwd
+awk -F: '$0 ~/^[^root]/{print $1}' /etc/passwd
 ```
 
 多条件匹配，以`:`为分隔符，匹配所有含有`root`或`ftp`的行，并打印第1、3列。
 
-```
-$ awk -F ':' '/root/ {print $1,$3} /bin/ {print $1,$3}' /etc/passwd
+```bash
+awk -F ':' '/root/ {print $1,$3} /bin/ {print $1,$3}' /etc/passwd
 ```
 
 多条件匹配，以`:`为分隔符，匹配第一列中含有`root`或`bin`的行，并打印第1、3列。
 
-```
+```bash
 $ awk -F ':' '$1 ~/root/ {print $1,$3} $1 ~/bin/ {print $1,$3}' /etc/passwd
 root 0
 bin 1
@@ -2130,14 +2120,14 @@ bin 1
 
 以`:`为分隔符，匹配第三列`$3`中值为`0`的行。
 
-```
+```bash
 $ awk -F":" '$3==0' /etc/passwd
 root:x:0:0:root:/root:/bin/bash
 ```
 
 以至少一个空格或%为分隔符，匹配以`/dev/sd`开头的行，打印第五列。
 
-```
+```bash
 $ df |awk -F"[[:space:]]+|%" '$0 ~ /^\/dev\/sd/{print $5}'
 8
 8
@@ -2154,7 +2144,7 @@ $ df |awk -F"[[:space:]]+|%" '$0 ~ /^\/dev\/sd/{print $5}'
 
 读取`ifconfig eth0`输出结果的第二行`NR==2`的第二列`$2`。
 
-```
+```bash
 $ ifconfig eth0 |awk 'NR==2{print $2}'
 192.168.10.210
 ```
@@ -2187,7 +2177,7 @@ $ ifconfig eth0 |awk 'NR==2{print $2}'
 
 `FS`的用法：
 
-```
+```bash
 $ awk -v FS=':' '{print $1, FS, $3}' /etc/passwd | head -n5
 root : 0
 messagebus : 499
@@ -2199,7 +2189,7 @@ messagebus:499
 systemd-network:497
 ```
 
-```
+```bash
 $ S=:;awk -v FS=$S '{print $1FS$3}' /etc/passwd | head -n3
 root:0
 messagebus:499
@@ -2215,7 +2205,7 @@ systemd-network:497
 
 `FS`和 `-F` 选项功同时使用会冲突，`-F`的优先级更高。
 
-```
+```bash
 $ awk -v FS=':' -F';' '{print $1FS$3}' /etc/passwd | head -n3
 root:x:0:0:root:/root:/bin/bash;
 messagebus:x:499:499:User for D-Bus:/run/dbus:/usr/bin/false;
@@ -2231,7 +2221,7 @@ systemd-network:497
 
 以`:`为分隔符，打印第1、3、4列第内容，并以`#`为分隔符。
 
-```
+```bash
 $ awk -F ':' '{OFS="#"} {print $1,$3,$4}' /etc/passwd | head -n5
 root#0#0
 messagebus#499#499
@@ -2249,14 +2239,14 @@ nobody#65534#65534
 
 以`:`为分隔符，当第三列大于等于5000时，打印第1、2、3、4列第内容，并以`#`为分隔符。
 
-```
+```bash
 $ awk -F ':' '{OFS="#"} {if ($3>=5000) {print $1,$2,$3,$4}}' /etc/passwd
 nobody#x#65534#65534
 ```
 
 `RS`的用法：
 
-```
+```bash
 # 以空格为换行标志
 $ awk -v RS=' ' '{print $0}' /etc/passwd |head -n3
 root:x:0:0:root:/root:/bin/bash
@@ -2272,7 +2262,7 @@ x
 
 `ORS`的用法：
 
-```
+```bash
 # 以冒号为换行标志，替换成###
 $ awk -v RS=':' -v ORS='###' '{print $0}' /etc/passwd |head -n3
 root###x###0###0###root###/root###/bin/bash
@@ -2286,7 +2276,7 @@ systemd-network###x###497###497###systemd Network Management###/###/usr/sbin/nol
 
 下例中以`:`为分隔符一共分为7列，最后一列的值是`$NF`。
 
-```
+```bash
 $ awk -F ':' '{print $NF}' /etc/passwd | head -n2
 /bin/bash
 /usr/bin/false
@@ -2296,7 +2286,7 @@ $ awk -F ':' '{print NF}' /etc/passwd | head -n2
 7
 ```
 
-```
+```bash
 $ ss -nt |grep "^ESTAB" |awk -F"[[:space:]]+|:" '{print $(NF-2)}'
 192.168.10.103
 
@@ -2308,7 +2298,7 @@ $ ss -nt |awk -F"[[:space:]]+|:" '/^ESTAB/{print $(NF-2)}'
 
 通过`NR`输出行号。以`:`为分隔符，打印前三行的行号。
 
-```
+```bash
 $ awk -F ':' '{print NR}' /etc/passwd |head -n3
 1
 2
@@ -2317,7 +2307,7 @@ $ awk -F ':' '{print NR}' /etc/passwd |head -n3
 
 取奇、偶数行。
 
-```
+```bash
 $ seq 10 |awk 'NR%2==0'
 2
 4
@@ -2334,7 +2324,7 @@ $ seq 10 |awk 'NR%2==1'
 
 通过`NR`设定行号条件。以`:`为分隔符，打印第40行以后的行内容。
 
-```
+```bash
 $ awk 'NR>45' /etc/passwd
 admin3:x:1020:100::/home/admin3:/bin/bash
 smith:x:2002:0:,,,:/home/admin2:/bin/bash
@@ -2363,7 +2353,7 @@ $ awk -F ':' 'END{print NR}' /etc/passwd
 50
 ```
 
-```
+```bash
 $ ifconfig eth0 |awk '/netmask/{print $0}'
         inet 192.168.10.210  netmask 255.255.255.0  broadcast 192.168.10.255
 
@@ -2385,14 +2375,14 @@ $ ifconfig eth0 |awk 'NR==2{print $2}'
 
 通过`NR` 与列匹配一起使用。
 
-```
+```bash
 $ awk -F ':' 'NR<5 && $1 ~/roo/' /etc/passwd
 root:x:0:0:root:/root:/bin/bash
 ```
 
 `FNR`的用法：
 
-```
+```bash
 $ awk '{print FNR}' /etc/fstab /etc/networks
 1
 2
@@ -2418,7 +2408,7 @@ $ awk '{print FNR}' /etc/fstab /etc/networks
 10
 ```
 
-```
+```bash
 $ awk '{print NR, $0}' /etc/fstab /etc/networks
 1 UUID=5ffa8dbd-473e-4308-804a-0033c3b5f7af  /                       btrfs  defaults                      0  0
 2 UUID=5ffa8dbd-473e-4308-804a-0033c3b5f7af  /var                    btrfs  subvol=/@/var                 0  0
@@ -2470,7 +2460,7 @@ $ awk '{print FNR, $0}' /etc/fstab /etc/networks
 
 `FILENAME`的用法：
 
-```
+```bash
 $ awk '{print FILENAME}' /etc/fstab
 /etc/fstab
 /etc/fstab
@@ -2514,7 +2504,7 @@ $ awk '{print FNR, FILENAME, $0}' /etc/fstab /etc/networks
 
 每个变量的名字通过`ARGV`获取。
 
-```
+```bash
 $ awk '{print ARGC}' /etc/fstab /etc/issue
 3
 3
@@ -2540,7 +2530,7 @@ $ awk 'BEGIN{print ARGC}' /etc/fstab /etc/issue
 
 `ARGV`的用法：
 
-```
+```bash
 $ awk 'BEGIN{print ARGV[0]}' /etc/fstab /etc/issue
 awk
 $ awk 'BEGIN{print ARGV[1]}' /etc/fstab /etc/issue
@@ -2554,13 +2544,13 @@ $ awk 'BEGIN{print ARGV[3]}' /etc/fstab /etc/issue
 
 自定义变量是区分字符大小写的，使用下面的方式进行赋值。
 
-- -v var=value
+* -v var=value
 
-- 在program中直接定义
+* 在program中直接定义
 
 举例：
 
-```
+```bash
 $ awk -v t1=t2="hello awk" 'BEGIN{print t1, t2}'
 t2=hello awk
 $ awk -v t1=t2="hello awk" 'BEGIN{t1=t2="gawk"; print t1, t2}'
@@ -2569,7 +2559,7 @@ $ awk 'BEGIN{t1=t2="hello awk"; print t1, t2}'
 hello awk hello awk
 ```
 
-```
+```bash
 $ awk -v t1="hello awk" '{print t1}' /etc/issue
 hello awk
 hello awk
@@ -2582,14 +2572,14 @@ $ awk -v t1="hello awk" 'BEGIN{print t1}'
 hello awk
 ```
 
-```
+```bash
 $ awk -F: '{sex="male"; print $1, sex, age; age=28}' /etc/passwd |head -n3
 root male
 messagebus male 28
 systemd-network male 28
 ```
 
-```
+```bash
 $ cat <<EOF > awkscript
 {print script,$1,$2}
 EOF
@@ -2607,41 +2597,41 @@ awk messagebus x
 
 说明：
 
-- 必须指定FORMAT
+* 必须指定FORMAT
 
-- 不会自动换行，需要显式给出换行控制符`\n`。
+* 不会自动换行，需要显式给出换行控制符`\n`。
 
-- FORMAT中需要分别为后面每个item指定格式符。
+* FORMAT中需要分别为后面每个item指定格式符。
 
 格式符：与item是一一对应的
 
-- `%s`：显示字符串
+* `%s`：显示字符串
 
-- `%d`, `%i`：显示十进制整数
+* `%d`, `%i`：显示十进制整数
 
-- `%f`：显示为浮点数
+* `%f`：显示为浮点数
 
-- `%e`, `%E`：显示科学计数法数值
+* `%e`, `%E`：显示科学计数法数值
 
-- `%c`：显示字符的ASCII码
+* `%c`：显示字符的ASCII码
 
-- `%g`, `%G`：以科学计数法或浮点形式显示数值
+* `%g`, `%G`：以科学计数法或浮点形式显示数值
 
-- `%u`：无符号整数
+* `%u`：无符号整数
 
-- `%%`：显示`%`自身
+* `%%`：显示`%`自身
 
 修饰符：
 
-- #[.#]：第一个数字控制显示的宽度，第二个#表示小数点后精度，如`%3.1f`
+* #[.#]：第一个数字控制显示的宽度，第二个#表示小数点后精度，如`%3.1f`
 
-- -：左对齐（默认右对齐），如`%-15s`
+* -：左对齐（默认右对齐），如`%-15s`
 
-- +：显示数值的正负符号，如`%+d`
+* +：显示数值的正负符号，如`%+d`
 
 示例：
 
-```
+```bash
 $ awk -F: '{printf "%s", $1}' /etc/passwd |head -n3
 rootmessagebussystemd-networksystemd-timesyncnobodymailchronypostfixmanlpgamesftpdaemonrpcnscdpolkitdattftpftpsecurebinstatdsshdvagrantpesignsvntester1tester2tester3tester4tester5user0user1user2user3user4user5user6user7user8user9gentoonginxvarnishmysqlwebuseradmin3smithpm1tm1tm2
 
@@ -2666,7 +2656,7 @@ messagebus                  499
 systemd-network             497
 ```
 
-```
+```bash
 $ awk -F: '{printf "Username: %s\n", $1}' /etc/passwd |head -n3
 Username: root
 Username: messagebus
@@ -2692,7 +2682,7 @@ Username: systemd-network           UID:497
 
 示例：
 
-```
+```bash
 awk -F":" 'BEGIN{printf "--------------------------------\n%-20s|%10s|\n--------------------------------\n", "Username", "UID"}{printf "%-20s|%-10d|\n--------------------------------\n", $1, $3}END{print "end"}' /etc/passwd
 --------------------------------
 Username            |       UID|
@@ -2712,29 +2702,29 @@ end
 
 ### 常用控制语句
 
-- {statements;...} 组合语句
+* {statements;...} 组合语句
 
-- if(condition){statements;...}
+* if(condition){statements;...}
 
-- if(condition){statements;...} else(statements;...)
+* if(condition){statements;...} else(statements;...)
 
-- switch(expression){case VALUE1 or /REGEXP/: statement1; case VALUE2 or /REGEXP2/: statement2;......;default: statementn}
+* switch(expression){case VALUE1 or /REGEXP/: statement1; case VALUE2 or /REGEXP2/: statement2;......;default: statementn}
 
-- while(condition){statements;...}
+* while(condition){statements;...}
 
-- do(statements;...) while{condition}
+* do(statements;...) while{condition}
 
-- for(expr1;expr2;expr3) {statements;...}
+* for(expr1;expr2;expr3) {statements;...}
 
-- break
+* break
 
-- continue
+* continue
 
-- exit
+* exit
 
 if-else示例：
 
-```
+```bash
 $ cat <<EOF > score.txt
 Name  Score
 Tom   100
@@ -2772,21 +2762,21 @@ $ awk 'BEGIN{i=0;sum=0;while(i<=100){sum+=i;i++};print sum}'
 
 do-while示例：
 
-```
+```bash
 $ awk 'BEGIN{i=0;sum=0;do{sum+=i;i++}while(i<101);print sum}'
 5050
 ```
 
 for示例：
 
-```
+```bash
 $ awk 'BEGIN{i=0;sum=0;for(i=1;i<=100;i++){sum+=i};print sum}'
 5050
 ```
 
 命令效率比较：
 
-```
+```bash
 $ time(awk 'BEGIN{i=0;sum=0;while(i<=100000){sum+=i;i++};print sum}')
 5000050000
 
@@ -2811,38 +2801,38 @@ sys    0m0.004s
 
 ## 小练习
 
-- 显示`/proc/meminfo`文件中以大小s开头的行，要求使用两种方法。
+* 显示`/proc/meminfo`文件中以大小s开头的行，要求使用两种方法。
   
-  ```
-  $ cat /proc/meminfo | grep -i "^s"
-  $ cat /proc/meminfo | grep "^[sS]"
+  ```bash
+  cat /proc/meminfo | grep -i "^s"
+  cat /proc/meminfo | grep "^[sS]"
   ```
 
-- 显示`/etc/passwd`文件中不以`/bin/bash`结尾的行。
+* 显示`/etc/passwd`文件中不以`/bin/bash`结尾的行。
   
-  ```
-  $ grep -v "/bin/bash$" /etc/passwd
+  ```bash
+  grep -v "/bin/bash$" /etc/passwd
   ```
 
-- 显示用户`rpc`默认的shell程序。
+* 显示用户`rpc`默认的shell程序。
   
-  ```
+  ```bash
   $ grep "rpc" /etc/passwd | cut -d ":" -f 7
   /sbin/nologin
   ```
 
-- 找出`/etc/passwd`中的两位或三位数。
+* 找出`/etc/passwd`中的两位或三位数。
   
-  ```
-  $ grep -Eo "[:digit:]{2,3}" /etc/passwd
-  $ grep -Eo "[0-9]{2,3}" /etc/passwd
+  ```bash
+  grep -Eo "[:digit:]{2,3}" /etc/passwd
+  grep -Eo "[0-9]{2,3}" /etc/passwd
   ```
   
   这里用到了`{}`，属于扩展正则符号，所以要用`-E`。
 
-- 显示Rocky 9的`/etc/grub2.cfg`文件中，至少以一个空白字符开头的且后面有非空白字符的行。（注：`/etc/grub2.cfg`在openSUSE和Ubuntu中没有）
+* 显示Rocky 9的`/etc/grub2.cfg`文件中，至少以一个空白字符开头的且后面有非空白字符的行。（注：`/etc/grub2.cfg`在openSUSE和Ubuntu中没有）
   
-  ```
+  ```bash
   # 不含首字符为tab
   $ sudo grep "^ " /etc/grub2.cfg
   
@@ -2850,31 +2840,31 @@ sys    0m0.004s
   $ sudo grep "^[[:space:]]" /etc/grub2.cfg
   ```
 
-- 找出`netstat -tan`命令结果中以`LISTEN`后跟任意多个空白字符结尾的行。
+* 找出`netstat -tan`命令结果中以`LISTEN`后跟任意多个空白字符结尾的行。
   
-  ```
-  $ netstat -tan | grep -E "LISTEN[[:space:]]+"
+  ```bash
+  netstat -tan | grep -E "LISTEN[[:space:]]+"
   ```
 
-- 显示Rocky 9上所有UID小于1000以内的用户名和UID。
+* 显示Rocky 9上所有UID小于1000以内的用户名和UID。
   
-  ```
-  $ cat /etc/passwd | cut -d ":" -f 1,3 | grep -E "\:[0-9]{1,3}$"
-  $ grep -E "\:[0-9]{1,3}\:[0-9]{1,}" /etc/passwd | cut -d ":" -f 1,3
+  ```bash
+  cat /etc/passwd | cut -d ":" -f 1,3 | grep -E "\:[0-9]{1,3}$"
+  grep -E "\:[0-9]{1,3}\:[0-9]{1,}" /etc/passwd | cut -d ":" -f 1,3
   ```
 
-- 在Rocky 9上显示文件`/etc/passwd`用户名和shell同名的行。
+* 在Rocky 9上显示文件`/etc/passwd`用户名和shell同名的行。
   
-  ```
+  ```bash
   $ grep -E "^([[:alnum:]]+\b).*\1$" /etc/passwd
   sync:x:5:0:sync:/sbin:/bin/sync
   shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown
   halt:x:7:0:halt:/sbin:/sbin/halt
   ```
 
-- 利用`df`和`grep`，取出磁盘各分区利用率,并从大到小排序。
+* 利用`df`和`grep`，取出磁盘各分区利用率,并从大到小排序。
   
-  ```
+  ```bash
   $ df | tr -s " " | cut -d " " -f 1,5 | sort -n -t " " -k 2
   devtmpfs 0%
   Filesystem Use%
@@ -2886,17 +2876,17 @@ sys    0m0.004s
   /dev/nvme0n1p1 23%
   ```
 
-- 显示三个用户`root`，`sync`，`bin`的UID和默认shell。
+* 显示三个用户`root`，`sync`，`bin`的UID和默认shell。
   
-  ```
+  ```bash
   $ grep "^root:\|^sync:\|^bin:" /etc/passwd | cut -d ":" -f 1,7
   root:/bin/bash
   bin:/usr/sbin/nologin
   ```
 
-- 使用`egrep`取出`/etc/default-1/text_2/local.3/grub`中其基名和目录名。
+* 使用`egrep`取出`/etc/default-1/text_2/local.3/grub`中其基名和目录名。
   
-  ```
+  ```bash
   # 基名
   $ echo "/etc/default-1/text_2/local.3/grub" | egrep -io "[[:alpha:]]+$"
   grub
@@ -2906,9 +2896,9 @@ sys    0m0.004s
   /etc/default-1/text_2/local.3/ 
   ```
 
-- 统计`last`命令中以`vagrant`登录的每个主机IP地址登录次数。
+* 统计`last`命令中以`vagrant`登录的每个主机IP地址登录次数。
   
-  ```
+  ```bash
   $ last | grep vagrant | tr -s " " | cut -d " " -f 3 | grep -E "([0-9]{1,3}\.){1,3}[0-9]{1,3}" | sort -n | uniq -c
       24 192.168.10.107
       38 192.168.10.109
@@ -2917,24 +2907,24 @@ sys    0m0.004s
        2 192.168.10.220
   ```
 
-- 利用扩展正则表达式分别表示0-9、10-99、100-199、200-249、250-255。
+* 利用扩展正则表达式分别表示0-9、10-99、100-199、200-249、250-255。
   
-  ```
+  ```bash
   [0-9]|[0-9]{2}|1[0-9]{2}|2[0-4][0-9]|25[0-5]
   ```
 
-- 显示`ifconfig`命令结果中所有IPv4地址。
+* 显示`ifconfig`命令结果中所有IPv4地址。
   
-  ```
+  ```bash
   $ ifconfig | grep -Eo "([0-9]{1,3}\.){3}[0-9]{1,3}" | grep -v "^255"
   192.168.10.210
   192.168.10.255
   127.0.0.1
   ```
 
-- 显示`ip addr`命令结果中所有IPv4地址。
+* 显示`ip addr`命令结果中所有IPv4地址。
   
-  ```
+  ```bash
   $ ip addr show eth0 | grep inet | grep eth0 | tr -s " " | cut -d " " -f 3 | cut -d "/" -f 1
   192.168.10.210
   
@@ -2944,9 +2934,9 @@ sys    0m0.004s
   192.168.10.255
   ```
 
-- 将此字符串Welcome to the linux world中的每个字符去重并排序，重复次数多的排到前面。
+* 将此字符串Welcome to the linux world中的每个字符去重并排序，重复次数多的排到前面。
   
-  ```
+  ```bash
   $ echo "Welcome to the linux world" | grep -o [[:alpha:]] | sort | uniq -c | sort -nr
        3 o
        3 l
@@ -2965,41 +2955,41 @@ sys    0m0.004s
        1 c
   ```
 
-- 删除`/etc/default/grub`文件中所有以空白开头的行行首的空白字符。
+* 删除`/etc/default/grub`文件中所有以空白开头的行行首的空白字符。
   
-  ```
-  $ sed '/^$/d' /etc/default/grub
+  ```bash
+  sed '/^$/d' /etc/default/grub
   ```
 
-- 删除`/etc/default/grub`文件中所有以`#`开头，后面至少跟一个空白字符的行的行首的`#`和空白字符。
+* 删除`/etc/default/grub`文件中所有以`#`开头，后面至少跟一个空白字符的行的行首的`#`和空白字符。
   
-  ```
-  $ sed -r '/#[[:space:]]+/d;/#/d' /etc/default/grub
+  ```bash
+  sed -r '/#[[:space:]]+/d;/#/d' /etc/default/grub
   ```
   
   上面输出结果中包含空白行。
   
   若输出中删除空白行，则：
   
-  ```
-  $ sed -r '/#[[:space:]]+/d;/#/d;/^$/d' /etc/default/grub
-  ```
-
-- 在`/etc/fstab`每一行行首增加`#`号。
-  
-  ```
-  $ sed -r 's/(.*)/#&/' /etc/fstab
+  ```bash
+  sed -r '/#[[:space:]]+/d;/#/d;/^$/d' /etc/default/grub
   ```
 
-- 在`/etc/fstab`文件中不以`#`开头的行的行首增加`#`号（包括空行）。
+* 在`/etc/fstab`每一行行首增加`#`号。
   
-  ```
-  $ sed -r 's/^[^#].*/#&/' -r 's/^$/#/' /etc/default/grub
+  ```bash
+  sed -r 's/(.*)/#&/' /etc/fstab
   ```
 
-- 通过命令`rpm -qa --last |awk -F ' ' '{print $1}'`得到最新安装的包列表。统计所有`x86_64`结尾的安装包名以`.`分隔倒数第二个字段的重复次数。
+* 在`/etc/fstab`文件中不以`#`开头的行的行首增加`#`号（包括空行）。
   
+  ```bash
+  sed -r 's/^[^#].*/#&/' -r 's/^$/#/' /etc/default/grub
   ```
+
+* 通过命令`rpm -qa --last |awk -F ' ' '{print $1}'`得到最新安装的包列表。统计所有`x86_64`结尾的安装包名以`.`分隔倒数第二个字段的重复次数。
+  
+  ```bash
   $ rpm -qa --last |awk -F ' ' '{print $1}' |sed -nr '/x86_64$/s@.*\.(.*)\.x86_64@\1@p' |sort -r |uniq -c
        75 el9_0
       563 el9
@@ -3011,17 +3001,17 @@ sys    0m0.004s
        29 1
   ```
 
-- 在openSUSE中统计`/etc/rc.status`文件中每个单词的出现次数，并排序（用grep和sed两种方法分别实现）。
+* 在openSUSE中统计`/etc/rc.status`文件中每个单词的出现次数，并排序（用grep和sed两种方法分别实现）。
   
-  ```
-  $ grep -Eo "[a-zA-Z]+" /etc/rc.status |sort |uniq -c
+  ```bash
+  grep -Eo "[a-zA-Z]+" /etc/rc.status |sort |uniq -c
   
-  $ cat /etc/rc.status |sed -r 's/[^[:alpha:]]+/\n/g' |sed '/^$/d' |sort |uniq -c |sort -nr
+  cat /etc/rc.status |sed -r 's/[^[:alpha:]]+/\n/g' |sed '/^$/d' |sort |uniq -c |sort -nr
   ```
 
-- 将文本文件的n和n+1行合并为一行，n为奇数行。
+* 将文本文件的n和n+1行合并为一行，n为奇数行。
   
-  ```
+  ```bash
   $ cat <<EOF > sed.txt
   1aa
   2bb
@@ -3044,9 +3034,9 @@ sys    0m0.004s
   7gg
   ```
 
-- 对一串数字进行求和。
+* 对一串数字进行求和。
   
-  ```
+  ```bash
   $ cat <<EOF > number.txt
   1 2 3 4 5 6
   EOF
@@ -3061,7 +3051,7 @@ sys    0m0.004s
   21
   ```
 
-- 取出字符串中的数字。
+* 取出字符串中的数字。
   
   ```bash
   $ echo 'kdajl;3k8jd33la5kj23f90ld02sakjflakjdslf' | awk -F "" '

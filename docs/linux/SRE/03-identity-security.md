@@ -1,6 +1,6 @@
-# 身份与安全
+# 第三章 身份与安全
 
-## 用户、组、权限
+## 1.用户、组、权限
 
 用户和组
 
@@ -35,10 +35,10 @@ $ id vagrant
 uid=1000(vagrant) gid=478(wheel) groups=0(root),478(wheel)
 ```
 
-!!! Reference
-    UID和GID等编号规则，是在文件`/etc/login.defs`中约定的。
+提示：
+> UID和GID等编号规则，是在文件`/etc/login.defs`中约定的。
 
-## SELinux
+## 2.SELinux
 
 Security-Enhanced Linux (SELinux) 是一种Linux系统的安全架构，它允许管理员更好地控制谁可以访问系统。
 SELinux于2000年向开源社区发布，并于2003年集成到上游 Linux 内核中。
@@ -69,7 +69,7 @@ MAC方式是控制一个进程对具体文件系统上面的文件或目录是�
 * `-rw-r--r--. vagrant wheel` ：只有selinux上下文，没有ACL
 * `-rwxrwxr--+ vagrant wheel` ：有selinux上下文，有ACL
 
-### SELinux主要概念
+### 2.1.SELinux主要概念
 
 * 用户(Users)：
   * SELinux的用户不等同与Linux用户。
@@ -99,19 +99,19 @@ MAC方式是控制一个进程对具体文件系统上面的文件或目录是�
   * 格式：`allow user_t user_home_t:file {create read write unlink};`
   * 含义：`user_t`类型对`user_home_t`类型有创建create，读取read，写入write，删除unlink权限。
 
-### SELinux in openSUSE
+### 2.2.SELinux in openSUSE
 
 作为SELinux的替代品，2005年被Novell收购的Immunix公司开发了AppArmor。SUSE在openSUSE Leap中提供对SELinux框架的支持。这并不意味着openSUSE Leap的默认安装会在不久的将来从AppArmor切换到SELinux。
 
 添加SELinux的源。可以从`https://download.opensuse.org/repositories/security:/SELinux/`下载对应的策略policy。
 
-```
+```bash
 sudo zypper ar -f https://download.opensuse.org/repositories/security:/SELinux/openSUSE_Factory/ Security-SELinux
 ```
 
 安装C++等基础开发包：
 
-```
+```bash
 # 列出当前可安装的Pattern
 sudo zypper pt
 
@@ -121,7 +121,7 @@ sudo zypper in -t pattern devel_C_C++ devel_basis devel_kernel
 
 安装SELinux packages：
 
-```
+```bash
 zypper se --search-descriptions selinux
 sudo zypper in restorecond policycoreutils setools-console
 sudo zypper in selinux-tools libselinux-devel
@@ -129,7 +129,7 @@ sudo zypper in selinux-tools libselinux-devel
 
 安装SELinux policy：
 
-```
+```bash
 sudo zypper in selinux-policy-targeted selinux-policy-devel selinux-autorelabel
 ```
 
@@ -137,26 +137,26 @@ sudo zypper in selinux-policy-targeted selinux-policy-devel selinux-autorelabel
 
 编辑文件`/etc/default/grub`，添加下面内容到`GRUB_CMDLINE_LINUX_DEFAULT=`这一行：
 
-```
+```bash
 security=selinux selinux=1
 ```
 
 记录这一行的原始信息：
 
-```
+```bash
 GRUB_CMDLINE_LINUX_DEFAULT="splash=silent resume=/dev/disk/by-uuid/47c36ad7-f49f-4ecd-9b72-4801c5bb3a04 preempt=full mitigations=auto quiet security=apparmor"
 ```
 
 运行下面的命令生成新的GRUB2引导加载程序配置文件。
 
-```
+```bash
 sudo grub2-mkconfig -o /boot/grub2/grub.cfg
 ```
 
 编辑文件`/etc/selinux/config` 并设置 `SELINUX=permissive`来启用SElinux。这与前面GRUB2的启动配置是一致的。
 如文件不存在，则创建。
 
-```
+```bash
 $ sudo cat /etc/selinux/config
 SELINUX=permissive
 SELINUXTYPE=targeted
@@ -166,12 +166,12 @@ SELINUXTYPE=targeted
 
 重启后，运行下面的命令来查看SELinux是否运行正常。
 
-```
+```bash
 $ sudo getenforce
 Permissive
 ```
 
-```
+```bash
 $ sudo sestatus -v
 SELinux status:                 enabled
 SELinuxfs mount:                /sys/fs/selinux
@@ -202,30 +202,30 @@ Controlling terminal:           unconfined_u:object_r:devpts_t:s0
 /usr/sbin/sshd                  system_u:object_r:unlabeled_t:s0
 ```
 
-!!! Reference
-    GRUB2引导加载程序中添加的三个参数的解释：
+参考：
+> GRUB2引导加载程序中添加的三个参数的解释：
+>
+> `security=selinux`: This option tells the kernel to use SELinux and not AppArmor.
+>
+> `selinux=1`: This option switches on SELinux.
+>
+> `enforcing=0`: This option puts SELinux in permissive mode. In this mode, SELinux is fully functional, but does not enforce any of the security settings in the policy. Use this mode for testing and configuring your system. To switch on SELinux protection, when the system is fully operational, change the option to `enforcing=1` and add `SELINUX=enforcing` in `/etc/selinux/config`.
 
-    `security=selinux`: This option tells the kernel to use SELinux and not AppArmor.
-
-    `selinux=1`: This option switches on SELinux.
-
-    `enforcing=0`: This option puts SELinux in permissive mode. In this mode, SELinux is fully functional, but does not enforce any of the security settings in the policy. Use this mode for testing and configuring your system. To switch on SELinux protection, when the system is fully operational, change the option to `enforcing=1` and add `SELINUX=enforcing` in `/etc/selinux/config`. 
-
-!!! Tips
-    在首次启用SELinux后，如果只在grub2里面添加selinux=1，通过`getenforce`命令看的SELinux一直就是disabled的状态，需要手工创建/etc/selinux/config文件添加配置才行。感觉grub2里面无需设置，直接配置/etc/selinux/config文件。不确定这个想法是否正确。
-
-    在grub2中设定selinux=1，在/etc/selinux/config文件中：
-    
-      * 设定SELINUX=permissive，重启后通过`getenforce`命令看到的是permissive。
-      * 设定SELINUX=disabled，则重启后`getenforce`命令看到的是disabled。
-    
-    这说明配置文件后启动，覆盖了内核设置。
-    
-    注意，如果仅仅完成了上面的enable SELinux，立刻设定SELINUX=enforcing，会引起ssh无法登录，错误信息是`/bin/bash: Permission denied`。
+小贴士：
+> 在首次启用SELinux后，如果只在grub2里面添加selinux=1，通过`getenforce`命令看的SELinux一直就是disabled的状态，需要手工创建/etc/selinux/config文件添加配置才行。感觉grub2里面无需设置，直接配置/etc/selinux/config文件。不确定这个想法是否正确。
+>
+> 在grub2中设定selinux=1，在/etc/selinux/config文件中：
+>
+> * 设定SELINUX=permissive，重启后通过`getenforce`命令看到的是permissive。
+> * 设定SELINUX=disabled，则重启后`getenforce`命令看到的是disabled。
+>
+> 这说明配置文件后启动，覆盖了内核设置。
+>
+> 注意，如果仅仅完成了上面的enable SELinux，立刻设定SELINUX=enforcing，会引起ssh无法登录，错误信息是`/bin/bash: Permission denied`。
 
 配置SELinux。
 
-```
+```bash
 sudo semanage boolean -l
 ```
 
@@ -233,19 +233,19 @@ Failed to use semanage
 
 添加下面内容到.bashrc文件。
 
-```
+```bash
 export PATH=/usr/local/bin:/home/$USER/.local/bin:$PATH
 ```
 
 更新pip3.
 
-```
+```bash
 pip3 install --upgrade pip
 ```
 
 安装下面几个包
 
-```
+```bash
 sudo zypper in libselinux libselinux-devel
 sudo zypper in python3-semanage
 sudo zypper in libsemanage-devel libsemanage-devel-static
@@ -255,22 +255,22 @@ sudo zypper in cross-x86_64-linux-glibc-devel glibc-utils glibc-profile
 sudo zypper in policycoreutils-devel
 ```
 
-### SELinux in Ubuntu
+### 2.3.SELinux in Ubuntu
 
-### SELinux in Rocky
+### 2.4.SELinux in Rocky
 
-## 用户和组的配置文件
+## 3.用户和组的配置文件
 
 * `/etc/passwd`：用户及其属性信息（用户名，UID，主组ID等）
 * `/etc/shadow`：用户密码机器属性
 * `/etc/group`：组及其属性
 * `/etc/gshadow`：组密码及其属性
 
-### /etc/passwd
+### 3.1./etc/passwd
 
 格式说明：
 
-```
+```bash
 vagrant:x:1001:474:vagrant:/home/vagrant:/bin/bash
 [-----] - [--] [-] [-----] [-----------] [-------]
    |    |  |    |     |          |           +--------> 7. Login shell
@@ -282,11 +282,11 @@ vagrant:x:1001:474:vagrant:/home/vagrant:/bin/bash
    +--------------------------------------------------> 1. Username
 ```
 
-### /etc/shadow
+### 3.2./etc/shadow
 
 格式说明：
 
-```
+```bash
 vagrant:$6$.n.:17736:0:99999:7:::
 [-----] [----] [---] - [---] ----
 |         |      |   |   |   |||+-----------> 9. Unused
@@ -300,11 +300,11 @@ vagrant:$6$.n.:17736:0:99999:7:::
 +-------------------------------------------> 1. Username
 ```
 
-### /etc/group
+### 3.3./etc/group
 
 格式说明：
 
-```
+```bash
 audio:x:492:pulse
 [---] - [-] [---]
   |   |  |    +----> 4. username-list, who have this group as their supplementary
@@ -313,11 +313,11 @@ audio:x:492:pulse
   +----------------> 1. groupname
 ```
 
-### /etc/gshadow
+### 3.4./etc/gshadow
 
 格式说明：
 
-```
+```bash
 general:!!:shelley:juan,bob
 [-----] -- [-----] [------]
    |     |     |       +-------> 4. group members (in a comma delimited list)
@@ -332,9 +332,9 @@ Encrypted password
 * `!!`：the same as a value of `!` — however, it also indicates that a password has never been set before.
 * null：only group members can log into the group.
 
-### 生成随机密码
+### 3.5.生成随机密码
 
-```
+```bash
 # 通过`/dev/urandom`生成随机数，通过`tr -dc`过滤随机数，只保留字母和数字，通过`head -c`保留指定位数
 $ tr -dc '[:alnum:]' < /dev/urandom | head -c 12
 xFw7vfma54D8
@@ -343,14 +343,14 @@ $ openssl rand -base64 9
 I5TZXJfpd3Pg
 ```
 
-### vipw/vigr/pwck/grpck命令
+### 3.6.vipw/vigr/pwck/grpck命令
 
 `vipw`和`vigr`命令分别编辑文件`/etc/passwd`和`/etc/group`。
 如果指定了`-s`标志，这些命令将分别编辑其文件的影子（安全）版本：`/etc/shadow`和`/etc/gshadow`。
 `vipw`和`vigr`命令在编辑文件时会设置锁以防止文件损坏。
 `vipw`和`vigr`命令会首先尝试环境变量`$VISUAL`，然后是环境变量`$EDITOR`，最后是默认编辑器`vi`。
 
-```
+```bash
 sudo vipw
 sudo vipw -s
 sudo vigr
@@ -379,7 +379,7 @@ sudo vigr -s
 * `4`: can’t lock group files
 * `5`: can’t update group files
 
-## 用户管理
+## 4.用户管理
 
 用户管理命令：
 
@@ -387,11 +387,11 @@ sudo vigr -s
 * `usermod`
 * `userdel`
 
-### 创建用户`useradd`
+### 4.1.创建用户`useradd`
 
 举例：
 
-```
+```bash
 # 普通用户
 $ useradd -m -g wheel -G root -c "vagrant" vagrant
 
@@ -403,7 +403,7 @@ $ useradd -r -u 48 -g apache -d /var/www -s /sbin/nologin -g postfix -c "Apache"
 
 openSUSE的`/etc/default/useradd`文件内容：
 
-```
+```bash
 GROUP=100
 HOME=/home
 INACTIVE=-1              # 对应/etc/shadow文件第7列，Inactivity period，密码过期后的宽限期，-1表示不限制
@@ -416,7 +416,7 @@ CREATE_MAIL_SPOOL=yes
 
 Rocky的`/etc/default/useradd`文件内容：
 
-```
+```bash
 GROUP=100
 HOME=/home
 INACTIVE=-1
@@ -428,21 +428,21 @@ CREATE_MAIL_SPOOL=yes
 
 在Ubuntu中`/etc/default/useradd`文件只有下面这一行。
 
-```
+```bash
 SHELL=/bin/sh
 ```
 
-#### 批量创建用户`newusers`
+#### 4.1.1.批量创建用户`newusers`
 
 格式：`newusers <filename>`。其中文件`<filename>`的格式如下：
 
-```
+```bash
 <Username>:<Password>:<UID>:<GID>:<User Info>:<Home Dir>:<Default Shell>
 ```
 
 举例，创建文件`users.txt`：
 
-```
+```bash
 $ cat ~/users.txt
 tester1:123:600:1530:"Test User1,testuser1@abc.com":/home/tester1:/bin/bash
 tester2:123:601:1529:::/bin/bash
@@ -452,7 +452,7 @@ tester4:123::::/home/tester4:/bin/tsh
 
 看结果：
 
-```
+```bash
 $ cat /etc/passwd | grep tester
 tester1:x:600:1530:"Test User1,testuser1@abc.com":/home/tester1:/bin/bash
 tester2:x:601:1529:::/bin/bash
@@ -476,11 +476,11 @@ drwxr-xr-x. 1 tester1 tester1 0 Nov 26 00:32 /home/tester1
 drwxr-xr-x. 1 tester4 tester4 0 Nov 26 00:32 /home/tester4
 ```
 
-#### 批量修改密码`chpasswd`
+#### 4.1.2.批量修改密码`chpasswd`
 
 不同方法：
 
-```
+```bash
 echo username:password | chpasswd
 
 chpasswd < file.txt  # file.txt每行的格式是username:password
@@ -499,11 +499,11 @@ paste -d ":" user.txt passwd.txt | chpasswd
 
 举例：
 
-```
+```bash
 echo tester1:112233 | sudo chpasswd
 ```
 
-```
+```bash
 $ cat chpasswd.txt
 tester1:112233
 tester2:33445566
@@ -511,11 +511,11 @@ tester2:33445566
 $ sudo chpasswd < chpasswd.txt
 ```
 
-#### 生成加密密码`openssl passwd`
+#### 4.1.3.生成加密密码`openssl passwd`
 
 命令`openssl passwd`格式可以如下方法获得。
 
-```
+```bash
 $ man -f passwd
 passwd (1)           - change user password
 passwd (1ssl)        - compute password hashes
@@ -532,7 +532,7 @@ Man: 1ssl
 
 举例（这里用`<your_pwsswd_string>`代替实际密码）：
 
-```
+```bash
 # 基于给定字串newpasswd生成sha256加密码，
 $ openssl passwd -6 newpasswd
 <your_pwsswd_string>
@@ -545,67 +545,67 @@ $ sudo getent shadow tester5
 tester5:<your_pwsswd_string>:19321:0:99999:7:::
 ```
 
-### 修改用户属性`usermod`
+### 4.2.修改用户属性`usermod`
 
 添加用户到附加组
 
-```
+```bash
 usermod -a -G GROUP USER
 usermod -a -G GROUP1,GROUP2,GROUP3 USER
 ```
 
 修改用户主组
 
-```
+```bash
 usermod -a -g GROUP USER
 ```
 
 修改用户信息
 
-```
+```bash
 usermod -c "GECOS Comments" USER
 ```
 
 修改用户主目录，使用绝对路径，`-m`参数会把原主目录的内容移动到新主目录。
 
-```
+```bash
 usermod -d NEW_HOME_DIR USER
 usermod -d NEW_HOME_DIR -m USER
 ```
 
 修改用户shell
 
-```
+```bash
 usermod -s SHELL USER
 ```
 
 修改用户UID
 
-```
+```bash
 usermod -u UID USER
 ```
 
 修改用户名（不常用），同时也需要修改用户主目录。
 
-```
+```bash
 usermod -l NEW_USER USER
 ```
 
 修改用户过期属性，日期格式是`YYYY-MM-DD`
 
-```
+```bash
 usermod -e DATE USER
 ```
 
 如果设定永不过期，则置空日期：
 
-```
+```bash
 usermod -e "" USER
 ```
 
 查看当前用户的过期日期
 
-```
+```bash
 $ sudo chage -l vagrant
 Last password change     : Oct 30, 2022
 Password expires     : never
@@ -621,18 +621,18 @@ Number of days of warning before password expires : 7
 其他登录方法仍然允许，例如基于密钥的身份验证或切换到用户。
 如果要锁定账户并禁用所有登录方式，还需要将到期日期设置为1。
 
-```
+```bash
 usermod -L USER
 usermod -L -e 1 USER
 ```
 
 解锁用户
 
-```
+```bash
 usermod -U USER
 ```
 
-### 删除用户`userdel`
+### 4.3.删除用户`userdel`
 
 `userdel`命令执行时，会读取`/etc/login.defs`文件的内容。 此文件中定义的属性会覆盖`userdel`的默认行为。
 如果在此文件中将`USERGROUPS_ENAB`设置为`yes`，`userdel`将删除与用户同名的组，前提是没有其他用户是该组的成员。
@@ -646,12 +646,12 @@ usermod -U USER
 
 使用`-f`选项强制删除用户帐户，即使用户仍然登录或有属于该用户的正在运行的进程也是如此。
 
-```
+```bash
 userdel USER
 userdel -r USER
 ```
 
-### 查看用户信息`id`
+### 4.4.查看用户信息`id`
 
 类Unix操作系统中的每个用户都由一个不同的整数标识，这个唯一的数字称为UserID。
 
@@ -665,7 +665,7 @@ userdel -r USER
 
 在一个终端窗口执行下面命令，暂停在新密码输入这一步。
 
-```
+```bash
 $ ls -ltr /usr/bin/passwd
 -rwsr-xr-x. 1 root shadow 65208 May  8  2022 /usr/bin/passwd
 
@@ -677,7 +677,7 @@ New password:
 
 新开一个终端窗口。
 
-```
+```bash
 $ ps -a | grep passwd
   3040 pts/0    00:00:00 passwd
 
@@ -691,68 +691,68 @@ $ ps -eo pid,euid,ruid | grep 3040
 
 查看当前用户的信息：
 
-```
+```bash
 $ id
 uid=1000(vagrant) gid=478(wheel) groups=478(wheel),0(root) context=unconfined_u:unconfined_r:unconfined_t:s0
 ```
 
 查看指定用户的信息：
 
-```
+```bash
 $ id vagrant
 uid=1000(vagrant) gid=478(wheel) groups=0(root),478(wheel)
 ```
 
 查看当前用户的GID：
 
-```
+```bash
 $ id -g
 478
 ```
 
 查看当前用户的UID：
 
-```
+```bash
 $ id -u
 1000
 ```
 
 查看当前用户所有组的GID：
 
-```
+```bash
 $ id -G
 478 0
 ```
 
 查看当前用户名：
 
-```
+```bash
 $ id -un
 vagrant
 ```
 
 查看当前用户的GID
 
-```
+```bash
 $ id -ur
 1000
 ```
 
 只有SELinux激活后才有
 
-```
+```bash
 $ id -Z
 unconfined_u:unconfined_r:unconfined_t:s0
 ```
 
 类似于`whoami`命令
 
-```
+```bash
 $ id -znG
 wheelroot
 ```
 
-### 切换用户`su`
+### 4.5.切换用户`su`
 
 命令`su - username`是登录式切换用户。会读取目标用户的配置文件，切换至目标用户的主目录。
 
@@ -760,27 +760,27 @@ wheelroot
 
 切换成root用户，并使用zsh shell。
 
-```
+```bash
 su -s /usr/bin/zsh
 su -s /usr/bin/zsh root
 ```
 
 切换成tester1用户，使用bash shell
 
-```
+```bash
 su - tester1 -s /bin/bash
 su - -s /bin/bash tester1
 ```
 
 保留当前用户环境不变。
 
-```
+```bash
 su -p root
 ```
 
 不交互式切换用户，只用目标用户执行某些命令。
 
-```
+```bash
 su -c ps
 su - root -c "getent passwd"
 su - root -s /bin/bash -c "getent passwd"
@@ -788,25 +788,25 @@ su - root -s /bin/bash -c "getent passwd"
 
 `root`用户切换至其他用户不需要密码，非`root`用户切换其他用户需要密码。
 
-### 设置密码
+### 4.6.设置密码
 
-#### `passwd`
+#### 4.6.1.`passwd`
 
 修改当前用户自己的密码：
 
-```
+```bash
 passwd
 ```
 
 修改其他用户的密码：
 
-```
+```bash
 sudo passwd root
 ```
 
 查看某个用户密码状态：
 
-```
+```bash
 $ sudo passwd -S root
 root P 10/30/2022 -1 -1 -1 -1
 
@@ -816,13 +816,13 @@ vagrant P 10/30/2022 0 99999 7 -1
 
 检查全部用户的密码状态：
 
-```
+```bash
 sudo passwd -Sa
 ```
 
 密码状态说明：
 
-```
+```bash
 Username  Status  Date Last Changed  Minimum Age  Maximum Age  Warning Period   Inactivity Period
 vagrant     P       10/30/2022          0               99999           7                -1
 root        P       10/30/2022          -1              -1              -1               -1
@@ -842,7 +842,7 @@ Age的一些特殊值：
 
 强制要求用户下次登录时修改密码：
 
-```
+```bash
 $ sudo passwd -e tester1
 
 $ sudo passwd -S tester1
@@ -853,7 +853,7 @@ tester1 P 01/01/1970 0 99999 7 -1
 
 锁定某个用户：
 
-```
+```bash
 $ sudo passwd -l tester1
 
 $ sudo passwd -S tester1
@@ -864,7 +864,7 @@ tester1 L 01/01/1970 0 99999 7 -1
 
 解锁某个用户：
 
-```
+```bash
 $ sudo passwd -u tester1
 
 $ sudo passwd -S tester1
@@ -875,7 +875,7 @@ tester1 P 01/01/1970 0 99999 7 -1
 
 删除用户密码。这个操作慎重，密码删除后该用户可以不需要密码就能访问系统。
 
-```
+```bash
 $ sudo passwd -d tester1
 
 $ sudo passwd -S tester1
@@ -884,70 +884,70 @@ tester1 NP 01/01/1970 0 99999 7 -1
 
 此时用户`tester1`的状态栏是`NP`。
 
-#### `pwgen`
+#### 4.6.2.`pwgen`
 
 安装包。
 
 mkpasswd命令有歧义，2个同名命令实现不同功能，生成随机密码建议使用`pwgen`命令。Rocky9没有找到pwgen包。
 
-```
+```bash
 sudo zypper in pwgen
 sudo apt install pwgen
 ```
 
 随机生成长度8位安全密码。
 
-```
+```bash
 pwgen -s -1
 ```
 
 随机生成长度14位安全密码。
 
-```
+```bash
 pwgen -s -1 14
 ```
 
 随机生成2个长度15位安全密码。
 
-```
+```bash
 pwgen -s -1 15 2
 ```
 
 随机生成5个密码，长度10位，每个密码至少含一个特殊字符，结果以列形式输出。
 
-```
+```bash
 pwgen -s -1 -y 10 5
 ```
 
 生成长度8，含有数字，含有大小写字母的密码4个，列打印
 
-```
+```bash
 pwgen -s -n -c -C -1 8 4
 ```
 
 生成长度8，不含数字，只含小写字母，列打印
 
-```
+```bash
 pwgen -s -c -A -0 -1 8 4
 ```
 
 生成长度16，含有数字，含有大小写字母，含有特殊字符的密码3个，行打印
 
-```
+```bash
 pwgen -s -n -c -y -1 16 3
 ```
 
 生成长度80，不含元音和数字，至少含有一个大写字母，行打印
 
-```
+```bash
 pwgen -s -v -c -0 80 1
 ```
 
-#### 非交互式设置密码
+#### 4.6.3.非交互式设置密码
 
 方法1：
 
-```
+```bash
 $ echo -e '123456\n123456' | sudo passwd tester1
 New password: BAD PASSWORD: it is too simplistic/systematic
 BAD PASSWORD: is too simple
@@ -958,19 +958,19 @@ Retype new password: passwd: password updated successfully
 
 Rocky中可以使用下面方法。
 
-```
+```bash
 pwgen -ncy1 16 1 | tee passwd.txt | sudo passwd --stdin tester1
 ```
 
 openSUSE和Ubuntu可以用下面方法。
 
-```
+```bash
 echo "tester1:"`pwgen -ncy1 16 1` | tee passwd.txt | sudo chpasswd
 ```
 
 方法3：根据预先给定的用户列表，批量生成密码。
 
-```
+```bash
 $ cat > user-list.txt <<EOF
 user0
 user1
@@ -989,7 +989,7 @@ $ for i in $(cat user-list.txt); do sudo useradd $i; echo "$i:"`pwgen -s -1 15 1
 $ for i in $(cat user-list.txt); do sudo userdel $i; done
 ```
 
-### 设置用户密码策略
+### 4.7.设置用户密码策略
 
 命令`chage`修改用户密码策略。
 
@@ -1005,7 +1005,7 @@ $ for i in $(cat user-list.txt); do sudo userdel $i; done
 
 显示用户密码策略（时效信息）：
 
-```
+```bash
 $ sudo chage -l tester1
 Last password change     : Nov 27, 2022
 Password expires     : never
@@ -1018,7 +1018,7 @@ Number of days of warning before password expires : 7
 
 设置用户密码的最后修改日期：
 
-```
+```bash
 $ sudo chage -d 2022-11-11 tester1
 
 $ sudo chage -l tester1
@@ -1033,7 +1033,7 @@ Number of days of warning before password expires : 7
 
 设置用户账号的过期日期：
 
-```
+```bash
 $ sudo chage -E 2022-12-31 tester1
 
 $ sudo chage -l tester1
@@ -1048,7 +1048,7 @@ Number of days of warning before password expires : 7
 
 设置用户密码最小/最大修改天数。注意，密码过期日期`Password expires`是按照max days来计算的。
 
-```
+```bash
 $ sudo chage -M 35 tester1
 $ sudo chage -m 30 tester1
 
@@ -1064,7 +1064,7 @@ Number of days of warning before password expires : 7
 
 设置用户账号在密码过期`Password expires`后，直至账号锁定之间的天数，即密码失效时间Password inactive。
 
-```
+```bash
 $ sudo chage -I 3 tester1
 
 $ sudo chage -l tester1
@@ -1079,7 +1079,7 @@ Number of days of warning before password expires : 7
 
 设置用户密码到期前，提前收到警告信息的天数。默认值是7天。
 
-```
+```bash
 $ sudo chage -W 5 tester1
 
 $ sudo chage -l tester1
@@ -1092,7 +1092,7 @@ Maximum number of days between password change  : 35
 Number of days of warning before password expires : 5
 ```
 
-## 组管理
+## 5.组管理
 
 组管理命令：
 
@@ -1101,28 +1101,28 @@ Number of days of warning before password expires : 5
 * `groupdel`
 * `groupmems`
 
-### 创建组`groupadd`
+### 5.1.创建组`groupadd`
 
 创建普通组。
 
-```
+```bash
 sudo groupadd developers
 ```
 
 创建系统组，并指定GID。
 
-```
+```bash
 sudo groupadd -g 48 -r apache
 sudo groupadd -g 1100 -r developers
 ```
 
 覆盖配置文件`/ect/login.defs`
 
-```
+```bash
 groupadd -K GID_MIN=500 -K GID_MAX=700
 ```
 
-### 修改组`groupmod`
+### 5.2.修改组`groupmod`
 
 命令`groupmod`涉及下面这些文件：
 
@@ -1133,11 +1133,11 @@ groupadd -K GID_MIN=500 -K GID_MAX=700
 
 组改名：
 
-```
+```bash
 sudo groupmod -n group_new group_old
 ```
 
-### 删除组`groupdel`
+### 5.3.删除组`groupdel`
 
 命令`groupdel`涉及下面这些文件：
 
@@ -1146,11 +1146,11 @@ sudo groupmod -n group_new group_old
 
 如果组中包含有用户，则必须先删除这些用户后，才能删除组。
 
-```
+```bash
 sudo groupdel group_name
 ```
 
-### 更改组成员和密码`gpasswd`
+### 5.4.更改组成员和密码`gpasswd`
 
 命令`gpasswd`用来修改组成员和密码。
 
@@ -1161,42 +1161,42 @@ sudo groupdel group_name
 
 给组`developers`设密码。
 
-```
+```bash
 sudo gpasswd developers
 ```
 
 取消组`developers`密码。
 
-```
+```bash
 sudo gpasswd -r developers
 ```
 
 给组`developers`添加用户。
 
-```
+```bash
 sudo gpasswd -a tester1,tester2,tester3 developers
 ```
 
 从组`developers`中删除用户。
 
-```
+```bash
 sudo gpasswd -d tester3 developers
 ```
 
 设定用户`tester1`成为组`developers`的管理员。
 
-```
+```bash
 sudo gpasswd -A tester1 developers
 ```
 
 注意：添加用户到某一个组 也可以通过`usermod -G group_name user_name`这个实现，但是该用户以前的组会被清空掉。
 所以，如果要添加一个用户到一个新组，同时希望保留该用户以前的组时，使用`gpasswd`这个命令来添加用户到新组中。
 
-### 修改组成员`groupmems`
+### 5.5.修改组成员`groupmems`
 
 使用命令`groupmems`，需要安装软件包。
 
-```
+```bash
 # openSUSE
 sudo zypper in libvshadow-tools
 # Ubuntu
@@ -1207,7 +1207,7 @@ sudo yum search shadow-utils
 
 添加用户到组。
 
-```
+```bash
 $ sudo groupmems -a tester1 -g developers
 $ sudo groupmems -a tester2 -g developers
 
@@ -1217,7 +1217,7 @@ developers:x:1002:tester1,tester2
 
 从组中删除用户。
 
-```
+```bash
 $ sudo groupmems -d tester2 -g developers
 
 $ cat /etc/group | grep developers
@@ -1226,14 +1226,14 @@ developers:x:1002:tester1
 
 列出组中用户。
 
-```
+```bash
 $ sudo groupmems -l -g developers
 tester1
 ```
 
 切换当前组为`developers_sre`，添加用户`tester2`到当前组，可以不用在后续命令中使用`-g`指定组。
 
-```
+```bash
 $ sudo groupmems -g developers_sre
 
 $ sudo groupmems -a tester2
@@ -1244,16 +1244,16 @@ tester2
 
 切换当前组为`developers_sre`，从当前组中删除所有用户（这里无法指定某用户）。
 
-```
+```bash
 sudo groupmems -g developers_sre
 sudo groupmems -p
 ```
 
-### 查看组关系`group`
+### 5.6.查看组关系`group`
 
 显示当前用户所属主的信息。
 
-```
+```bash
 $ whoami
 vagrant
 
@@ -1263,27 +1263,27 @@ sudo adm cdrom dip plugdev lxd
 
 查看指定用户所属组的信息。
 
-```
+```bash
 $ groups vagrant
 vagrant : sudo adm cdrom dip plugdev lxd
 ```
 
-## 练习
+## 6.练习
 
-1. 创建用户`gentoo`，附加组为`bin`和`root`，默认shell为`/bin/csh`，注释信息为"Gentoo Distribution"
+创建用户`gentoo`，附加组为`bin`和`root`，默认shell为`/bin/csh`，注释信息为"Gentoo Distribution"
 
-```
+```bash
 sudo useradd -G bin,root -s /bin/csh -c "Gentoo Distribution" gentoo
 ```
 
-2. 创建下面的用户、组和组成员关系
+创建下面的用户、组和组成员关系
 
 * 名字为`webs`的组
 * 用户`nginx`，使用`webs`作为附属组
 * 用户`varnish`，也使用`webs`作为附属组
 * 用户`mysql`，不可交互登录系统，且不是`webs`的成员，`nginx`，`varnish`，`mysql`密码都是`opensuse`。
 
- ```
+ ```bash
  sudo groupadd webs
  sudo useradd -G webs nginx
  sudo useradd -G webs varnish
@@ -1294,9 +1294,9 @@ sudo useradd -G bin,root -s /bin/csh -c "Gentoo Distribution" gentoo
  echo "mysql:opensuse" | sudo chpasswd
  ```
 
-3. 查看UID、GID范围的配置文件,修改为501-60000。并查看密码加密算法
+查看UID、GID范围的配置文件,修改为501-60000。并查看密码加密算法
 
- ```
+ ```bash
  $ cat /etc/login.defs
  ...
  GID_MIN    1000
@@ -1309,9 +1309,9 @@ sudo useradd -G bin,root -s /bin/csh -c "Gentoo Distribution" gentoo
  ...
  ```
 
-4. 查看创建用户时的模板配置文件
+查看创建用户时的模板配置文件
 
- ```
+ ```bash
  $ cat /etc/default/useradd
  # useradd defaults file
  GROUP=100
@@ -1324,15 +1324,15 @@ sudo useradd -G bin,root -s /bin/csh -c "Gentoo Distribution" gentoo
  CREATE_MAIL_SPOOL=yes
  ```
 
-5. 创建一个新用户`webuser`，指定登录时起始目录`/www`，同时加入`apache`附加组中,指定UID为`999`且不检查uid唯一性。
+创建一个新用户`webuser`，指定登录时起始目录`/www`，同时加入`apache`附加组中,指定UID为`999`且不检查uid唯一性。
 
- ```
+ ```bash
  sudo useradd -d /www -G apache -u 999 -o webuser
  ```
 
-6. 修改创建用户时的默认设置，主目录/www，默认shell `csh`。查看创建用户的配置文件是否更改，若更改则恢复默认值
+修改创建用户时的默认设置，主目录/www，默认shell `csh`。查看创建用户的配置文件是否更改，若更改则恢复默认值
 
- ```
+ ```bash
  $ sudo useradd -Db /www -s /bin/csh
  
  $ sudo cat /etc/default/useradd
@@ -1349,9 +1349,9 @@ sudo useradd -G bin,root -s /bin/csh -c "Gentoo Distribution" gentoo
  $ sudo useradd -Db /home -s /bin/bash
  ```
 
-7. 批量创建用户`admin1`、`admin2`、`admin3`。
+批量创建用户`admin1`、`admin2`、`admin3`。
 
- ```
+ ```bash
  $ cat > user.txt <<EOF
  admin1
  admin2
@@ -1361,17 +1361,17 @@ sudo useradd -G bin,root -s /bin/csh -c "Gentoo Distribution" gentoo
  $ for i in $(cat user.txt); do sudo useradd $i; echo "$i:"`pwgen -s -1 15 1` | tee passwd_$i.txt | sudo chpasswd; done
  ```
 
-8. 只查看用户`admin2`、`admin3`在`/etc/passwd`的配置信息。
+只查看用户`admin2`、`admin3`在`/etc/passwd`的配置信息。
 
- ```
+ ```bash
  $ getent passwd admin2 admin3
  admin2:x:1019:100::/home/admin2:/bin/bash
  admin3:x:1020:100::/home/admin3:/bin/bash
  ```
 
-9. 修改`admin2`用户UID为`2002`、主组`root`、添加新的附加组`apache`且保留旧的附加组。然后锁定用户。
+修改`admin2`用户UID为`2002`、主组`root`、添加新的附加组`apache`且保留旧的附加组。然后锁定用户。
 
- ```
+ ```bash
  $ sudo usermod -u 2002 -g root -G apache -a admin2
  $ sudo usermod -L admin2
  
@@ -1382,9 +1382,9 @@ sudo useradd -G bin,root -s /bin/csh -c "Gentoo Distribution" gentoo
  admin2 L 11/27/2022 0 99999 7 -1
  ```
 
-10. 修改用户`admin2`用户名为`smith`，设置账号过期时间为`2022-12-31`。
+修改用户`admin2`用户名为`smith`，设置账号过期时间为`2022-12-31`。
 
- ```
+ ```bash
  $ sudo usermod -l smith -e 2022-12-31 admin2
  
  $ sudo chage -l smith
@@ -1397,16 +1397,16 @@ sudo useradd -G bin,root -s /bin/csh -c "Gentoo Distribution" gentoo
  Number of days of warning before password expires : 7
  ```
 
-11. 给`admin1`设置密码`hello`，然后指定新的主目录并把旧目录移动过去。
+给`admin1`设置密码`hello`，然后指定新的主目录并把旧目录移动过去。
 
- ```
+ ```bash
  sudo usermod -d /home/admin_new -m admin1
  echo "admin1:hello" | sudo chpasswd 
  ```
 
-12. 显示`smith`用户UID、GID、显示用户名、显示用户所属组ID
+显示`smith`用户UID、GID、显示用户名、显示用户所属组ID
 
- ```
+ ```bash
  $ id -u smith
  2002
  
@@ -1420,16 +1420,16 @@ sudo useradd -G bin,root -s /bin/csh -c "Gentoo Distribution" gentoo
  root
  ```
 
-13. 锁定`smith`用两种方法
+锁定`smith`用两种方法
 
- ```
+ ```bash
  sudo passwd -l smith
  sudo usermod -L smith
  ```
 
-14. 指定`admin3`的密码最短使用日期为5天，最常使用日期为10天，提前2天提示修改密码。
+指定`admin3`的密码最短使用日期为5天，最常使用日期为10天，提前2天提示修改密码。
 
- ```
+ ```bash
  $ sudo chage -M 10 -m 5 -W 2 admin3
  
  $ sudo chage -l admin3
@@ -1442,28 +1442,28 @@ sudo useradd -G bin,root -s /bin/csh -c "Gentoo Distribution" gentoo
  Number of days of warning before password expires : 2
  ```
 
-15. 创建系统组`newadm`，指定GID为`66`。
+创建系统组`newadm`，指定GID为`66`。
 
- ```
+ ```bash
  sudo groupadd -r -g 66 newadm
  ```
 
-16. 修改`newadm`组名为`newgrp` 修改GID为`67`。
+修改`newadm`组名为`newgrp` 修改GID为`67`。
 
- ```
+ ```bash
  sudo groupmod -n newgrp -g 67 newadm
  ```
 
-17. 将用户`admin1`添加进组`newgrp`，然后删除组`newgrp`。
+将用户`admin1`添加进组`newgrp`，然后删除组`newgrp`。
 
- ```
+ ```bash
  sudo usermod -g newgrp admin1
  sudo groupdel -f newgrp
  ```
 
-18. 设置`smith`用户的详细描述，然后用finger查看。
+设置`smith`用户的详细描述，然后用finger查看。
 
- ```
+ ```bash
  $ chfn smith
  
  $ finger smith
@@ -1474,18 +1474,18 @@ sudo useradd -G bin,root -s /bin/csh -c "Gentoo Distribution" gentoo
  No Plan.
  ```
 
-19. 删除用户`admin1`，并删除其主目录。
+删除用户`admin1`，并删除其主目录。
 
- ```
+ ```bash
  sudo userdel -r admin1
  sudo userdel -r admin2
  ```
 
-## 权限管理
+## 7.权限管理
 
 执行命令`ls -ihl`，可以得到下面的输出结果（Rocky 9）。
 
-```
+```bash
 67274680 -rw-r--r--. 3 vagrant wheel 31 Nov  1 11:14 file
 67274680 -rw-r--r--. 3 vagrant wheel 31 Nov  1 11:14 hardlinkfile1
 67274680 -rw-r--r--. 3 vagrant wheel 31 Nov  1 11:14 hardlinkfile2
@@ -1521,7 +1521,7 @@ sudo useradd -G bin,root -s /bin/csh -c "Gentoo Distribution" gentoo
 
 下面是命令`ls -ihl`在openSUSE和Ubuntu上的显示结果。
 
-```
+```bash
 $ ls -ihl
 233647 -rw-r--r-- 3 vagrant wheel 31 Nov  1 15:52 file
 233647 -rw-r--r-- 3 vagrant wheel 31 Nov  1 15:52 hardlinkfile1
@@ -1532,13 +1532,13 @@ $ ls -ihl
 233646 drwxr-xr-x 1 vagrant wheel  0 Nov  1 15:51 typelink
 ```
 
-### 修改属主`chown`
+### 7.1.修改属主`chown`
 
 `chown`命令修改文件属主（所有者，owner）。
 
 修改文件属主为root。
 
-```
+```bash
 $ ll f1.txt
 -rw-r--r--. 1 vagrant wheel 41 Nov 14 22:23 f1.txt
 
@@ -1550,7 +1550,7 @@ $ ll f1.txt
 
 修改文件的属组为bin。
 
-```
+```bash
 $ sudo chown :bin f1.txt
 
 $ ll f1.txt
@@ -1559,7 +1559,7 @@ $ ll f1.txt
 
 同时修改文件的属主和属组。
 
-```
+```bash
 $ sudo chown vagrant.wheel f1.txt
 
 $ ll f1.txt
@@ -1568,7 +1568,7 @@ $ ll f1.txt
 
 参照某文件修改另一文件的属性。
 
-```
+```bash
 $ ll file.py
 -rw-r--r--. 1 vagrant wheel  56 Nov 13 22:50 file.py
 
@@ -1585,25 +1585,25 @@ $ ll file.py
 
 递归修改所有子目录及文件的属主和属组。
 
-```
+```bash
 sudo chown -R vagrant.wheel ~
 ```
 
-### 修改属组`chgrp`
+### 7.2.修改属组`chgrp`
 
 修改目录的属组。
 
-```
+```bash
 sudo chgrp bin ~~
 ```
 
 修改目录及子目录及文件的属组。
 
-```
+```bash
 sudo chgrp -R bin ~~
 ```
 
-### 文件和目录权限
+### 7.3.文件和目录权限
 
 文件：
 
@@ -1625,7 +1625,7 @@ sudo chgrp -R bin ~~
 
 常用权限例子：
 
-```
+```bash
 -rw------- (600) 只有所有者才有读和写的权限
 -rw-r--r-- (644) 只有所有者才有读和写的权限，组和其他人只有读的权限
 -rwx------ (700) 只有所有者才有读，写，执行的权限
@@ -1635,17 +1635,17 @@ sudo chgrp -R bin ~~
 -rwxrwxrwx (777) 每个人都有读写和执行的权限
 ```
 
-### 权限修改`chmod`
+### 7.4.权限修改`chmod`
 
 命令格式：
 
-```
+```bash
 chmod [-cfvR] [--help] [--version] mode file
 ```
 
 `mode`字串格式为：
 
-```
+```bash
 [ugoa][+-=][rwxXst]
 ```
 
@@ -1675,107 +1675,107 @@ permission:
 
 将文件`file1.txt`设为所有人皆可读取。
 
-```
+```bash
 chmod ugo+r file1.txt
 ```
 
 将文件`file1.txt`设为所有人皆可读取。
 
-```
+```bash
 chmod a+r file1.txt
 ```
 
 将文件`file1.txt`与`file2.txt`设为该文件属主和属组都可写入，但其他用户不可写入。
 
-```
+```bash
 chmod ug+w,o-w file1.txt file2.txt
 ```
 
 为`ex1.py`文件属主增加可执行权限。
 
-```
+```bash
 chmod u+x ex1.py
 ```
 
 将目前目录下的所有文件与子目录皆设为任何人可读取。
 
-```
+```bash
 chmod -R a+r *
 ```
 
 给`file`的所有用户增加读权限
 
-```
+```bash
 chmod a+r file
 ```
 
 删除`file`的所有用户的执行权限
 
-```
+```bash
 chmod a-x file
 ```
 
 给`file`的所有用户增加读写权限
 
-```
+```bash
 chmod a+rw file
 ```
 
 给`file`的所有用户增加读写执行权限
 
-```
+```bash
 chmod +rwx file
 ```
 
 对`file`的属主设置读写权限，清空属组和其他用户对`file`的所有权限（空格代表无权限）
 
-```
+```bash
 chmod u=rw,go= file
 ```
 
 对目录`docs`和其子目录中的所有文件给属主增加读权限，而对属组和其他用户删除读权限
 
-```
+```bash
 chmod -R u+r,go-r docs
 ```
 
 对`file`的属主和属组设置读写权限, 为其他用户设置读权限
 
-```
+```bash
 chmod 664 file
 ```
 
 对`file`的属主设置读写执行权限，相当于`u=rwx`(4+2+1)，设置属组读和执行权限，相当于`go=rx`(4+1 & 4+1)。`0`没有特殊模式
 
-```
+```bash
 chmod 0755 file
 ```
 
 `4`设置了设置用户ID位，剩下的相当于`u=rwx`(4+2+1)和`go=rx`(4+1 & 4+1)。
 
-```
+```bash
 chmod 4755 file
 ```
 
 删除可执行权限对`path/`以及其所有的目录（不包括文件）的所有用户，使用`-type f`匹配文件
 
-```
+```bash
 find path/ -type d -exec chmod a-x {} \;
 ```
 
 允许所有用户浏览或通过目录`path/`
 
-```
+```bash
 find path/ -type d -exec chmod a+x {} \;
 ```
 
-### 默认权限`umask`
+### 7.5.默认权限`umask`
 
 `umask`的值，定义了所有新建的文件和目录的初始权限的。
 
 查看当前权限掩码：
 
-```
+```bash
 $ umask
 0022
 ```
@@ -1786,7 +1786,7 @@ $ umask
 
 计算方法：
 
-```
+```bash
  Files: 
   (Default) 6 6 6
   (umask)   0 2 2
@@ -1804,7 +1804,7 @@ $ umask
 
 计算方法：
 
-```
+```bash
  Files: 
   (Default) 6 6 6
   (umask)   0 7 7
@@ -1820,7 +1820,7 @@ $ umask
 
 举例：
 
-```
+```bash
 $ umask 022
 $ touch file2
 $ ll file2
@@ -1832,7 +1832,7 @@ $ ll file1
 -rw-------. 1 vagrant wheel 0 Nov 28 23:12 file1
 ```
 
-```
+```bash
 $ umask 022
 $ mkdir ./tmp1
 $ umask 077
@@ -1843,7 +1843,7 @@ drwxr-xr-x. 1 vagrant wheel 0 Nov 28 23:14 tmp1
 drwx------. 1 vagrant wheel 0 Nov 28 23:14 tmp2
 ```
 
-### 特殊权限
+### 7.6.特殊权限
 
 除了三种常见的权限rwx，还有三种特殊权限：SUID，SGID，Sticky。
 
@@ -1857,7 +1857,7 @@ SUID：属主s权限，称为Set UID
 * 只对二进制可执行程序文件有效。当执行该文件时，发起者将自动具有该文件所有者的权限。
 * 对目录无效。
 
-```
+```bash
 $ ll file1
 -rw-------. 1 vagrant wheel   0 Nov 28 23:12 file1
 
@@ -1869,7 +1869,7 @@ $ ll file1
 
 如果属主的`x`位上是-，则在属主的`x`位上标记大写`S`，否则标记小写`s`。如下：
 
-```
+```bash
 $ chmod 777 file1
 
 $ ll file1
@@ -1883,7 +1883,7 @@ $ ll file1
 
 下面2组命令实现同样效果。
 
-```
+```bash
 sudo chmod 4xxx file1
 
 chmod 777 file1
@@ -1892,7 +1892,7 @@ sudo chmod u+s file1
 
 取消SUID。
 
-```
+```bash
 sudo chmod u-s file1
 ```
 
@@ -1901,7 +1901,7 @@ SGID：属组s权限，称为Set GID
 * 如果作用于二进制可执行文件上，当执行该文件为进程之后，发起者将自动具有该文件所属组的权限，进程的属组为发起者的属组。
 * 如果作用于目录上，则该目录下新建立的目录和文件都自动从此目录继承。
 
-```
+```bash
 $ sudo chmod g+s file2
 
 $ ll file2
@@ -1910,7 +1910,7 @@ $ ll file2
 
 如果属组的`x`位上是-，则在属组的`x`位上标记大写`S`，否则标记小写`s`。如下：
 
-```
+```bash
 $ chmod 777 file2
 
 $ ll file2
@@ -1924,7 +1924,7 @@ $ ll file2
 
 下面2组命令实现同样效果。
 
-```
+```bash
 sudo chmod 2xxx file2
 
 chmod 777 file2
@@ -1933,13 +1933,13 @@ sudo chmod g+s file2
 
 取消SGID。
 
-```
+```bash
 sudo chmod g-s file2
 ```
 
 对于目录，下面演示可以看到目录下的文件和子目录的继承性。
 
-```
+```bash
 $ ll -d data
 drwxr-xr-x. 1 vagrant bin 0 Nov 28 20:55 data
 
@@ -1965,7 +1965,7 @@ Sticky Bit：简称为SBIT权限
 
 如果其他的`x`位上是-，则在其他的`x`位上标记大写`T`，否则标记小写`t`。
 
-```
+```bash
 $ ll -d .~
 drwxr-sr-x. 1 vagrant bin 18 Nov 29 21:10 .~
 
@@ -1988,7 +1988,7 @@ drwxr-sr-x. 1 vagrant bin 0 Nov 29 21:37 tmp1
 
 设置SUID
 
-```
+```bash
               User    Group   Others
               r w s   r w s   r w x
               r w S
@@ -2000,7 +2000,7 @@ drwxr-sr-x. 1 vagrant bin 0 Nov 29 21:37 tmp1
 
 设置SGID
 
-```
+```bash
               User    Group   Others
               r w x   r w s   r w x
               r w S
@@ -2012,7 +2012,7 @@ drwxr-sr-x. 1 vagrant bin 0 Nov 29 21:37 tmp1
 
 设置Sticky Bit - SBIT
 
-```
+```bash
               User    Group   Others
               r w x   r w x   r w t
                       r w T
@@ -2022,7 +2022,7 @@ drwxr-sr-x. 1 vagrant bin 0 Nov 29 21:37 tmp1
                                   6
 ```
 
-### 设定文件特殊属性`chattr`
+### 7.7.设定文件特殊属性`chattr`
 
 命令格式：`chattr [ -RVf ] [ -v version ] [ mode ] files...`
 
@@ -2035,7 +2035,7 @@ drwxr-sr-x. 1 vagrant bin 0 Nov 29 21:37 tmp1
 
 在openSUSE下执行，分区文件类型是btrfs格式。
 
-```
+```bash
 $ touch filetest
 $ lsattr filetest
 ---------------------- filetest
@@ -2067,7 +2067,7 @@ $ sudo chattr -i filetest
 
 在openSUSE下执行，分区文件类型是btrfs格式。
 
-```
+```bash
 lsattr filetest
 ---------------------- filetest
 $ chattr +a filetest
@@ -2090,7 +2090,7 @@ $ sudo chattr -a filetest
 
 在Ubuntu下执行，分区文件类型是ext4格式。
 
-```
+```bash
 $ touch filetest
 $ sudo chattr +u filetest
 
@@ -2104,14 +2104,14 @@ $ rm filetest
 
 * 和`u`相反，删除文件或目录时，会被彻底删除（直接从硬盘上删除，然后用0填充所占用的区域），不可恢复。
 
-!!! Attention
-    命令`chattr`和`lsattr`的可操作属性依赖于文件所处分区的文件系统类型，例如，ext4和xfs的结果会有不同。
+提示：
+> 命令`chattr`和`lsattr`的可操作属性依赖于文件所处分区的文件系统类型，例如，ext4和xfs的结果会有不同。
+>
+> 历史：命令`chattr`（用于操作属性）和`lsattr`（用于列出属性）最初专用于第二个扩展文件系统系列（ext2、ext3、ext4），并且作为`e2fsprogs`包的一部分提供。然而，此功能已全部或部分扩展到许多其他系统，包括 XFS、ReiserFS、JFS 和 OCFS2。 btrfs 文件系统包括属性功能，包括`C`标志，由于与`CoW`相关的性能较慢，它关闭了btrfs的内置写时复制 (CoW) 功能。
 
- 历史：命令`chattr`（用于操作属性）和`lsattr`（用于列出属性）最初专用于第二个扩展文件系统系列（ext2、ext3、ext4），并且作为`e2fsprogs`包的一部分提供。然而，此功能已全部或部分扩展到许多其他系统，包括 XFS、ReiserFS、JFS 和 OCFS2。 btrfs 文件系统包括属性功能，包括`C`标志，由于与`CoW`相关的性能较慢，它关闭了btrfs的内置写时复制 (CoW) 功能。
+## 8.访问控制列表ACL
 
-## 访问控制列表ACL
-
-### ACL
+### 8.1.ACL
 
 ACL的全称是Access Control List。
   
@@ -2135,10 +2135,10 @@ ACL是Linux内核的一项功能，支持Ext2/3/4，XFS和BtrFS文件系统以�
 
 此方法的另一个优点是系统管理员无需参与创建组。用户可以自己决定授予谁访问其文件的权限。
 
-!!! Attention
-    使用ACL时`ls`的输出结果会发生变化。添加一个加号+ 来说明已为此文件定义ACL，且定义ACL后，所显示的属组权限是ACL掩码的值，而不再是原来属组的权限。
+提示：
+> 使用ACL时`ls`的输出结果会发生变化。添加一个加号+ 来说明已为此文件定义ACL，且定义ACL后，所显示的属组权限是ACL掩码的值，而不再是原来属组的权限。
 
-### ACL的基本类型
+### 8.2.ACL的基本类型
 
 * Minimal ACLs（最小ACL）（实际用途：与POSIX权限相同）
   * 与文件模式权限位等效的ACL称为最小ACL
@@ -2150,7 +2150,7 @@ ACL是Linux内核的一项功能，支持Ext2/3/4，XFS和BtrFS文件系统以�
   * 具有多于上述三个ACL条目的ACL称为扩展ACL
   * 扩展ACL还包含掩码条目，可以包含任意数量的指定用户和指定组条目
 
-### ACL术语
+### 8.3.ACL术语
 
 * 用户类（User classes）。 传统的POSIX权限概念使用三种用户类来分配文件系统中的权限：所有者Owning Owner，所有者组Owning Group和其他用户Other Users。可以为每个用户类型设置三个权限位，赋予读（r），写（w）和执行（x）的权限。
   * Owner class 所有者类
@@ -2165,14 +2165,14 @@ ACL是Linux内核的一项功能，支持Ext2/3/4，XFS和BtrFS文件系统以�
 
 ![The mapping of minimal ACLs](./assets/Mapping%20of%20Minimal%20ACLs.png)
 
-### ACL权限分类
+### 8.4.ACL权限分类
 
 * Named user 指定用户: Lets you assign permissions to individual users. 允许我们为指定用户分配权限。
 * Named group 指定组: Lets you assign permissions to individual groups. 允许我们为制定组分配权限。
 * Mask 掩码: Lets you limit the permissions granted to named users or groups. 允许我们限制给予指定用户或指定组的权限。
 
 所以可能的ACL类型
-ß
+
 | Type         | Text Form             |
 |--------------|-----------------------|
 | owner        | user::rwx             |
@@ -2194,11 +2194,11 @@ ACL是Linux内核的一项功能，支持Ext2/3/4，XFS和BtrFS文件系统以�
 * 使用最小ACL，组类权限映射到所有者组条目权限。With minimal ACLs, the group class permissions map to the owning group entry permissions.
 * 使用扩展ACL时，组类权限映射到掩码条目权限，而所有者组条目仍定义拥有组权限。With extended ACLs, the group class permissions map to the mask entry permissions, whereas the owning group entry still defines the owning group permissions.
 
-### ACL操作命令
+### 8.5.ACL操作命令
 
 设定ACL权限：`setfacl`
 
-* Syntax: setfacl [OPTIONS] [ACL-ENTRIES] <file>
+* Syntax: `setfacl [OPTIONS] [ACL-ENTRIES] <file>`
 * Option Description
   * `-m`: Add or modify an ACL entry
   * `-x`: Remove an ACL entry
@@ -2208,21 +2208,21 @@ ACL是Linux内核的一项功能，支持Ext2/3/4，XFS和BtrFS文件系统以�
 
 注意：--set选项会把原有的ACL项都删除，用新的替代，所以一定要包含UGO的设置，不能像-m医院只添加ACL。
 
-```
+```bash
 setfacl --set u::rw,u:vagrant:rw,g::r,o::- file1
 ```
 
 读取ACL权限：`getfacl`
 
-* Syntax: getfacl [OPTIONS] <file>
+* Syntax: `getfacl [OPTIONS] <file>`
 * Option Description
   * `-a`: Display the file access control list
   * `-d`: Display the default access control list
   * `-R`: List the ACLs of all files and directories recursively
 
-### ACL实例解析
+### 8.6.ACL实例解析
 
-#### 实例描述
+#### 8.6.1.实例描述
 
 * 项目目录`~/project1`
   * 项目经理`pm1`对这个目录拥有访问和修改权限
@@ -2250,11 +2250,11 @@ setfacl --set u::rw,u:vagrant:rw,g::r,o::- file1
 * 递归ACL权限
 * 删除ACL权限
 
-#### 初始化环境
+#### 8.6.2.初始化环境
 
 创建测试用户
 
-```
+```bash
 $ whoami
 vagrant
 
@@ -2285,7 +2285,7 @@ tm2:x:2005:1536::/home/tm2:/bin/bash
 
 创建测试目录`project1`, 指定`project1`目录的权限，创建测试文件`file1`。
 
-```
+```bash
 $ su - pm1
 $ cd ~
 
@@ -2313,7 +2313,7 @@ hello from pm1
 
 目录`~/project1`当前的ACL快照
 
-```
+```bash
 $ getfacl ./project1/
 # file: home/pm1/project1/
 # owner: pm1
@@ -2323,11 +2323,11 @@ group::rwx
 other::---
 ```
 
-#### 添加ACL权限
+#### 8.6.3.添加ACL权限
 
 给`~/project1`目录添加新用户`tm2`，权限为`rwx`。目录`~/project1`的更新后的权限位变成了`drwxrwx---+`。
 
-```
+```bash
 $ su - pm1
 
 $ setfacl -m u:tm2:rx ./project1/
@@ -2349,7 +2349,7 @@ other::---         （其他人other的权限）
 
 给`~/project1`目录添加新组`project2`的权限`rwx`
 
-```
+```bash
 $ su - pm1
 
 $ setfacl -m g:project2:rwx ./project1/
@@ -2373,7 +2373,7 @@ other::---
 
 当前`~/project1`目录的`mask`是`rwx`，`tm2`的权限是`r-x`，二者进行AND操作，`tm2`的实际权限是`r-x`
 
-```
+```bash
    tm2: r - x (1 0 1)
   mask: r w x (1 1 1)
 ---------------------
@@ -2382,13 +2382,13 @@ result: r - x (1 0 1)
 
 对照下面的规则，验证用户`tm2`对`~/project1`目录的实际权限。
 
-```
+```bash
 su - tm2
 ```
 
 能进入目录`project1`，说明当前用户具有目录`project1`的`r-x`权限。
 
-```
+```bash
 $ whoami
 tm2
 
@@ -2397,7 +2397,7 @@ $ cd /home/pm1/project1/
 
 能列出目录`project1`下文件列表，可以查看文件`file`的内容，说明当前用户具有目录`project1`的`r-x`权限。
 
-```
+```bash
 $ pwd
 /home/pm1/project1
 
@@ -2413,7 +2413,7 @@ hello from pm1
 
 对目录`project1`不具有`w`权限，所以无法创建、删除或修改目录下的任何文件或子目录。
 
-```
+```bash
 $ pwd
 /home/pm1/project1
 
@@ -2427,11 +2427,11 @@ $ echo "hello from $USER" >> file1
 -bash: file1: Permission denied
 ```
 
-#### 修改mask权限
+#### 8.6.4.修改mask权限
 
 调整`~/project1`目录的`mask`为`r--`，则`tm2`的实际权限是`r--`
 
-```
+```bash
 $ su - pm1
 $ cd ~
 $ setfacl -m m::r ./project1/
@@ -2452,21 +2452,21 @@ other::---
 
 当前`~/project1`目录的`mask`是`r--`，用户`tm2`、组`project2`的实际权限是`r--`。
 
-```
+```bash
    tm2: r - w (1 0 1)
   mask: r - - (1 0 0)
 ---------------------
 result: r - - (1 0 0)
 ```
 
-!!! Attention
-    用户和用户组所设定的权限必须在mask权限设定的范围之内才能生效，mask权限就是最大有效权限。
+提示：
+> 用户和用户组所设定的权限必须在mask权限设定的范围之内才能生效，mask权限就是最大有效权限。
 
-#### 有效权限分析
+#### 8.6.5.有效权限分析
 
 在POSIX权限模型和ACL权限叠加作用下，用户的实际权限分析。
 
-```
+```bash
 $ getfacl ./project1/
 # file: project1/
 # owner: pm1                            <----Owner
@@ -2491,7 +2491,7 @@ default:other::---
 
 有效权限计算方法如下，注意，`ls`命令中显示出来的权限，与实际的ACL权限是有差别的。
 
-```
+```bash
         tm2: r - w (1 0 1)
       group: r w x (1 1 1)
 named group: r w x (1 1 1)
@@ -2500,26 +2500,26 @@ named group: r w x (1 1 1)
      result: r - - (1 0 0)
 ```
 
-!!! Reference
-    与文件模式权限位等效的ACL称为最小ACL，即POSIX传统权限。
+小贴士：
+> 与文件模式权限位等效的ACL称为最小ACL，即POSIX传统权限。
+>
+> 含掩码mask等其他权限条目的ACL称为扩展ACL。
+>
+> 在最小和扩展ACL情形下，所有者类权限（owner）都是映射到ACL的所有者条目。 其他类权限映射到其各自的ACL条目。
+>
+> 在扩展ACL情形下，组类权限的映射是不同的。
+>
+> 对于没有掩码的最小ACL，组类权限将映射到ACL所有者组条目。
+>
+> 对于带有掩码的扩展ACL，组类权限将映射到掩码条目。
+>
+> 通过权限位进行分配的权限代表了通过ACL进行分配的权限的上限。 没有在这里体现的任何权限，要么不在ACL中，要么无效。
+>
+> 对权限位所做的更改将由ACL反映，反之亦然。
 
-    含掩码mask等其他权限条目的ACL称为扩展ACL。
+#### 8.6.6.默认ACL权限
 
-    在最小和扩展ACL情形下，所有者类权限（owner）都是映射到ACL的所有者条目。 其他类权限映射到其各自的ACL条目。 
-
-    在扩展ACL情形下，组类权限的映射是不同的。
-
-    对于没有掩码的最小ACL，组类权限将映射到ACL所有者组条目。
-
-    对于带有掩码的扩展ACL，组类权限将映射到掩码条目。
-    
-    通过权限位进行分配的权限代表了通过ACL进行分配的权限的上限。 没有在这里体现的任何权限，要么不在ACL中，要么无效。
-    
-    对权限位所做的更改将由ACL反映，反之亦然。
-
-#### 默认ACL权限
-
-```
+```bash
 $ su - pm1
 
 $ touch ./project1/file2
@@ -2536,14 +2536,13 @@ drwxr-----+ 1 pm1 project1 30 Dec  4 08:52 project1/
 
 文件`file1`和目录`cloud`没有继承`project1`目录的ACL权限。
 
-!!! Attetion
-    默认 ACL限只对目录生效。
-
-    默认ACL权限的作用是：如果给父目录设定了默认 ACL 权限，那么父目录中所有新建的子文件都会继承父目录的ACL权限。
+提示：
+> 默认 ACL限只对目录生效。
+> 默认ACL权限的作用是：如果给父目录设定了默认 ACL 权限，那么父目录中所有新建的子文件都会继承父目录的ACL权限。
 
 下面增加`~/project1`目录的默认ACL权限。
 
-```
+```bash
 $ su - pm1
 $ cd ~
 
@@ -2581,7 +2580,7 @@ default:other::---
 
 注意，默认ACL权限是针对新建立的文件生效的，目录cloud和文件file1并没有因为增加了父目录的默认ACL设定而继承默认ACL权限设定.
 
-```
+```bash
 $ su - pm1
 $ cd ~
 $ mkdir ./project1/leonardo
@@ -2593,11 +2592,11 @@ drwxr-xr-x. 1 pm1 project1  0 Dec  4 08:52 cloud
 drwxrwx---+ 1 pm1 project1  0 Dec  4 09:07 leonardo
 ```
 
-#### 递归ACL权限
+#### 8.6.7.递归ACL权限
 
 递归 ACL 权限，是指父目录在设定ACL权限时，所有的子目录也会拥有相同的ACL权限。
 
-```
+```bash
 $ su - pm1
 $ cd ~
 
@@ -2626,11 +2625,11 @@ drwxr-xr-x+ 1 pm1 project1  0 Dec  4 08:52 cloud
 drwxrwx---+ 1 pm1 project1  0 Dec  4 09:07 leonardo
 ```
 
-#### 删除ACL权限
+#### 8.6.8.删除ACL权限
 
 删除用户`tm2`的ACL权限。
 
-```
+```bash
 $ su - pm1
 $ cd ~
 
@@ -2654,7 +2653,7 @@ default:other::---
 
 删除所有的ACL权限。
 
-```
+```bash
 $ setfacl -b ./project1
 
 $ getfacl ./project1
@@ -2674,7 +2673,7 @@ drwxrwx---+ 1 pm1 project1  0 Dec  4 09:07 leonardo
 
 递归删除全部ACL权限。
 
-```
+```bash
 $ setfacl -b -R ./project1
 
 $ ll ./project1/
@@ -2685,13 +2684,13 @@ drwxr-xr-x. 1 pm1 project1  0 Dec  4 08:52 cloud
 drwxrwx---. 1 pm1 project1  0 Dec  4 09:07 leonardo
 ```
 
-### ACL目录实例解析
+### 8.7.ACL目录实例解析
 
-#### 目录ACL
+#### 8.7.1.目录ACL
 
 切换到pm1用户，在其主目录中，基于不同的掩码创建2个子目录。
 
-```
+```bash
 $ su - pm1
 
 $ umask 0022
@@ -2707,7 +2706,7 @@ drwxr-x---. 1 pm1 project1 0 Dec  4 12:31 mydir2
 
 这2个目录当前的ACL状态如下：
 
-```
+```bash
 $ getfacl mydir1
 # file: mydir1
 # owner: pm1
@@ -2727,7 +2726,7 @@ other::---
 
 修改目录`mydir2`的ACL。
 
-```
+```bash
 $ setfacl -m u:tm2:rwx,g:project2:rwx mydir2
 
 $ getfacl mydir2
@@ -2752,7 +2751,7 @@ drwxrwx---+ 1 pm1 project1 0 Dec  4 12:31 mydir2
 用户`tm2`和组`project2`对目录`mydir2`的有效权限变成了`r-x`。
 mask也受组权限变化影响，变成了`r-x`。
 
-```
+```bash
 $ chmod g-w mydir2
 
 $ ll -d mydir2
@@ -2776,7 +2775,7 @@ other::---
 
 `setfacl`可以不修改mask的情况下只修改`owning group`的权限，下面的例子说明了这一情况。POSIX组权限仍然是`rwx`，但ACL中所有者组的权限变成了`r--`。
 
-```
+```bash
 $ setfacl -m g::r mydir2
   
 $ ll -d mydir2
@@ -2794,10 +2793,10 @@ mask::rwx
 other::---
 ```
 
-#### 目录的默认ACL
+#### 8.7.2.目录的默认ACL
 
 目录可以具有默认ACL，这是一种特殊的ACL，用于定义目录下的对象在创建时继承的访问权限。默认ACL会影响子目录和文件。
- 
+
 目录的默认ACL的权限有两种不同的方式传递给其中的文件和子目录：
 
 * 子目录继承父目录的默认ACL，既作为自己的默认ACL，又作为自己的访问ACL。
@@ -2810,7 +2809,7 @@ other::---
 * 默认ACL不会立即影响访问权限。它们仅在创建文件系统对象时才起作用。这些新对象仅从其父目录的默认ACL继承权限。
   * 命令`mkdir`在创建目录时会继承默认ACL。
 
-```
+```bash
 $ su - pm1
 
 $ getfacl mydir2
@@ -2855,7 +2854,7 @@ default:other::---
 
 在对`mydir2`目录添加默认ACL前，创建子目录`sub1`，添加后创建子目录`sub2`。可以观察到`sub2`到继承了`mydir2`的默认ACL。
 
-```
+```bash
 $ su - tm2
 
 $ cd /home/pm1/mydir2/sub2
@@ -2865,7 +2864,7 @@ $ cd /home/pm1/mydir2/sub2
 上例中，默认ACL中指定组`project2`只具有w权限，所以无法执行`cd`命令进入该目录。
 这说明模式值mode中给予的权限`r`被屏蔽了，只保留了ACL中最小的权限`w`。
 
-### ACL检查逻辑
+### 8.8.ACL检查逻辑
 
 ACL检查顺序：
 
@@ -2874,25 +2873,27 @@ ACL检查顺序：
 * Owning group
 * Named group
 * Other
- 
- If
-  进程的用户标识是Owner，则owner的ACL条目决定访问权限
- else if
-  进程的用户标识是named user，则name user的ACL条目的权限决定申请的访问权限
- else if
-  进程的组属于owning group，且owning group的ACL条目包含所请求的访问权限，则授予所请求的权限
- else if
-  进程的组属于named group，且named group的ACL条目包含所请求的访问权限，则授予所请求的权限
- else if
-  进程的组属于owning group或者named group，但owning group或者named group的ACL条目不包含所请求的访问权限，则拒绝所请求的权限
- else
-  ACL中的other条目处理申请的权限
- If
-  如果进程匹配到owner或者other条目中包含所申请的权限，则授予权限
- else if
-  如果进程匹配到named user，owning group，或者named group条目中包含所申请的权限，且maks条目也包含所申请的权限，则授予权限
- else
-  拒绝权限申请
+
+```console
+If
+ 进程的用户标识是Owner，则owner的ACL条目决定访问权限
+else if
+ 进程的用户标识是named user，则name user的ACL条目的权限决定申请的访问权限
+else if
+ 进程的组属于owning group，且owning group的ACL条目包含所请求的访问权限，则授予所请求的权限
+else if
+ 进程的组属于named group，且named group的ACL条目包含所请求的访问权限，则授予所请求的权限
+else if
+ 进程的组属于owning group或者named group，但owning group或者named group的ACL条目不包含所请求的访问权限，则拒绝所请求的权限
+else
+ ACL中的other条目处理申请的权限
+If
+ 如果进程匹配到owner或者other条目中包含所申请的权限，则授予权限
+else if
+ 如果进程匹配到named user，owning group，或者named group条目中包含所申请的权限，且maks条目也包含所申请的权限，则授予权限
+else
+ 拒绝权限申请
+```
 
 实际应用举例：
 

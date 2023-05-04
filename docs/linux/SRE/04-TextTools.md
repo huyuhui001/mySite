@@ -1,8 +1,8 @@
-# 文本编辑
+# 第四章 文本编辑
 
-## 文本编辑器
+## 1.文本编辑器
 
-### vim工具
+### 1.1.vim工具
 
 vim命令格式：
 
@@ -12,7 +12,7 @@ vim命令格式：
 * `-d file1 file2 ...`: 比较多个文件，相当于`vimdiff`
 * `-m file`: 只读方式打开文件
 * `-e file`: 进入ex模式，相当于`ex file`
-* `-y file`: 
+* `-y file`:
 
 vim三种常见模式：
 
@@ -41,7 +41,7 @@ vim三种常见模式：
 * `:q!`:    放弃任何修改并退出
 * `ZQ`:    无条件退出
 * `:join`:    合并多行
-* `J `:        合并两行
+* `J`:        合并两行
 
 设置：（可以在`/etc/vimrc`文件中配置）
 
@@ -100,7 +100,7 @@ vim三种常见模式：
 * `:%s/\s\+$//`:    去掉所有的行尾空格，“\s”表示空白字符（空格和制表符），“\+”对前面的字符匹配一次或多次（越多越好），“$”匹配行尾（使用“\$”表示单纯的“$”字符）
 * `:%s/\s∗\n\+/\r/`:    去掉所有的空白行，“\(”和“\)”对表达式进行分组，使其被视作一个不可分割的整体
 * `:%s!\s*//.*!!`:    去掉所有的“//”注释
-* `:%s!\s*/\*\_.\{-}\*/\s*!!g`:    去掉所有的“/* */”注释
+* `:%s!\s*/\*\_.\{-}\*/\s*!!g`:    去掉所有的“/**/”注释
 * `:%s= *$==`:    将所有行尾多余的空格删除
 * `:g/^\s*$/d`:    将所有不包含字符(空格也不包含)的空行删除
 * `r`:    替换当前字符
@@ -213,9 +213,9 @@ vim三种常见模式：
 
 ![VIM Cheet Sheet](./assets/vim_cheet_sheet.jpg)
 
-## 文本处理工具
+## 2.文本处理工具
 
-### 显示文本内容`cat`
+### 2.1.显示文本内容`cat`
 
 命令`cat`主要参数说明：
 
@@ -227,7 +227,7 @@ vim三种常见模式：
 
 举例：
 
-```
+```bash
 cat -nA user-list.txt
      1  user0$
      2  user1$
@@ -241,7 +241,7 @@ cat -nA user-list.txt
     10  user9$
 ```
 
-### 显示文本行号`nl`
+### 2.2.显示文本行号`nl`
 
 相当于命令`cat -b`。
 
@@ -259,7 +259,7 @@ cat -nA user-list.txt
 
 举例：
 
-```
+```bash
 $ nl -b a -n rz user-list.txt
 000001  user0
 000002  user1
@@ -273,13 +273,13 @@ $ nl -b a -n rz user-list.txt
 000010  user9
 ```
 
-### 逆向显示文本内容`tac`
+### 2.3.逆向显示文本内容`tac`
 
 命令`tac`逆向显示文本内容。
 
 举例：
 
-```
+```bash
 $ tac user-list.txt
 user9
 user8
@@ -295,7 +295,7 @@ user0
 
 举例：
 
-```
+```bash
 $ seq 10 | tac
 10
 9
@@ -309,13 +309,13 @@ $ seq 10 | tac
 1
 ```
 
-### 逆向显示同行内容`rev`
+### 2.4.逆向显示同行内容`rev`
 
 命令`rev`逆向显示同一行的内容。
 
 举例：
 
-```
+```bash
 $ rev user-list.txt
 0resu
 1resu
@@ -331,35 +331,35 @@ $ rev user-list.txt
 
 举例：
 
-```
+```bash
 $ echo {1..10} | rev
 01 9 8 7 6 5 4 3 2 1
 ```
 
-### 显示非文本文件内容`hexdump`
+### 2.5.显示非文本文件内容`hexdump`
 
 命令`hexdump`命令一般用来查看“二进制”文件的十六进制编码
 
 举例：
 
-```
+```bash
 $ hexdump -C -n 32 cp
 00000000  7f 45 4c 46 02 01 01 00  00 00 00 00 00 00 00 00  |.ELF............|
 00000010  03 00 3e 00 01 00 00 00  e0 48 00 00 00 00 00 00  |..>......H......|
 00000020
 ```
 
-### 分页查看文件内容
+### 2.6.分页查看文件内容
 
 命令`more`和`less`可以实现分页查看文件内容。
 
 命令`less`配合管道符使用。
 
-```
-$ tree -d /etc | less
+```bash
+tree -d /etc | less
 ```
 
-### 显示文件头部内容`head`
+### 2.7.显示文件头部内容`head`
 
 命令`head`显示文件头部内容。
 
@@ -367,7 +367,7 @@ $ tree -d /etc | less
 * `head -n 20 zdiff`: 显示文件前20行内容
 * `head -20 zdiff`: 显示文件前20行内容
 
-```
+```bash
 $ echo "我是谁" | head -c3
 我
 
@@ -375,11 +375,11 @@ $ echo "我是谁" | head -c6
 我是
 ```
 
-```
-$ cat /dev/urandom | tr -dc '[:alnum]' | head -c 10 | tee passwd.txt
+```bash
+cat /dev/urandom | tr -dc '[:alnum]' | head -c 10 | tee passwd.txt
 ```
 
-```
+```bash
 $ cat user-list.txt
 user0
 user1
@@ -402,7 +402,7 @@ user5
 user6
 ```
 
-### 显示文件尾部内容`tail`
+### 2.8.显示文件尾部内容`tail`
 
 命令`tail`显示文件头部内容。
 
@@ -413,7 +413,7 @@ user6
 * `tail -f /var/log/messages`: 跟踪显示文件redo.log文件内容，当文件删除，再建同名文件，无法继续追踪
 * `tail -F /var/log/messages`: 跟踪显示文件redo.log文件内容，当文件删除，再建同名文件，继续追踪
 
-### 按列抽取文本`cut`
+### 2.9.按列抽取文本`cut`
 
 命令`cut`可以提取文本文件或者stdin数据的指定列内容。
 
@@ -427,7 +427,7 @@ user6
 
 取/etc/passwd文件第1列内容，以`:`为分隔符（只取前三行）
 
-```
+```bash
 $ cut -d ':' -f 1 /etc/passwd | head -3
 root
 messagebus
@@ -436,7 +436,7 @@ systemd-network
 
 取/etc/passwd文件第1和6列内容，以`:`为分隔符（只取前三行）
 
-```
+```bash
 cut -d ':' -f 1,6 /etc/passwd | head -3
 root:/root
 messagebus:/run/dbus
@@ -445,7 +445,7 @@ systemd-network:/
 
 取/etc/passwd文件第1到3列以及第6列内容，以`:`为分隔符（只取前三行）
 
-```
+```bash
 $ cut -d ':' -f 1-3,6 /etc/passwd | head -3
 root:x:0:/root
 messagebus:x:499:/run/dbus
@@ -454,7 +454,7 @@ systemd-network:x:497:/
 
 下面使用`--output-delimiter`选项，把输出结果中的分隔符`:`全部替换成`---`。
 
-```
+```bash
 $ cat /etc/passwd | sort | head -3
 admin3:x:1020:100::/home/admin3:/bin/bash
 at:x:25:25:Batch jobs daemon:/var/spool/atjobs:/usr/sbin/nologin
@@ -473,14 +473,14 @@ bin---/usr/sbin/nologin
 
 `--output-delimiter`选项也可以利用来进行计算。
 
-```
+```bash
 $ echo {1..10} | cut -d " " -f 1-10 --output-delimiter="+" | bc
 55
 ```
 
 从`ifconfig`命令中截取当前主机的ip地址。（openSUSE需要安装包`net-tools-deprecated`）
 
-```
+```bash
 $ ifconfig | head -2 | tail -1
         inet 192.168.10.210  netmask 255.255.255.0  broadcast 192.168.10.255
 
@@ -490,21 +490,21 @@ $ ifconfig | head -2 | tail -1 | cut -d " " -f 10
 
 或者
 
-```
+```bash
 $ ip addr list | grep eth0 | tail -1 | cut -d " " -f 6
 192.168.10.210/24
 ```
 
 基于上面结果，可以尝试通过`--complement`参数，以`/`为分隔符，排除第二列`24`，只输出第一列IP地址。
 
-```
+```bash
 ip addr list | grep eth0 | tail -1 | cut -d " " -f 6 | cut -d "/" --complement -f 2
 192.168.10.210
 ```
 
 显示`df`命令输出中的分区使用率。
 
-```
+```bash
 $ df | tr -s ' ' | cut -d ' ' -f 5 | tr -d %
 Use
 0
@@ -527,7 +527,7 @@ Use
 
 方法2：先把空格全部替换成%，再去重。
 
-```
+```bash
 df | tr -s ' ' % | cut -d % -f 5
 Use
 0
@@ -548,7 +548,7 @@ Use
 0
 ```
 
-### 合并多个文件`paste`
+### 2.10.合并多个文件`paste`
 
 命令`paste`常用选项：
 
@@ -557,15 +557,15 @@ Use
 
 生成`alpha.log`和`seq.log`。
 
-```
-$ for i in {a..z}; do echo $i >> alpha.log; done
+```bash
+for i in {a..z}; do echo $i >> alpha.log; done
 
-$ seq 10 > seq.log
+seq 10 > seq.log
 ```
 
 用`paste`命令合并这2个文件。
 
-```
+```bash
 $ paste alpha.log seq.log
 a       1
 b       2
@@ -640,7 +640,7 @@ $ paste -d ":" -s seq.log alpha.log
 a:b:c:d:e:f:g:h:i:j:k:l:m:n:o:p:q:r:s:t:u:v:w:x:y:z
 ```
 
-### 文本统计数据`wc`
+### 2.11.文本统计数据`wc`
 
 常用选项：
 
@@ -650,7 +650,7 @@ a:b:c:d:e:f:g:h:i:j:k:l:m:n:o:p:q:r:s:t:u:v:w:x:y:z
 * `-m`：只计数字符总数
 * `-L`：显示文件中最长行的长度
 
-```
+```bash
 $ cat text
 Tom, 20, Shanghai
 Jack, 30, Beijing
@@ -677,7 +677,7 @@ $ wc -L text
 
 对比两种不同合并的方法。
 
-```
+```bash
 $ cat text1 text2
 Tom, 20, Shanghai
 Jack, 30, Beijing
@@ -692,31 +692,24 @@ Jack, 30, Beijing       Jack, 30, Beijing
 Smith, 40, Guangzhou    Leo, 40, Guangzhou
 ```
 
-### 文本排序`sort`
+### 2.12.文本排序`sort`
 
 命令`sort`把整理过的文本显示在stdout上，不改变原文件。
 
 常用选项：
 
-- `-r`：执行反方向（从上至下）排序
-
-- `-R`：随机排序
-
-- `-n`：按数字大小排序
-
-- `-h`：人类可读排序，如：2K，1G
-
-- `-f`：排序时将小写字母视为大写字母
-
-- `-u`：排序时合并重复项
-
-- `-t c`：使用c作为字段分隔符
-
-- `-k #`：按照以c为分隔符的第#列来排序
+* `-r`：执行反方向（从上至下）排序
+* `-R`：随机排序
+* `-n`：按数字大小排序
+* `-h`：人类可读排序，如：2K，1G
+* `-f`：排序时将小写字母视为大写字母
+* `-u`：排序时合并重复项
+* `-t c`：使用c作为字段分隔符
+* `-k #`：按照以c为分隔符的第#列来排序
 
 举例：以`,`为分隔符，读取`text`文件内容中第1，3列，对输出结果以`,`为分隔符，按第二列排序（正序和反序）。
 
-```
+```bash
 $ cat text
 Tom, 20, Shanghai
 Jack, 30, Beijing
@@ -735,7 +728,7 @@ Jack, Beijing
 
 把文件text1和文件text2合并后去重输出。
 
-```
+```bash
 $ cat text2
 Tom, 20, Shanghai
 Jack, 30, Beijing
@@ -757,7 +750,7 @@ Leo, 40, Guangzhou
 
 并集，重复行只保留一行。前面2个命令是同样含义（相同的排序列），第三个命令中对不同列进行了排序，导致去重结果不同。
 
-```
+```bash
 $ cat text1 text2 | sort -u
 Jack, 30, Beijing
 Leo, 40, Guangzhou
@@ -776,21 +769,19 @@ Jack, 30, Beijing
 Smith, 40, Guangzhou
 ```
 
-### 去重`uniq`
+### 2.13.去重`uniq`
 
 命令`uniq`从输入中删除前后相邻重复的行。经常与`sort`命令结合使用。
 
 主要参数：
 
-- `-c`：显示每行重复出现的次数
-
-- `-d`：仅显示重复的行
-
-- `-u`：仅显示不重复的行
+* `-c`：显示每行重复出现的次数
+* `-d`：仅显示重复的行
+* `-u`：仅显示不重复的行
 
 举例，注意只有对相邻行进行去重。
 
-```
+```bash
 $ cat text3
 test 30
 Hello 95
@@ -810,7 +801,7 @@ test 30
 
 把文件text1和文件text2合并后，进行交集和并集，并去重。
 
-```
+```bash
 $ cat text1
 Tom, 20, Shanghai
 Jack, 30, Beijing
@@ -841,7 +832,7 @@ Smith, 40, Guangzhou
 
 查看并发连接数最多的远程主机IP。
 
-```
+```bash
 $ ss -nt
 State         Recv-Q         Send-Q                    Local Address:Port                      Peer Address:Port          Process
 ESTAB         0              0                        192.168.10.210:22                      192.168.10.210:41650
@@ -867,23 +858,23 @@ $ ss -nt | tr -s " " ":" | cut -d ":" -f 6,7 | sort | uniq -c | sort -nr | head 
       6 192.168.10.210:22
 ```
 
-### 文本比较
+### 2.14.文本比较
 
-#### `diff`
+#### 2.14.1.`diff`
 
 命令`diff`比较两个文件之间的区别。
 
 常用选项：
 
-- `-u`：以统一的方式来显示文件内容的不同
-- `-y`：以并列的方式显示文件的异同之处
-- `-W`：在使用-y参数时，指定栏宽
-- `-c`：显示全部内文，并标出不同之处
-- `-N`：缺失文件以空文件处理
+* `-u`：以统一的方式来显示文件内容的不同
+* `-y`：以并列的方式显示文件的异同之处
+* `-W`：在使用-y参数时，指定栏宽
+* `-c`：显示全部内文，并标出不同之处
+* `-N`：缺失文件以空文件处理
 
 举例：
 
-```
+```bash
 $ cat text5 # 文件尾部没有空行
 1001
 1002
@@ -898,7 +889,7 @@ $ cat text6 # 文件尾部没有空行
 
 显示不同。`3c3,4`代表两个文件在第3，4行有不同。
 
-```
+```bash
 $ diff text5 text6
 3c3,4
 < 1003
@@ -914,7 +905,7 @@ $ diff text5 text6
   * `-1,3`中，`-`表示第一个文件，即`text5`。第一个文件从第1行开始连续3行。
   * `+1,4`中，`+`表示第二个文件，即`text6`。即，第二个文件从第1行开始连续4行。
 
-```
+```bash
 $ diff -u text5 text6
 --- text5    2022-12-07 08:07:05.927805722 +0800
 +++ text6    2022-12-07 08:07:24.692234585 +0800
@@ -928,7 +919,7 @@ $ diff -u text5 text6
 
 以上下文方式输出比较结果。标有`!`代表差异行。
 
-```
+```bash
 $ diff -c text5 text6
 *** text5    2022-12-07 08:24:08.867168414 +0800
 --- text6    2022-12-07 08:24:13.939284243 +0800
@@ -947,12 +938,10 @@ $ diff -c text5 text6
 并排格式输出比较结果。
 
 * `|`表示前后2个文件内容有不同
-
 * `<`表示后面文件比前面文件少了1行内容
-
 * `>`表示后面文件比前面文件多了1行内容
   
-  ```
+  ```bash
   $ diff -y -W 50 text5 text6
   1001        1001
   1002        1002
@@ -962,7 +951,7 @@ $ diff -c text5 text6
 
 比较文件夹内容。注意，只比较内容，不比较时间戳。
 
-```
+```bash
 $ mkdir dir1
 $ mkdir dir2
 
@@ -982,28 +971,28 @@ $ diff dir1 dir2
 Only in dir2: file4
 ```
 
-#### `patch`
+#### 2.14.2.`patch`
 
 命令`patch`复制其他文件中的内容。命令格式：
 
+```bash
+patch -p[num] < patchfile
+patch [options] originalfile patchfile 
 ```
-$ patch -p[num] < patchfile
-$ patch [options] originalfile patchfile 
-```
 
-当特定软件有可用的安全修复程序时，我们通常会使用 `yum`或 `apt-get` 或`zypper`等包管理工具进行二进制升级。 
+当特定软件有可用的安全修复程序时，我们通常会使用 `yum`或 `apt-get` 或`zypper`等包管理工具进行二进制升级。
 
-但如果我们是通过从源代码编译安装软件的情况下，我们需要下载安全补丁并将其应用于原始源代码并重新编译软件。 
+但如果我们是通过从源代码编译安装软件的情况下，我们需要下载安全补丁并将其应用于原始源代码并重新编译软件。
 
-这就是我们使用 `diff` 创建补丁文件（patch file），并使用 `patch `命令应用它。 
+这就是我们使用 `diff` 创建补丁文件（patch file），并使用 `patch`命令应用它。
 
-补丁文件是一个文本文件，其中包含同一文件（或同一源代码树）的两个版本之间的差异。 补丁文件是使用 `diff `命令创建的。
+补丁文件是一个文本文件，其中包含同一文件（或同一源代码树）的两个版本之间的差异。 补丁文件是使用 `diff`命令创建的。
 
 继续上例。
 
 将文件`text5`的内容同步到文件`text6`，然后撤销补丁。注意区分源文件和目标文件。
 
-```
+```bash
 $ cat text5
 1001
 1002
@@ -1077,7 +1066,7 @@ $ cat text6
 
 使用`-b`参数，在patch前先备份源文件。
 
-```
+```bash
 $ patch -b < patchfile
 patching file text5
 
@@ -1103,7 +1092,7 @@ patching file text5
 
 在-b参数中加入-V参数，指定备份文件名的格式，如下，会得到文件`text5.~1~`。
 
-```
+```bash
 $patch -b -V numbered < patchfile
 patching file text5
 
@@ -1121,7 +1110,7 @@ $ cat text5.~1~
 
 试运行，不做实际更改。
 
-```
+```bash
 patch --dry-run < patchfile
 ```
 
@@ -1133,7 +1122,7 @@ patch --dry-run < patchfile
 * `patch`命令中用`diff`的目标目录去覆盖源目录。互换会报错。
 * `-R`：撤销补丁。
 
-```
+```bash
 # file3和file4有内容
 $ tree ./dir1
 ./dir1
@@ -1217,21 +1206,21 @@ File /home/vagrant/dir2 is not a regular file -- refusing to patch
 1 out of 1 hunk ignored -- saving rejects to file /home/vagrant/dir2.rej
 ```
 
-#### `vimdiff`
+#### 2.14.3.`vimdiff`
 
 命令`vimdiff`相当于`vim -d`。
 
 举例：
 
-```
-$ vimdiff text1 text2
+```bash
+vimdiff text1 text2
 ```
 
-#### `cmp`
+#### 2.14.4.`cmp`
 
 命令`cmp`查看二进制文件的不同。
 
-```
+```bash
 $ cmp cp grep
 cp grep differ: byte 25, line 1
 
@@ -1248,5 +1237,3 @@ $ hexdump -s 735 -Cn 30 /usr/bin/ls
 000002ef 00 6a 00 00 00 4f 00 00 00 00 00 00 00 1d |.j...O........|
 000002fd
 ```
-
-

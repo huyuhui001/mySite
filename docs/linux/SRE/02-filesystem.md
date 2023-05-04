@@ -1,11 +1,11 @@
-# 文件系统
+# 第二章 文件系统
 
 文件系统层次标准（Filesystem Hierarchy Standard, FHS），它是Linux 标准库（Linux Standards Base, LSB）规范的一部分。
 
 根目录`/`指文件系统树的最高层。 根分区在系统启动时首先挂载。
 系统启动时运行的所有程序都必须在此分区中。
 
-## 主要目录
+## 1.主要目录
 
 以下目录必须在根分区中：
 
@@ -165,16 +165,16 @@
     * 有源设备（active devices）
     * 驱动程序（drivers）
 
-## 文件操作命令
+## 2.文件操作命令
 
-### 显示当前工作目录
+### 2.1.显示当前工作目录
 
 pwd命令（print working directory）:
 
 * -L: 显示链接路径
 * -P：显示真实物理路径
 
-### 相对和绝对路径
+### 2.2.相对和绝对路径
 
 对于绝对路径`/etc/firewalld/policies`，可以通过下面命令得到该路径的基名`policies`和目录名`/etc/firewalld`。
 
@@ -183,7 +183,7 @@ basename /etc/firewalld/policies
 dirname /etc/firewalld/policies
 ```
 
-### 更改目录
+### 2.3.更改目录
 
 `.`指当前目录，即`pwd`命令所返回的目录。
 
@@ -199,7 +199,7 @@ dirname /etc/firewalld/policies
 
 * `echo $OLDPWD`：上次工作目录
 
-### 列出目录内容
+### 2.4.列出目录内容
 
 `ls`命令：
 
@@ -220,7 +220,7 @@ dirname /etc/firewalld/policies
 
 `ls`命令查看不同文件是的颜色，由`/etc/DIR_COLORS`和变量`@LS_COLORS`定义。
 
-### 文件状态stat
+### 2.5.文件状态stat
 
 每个文件有三个时间戳：
 
@@ -247,7 +247,7 @@ Change: 2022-06-24 14:50:24.387992912 +0800
  Birth: 2022-06-24 14:50:23.755992937 +0800
 ```
 
-### 确定文件类型
+### 2.6.确定文件类型
 
 命令`file`检查文件类型。
 
@@ -274,7 +274,7 @@ Change: 2022-06-24 14:50:24.387992912 +0800
 /etc/issue: symbolic link to ../run/issue
 ```
 
-### 文件编码转换
+### 2.7.文件编码转换
 
 `iconv`命令用于将一种编码中的某些文本转换为另一种编码。 如果没有提供输入文件，则它从标准输入中读取。 同样，如果没有给出输出文件，那么它会写入标准输出。 如果没有提供 `from-encoding` 或 `to-encoding`，则它使用当前本地的字符编码。
 
@@ -296,7 +296,7 @@ echo abc ß α € àḃç | iconv -f UTF-8 -t ASCII//TRANSLIT
 abc ss ? EUR abc
 ```
 
-### 通配符
+### 2.8.通配符
 
 通配符，指包含这些字符的字符串
 
@@ -363,7 +363,7 @@ file_B.txt  file_f.txt  file_I.txt  file_m.txt  file_P.txt  file_t.txt  file_W.t
 file_c.txt  file_F.txt  file_j.txt  file_M.txt  file_q.txt  file_T.txt  file_x.txt
 ```
 
-### 字符集
+### 2.9.字符集
 
 * `[:alpha:]`：表示所有的字母（不区分大小写），效果同`[a-z]`
 * `[:digit:]`：表示任意单个数字，效果同`[0-9]`
@@ -385,7 +385,7 @@ file_c.txt  file_F.txt  file_j.txt  file_M.txt  file_q.txt  file_T.txt  file_x.t
 * `ls [[:lower:]].txt`：显示当前目录下所有以单个小写字母为名的.txt格式的文件
 * `ls -d [[:alnum:]]`：显示当前目录下所有单个字母（不区分大小写）或数字为名的目录或文件
 
-### 特殊符号
+### 2.10.特殊符号
 
 * `|`   ：管道符，或者（正则）
 * `>`   ：输出重定向
@@ -406,7 +406,7 @@ file_c.txt  file_F.txt  file_j.txt  file_M.txt  file_q.txt  file_T.txt  file_x.t
 * `.`   ：当前目录的硬链接
 * `..`  ：上级目录的硬链接
 
-### 刷新文件时间`touch`
+### 2.11.刷新文件时间`touch`
 
 `touch`命令可以创建空文件，也可以刷新文件时间。参数如下：
 
@@ -461,7 +461,7 @@ Change: 2022-11-08 20:56:18.306315887 +0800
  Birth: 2022-11-08 20:28:37.809551441 +0800
 ```
 
-### 复制文件和目录`cp`
+### 2.12.复制文件和目录`cp`
 
 `cp`命令：Copy SOURCE to DEST, or multiple SOURCE(s) to DIRECTORY.
 
@@ -589,7 +589,7 @@ $ ll ~/test
 drwxr-xr-x. 3 root    root  4096 Nov  8 22:49 sysconfig
 ```
 
-### 移动文件和目录`mv`
+### 2.13.移动文件和目录`mv`
 
 `mv`命令。Rename SOURCE to DEST, or move SOURCE(s) to DIRECTORY.
 
@@ -619,7 +619,7 @@ mv file1 file2
 mv ~/test ~/dest
 ```
 
-### 重命名文件和目录`rename`
+### 2.14.重命名文件和目录`rename`
 
 `rename`命令。分为perl版本和C语言版本。
 区分方法: `rename --version`。如果返回结果中包含 `util-linux`，说明是C语言版本, 反之是Perl版本。
@@ -643,11 +643,11 @@ $ rename -v ".s" ".gz" *.s
 rename -v "s/s/gz/g" *.s
 ```
 
-### 删除文件`rm`
+### 2.15.删除文件`rm`
 
 `rm`命令。建议使用`mv`命令代替`rm`命令。
 
-### 目录操作命令
+### 2.16.目录操作命令
 
 创建目录：`mkdir`
 
@@ -657,7 +657,7 @@ rename -v "s/s/gz/g" *.s
 
 显示目录树：`tree`
 
-### 练习
+### 2.17.练习
 
 1. 显示`/etc`目录下所有以`l`开头，以一个小写字母结尾，且中间出现至少一位数字的文件或目录列表。
 
@@ -821,7 +821,7 @@ rename -v "s/s/gz/g" *.s
      └── dir7
     ```
 
-## 七种文件类型
+## 3.七种文件类型
 
 * 普通文件（Normal Files）
   * ASCII 文本文件
@@ -846,7 +846,7 @@ rename -v "s/s/gz/g" *.s
 * 块设备（Block Devices）
 * 字符设备（Character Devices）
 
-### inode结构
+### 3.1.inode结构
 
 文件储存在硬盘上，硬盘的最小存储单位叫做“扇区”（Sector）。每个扇区储存512字节（相当于0.5KB）。
 
@@ -944,7 +944,7 @@ $ ls -il
 139 drwxr-xr-x. 5 vagrant wheel 4096 Nov  9 22:00 test
 ```
 
-### 链接类型
+### 3.2.链接类型
 
 **硬链接**（Hard links）硬链接是存储卷上文件的目录引用或指针。 文件名是存储在目录结构中的标签，目录结构指向文件数据。 因此，可以将多个文件名与同一文件关联。 通过不同的文件名访问时，所做的任何更改都是针对源文件数据。
 
@@ -977,7 +977,7 @@ $ ls -il
 | 文件类型  | 和源文件相同              | 链接文件，和源文件无关            |
 | 文件大小  | 和源文件相同              | 源文件的路径的长度              |
 
-### 设备文件
+### 3.3.设备文件
 
 **设备文件**（Device File）表示硬件（网卡除外）。 每个硬件都由一个设备文件表示。 网卡是接口。
 
@@ -992,7 +992,7 @@ $ ls -il
   * 通过辅以不同选项，可以广泛而多样地应用和使用字符设备。
 * 当内核发现设备时由操作系统`udev`自动创建。
 
-### 练习
+### 3.4.练习
 
 目标：
 
@@ -1161,7 +1161,7 @@ tree -f ./data
 └── ./data/typelink
 ```
 
-## 文件属性说明
+## 4.文件属性说明
 
 执行命令`ls -ihl`，可以得到下面的输出结果（Rocky 9）。
 
@@ -1212,7 +1212,7 @@ $ ls -ihl
 233646 drwxr-xr-x 1 vagrant wheel  0 Nov  1 15:51 typelink
 ```
 
-## 标准输入输出
+## 5.标准输入输出
 
 标准输入输出，即I/O，I/O的I是Input，O是output。
 
@@ -1402,9 +1402,9 @@ lr-x------ 1 vagrant wheel 64 Nov 13 23:21 3 -> /home/vagrant/test.txt
 >
 > 存储在`/dev/pts`目录中的文件是抽象文件而不是真实文件，是伪终端中执行程序时临时存储的数据。 打开`/dev/pts`下的文件通常没有什么实际意义。
 
-## 重定向和管道
+## 6.重定向和管道
 
-### 输入重定向
+### 6.1.输入重定向
 
 常用命令格式：
 
@@ -1430,7 +1430,7 @@ EOF
 $ cat < file.py > new.py
 ```
 
-### 输出重定向
+### 6.2.输出重定向
 
 输出重定向分为标准输出重定向和错误输出重定向两种。
 
@@ -1486,7 +1486,7 @@ ls: cannot access 'file': No such file or directory
 file.py
 ```
 
-### 特殊重定向
+### 6.3.特殊重定向
 
 格式：`command1 < <(command2)`
 
@@ -1571,7 +1571,7 @@ echo passwd.txt | chpasswd
 > cat <<< "Welcome! ${USER}"
 > ```
 
-## 管道
+## 7.管道
 
 Linux中使用竖线`|`连接多个命令，这被称为管道符。
 
