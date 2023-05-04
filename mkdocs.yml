@@ -73,11 +73,11 @@ nav:
 - Linux:
   - Index: linux/index.md
   - Linux SRE:
-    - Linux Fundamentals: linux/SRE/01-fundamentals.md
-    - File System: linux/SRE/02-filesystem.md
-    - Identity & Security: linux/SRE/03-identity-security.md
-    - Text Tools: linux/SRE/04-TextTools.md
-    - Regular Expression: linux/SRE/05-RegExpress.md
+    - 第一章 Linux基础: linux/SRE/01-fundamentals.md
+    - 第二章 文件系统: linux/SRE/02-filesystem.md
+    - 第三章 身份与安全: linux/SRE/03-identity-security.md
+    - 第四章 文本编辑: linux/SRE/04-TextTools.md
+    - 第五章 正则表达式: linux/SRE/05-RegExpress.md
     - File Lookup: linux/SRE/06-FileLookup.md
     - FIle Packing & Unpacking: linux/SRE/07-FilePacking.md
   - SUSE Linux Administration: 
