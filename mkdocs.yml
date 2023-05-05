@@ -78,8 +78,8 @@ nav:
     - 第三章 身份与安全: linux/SRE/03-identity-security.md
     - 第四章 文本编辑: linux/SRE/04-TextTools.md
     - 第五章 正则表达式: linux/SRE/05-RegExpress.md
-    - File Lookup: linux/SRE/06-FileLookup.md
-    - FIle Packing & Unpacking: linux/SRE/07-FilePacking.md
+    - 第六章 文件查找: linux/SRE/06-FileLookup.md
+    - 第七章 文件打包和解包: linux/SRE/07-FilePacking.md
   - SUSE Linux Administration: 
     - Linux File System Overview: linux/Administration/01.md
     - Useful Commands: linux/Administration/02.md
