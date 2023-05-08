@@ -2769,6 +2769,191 @@ user    0m0.046s
 sys    0m0.004s
 ```
 
+contine示例：中断当前循环，进入下一次循环。
+
+```bash
+$ awk 'BEGIN{i=0;sum=0;for(i=1;i<=100;i++){if(i==50)continue;sum+=i};print sum}'
+5000
+```
+
+contine示例：中断整个循环。
+
+```bash
+$ awk 'BEGIN{i=0;sum=0;for(i=1;i<=100;i++){if(i==50)break;sum+=i};print sum}'
+1225
+```
+
+next示例：提前结束对本行处理，直接进入下一行处理（注，awk自循环，并非前面的for或while循环）
+
+```bash
+$ awk -F: '{if($3%2!=0)next;print $1,$3}' /etc/passwd  # 奇数行打印
+root 0
+systemd-timesync 496
+nobody 65534
+chrony 494
+games 492
+daemon 2
+rpc 490
+polkitd 488
+ftpsecure 486
+sshd 484
+vagrant 1000
+svn 482
+tester1 600
+tester4 1002
+user0 1004
+user2 1006
+user4 1008
+user6 1010
+user8 1012
+gentoo 1014
+varnish 1016
+webuser 666
+admin3 1020
+smith 2002
+tm1 2004
+
+$ awk -F: '{if($3%2==0)next;print $1,$3}' /etc/passwd  # 偶数行打印
+messagebus 499
+systemd-network 497
+mail 495
+postfix 51
+man 13
+lp 493
+ftp 491
+nscd 489
+at 25
+tftp 487
+bin 1
+statd 485
+pesign 483
+tester2 601
+tester3 1001
+tester5 1003
+user1 1005
+user3 1007
+user5 1009
+user7 1011
+user9 1013
+nginx 1015
+mysql 1017
+pm1 2003
+tm2 2005
+```
+
+### 数组
+
+关联数组是一种数据结构，也称为字典或映射。与传统的数组不同，关联数组的索引可以是任何类型的数据，例如字符串或对象，而不仅仅是整数。
+
+提示：
+> 在计算机编程中，除了关联数组，还有其他几种常见的数组类型，包括：
+>
+> 1. 线性数组（或称为索引数组）：这是最常见的数组类型，其中每个元素都有一个数字索引，可以用来快速访问数组中的元素。例如，在C语言中，数组的每个元素都可以通过数组下标来访问。
+> 2. 多维数组：多维数组是一种数组，其中每个元素也是一个数组。在二维数组中，每个元素都有两个索引（例如，行和列），可以用于访问数组中的元素。在高维数组中，每个元素都具有更多的索引。
+> 3. 动态数组：动态数组是一种可以动态调整大小的数组。在许多编程语言中，动态数组可以动态分配内存，以便在程序运行时根据需要调整数组的大小。
+> 4. 向量：向量是一种数组，其中每个元素都是相同的数据类型。向量通常用于执行数学运算或处理大量数字数据。
+
+在`awk`中使用数组时，通常会将某些值与一个字符串相关联，以便在需要时可以通过该字符串快速地检索该值。
+`awk`的数组是一个关联数组，其中每个元素都由一个唯一的键值和一个对应的值组成。键值（或称为索引）可以是任何类型的字符串。
+
+数组可以通过以下语法进行声明：
+
+```bash
+array_name[index] = value
+```
+
+其中，`array_name`是数组的名称，`index`是元素的索引值，`value`是元素的值。
+
+例如，以下是一个包含三个元素的关联数组的示例：
+
+```bash
+array["apple"] = 1
+array["banana"] = 2
+array["orange"] = 3
+```
+
+在上面的示例中，`array`是一个关联数组，其索引为字符串类型，而值为整数类型。可以使用以下的方式访问该数组中的元素：
+
+```bash
+value = array["apple"]
+```
+
+在上面的示例中，`value`的值将为`1`，因为`array["apple"]`的值为`1`。
+
+以下是用`awk`命令来创建上面那个包含三个元素的关联数组，遍历并输出数组值：
+
+```bash
+awk 'BEGIN { array["apple"]=1; array["banana"]=2; array["orange"]=3; for(i in array){print array[i]}}'
+3
+1
+2
+```
+
+下面例子中，我们互换了数组的键和值。
+
+```bash
+$ awk 'BEGIN {arr[1]="apple";arr[2]="banana";arr[3]="orange";for(i in arr){print arr[i]}}'
+apple
+banana
+orange
+```
+
+在上面的示例中，`i`是数组`arr`的索引值，`arr[i]`是数组中对应的元素值。通过这种方式可以循环遍历整个数组，并输出其中的元素。
+
+除了使用循环遍历数组之外，还可以使用`length`函数获取数组中元素的数量。例如：
+
+```bash
+$ awk 'BEGIN { arr[1]="apple"; arr[2]="banana"; arr[3]="orange"; print length(arr) }'
+3
+```
+
+上面的示例将输出数字3，表示数组`arr`中包含三个元素。
+
+再举一个例子,去重。
+`line`是数组名，`$0`是`awk`读取的当前行的内容。
+`line[$0]`等价于`line["a"]`，`line["b"]`，......。
+
+我们看执行过程：
+
+1. awk读入第1行；
+2. 执行`line["a"]`，值为空；
+3. 求反，则第一行的值变为`true`，即`!line["a"]=true`；
+4. 当`!line["a"]`为`true`，则打印当前行，即输出`a`到屏幕；
+5. 执行`line["a"]++`，注意第2步中`line["a"]`的值是空，执行`++`后值变为`1`。
+6. 同理，我们可以看到第2，3，4行都输出了。
+7. 当读入第5行时（第二个`a`），执行`line["a"]`，值为`1`；`!line["a"]=0`，即false；则不打印当前行，即不输出`a`到屏幕；执行`++`后值变为`2`
+8. 当读入第8行时（第三个`a`），执行`line["a"]`，值为`2`；`!line["a"]=0`，即false；则不打印当前行，即不输出`a`到屏幕；执行`++`后值变为`3`
+9. 以此类推，读入第二个`b`，`c`，`d`，`e`，都不会再输出到屏幕，从而实现去重输出到功能。
+
+```bash
+$ cat > test << EOF
+a
+b
+c
+d
+a
+c
+d
+a
+b
+b
+e
+EOF
+
+$ awk '!line[$0]++' test
+a
+b
+c
+d
+e
+```
+
+再举一个例子：判断数组索引是否存在。
+
+```bash
+
+```
+
 ## 小练习
 
 * 显示`/proc/meminfo`文件中以大小s开头的行，要求使用两种方法。
