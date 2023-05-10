@@ -2909,7 +2909,7 @@ $ awk 'BEGIN { arr[1]="apple"; arr[2]="banana"; arr[3]="orange"; print length(ar
 
 上面的示例将输出数字3，表示数组`arr`中包含三个元素。
 
-再举一个例子,去重。
+举例：去重复记录。
 `line`是数组名，`$0`是`awk`读取的当前行的内容。
 `line[$0]`等价于`line["a"]`，`line["b"]`，......。
 
@@ -2948,11 +2948,75 @@ d
 e
 ```
 
-再举一个例子：判断数组索引是否存在。
+举例：判断数组索引是否存在。
+方法：`<your_var> in array`，`0`表示不存在，`1`表示存在。
 
 ```bash
-
+$ awk 'BEGIN{array["i"]="x";array["j"]="j";print "i" in array, "y" in array}'
+1 0
+$ awk 'BEGIN{array["i"]="x";array["j"]="j";if("i" in array){print "exits!"}else{print "not exists!"}}'
+exits!
+$ awk 'BEGIN{array["i"]="x";array["j"]="j";if("abc" in array){print "exits!"}else{print "not exists!"}}'
+not exists!
 ```
+
+举例：遍历数组中每个元素。
+方法：`for(your_var in array){your_for_body}`，注意，your_var会遍历每个索引。
+
+```bash
+$ awk 'BEGIN{weekday["mon"]="Monday";weekday["tue"]="Tuesday";for(i in weekday){print i,weekday[i]}}'
+tue Tuesday
+mon Monday
+$ awk 'BEGIN{weekday["mon"]="Monday";weekday["tue"]="Tuesday";for(i in weekday){print i": "weekday[i]}}'
+tue: Tuesday
+mon: Monday
+```
+
+注意下面的换行写法，不需要反斜杠`\`。
+
+```bash
+$ awk 'BEGIN{
+arr["x"]="welcome"
+arr["y"]="to"
+arr["z"]="Shanghai"
+for (i in arr) {
+ print i, arr[i]
+}
+}'
+x welcome
+y to
+z Shanghai
+```
+
+示例：格式化输出用户名和密码。
+
+```bash
+$ awk -F: '{user[$1]=$3}END{for (i in user){print "Username: " i, "UID: " user[i]}}' /etc/passwd
+Username: sshd UID: 476
+Username: rpc UID: 482
+Username: tftp UID: 488
+Username: usbmux UID: 480
+Username: srvGeoClue UID: 487
+......
+```
+
+示例：显示主机连接状态出现的次数。
+
+```bash
+# 传统方法
+$ ss -ant| awk 'NR>=2{print $1}'| sort| uniq -c
+$ ss -ant| awk 'NR!=1{print $1}'| sort| uniq -c
+      1 ESTAB
+      6 LISTEN
+
+# 使用awk数组
+$ ss -ant| awk 'NR>=2{state[$1]++}END{for(i in state){print state[i], i}}'
+$ ss -ant| awk 'NR!=1{state[$1]++}END{for(i in state){print state[i], i}}'
+6 LISTEN
+1 ESTAB
+```
+
+### awk函数
 
 ## 小练习
 
