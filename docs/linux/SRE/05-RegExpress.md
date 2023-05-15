@@ -3018,6 +3018,368 @@ $ ss -ant| awk 'NR!=1{state[$1]++}END{for(i in state){print state[i], i}}'
 
 ### awk函数
 
+参考：[`awk`函数官网](https://www.gnu.org/software/gawk/manual/html_node/Functions.html)
+
+#### 内置函数
+
+在`awk`中，函数是一种用于执行特定任务或计算特定值的可重用代码块。
+`awk`提供了许多内置函数，可以用于处理文本数据、执行数学运算、操作字符串等。
+
+以下是一些常用的awk函数示例：
+
+* `length(string)`：返回字符串的长度。
+
+```shell
+$ awk 'BEGIN { str = "Hello World"; len = length(str); print len }'
+11
+```
+
+```bash
+$ cut -d: -f1 /etc/passwd | awk '{print length($1)}' | head -3
+4
+10
+15
+```
+
+* `substr(string, start, length)`：从指定位置开始提取字符串的子串。
+
+```shell
+$ awk 'BEGIN { str = "Hello World"; substring = substr(str, 7, 5); print substring }'
+World
+```
+
+* `sub(regexp, replacement [, target])`：从字符串target中搜索匹配regexp的内容，并把第一个匹配的内容替换为replacement。懒惰模式。
+注意：`sub()`函数在原始字符串上进行替换操作，并返回替换的次数。
+
+```shell
+# 在原始字符串中，第一个匹配到的"at"被替换为"ith"，因此输出结果中的"at"变为"ith"，其他地方的"at"保持不变
+$ awk 'BEGIN { str = "water, water, everywhere"; sub(/at/, "ith", str); print str }'
+wither, water, everywhere
+# 返回匹配次数
+$ awk 'BEGIN { str = "water, water, everywhere"; str_new = sub(/at/, "ith", str); print str_new }'
+1
+```
+
+```bash
+$ echo "2023:15:35 08:15:26" | awk 'sub(/:/, "-", $0)'
+2023-15:35 08:15:26
+$ echo "2023:15:35 08:15:26" | awk 'sub(/:/, "-", $1)'
+2023-15:35 08:15:26
+$ echo "2023:15:35 08:15:26" | awk 'sub(/:/, "-", $2)'
+2023:15:35 08-15:26
+```
+
+* gsub(regexp, replacement [, target])：从字符串target中搜索匹配regexp的内容，并把全部匹配的内容替换为replacement。贪婪模式。
+
+```bash
+# 在原始字符串中，将所有匹配到的"at"被替换为"ith"
+$ awk 'BEGIN { str = "water, water, everywhere"; gsub(/at/, "ith", str); print str }'
+wither, wither, everywhere
+# 返回匹配次数
+$ awk 'BEGIN { str = "water, water, everywhere"; str_new = gsub(/at/, "ith", str); print str_new }'
+2
+```
+
+```bash
+$ echo "2023:15:35 08:15:26" | awk 'gsub(/:/, "-", $0)'
+2023-15-35 08-15-26
+$ echo "2023:15:35 08:15:26" | awk 'gsub(/:/, "-", $1)'
+2023-15-35 08:15:26
+$ echo "2023:15:35 08:15:26" | awk 'gsub(/:/, "-", $2)'
+2023:15:35 08-15-26
+```
+
+* `split(string, array, delimiter)`：将字符串string按指定分隔符delimiter拆分成数组array的元素。
+注意：第一个索引值为`1`，第二个索引值为`2`.
+
+```bash
+$ awk 'BEGIN { str = "apple,banana,orange"; split(str, fruits, ","); print fruits[2] }'
+banana
+```
+
+```bash
+$ head -n2 /etc/passwd | awk '{split($0, array, ":")}END{print array[1]}'
+messagebus
+$ head -n2 /etc/passwd | awk '{split($0, array, ":")}END{print array[2]}'
+x
+$ head -n2 /etc/passwd | awk '{split($0, array, ":")}END{print array[3]}'
+499
+$ head -n2 /etc/passwd | awk '{split($0, array, ":")}END{print array[7]}'
+/usr/bin/false
+```
+
+* `index(string, search)`：在字符串中查找指定子串的位置。
+
+```bash
+$ awk 'BEGIN { str = "Hello World"; pos = index(str, "World"); print pos }'
+7
+```
+
+* `sprintf(format, expression)`：根据指定的格式将表达式转换为字符串。
+
+```bash
+$ awk 'BEGIN { num = 3.14159; str = sprintf("%.2f", num); print str }'
+3.14
+```
+
+* `rand()`：返回一个随机数，值在`0`和`1`之间均匀分布。这个值可以是`0`，但不会是`1`。从下面的例子可以看出，运行结果都是一样的，所以产生随机数的种子是一样的。
+
+```bash
+$ awk 'BEGIN{print rand()}'
+0.924046
+$ awk 'BEGIN{print rand()}'
+0.924046
+$ awk 'BEGIN{print rand()}'
+0.924046
+```
+
+* `srand()`：配合`rand()`函数，生成随机数种子。
+
+```bash
+$ awk 'BEGIN{srand();print rand()}'
+0.112006
+$ awk 'BEGIN{srand();print rand()}'
+0.663431
+$  awk 'BEGIN{srand();print rand()}'
+0.541305
+```
+
+* `int()`：返回整数。
+
+```bash
+$ awk 'BEGIN{srand();print int(rand()*100)}'
+84
+$ awk 'BEGIN{srand();print int(rand()*100)}'
+66
+$ awk 'BEGIN{srand();print int(rand()*100)}'
+8
+```
+
+* `system(command)`：执行command命令（可以是任何有效的Shell命令）并返回命令的退出状态码。允许在`awk`脚本中执行外部命令，并获取命令执行的结果。
+
+```bash
+# 执行ls -l命令，并将命令的退出状态码存储在status变量中，并打印status变量的值
+$ awk 'BEGIN { status = system("ls -l"); print "Exit status:", status }'
+total 0
+drwxr-xr-x 1 vagrant users 70 Jan  2 15:54 Desktop
+drwxr-xr-x 1 vagrant users  0 Jan  2 15:54 Documents
+drwxr-xr-x 1 vagrant users  0 Jan  2 15:54 Downloads
+drwxr-xr-x 1 vagrant users  0 Jan  2 15:54 Music
+drwxr-xr-x 1 vagrant users  0 Jan  2 15:54 Pictures
+drwxr-xr-x 1 vagrant users  0 Jan  2 15:54 Public
+drwxr-xr-x 1 vagrant users  0 Jan  2 15:54 Templates
+drwxr-xr-x 1 vagrant users  0 Jan  2 15:54 Videos
+drwxr-xr-x 1 vagrant users  0 Mar 15  2022 bin
+Exit status: 0
+```
+
+```bash
+$ awk 'BEGIN{score=100; system("echo your score is " score)}'
+your score is 100
+```
+
+* `systime()`：当前时间到1970年1月1日到秒数
+
+```bash
+$ awk 'BEGIN{print systime()}'
+1684158395
+```
+
+* `strftime(format, timestamp)`：将时间戳timestamp转换为指定格式format的日期和时间字符串。timestamp通常是一个以秒为单位表示的整数。
+
+常见的格式化字符串选项：
+
+* `%Y`：四位数的年份（例如：2023）
+* `%m`：两位数的月份（01-12）
+* `%d`：两位数的日期（01-31）
+* `%H`：两位数的小时（00-23）
+* `%M`：两位数的分钟（00-59）
+* `%S`：两位数的秒（00-60）
+* `%Z`：时区名称（例如：GMT）
+
+```bash
+# 将当前时间戳转换为格式为"YYYY-MM-DD HH:MM:SS"的日期和时间字符串
+$ awk 'BEGIN { timestamp = systime(); str = strftime("%Y-%m-%d %H:%M:%S", timestamp); print str }'
+2023-05-15 22:01:35
+# 将当前时间戳的前一小时（3600秒）转换为格式为"YYYY-MM-DD HH:MM:SS"的日期和时间字符串
+$ awk 'BEGIN { timestamp = systime()-3600; str = strftime("%Y-%m-%d %H:%M:%S", timestamp); print str }'
+2023-05-15 21:01:43
+```
+
+#### 自定义函数
+
+举例：
+
+```bash
+$ cat > func.awk << EOF
+function max(x,y){
+  x>y?var=x:var=y
+  return var
+}
+BEGIN{print max(a,b)}
+EOF
+
+$ awk -v a=30 -v b=20 -f func.awk
+30
+```
+
+举例：
+
+在下面的例子中，我们定义了一个名为`square()`的自定义函数，它接受一个参数`x`，并返回`x`的平方。然后，在主代码块中，我们声明了一个变量`num`并赋值为`5`。接下来，我们调用了自定义函数`square()`，传递`num`作为参数，并将返回值存储在变量`result`中。最后，我们打印出`result`的值。
+
+```bash
+$ cat > func.awk << EOF
+# 自定义函数：计算平方
+function square(x) {
+  return x * x;
+}
+
+# 使用自定义函数
+{
+  num = 5;
+  result = square(num);
+  print "平方结果：" result;
+}
+EOF
+
+$ awk -f func.awk
+平方结果：25
+```
+
+举例：
+
+```bash
+$ cat > func.awk << EOF
+# 自定义函数：计算数组平均值
+function calculateAverage(arr, size) {
+  sum = 0;
+  for (i = 1; i <= size; i++) {
+    sum += arr[i];
+  }
+  return sum / size;
+}
+
+# 使用自定义函数
+{
+  # 定义数组
+  numbers[1] = 10;
+  numbers[2] = 20;
+  numbers[3] = 30;
+  numbers[4] = 40;
+  numbers[5] = 50;
+
+  # 计算数组的平均值
+  size = 5;
+  average = calculateAverage(numbers, size);
+
+  print "数组的平均值：" average;
+}
+EOF
+
+$ awk -f func.awk
+数组的平均值：30
+```
+
+#### awk脚本
+
+举例：
+
+```bash
+# 注意转义
+$ cat > passwd.awk << EOF
+{if(\$3>=1000)print \$1,\$3}
+EOF
+
+$ awk -F: -f passwd.awk /etc/passwd
+nobody 65534
+vagrant 1000
+```
+
+上面例子也可以写成如下脚步格式。
+
+```bash
+$ cat > test.awk << EOF
+#!/bin/awk -f
+# This is an awk script
+{if(\$3>=1000)print \$1,\$3}
+EOF
+
+$ chmod +x test.awk
+$ ./test.awk -F: /etc/passwd
+nobody 65534
+vagrant 1000
+```
+
+向awk脚本传递参数：
+
+格式：`awkfile var=value var2=value2 ... inputfile`
+
+说明：
+
+* 上面格式变量在`BEGIN`过程中不可用，直到首行输入完成以后，变量才可用。
+* 可以通过`-v`参数，让`awk`在执行`BEGIN`之前得到变量。
+* 命令行中每一个指定的变量都需要一个`-v`参数。
+
+举例：
+
+```bash
+# x=100在BEGIN{print x}区段可用
+$ awk -v x=100 'BEGIN{print x}{print x+100}' /etc/hosts
+100
+200
+200
+200
+200
+200
+200
+200
+200
+200
+200
+200
+200
+200
+200
+200
+200
+200
+200
+200
+200
+200
+200
+200
+# 不加-v则x=100在BEGIN{print x}区段不可用
+$ awk x=100 'BEGIN{print x}{print x+100}' /etc/hosts
+awk: fatal: cannot open file `BEGIN{print x}{print x+100}' for reading (No such file or directory)
+# 修正上面的错误，将x=100放在后面，因为没有-v，所以x=100在BEGIN{print x}区段不可用，第一行输出空白
+$ awk 'BEGIN{print x}{print x+100}' x=100 /etc/hosts
+
+200
+200
+200
+200
+200
+200
+200
+200
+200
+200
+200
+200
+200
+200
+200
+200
+200
+200
+200
+200
+200
+200
+200
+```
+
 ## 小练习
 
 * 显示`/proc/meminfo`文件中以大小s开头的行，要求使用两种方法。
