@@ -226,10 +226,9 @@ Controlling terminal:           unconfined_u:object_r:devpts_t:s0
 配置SELinux。
 
 ```bash
-sudo semanage boolean -l
-```
-
+$ sudo semanage boolean -l
 Failed to use semanage
+```
 
 添加下面内容到.bashrc文件。
 

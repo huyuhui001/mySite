@@ -659,167 +659,167 @@ rename -v "s/s/gz/g" *.s
 
 ### 2.17.练习
 
-1. 显示`/etc`目录下所有以`l`开头，以一个小写字母结尾，且中间出现至少一位数字的文件或目录列表。
+* 显示`/etc`目录下所有以`l`开头，以一个小写字母结尾，且中间出现至少一位数字的文件或目录列表。
 
-   ```bash
-   ls -d /etc/l*[0-9]*[a-z]
-   ls -d /etc/l*[[:digit:]]*[[:lower:]]
-   ```
+```bash
+ls -d /etc/l*[0-9]*[a-z]
+ls -d /etc/l*[[:digit:]]*[[:lower:]]
+```
 
-   如果无符合条件的记录返回，可以手工创建一个符合条件的文件和目录。
+如果无符合条件的记录返回，可以手工创建一个符合条件的文件和目录。
 
-   ```bash
-   sudo touch /etc/lam4you
-   sudo mkdir /etc/lam5you
-   ```
+```bash
+sudo touch /etc/lam4you
+sudo mkdir /etc/lam5you
+```
 
-   验证后删除。
+验证后删除。
 
-   ```bash
-   sudo rm /etc/lam4you
-   sudo rm -rf /etc/lam5you
-   ```
+```bash
+sudo rm /etc/lam4you
+sudo rm -rf /etc/lam5you
+```
 
-2. 显示`/etc`目录下以任意一位数字开头，且以非数字结尾的文件或目录列表。
+* 显示`/etc`目录下以任意一位数字开头，且以非数字结尾的文件或目录列表。
 
-   ```bash
-   ls /etc/[0-9]*[!0-9]
-   ls /etc/[[:digit:]]*[^[:digit:]]
-   ```
+```bash
+ls /etc/[0-9]*[!0-9]
+ls /etc/[[:digit:]]*[^[:digit:]]
+```
 
-   如果无符合条件的记录返回，可以手工创建一个符合条件的文件和目录。
+如果无符合条件的记录返回，可以手工创建一个符合条件的文件和目录。
 
-   ```bash
-   sudo touch /etc/5am4yo.
-   sudo mkdir /etc/5am5yo.
-   ```
+```bash
+sudo touch /etc/5am4yo.
+sudo mkdir /etc/5am5yo.
+```
 
-   验证后删除。
+验证后删除。
 
-   ```bash
-   sudo rm /etc/5am4yo.
-   sudo rm -rf /etc/5am5yo.
-   ```
+```bash
+sudo rm /etc/5am4yo.
+sudo rm -rf /etc/5am5yo.
+```
 
-3. 显示`/etc`目录下以非字母开头，后面跟了一个字母及其它任意长度任意字符的文件或目录列表。
+* 显示`/etc`目录下以非字母开头，后面跟了一个字母及其它任意长度任意字符的文件或目录列表。
 
-   ```bash
-   ls /etc/[!a-zA-Z][a-zA-Z]*
-   ls /etc/[^[:alpha:]][[:alpha:]]*
-   ```
+```bash
+ls /etc/[!a-zA-Z][a-zA-Z]*
+ls /etc/[^[:alpha:]][[:alpha:]]*
+```
 
-   如果无符合条件的记录返回，可以手工创建一个符合条件的文件和目录。
+如果无符合条件的记录返回，可以手工创建一个符合条件的文件和目录。
 
-   ```bash
-   sudo touch /etc/5Ato3
-   sudo mkdir /etc/6dog6
-   ```
+```bash
+sudo touch /etc/5Ato3
+sudo mkdir /etc/6dog6
+```
 
-   验证后删除。
+验证后删除。
 
-   ```bash
-   sudo rm /etc/5Ato3
-   sudo rm -rf /etc/6dog6
-   ```
+```bash
+sudo rm /etc/5Ato3
+sudo rm -rf /etc/6dog6
+```
 
-4. 显示`/etc`目录下，所有以`rc`开头，并后面是0-6之间的数字，其它为任意字符的文件或目录列表。
+* 显示`/etc`目录下，所有以`rc`开头，并后面是0-6之间的数字，其它为任意字符的文件或目录列表。
 
-   ```bash
-   ls /etc/rc[0-6]*
-   ```
+```bash
+ls /etc/rc[0-6]*
+```
 
-   如果无符合条件的记录返回，可以手工创建一个符合条件的文件和目录。
+如果无符合条件的记录返回，可以手工创建一个符合条件的文件和目录。
 
-   ```bash
-   sudo touch /etc/rc5come
-   sudo mkdir /etc/rc0123
-   ```
+```bash
+sudo touch /etc/rc5come
+sudo mkdir /etc/rc0123
+```
 
-   验证后删除。
+验证后删除。
 
-   ```bash
-   sudo rm /etc/rc5come
-   sudo rm -rf /etc/rc0123
-   ```
+```bash
+sudo rm /etc/rc5come
+sudo rm -rf /etc/rc0123
+```
 
-5. 显示`/etc`目录下，所有以`.conf`结尾，且以`m`、`n`、`r`、`p`开头的文件或目录列表。
+* 显示`/etc`目录下，所有以`.conf`结尾，且以`m`、`n`、`r`、`p`开头的文件或目录列表。
 
-   ```bash
-   ls /etc/[mnrp]*.conf
-   ```
+```bash
+ls /etc/[mnrp]*.conf
+```
 
-6. 只显示`/root`下的隐藏文件和目录列表。
+* 只显示`/root`下的隐藏文件和目录列表。
 
-   ```bash
-   ls .*
-   ```
+```bash
+ls .*
+```
 
-7. 只显示/etc下非隐藏目录列表。
+* 只显示/etc下非隐藏目录列表。
 
-   ```bash
-   ls /etc/[^.]*/
-   ```
+```bash
+ls /etc/[^.]*/
+```
 
-8. 将`/etc`目录下所有文件，备份到`~/test/`目录下，并要求子目录格式为`backupYYYY-mm-dd`，备份过程可见。
+* 将`/etc`目录下所有文件，备份到`~/test/`目录下，并要求子目录格式为`backupYYYY-mm-dd`，备份过程可见。
 
-   ```bash
-   sudo cp -av /etc/ ~/test/backup`date +%F`
-   sudo cp -av /etc/ ~/test/backup`date +%F_%H-%M-%S`
-   ```
+```bash
+sudo cp -av /etc/ ~/test/backup`date +%F`
+sudo cp -av /etc/ ~/test/backup`date +%F_%H-%M-%S`
+```
 
-9. 创建目录`~/testdir/dir1/x`，`~/testdir/dir1/y`，`~/testdir/dir1/x/a`，`~/testdir/dir1/x/b`，`~/testdir/dir1/y/a`，`~/testdir/dir1/y/b`。
+* 创建目录`~/testdir/dir1/x`，`~/testdir/dir1/y`，`~/testdir/dir1/x/a`，`~/testdir/dir1/x/b`，`~/testdir/dir1/y/a`，`~/testdir/dir1/y/b`。
 
-   ```bash
-   $ mkdir -p ~/testdir/dir1/{x,y}/{a,b}
-   
-   $ tree ~/testdir/dir1/
-   /home/vagrant/testdir/dir1/
-   ├── x
-   │   ├── a
-   │   └── b
-   └── y
-     ├── a
-     └── b
-   ```
+```bash
+$ mkdir -p ~/testdir/dir1/{x,y}/{a,b}
 
-10. 创建目录`~/testdir/dir2/x`，`~/testdir/dir2/y`，`~/testdir/dir2/x/a`，`~/testdir/dir2/x/b`。
+$ tree ~/testdir/dir1/
+/home/vagrant/testdir/dir1/
+├── x
+│   ├── a
+│   └── b
+└── y
+  ├── a
+  └── b
+```
 
-    ```bash
-    $ mkdir -p ~/testdir/dir2/{x/{a,b},y}
-    
-    $ tree ~/testdir/dir2/
-    /home/vagrant/testdir/dir2/
-    ├── x
-    │   ├── a
-    │   └── b
-    └── y
-    ```
+* 创建目录`~/testdir/dir2/x`，`~/testdir/dir2/y`，`~/testdir/dir2/x/a`，`~/testdir/dir2/x/b`。
 
-11. 创建目录`~/testdir/dir3`、`~/testdir/dir4`、`~/testdir/dir5`、`~/testdir/dir5/dir6`、`~/testdir/dir5/dir7`。
+```bash
+$ mkdir -p ~/testdir/dir2/{x/{a,b},y}
 
-    ```bash
-    $ mkdir -p ~/testdir/dir{3,4,5/dir{6,7}}
-    
-    $ tree ~/testdir
-    /home/vagrant/testdir
-    ├── dir1
-    │   ├── x
-    │   │   ├── a
-    │   │   └── b
-    │   └── y
-    │       ├── a
-    │       └── b
-    ├── dir2
-    │   ├── x
-    │   │   ├── a
-    │   │   └── b
-    │   └── y
-    ├── dir3
-    ├── dir4
-    └── dir5
-     ├── dir6
-     └── dir7
-    ```
+$ tree ~/testdir/dir2/
+/home/vagrant/testdir/dir2/
+├── x
+│   ├── a
+│   └── b
+└── y
+```
+
+* 创建目录`~/testdir/dir3`、`~/testdir/dir4`、`~/testdir/dir5`、`~/testdir/dir5/dir6`、`~/testdir/dir5/dir7`。
+
+```bash
+$ mkdir -p ~/testdir/dir{3,4,5/dir{6,7}}
+
+$ tree ~/testdir
+/home/vagrant/testdir
+├── dir1
+│   ├── x
+│   │   ├── a
+│   │   └── b
+│   └── y
+│       ├── a
+│       └── b
+├── dir2
+│   ├── x
+│   │   ├── a
+│   │   └── b
+│   └── y
+├── dir3
+├── dir4
+└── dir5
+ ├── dir6
+ └── dir7
+```
 
 ## 3.七种文件类型
 
@@ -994,12 +994,10 @@ $ ls -il
 
 ### 3.4.练习
 
-目标：
+目标：以Rocky 9为例。
 
-> 以Rocky 9为例。
->
-> * 查看软/硬链接文件的特征。
-> * 查看目录结构。
+* 查看软/硬链接文件的特征。
+* 查看目录结构。
 
 可以通过下面命令得到当前系统的2级目录的结构。
 
