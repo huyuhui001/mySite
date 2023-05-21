@@ -784,7 +784,14 @@ $ seq <span class=m>10</span> <span class=p>|</span> sed -n <span class=s1>&#39;
 <span class=m>3</span>
 <span class=m>2</span>
 <span class=m>1</span>
-</code></pre></div> <h2 id=awk>三剑客<code>awk</code>命令<a class=headerlink href=#awk title="Permanent link"> ¶</a></h2> <p><code>awk</code>是一个文本分析工具。<code>grep</code>擅长查找，<code>sed</code>擅长编辑，<code>awk</code>擅长数据分析并生成报告。</p> <p><code>awk</code>的名称得自于它的创始人Alfred Aho 、Peter Weinberger 和 Brian Kernighan 姓氏的首个字母。</p> <p><code>awk</code>有3个不同版本: <code>awk</code>、<code>nawk</code>和<code>gawk</code>。我们说的<code>awk</code>一般指<code>gawk</code>。<code>gawk</code> 是<code>awk</code>的GNU版本。</p> <p><code>awk</code>把文件逐行读入，以空格为默认分隔符将每行切片，再对切片进行分析处理。</p> <h3 id=_9>命令格式<a class=headerlink href=#_9 title="Permanent link"> ¶</a></h3> <p><code>awk 'pattern{action statements;...}' {filenames}</code></p> <ul> <li> <p><code>pattern</code>表示<code>awk</code>在数据中查找的内容。是要表示的正则表达式，用斜杠括起来。</p> </li> <li> <p><code>action</code>是在找到匹配内容时所执行的一系列命令。</p> </li> <li> <p><code>-F</code>：指定分隔符，后面紧跟单引号，单引号内是分隔符。如不加<code>-F</code>选项，则以空格或者tab作为分隔符。</p> </li> <li> <p><code>-v</code>：var=value，变量赋值。</p> </li> </ul> <h3 id=_10>工作过程<a class=headerlink href=#_10 title="Permanent link"> ¶</a></h3> <ol> <li> <p>执行BEGIN{action;...}语句块中的语句。</p> </li> <li> <p>BEGIN语句块再awk读入输入流之前被执行。</p> </li> <li> <p>是可选语句块。</p> </li> <li> <p>包含初始化变量，打印输出表格的表头等语句。</p> </li> <li> <p>从文件或者标准输入stdin读取一行，然后执行pattern{action;...}语句块。从第一行开始到最后一行，逐行扫描文件，重复这个动作，直到文件或者输入流全部被读取完毕。</p> </li> <li> <p>可选语句块。</p> </li> <li> <p>如果没有提供pattern语句块，则默认执行{print}。</p> </li> <li> <p>当读至文件或者输入流末尾时，执行END{action;...}语句块，比如打印所有行的分析结果这类汇总信息。也是一个可选语句块。</p> </li> </ol> <h3 id=_11>分隔符、域和记录<a class=headerlink href=#_11 title="Permanent link"> ¶</a></h3> <ul> <li> <p>有分隔符分隔的字段（列column，域field），标记<code>$1</code>、<code>$2</code>、<code>$3</code>、...、<code>$n</code>称为域标识，<code>$0</code>为所有域。注意，和shell变量中的<code>$</code>不同。</p> </li> <li> <p>每一行成为记录（record）。</p> </li> <li> <p>如果省略action，则默认执行<code>print $0</code>操作。</p> </li> </ul> <h3 id=action>常用action分类<a class=headerlink href=#action title="Permanent link"> ¶</a></h3> <ul> <li> <p>Output statements: <code>print</code>, <code>printf</code></p> </li> <li> <p>Expressions: 算术、比较表达式</p> </li> <li> <p>Compund statements: 组合语句</p> </li> <li> <p>Control statements: <code>if</code>, <code>while</code>语句</p> </li> <li> <p>Input statements:</p> </li> </ul> <p>动作<code>print</code></p> <p>格式：<code>print item1, item2, ...</code></p> <p>说明：</p> <ul> <li> <p>逗号分隔符</p> </li> <li> <p>输出item可以是字符串，也可以是数值，是当前记录的字段、变量或<code>awk</code>表达式。</p> </li> <li> <p>如果省略item，相当于<code>print $0</code></p> </li> <li> <p>固定字符需要用双引号，而变量和数字不需要。</p> </li> </ul> <p>示例：</p> <div class=highlight><pre><span></span><code>$ seq <span class=m>5</span> <span class=p>|</span>awk <span class=s1>&#39;{print &quot;hello awk&quot;}&#39;</span>
+</code></pre></div> <h2 id=awk>三剑客<code>awk</code>命令<a class=headerlink href=#awk title="Permanent link"> ¶</a></h2> <p><code>awk</code>是一个文本分析工具。<code>grep</code>擅长查找，<code>sed</code>擅长编辑，<code>awk</code>擅长数据分析并生成报告。</p> <p><code>awk</code>的名称得自于它的创始人Alfred Aho 、Peter Weinberger 和 Brian Kernighan 姓氏的首个字母。</p> <p><code>awk</code>有3个不同版本: <code>awk</code>、<code>nawk</code>和<code>gawk</code>。我们说的<code>awk</code>一般指<code>gawk</code>。<code>gawk</code> 是<code>awk</code>的GNU版本。</p> <p><code>awk</code>把文件逐行读入，以空格为默认分隔符将每行切片，再对切片进行分析处理。</p> <h3 id=_9>命令格式<a class=headerlink href=#_9 title="Permanent link"> ¶</a></h3> <p><code>awk 'pattern{action statements;...}' {filenames}</code></p> <ul> <li> <p><code>pattern</code>表示<code>awk</code>在数据中查找的内容。是要表示的正则表达式，用斜杠括起来。</p> </li> <li> <p><code>action</code>是在找到匹配内容时所执行的一系列命令。</p> </li> <li> <p><code>-F</code>：指定分隔符，后面紧跟单引号，单引号内是分隔符。如不加<code>-F</code>选项，则以空格或者tab作为分隔符。</p> </li> <li> <p><code>-v</code>：var=value，变量赋值。</p> </li> </ul> <p>提示：</p> <ul> <li><code>-F ""</code>指定空字符串作为字段分隔符，从而将输入字符串中的每个字符作为一个独立的字段进行处理。然后，使用循环遍历每个字段，如果字段中包含数字，则将其添加到str1变量中。最后，打印str1的值。</li> <li><code>-F ''</code>中的两个单引号之间没有提供有效的字段分隔符。在awk中，字段分隔符必须是一个非空字符串。</li> </ul> <p>示例：第一个和第三个命令是正确的。</p> <div class=highlight><pre><span></span><code>$ <span class=nb>echo</span> <span class=s1>&#39;Yd$@C#M05MD9&amp;8923+Vip3wZ!33*44&amp;55&#39;</span><span class=p>|</span>awk -F <span class=s2>&quot;&quot;</span> <span class=s1>&#39;{for(i=1;i&lt;=NF;i++){if($i ~ /[[:digit:]]/){str=$i;str1=(str1 str)}};print str1}&#39;</span>
+<span class=m>05989233334455</span>
+$ <span class=nb>echo</span> <span class=s1>&#39;Yd$@C#M05MD9&amp;8923+Vip3wZ!33*44&amp;55&#39;</span><span class=p>|</span>awk -F<span class=s2>&quot;&quot;</span> <span class=s1>&#39;{for(i=1;i&lt;=NF;i++){if($i ~ /[[:digit:]]/){str=$i;str1=(str1 str)}};print str1}&#39;</span>
+
+$ <span class=nb>echo</span> <span class=s1>&#39;Yd$@C#M05MD9&amp;8923+Vip3wZ!33*44&amp;55&#39;</span><span class=p>|</span>awk -F <span class=s1>&#39;&#39;</span> <span class=s1>&#39;{for(i=1;i&lt;=NF;i++){if($i ~ /[[:digit:]]/){str=$i;str1=(str1 str)}};print str1}&#39;</span>
+<span class=m>05989233334455</span>
+$ <span class=nb>echo</span> <span class=s1>&#39;Yd$@C#M05MD9&amp;8923+Vip3wZ!33*44&amp;55&#39;</span><span class=p>|</span>awk -F<span class=s1>&#39;&#39;</span> <span class=s1>&#39;{for(i=1;i&lt;=NF;i++){if($i ~ /[[:digit:]]/){str=$i;str1=(str1 str)}};print str1}&#39;</span>
+</code></pre></div> <h3 id=_10>工作过程<a class=headerlink href=#_10 title="Permanent link"> ¶</a></h3> <ol> <li> <p>执行BEGIN{action;...}语句块中的语句。</p> </li> <li> <p>BEGIN语句块再awk读入输入流之前被执行。</p> </li> <li> <p>是可选语句块。</p> </li> <li> <p>包含初始化变量，打印输出表格的表头等语句。</p> </li> <li> <p>从文件或者标准输入stdin读取一行，然后执行pattern{action;...}语句块。从第一行开始到最后一行，逐行扫描文件，重复这个动作，直到文件或者输入流全部被读取完毕。</p> </li> <li> <p>可选语句块。</p> </li> <li> <p>如果没有提供pattern语句块，则默认执行{print}。</p> </li> <li> <p>当读至文件或者输入流末尾时，执行END{action;...}语句块，比如打印所有行的分析结果这类汇总信息。也是一个可选语句块。</p> </li> </ol> <h3 id=_11>分隔符、域和记录<a class=headerlink href=#_11 title="Permanent link"> ¶</a></h3> <ul> <li> <p>有分隔符分隔的字段（列column，域field），标记<code>$1</code>、<code>$2</code>、<code>$3</code>、...、<code>$n</code>称为域标识，<code>$0</code>为所有域。注意，和shell变量中的<code>$</code>不同。</p> </li> <li> <p>每一行成为记录（record）。</p> </li> <li> <p>如果省略action，则默认执行<code>print $0</code>操作。</p> </li> </ul> <h3 id=action>常用action分类<a class=headerlink href=#action title="Permanent link"> ¶</a></h3> <ul> <li> <p>Output statements: <code>print</code>, <code>printf</code></p> </li> <li> <p>Expressions: 算术、比较表达式</p> </li> <li> <p>Compund statements: 组合语句</p> </li> <li> <p>Control statements: <code>if</code>, <code>while</code>语句</p> </li> <li> <p>Input statements:</p> </li> </ul> <p>动作<code>print</code></p> <p>格式：<code>print item1, item2, ...</code></p> <p>说明：</p> <ul> <li> <p>逗号分隔符</p> </li> <li> <p>输出item可以是字符串，也可以是数值，是当前记录的字段、变量或<code>awk</code>表达式。</p> </li> <li> <p>如果省略item，相当于<code>print $0</code></p> </li> <li> <p>固定字符需要用双引号，而变量和数字不需要。</p> </li> </ul> <p>示例：</p> <div class=highlight><pre><span></span><code>$ seq <span class=m>5</span> <span class=p>|</span>awk <span class=s1>&#39;{print &quot;hello awk&quot;}&#39;</span>
 hello awk
 hello awk
 hello awk
@@ -2108,4 +2115,186 @@ $ awk <span class=s1>&#39;{sum=0;for(i=1;i&lt;=NF;i++){sum+=i};print sum}&#39;</
 <span class=s1>  print str</span>
 <span class=s1>}&#39;</span>
 <span class=m>38335239002</span>
+</code></pre></div> <ul> <li><code>host.log</code>文件内容如下，提取<code>.edu.cn</code>前面的主机名，并回写到该文件中。</li> </ul> <div class=highlight><pre><span></span><code>$ cat &gt; host.log <span class=s>&lt;&lt; EOF</span>
+<span class=s>1 www.edu.cn</span>
+<span class=s>2 blog.edu.cn</span>
+<span class=s>3 learning.edu.cn</span>
+<span class=s>4 java.edu.cn</span>
+<span class=s>5 nodejs.edu.cn</span>
+<span class=s>6 k8s.eud.cn</span>
+<span class=s>7 linux.edu.cn</span>
+<span class=s>8 python.edu.cn</span>
+<span class=s>9 learning.edu.cn</span>
+<span class=s>10 java.edu.cn</span>
+<span class=s>11 nodejs.edu.cn</span>
+<span class=s>12 www.edu.cn</span>
+<span class=s>EOF</span>
+
+<span class=c1># 对比</span>
+$ awk -F<span class=s1>&#39;[ .]&#39;</span> <span class=s1>&#39;{print $1}&#39;</span> host.log
+<span class=m>1</span>
+<span class=m>2</span>
+<span class=m>3</span>
+<span class=m>4</span>
+<span class=m>5</span>
+<span class=m>6</span>
+<span class=m>7</span>
+<span class=m>8</span>
+<span class=m>9</span>
+<span class=m>10</span>
+<span class=m>11</span>
+<span class=m>12</span>
+$ awk -F<span class=s1>&#39;[ .]&#39;</span> <span class=s1>&#39;{print $2}&#39;</span> host.log
+www
+blog
+learning
+java
+nodejs
+k8s
+linux
+python
+learning
+java
+nodejs
+www
+
+<span class=c1># 以空格或者.为分隔符，打印第二列（主机名），追加写入原文件</span>
+$ awk -F<span class=s1>&#39;[ .]&#39;</span> <span class=s1>&#39;{print $2}&#39;</span> host.log &gt;&gt; host.log
+$ cat host.log
+<span class=m>1</span> www.edu.cn
+<span class=m>2</span> blog.edu.cn
+<span class=m>3</span> learning.edu.cn
+<span class=m>4</span> java.edu.cn
+<span class=m>5</span> nodejs.edu.cn
+<span class=m>6</span> k8s.eud.cn
+<span class=m>7</span> linux.edu.cn
+<span class=m>8</span> python.edu.cn
+<span class=m>9</span> learning.edu.cn
+<span class=m>10</span> java.edu.cn
+<span class=m>11</span> nodejs.edu.cn
+<span class=m>12</span> www.edu.cn
+www
+blog
+learning
+java
+nodejs
+k8s
+linux
+python
+learning
+java
+nodejs
+www
+</code></pre></div> <ul> <li>统计文件<code>/etc/fstab</code>中每个文件系统类型出现的次数。</li> </ul> <div class=highlight><pre><span></span><code><span class=c1># 以UUID开头，一个或多个空格为分隔符，读取第三列（即文件系统类型）并计数。</span>
+$ awk -F<span class=s1>&#39; +&#39;</span> <span class=s1>&#39;/^UUID/{fs[$3]++}END{for(i in fs){print i, fs[i]}}&#39;</span> /etc/fstab
+swap <span class=m>1</span>
+btrfs <span class=m>10</span>
+vfat <span class=m>1</span>
+
+<span class=c1># 方法2</span>
+$ awk -F<span class=s1>&#39; +&#39;</span> <span class=s1>&#39;/^UUID/{print $3}&#39;</span> /etc/fstab <span class=p>|</span> uniq -c
+     <span class=m>10</span> btrfs
+      <span class=m>1</span> swap
+      <span class=m>1</span> vfat
+</code></pre></div> <ul> <li>统计文件<code>/etc/fstab</code>中每个单词出现的次数。</li> </ul> <div class=highlight><pre><span></span><code>$ awk -F<span class=s2>&quot;[^[:alpha:]]&quot;</span> <span class=s1>&#39;{for(i=1;i&lt;=NF;i++)word[$i]++}END{for(a in word)if(a!=&quot;&quot;)print a,word[a]}&#39;</span> /etc/fstab
+swap <span class=m>2</span>
+B <span class=m>1</span>
+srv <span class=m>2</span>
+btrfs <span class=m>10</span>
+snapshots <span class=m>2</span>
+vfat <span class=m>1</span>
+opt <span class=m>2</span>
+cbaef <span class=m>10</span>
+UUID <span class=m>12</span>
+E <span class=m>1</span>
+ecf <span class=m>1</span>
+CD <span class=m>1</span>
+cf <span class=m>1</span>
+arm <span class=m>2</span>
+a <span class=m>11</span>
+c <span class=m>2</span>
+tmp <span class=m>2</span>
+usr <span class=m>2</span>
+var <span class=m>2</span>
+afa <span class=m>20</span>
+home <span class=m>2</span>
+d <span class=m>10</span>
+utf <span class=m>1</span>
+e <span class=m>2</span>
+efi <span class=m>3</span>
+grub <span class=m>2</span>
+boot <span class=m>3</span>
+subvol <span class=m>9</span>
+root <span class=m>2</span>
+<span class=nb>local</span> <span class=m>2</span>
+defaults <span class=m>2</span>
+f <span class=m>10</span>
+</code></pre></div> <ul> <li>提取字符串<code>Yd$@C#M05MD9&amp;8923+Vip3wZ!33*44&amp;55</code>中所有的数字。</li> </ul> <div class=highlight><pre><span></span><code><span class=c1># 对比单引号和双引号的区别。</span>
+$  <span class=nb>echo</span> <span class=s2>&quot;Yd</span><span class=nv>$@</span><span class=s2>C#M05MD9&amp;8923+Vip3wZ!33*44&amp;55&quot;</span>
+<span class=nb>echo</span> <span class=s2>&quot;Yd</span><span class=nv>$@</span><span class=s2>C#M05MD9&amp;8923+Vip3wZcgcreate -g cpu:mygroup44&amp;55&quot;</span>
+YdC#M05MD9<span class=p>&amp;</span><span class=m>8923</span>+Vip3wZcgcreate -g cpu:mygroup44<span class=p>&amp;</span><span class=m>55</span>
+$ <span class=nb>echo</span> <span class=s1>&#39;Yd$@C#M05MD9&amp;8923+Vip3wZ!33*44&amp;55&#39;</span>
+Yd<span class=nv>$@</span>C#M05MD9<span class=p>&amp;</span><span class=m>8923</span>+Vip3wZ!33*44<span class=p>&amp;</span><span class=m>55</span>
+
+$ <span class=nb>echo</span> <span class=s1>&#39;Yd$@C#M05MD9&amp;8923+Vip3wZ!33*44&amp;55&#39;</span><span class=p>|</span>awk <span class=s1>&#39;{gsub(/[^0-9]/,&quot;&quot;);print $0}&#39;</span>
+<span class=m>05989233334455</span>
+
+$ <span class=nb>echo</span> <span class=s1>&#39;Yd$@C#M05MD9&amp;8923+Vip3wZ!33*44&amp;55&#39;</span><span class=p>|</span>awk -F<span class=s1>&#39;[^0-9]&#39;</span> <span class=s1>&#39;{for(i=1;i&lt;=NF;i++){printf &quot;%s&quot;, $i}}&#39;</span>
+<span class=m>05989233334455</span>
+
+$ <span class=nb>echo</span> <span class=s1>&#39;Yd$@C#M05MD9&amp;8923+Vip3wZ!33*44&amp;55&#39;</span><span class=p>|</span>awk -F <span class=s2>&quot;&quot;</span> <span class=s1>&#39;{for(i=1;i&lt;=NF;i++){if($i ~ /[[:digit:]]/){str=$i;str1=(str1 str)}};print str1}&#39;</span>
+<span class=m>05989233334455</span>
+$ <span class=nb>echo</span> <span class=s1>&#39;Yd$@C#M05MD9&amp;8923+Vip3wZ!33*44&amp;55&#39;</span><span class=p>|</span>awk -F <span class=s1>&#39;&#39;</span> <span class=s1>&#39;{for(i=1;i&lt;=NF;i++){if($i ~ /[[:digit:]]/){str=$i;str1=(str1 str)}};print str1}&#39;</span>
+<span class=c1># 注意，如果写成如下格式，则报错。</span>
+$ <span class=nb>echo</span> <span class=s1>&#39;Yd$@C#M05MD9&amp;8923+Vip3wZ!33*44&amp;55&#39;</span><span class=p>|</span>awk -F<span class=s1>&#39;&#39;</span> <span class=s1>&#39;{for(i=1;i&lt;=NF;i++){if($i ~ /[[:digit:]]/){str=$i;str1=(str1 str)}};print str1}&#39;</span>
+<span class=c1># 注意，如果写成如下格式，则输出原字符串。</span>
+$ <span class=nb>echo</span> <span class=s1>&#39;Yd$@C#M05MD9&amp;8923+Vip3wZ!33*44&amp;55&#39;</span><span class=p>|</span>awk -F <span class=s1>&#39; &#39;</span> <span class=s1>&#39;{for(i=1;i&lt;=NF;i++){if($i ~ /[[:digit:]]/){str=$i;str1=(str1 str)}};print str1}&#39;</span>
+</code></pre></div> <ul> <li>生成500个随机数，保存到文件random.txt中，格式为<code>100,20,61,98...</code>，取出其中最大整数和最小整数。</li> </ul> <div class=highlight><pre><span></span><code>$ <span class=nv>str</span><span class=o>=</span><span class=s2>&quot;&quot;</span><span class=p>;</span> <span class=k>for</span> <span class=o>((</span><span class=nv>i</span><span class=o>=</span><span class=m>1</span><span class=p>;</span> i&lt;<span class=o>=</span><span class=m>500</span><span class=p>;</span> i++<span class=o>))</span><span class=p>;</span> <span class=k>do</span> <span class=k>if</span> <span class=o>[</span> <span class=nv>$i</span> -ne <span class=m>500</span> <span class=o>]</span><span class=p>;</span> <span class=k>then</span> <span class=nv>str</span><span class=o>+=</span><span class=s2>&quot;</span><span class=nv>$RANDOM</span><span class=s2>,&quot;</span><span class=p>;</span> <span class=k>else</span> <span class=nv>str</span><span class=o>+=</span><span class=s2>&quot;</span><span class=nv>$RANDOM</span><span class=s2>&quot;</span><span class=p>;</span> <span class=k>fi</span><span class=p>;</span> <span class=k>done</span><span class=p>;</span> <span class=nb>echo</span> <span class=s2>&quot;</span><span class=nv>$str</span><span class=s2>&quot;</span> &gt; random.txt
+$ cat random.txt
+<span class=m>11308</span>,8764,2075,9411,......
+$ awk -F, <span class=s1>&#39;{max=$1;min=$1;for(i=1;i&lt;=NF;i++){if($i&gt;max){max=$i}else{if($i&lt;min){min=$i}}}}END{print &quot;The max:&quot; max, &quot;The min:&quot; min}&#39;</span> random.txt
+The max:32696 The min:20
+</code></pre></div> <ul> <li>监控某个IP并发连接超过200时，调用防火墙命令封掉该IP，每5分钟监控一次。防火墙命令<code>iptables -A INPUT -s IP -j REJECT</code>。</li> </ul> <div class=highlight><pre><span></span><code>ss -nt <span class=p>|</span> awk -F <span class=s2>&quot; +|:&quot;</span> <span class=s1>&#39;NR!=1{ip[$(NF-2)]++}END{for(i in ip){if(ip[i]&gt;200){system(&quot;iptables -A INPUT -s &quot; i &quot; -j REJECT;&quot;)}}}&#39;</span>
+</code></pre></div> <ul> <li>将下面内容中FQDN取出，并根据其进行计数，从高到低排序。</li> </ul> <div class=highlight><pre><span></span><code>$ cat &gt; fqdn.txt <span class=s>&lt;&lt; EOF</span>
+<span class=s>http://mail.edu.com/index.html</span>
+<span class=s>http://www.edu.com/test.html</span>
+<span class=s>http://study.edu.com/index.html</span>
+<span class=s>http://blog.edu.com/index.html</span>
+<span class=s>http://www.edu.com/images/logo.jpg</span>
+<span class=s>http://blog.edu.com/20080102.html</span>
+<span class=s>EOF</span>
+
+$ awk -F<span class=s2>&quot;/&quot;</span> <span class=s1>&#39;{url[$3]++}END{for(i in url){print url[i], i}}&#39;</span> fqdn.txt<span class=p>|</span>sort -nr
+<span class=m>2</span> www.edu.com
+<span class=m>2</span> blog.edu.com
+<span class=m>1</span> study.edu.com
+<span class=m>1</span> mail.edu.com
+</code></pre></div> <ul> <li>将以下⽂本以inode为标记，对inode相同的counts进⾏累加，并且统计出同一inode中，beginnumber的最小值和endnumber的最大值。</li> </ul> <div class=highlight><pre><span></span><code>inode<span class=p>|</span>beginnumber<span class=p>|</span>endnumber<span class=p>|</span>counts<span class=p>|</span> 
+<span class=m>106</span><span class=p>|</span><span class=m>3363120000</span><span class=p>|</span><span class=m>3363129999</span><span class=p>|</span><span class=m>10000</span><span class=p>|</span> 
+<span class=m>106</span><span class=p>|</span><span class=m>3368560000</span><span class=p>|</span><span class=m>3368579999</span><span class=p>|</span><span class=m>20000</span><span class=p>|</span> 
+<span class=m>310</span><span class=p>|</span><span class=m>3337000000</span><span class=p>|</span><span class=m>3337000100</span><span class=p>|</span><span class=m>101</span><span class=p>|</span> 
+<span class=m>310</span><span class=p>|</span><span class=m>3342950000</span><span class=p>|</span><span class=m>3342959999</span><span class=p>|</span><span class=m>10000</span><span class=p>|</span> 
+<span class=m>310</span><span class=p>|</span><span class=m>3362120960</span><span class=p>|</span><span class=m>3362120961</span><span class=p>|</span><span class=m>2</span><span class=p>|</span> 
+<span class=m>311</span><span class=p>|</span><span class=m>3313460102</span><span class=p>|</span><span class=m>3313469999</span><span class=p>|</span><span class=m>9898</span><span class=p>|</span> 
+<span class=m>311</span><span class=p>|</span><span class=m>3313470000</span><span class=p>|</span><span class=m>3313499999</span><span class=p>|</span><span class=m>30000</span><span class=p>|</span> 
+<span class=m>311</span><span class=p>|</span><span class=m>3362120962</span><span class=p>|</span><span class=m>3362120963</span><span class=p>|</span><span class=m>2</span><span class=p>|</span> 
+</code></pre></div> <p>输出的结果格式为：</p> <div class=highlight><pre><span></span><code><span class=m>310</span><span class=p>|</span><span class=m>3337000000</span><span class=p>|</span><span class=m>3362120961</span><span class=p>|</span><span class=m>10103</span><span class=p>|</span> 
+<span class=m>311</span><span class=p>|</span><span class=m>3313460102</span><span class=p>|</span><span class=m>3362120963</span><span class=p>|</span><span class=m>39900</span><span class=p>|</span> 
+<span class=m>106</span><span class=p>|</span><span class=m>3363120000</span><span class=p>|</span><span class=m>3368579999</span><span class=p>|</span><span class=m>30000</span><span class=p>|</span>
+</code></pre></div> <div class=highlight><pre><span></span><code>$ cat &gt; inode.text <span class=s>&lt;&lt; EOF</span>
+<span class=s>inode|beginnumber|endnumber|counts| </span>
+<span class=s>106|3363120000|3363129999|10000| </span>
+<span class=s>106|3368560000|3368579999|20000| </span>
+<span class=s>310|3337000000|3337000100|101| </span>
+<span class=s>310|3342950000|3342959999|10000| </span>
+<span class=s>310|3362120960|3362120961|2| </span>
+<span class=s>311|3313460102|3313469999|9898| </span>
+<span class=s>311|3313470000|3313499999|30000| </span>
+<span class=s>311|3362120962|3362120963|2| </span>
+<span class=s>EOF</span>
+
+$ awk -F<span class=s1>&#39;|&#39;</span> -v <span class=nv>OFS</span><span class=o>=</span><span class=s1>&#39;|&#39;</span> <span class=s1>&#39;/^[0-9]/{inode[$1]++; if(!bn[$1]){bn[$1]=$2}else if(bn[$1]&gt;$2) {bn[$1]=$2}; if(en[$1]&lt;$3)en[$1]=$3;cnt[$1]+=$(NF-1)} END{for(i in inode)print i,bn[i],en[i],cnt[i]}&#39;</span> inode.text
+<span class=m>106</span><span class=p>|</span><span class=m>3363120000</span><span class=p>|</span><span class=m>3368579999</span><span class=p>|</span><span class=m>30000</span>
+<span class=m>310</span><span class=p>|</span><span class=m>3337000000</span><span class=p>|</span><span class=m>3362120961</span><span class=p>|</span><span class=m>10103</span>
+<span class=m>311</span><span class=p>|</span><span class=m>3313460102</span><span class=p>|</span><span class=m>3362120963</span><span class=p>|</span><span class=m>39900</span>
 </code></pre></div> </article> </div> </div> <a href=# class="md-top md-icon" data-md-component=top hidden> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg> Back to top </a> </main> <footer class=md-footer> <nav class="md-footer__inner md-grid" aria-label=Footer> <a href=../04-TextTools/ class="md-footer__link md-footer__link--prev" aria-label="Previous: 第四章 文本编辑" rel=prev> <div class="md-footer__button md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg> </div> <div class=md-footer__title> <div class=md-ellipsis> <span class=md-footer__direction> Previous </span> 第四章 文本编辑 </div> </div> </a> <a href=../06-FileLookup/ class="md-footer__link md-footer__link--next" aria-label="Next: 第六章 文件查找" rel=next> <div class=md-footer__title> <div class=md-ellipsis> <span class=md-footer__direction> Next </span> 第六章 文件查找 </div> </div> <div class="md-footer__button md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg> </div> </a> </nav> <div class="md-footer-meta md-typeset"> <div class="md-footer-meta__inner md-grid"> <div class=md-copyright> Made with <a href=https://squidfunk.github.io/mkdocs-material/ target=_blank rel=noopener> Material for MkDocs </a> </div> </div> </div> </footer> </div> <div class=md-dialog data-md-component=dialog> <div class="md-dialog__inner md-typeset"></div> </div> <script id=__config type=application/json>{"base": "../../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.instant", "navigation.top"], "search": "../../../assets/javascripts/workers/search.ecf98df9.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script> <script src=../../../assets/javascripts/bundle.2ab50757.min.js></script> </body> </html>
