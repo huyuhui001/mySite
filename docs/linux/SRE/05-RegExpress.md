@@ -1412,6 +1412,24 @@ $ seq 10 | sed -n '1!G;h;$p'
 
 * `-v`：var=value，变量赋值。
 
+提示：
+
+* `-F ""`指定空字符串作为字段分隔符，从而将输入字符串中的每个字符作为一个独立的字段进行处理。然后，使用循环遍历每个字段，如果字段中包含数字，则将其添加到str1变量中。最后，打印str1的值。
+* `-F ''`中的两个单引号之间没有提供有效的字段分隔符。在awk中，字段分隔符必须是一个非空字符串。
+
+示例：第一个和第三个命令是正确的。
+
+```bash
+$ echo 'Yd$@C#M05MD9&8923+Vip3wZ!33*44&55'|awk -F "" '{for(i=1;i<=NF;i++){if($i ~ /[[:digit:]]/){str=$i;str1=(str1 str)}};print str1}'
+05989233334455
+$ echo 'Yd$@C#M05MD9&8923+Vip3wZ!33*44&55'|awk -F"" '{for(i=1;i<=NF;i++){if($i ~ /[[:digit:]]/){str=$i;str1=(str1 str)}};print str1}'
+
+$ echo 'Yd$@C#M05MD9&8923+Vip3wZ!33*44&55'|awk -F '' '{for(i=1;i<=NF;i++){if($i ~ /[[:digit:]]/){str=$i;str1=(str1 str)}};print str1}'
+05989233334455
+$ echo 'Yd$@C#M05MD9&8923+Vip3wZ!33*44&55'|awk -F'' '{for(i=1;i<=NF;i++){if($i ~ /[[:digit:]]/){str=$i;str1=(str1 str)}};print str1}'
+
+```
+
 ### 工作过程
 
 1. 执行BEGIN{action;...}语句块中的语句。
@@ -3647,4 +3665,234 @@ $ echo 'kdajl;3k8jd33la5kj23f90ld02sakjflakjdslf' | awk -F "" '
   print str
 }'
 38335239002
+```
+
+* `host.log`文件内容如下，提取`.edu.cn`前面的主机名，并回写到该文件中。
+
+```bash
+$ cat > host.log << EOF
+1 www.edu.cn
+2 blog.edu.cn
+3 learning.edu.cn
+4 java.edu.cn
+5 nodejs.edu.cn
+6 k8s.eud.cn
+7 linux.edu.cn
+8 python.edu.cn
+9 learning.edu.cn
+10 java.edu.cn
+11 nodejs.edu.cn
+12 www.edu.cn
+EOF
+
+# 对比
+$ awk -F'[ .]' '{print $1}' host.log
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+$ awk -F'[ .]' '{print $2}' host.log
+www
+blog
+learning
+java
+nodejs
+k8s
+linux
+python
+learning
+java
+nodejs
+www
+
+# 以空格或者.为分隔符，打印第二列（主机名），追加写入原文件
+$ awk -F'[ .]' '{print $2}' host.log >> host.log
+$ cat host.log
+1 www.edu.cn
+2 blog.edu.cn
+3 learning.edu.cn
+4 java.edu.cn
+5 nodejs.edu.cn
+6 k8s.eud.cn
+7 linux.edu.cn
+8 python.edu.cn
+9 learning.edu.cn
+10 java.edu.cn
+11 nodejs.edu.cn
+12 www.edu.cn
+www
+blog
+learning
+java
+nodejs
+k8s
+linux
+python
+learning
+java
+nodejs
+www
+```
+
+* 统计文件`/etc/fstab`中每个文件系统类型出现的次数。
+
+```bash
+# 以UUID开头，一个或多个空格为分隔符，读取第三列（即文件系统类型）并计数。
+$ awk -F' +' '/^UUID/{fs[$3]++}END{for(i in fs){print i, fs[i]}}' /etc/fstab
+swap 1
+btrfs 10
+vfat 1
+
+# 方法2
+$ awk -F' +' '/^UUID/{print $3}' /etc/fstab | uniq -c
+     10 btrfs
+      1 swap
+      1 vfat
+```
+
+* 统计文件`/etc/fstab`中每个单词出现的次数。
+
+```bash
+$ awk -F"[^[:alpha:]]" '{for(i=1;i<=NF;i++)word[$i]++}END{for(a in word)if(a!="")print a,word[a]}' /etc/fstab
+swap 2
+B 1
+srv 2
+btrfs 10
+snapshots 2
+vfat 1
+opt 2
+cbaef 10
+UUID 12
+E 1
+ecf 1
+CD 1
+cf 1
+arm 2
+a 11
+c 2
+tmp 2
+usr 2
+var 2
+afa 20
+home 2
+d 10
+utf 1
+e 2
+efi 3
+grub 2
+boot 3
+subvol 9
+root 2
+local 2
+defaults 2
+f 10
+```
+
+* 提取字符串`Yd$@C#M05MD9&8923+Vip3wZ!33*44&55`中所有的数字。
+
+```bash
+# 对比单引号和双引号的区别。
+$  echo "Yd$@C#M05MD9&8923+Vip3wZ!33*44&55"
+echo "Yd$@C#M05MD9&8923+Vip3wZcgcreate -g cpu:mygroup44&55"
+YdC#M05MD9&8923+Vip3wZcgcreate -g cpu:mygroup44&55
+$ echo 'Yd$@C#M05MD9&8923+Vip3wZ!33*44&55'
+Yd$@C#M05MD9&8923+Vip3wZ!33*44&55
+
+$ echo 'Yd$@C#M05MD9&8923+Vip3wZ!33*44&55'|awk '{gsub(/[^0-9]/,"");print $0}'
+05989233334455
+
+$ echo 'Yd$@C#M05MD9&8923+Vip3wZ!33*44&55'|awk -F'[^0-9]' '{for(i=1;i<=NF;i++){printf "%s", $i}}'
+05989233334455
+
+$ echo 'Yd$@C#M05MD9&8923+Vip3wZ!33*44&55'|awk -F "" '{for(i=1;i<=NF;i++){if($i ~ /[[:digit:]]/){str=$i;str1=(str1 str)}};print str1}'
+05989233334455
+$ echo 'Yd$@C#M05MD9&8923+Vip3wZ!33*44&55'|awk -F '' '{for(i=1;i<=NF;i++){if($i ~ /[[:digit:]]/){str=$i;str1=(str1 str)}};print str1}'
+# 注意，如果写成如下格式，则报错。
+$ echo 'Yd$@C#M05MD9&8923+Vip3wZ!33*44&55'|awk -F'' '{for(i=1;i<=NF;i++){if($i ~ /[[:digit:]]/){str=$i;str1=(str1 str)}};print str1}'
+# 注意，如果写成如下格式，则输出原字符串。
+$ echo 'Yd$@C#M05MD9&8923+Vip3wZ!33*44&55'|awk -F ' ' '{for(i=1;i<=NF;i++){if($i ~ /[[:digit:]]/){str=$i;str1=(str1 str)}};print str1}'
+```
+
+* 生成500个随机数，保存到文件random.txt中，格式为`100,20,61,98...`，取出其中最大整数和最小整数。
+
+```bash
+$ str=""; for ((i=1; i<=500; i++)); do if [ $i -ne 500 ]; then str+="$RANDOM,"; else str+="$RANDOM"; fi; done; echo "$str" > random.txt
+$ cat random.txt
+11308,8764,2075,9411,......
+$ awk -F, '{max=$1;min=$1;for(i=1;i<=NF;i++){if($i>max){max=$i}else{if($i<min){min=$i}}}}END{print "The max:" max, "The min:" min}' random.txt
+The max:32696 The min:20
+```
+
+* 监控某个IP并发连接超过200时，调用防火墙命令封掉该IP，每5分钟监控一次。防火墙命令`iptables -A INPUT -s IP -j REJECT`。
+
+```bash
+ss -nt | awk -F " +|:" 'NR!=1{ip[$(NF-2)]++}END{for(i in ip){if(ip[i]>200){system("iptables -A INPUT -s " i " -j REJECT;")}}}'
+```
+
+* 将下面内容中FQDN取出，并根据其进行计数，从高到低排序。
+
+```bash
+$ cat > fqdn.txt << EOF
+http://mail.edu.com/index.html
+http://www.edu.com/test.html
+http://study.edu.com/index.html
+http://blog.edu.com/index.html
+http://www.edu.com/images/logo.jpg
+http://blog.edu.com/20080102.html
+EOF
+
+$ awk -F"/" '{url[$3]++}END{for(i in url){print url[i], i}}' fqdn.txt|sort -nr
+2 www.edu.com
+2 blog.edu.com
+1 study.edu.com
+1 mail.edu.com
+```
+
+* 将以下⽂本以inode为标记，对inode相同的counts进⾏累加，并且统计出同一inode中，beginnumber的最小值和endnumber的最大值。
+
+```bash
+inode|beginnumber|endnumber|counts| 
+106|3363120000|3363129999|10000| 
+106|3368560000|3368579999|20000| 
+310|3337000000|3337000100|101| 
+310|3342950000|3342959999|10000| 
+310|3362120960|3362120961|2| 
+311|3313460102|3313469999|9898| 
+311|3313470000|3313499999|30000| 
+311|3362120962|3362120963|2| 
+```
+
+输出的结果格式为：
+
+```bash
+310|3337000000|3362120961|10103| 
+311|3313460102|3362120963|39900| 
+106|3363120000|3368579999|30000|
+```
+
+```bash
+$ cat > inode.text << EOF
+inode|beginnumber|endnumber|counts| 
+106|3363120000|3363129999|10000| 
+106|3368560000|3368579999|20000| 
+310|3337000000|3337000100|101| 
+310|3342950000|3342959999|10000| 
+310|3362120960|3362120961|2| 
+311|3313460102|3313469999|9898| 
+311|3313470000|3313499999|30000| 
+311|3362120962|3362120963|2| 
+EOF
+
+$ awk -F'|' -v OFS='|' '/^[0-9]/{inode[$1]++; if(!bn[$1]){bn[$1]=$2}else if(bn[$1]>$2) {bn[$1]=$2}; if(en[$1]<$3)en[$1]=$3;cnt[$1]+=$(NF-1)} END{for(i in inode)print i,bn[i],en[i],cnt[i]}' inode.text
+106|3363120000|3368579999|30000
+310|3337000000|3362120961|10103
+311|3313460102|3362120963|39900
 ```
