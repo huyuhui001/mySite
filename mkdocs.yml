@@ -173,12 +173,12 @@ nav:
 - Python:
   - Index: python/index.md
   - Python基础:
-    - 安装: python/Foundation/ch00.md
-    - 语言基础: python/Foundation/ch01.md
-    - 打包和拆包: python/Foundation/ch02.md
-    - 函数及文件: python/Foundation/ch03.md
-    - 面向对象概念: python/Foundation/ch04.md
-    - 面向对象特性: python/Foundation/ch05.md
+    - Python安装: python/Foundation/ch00.md
+    - Python语言基础: python/Foundation/ch01.md
+    - Python打包和解包: python/Foundation/ch02.md
+    - Python内置函数及文件: python/Foundation/ch03.md
+    - Python面向对象概念: python/Foundation/ch04.md
+    - Python面向对象三大特性: python/Foundation/ch05.md
     - 数据结构和算法: python/Foundation/Algorithms.md
   - Python数据分析基础:
     - NumPy基础: python/DataAnalysis/ch01.md
