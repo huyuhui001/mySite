@@ -1,9 +1,8 @@
-# 数据结构和算法
+# Python数据结构和算法
 
-!!! Reference
-    参考书目："Problem Solving with Algorithms and Data Structures Using Python (Second Edition)" by Bradley N.Miller and David L.Ranum.
+参考书目：
 
-
+* "Problem Solving with Algorithms and Data Structures Using Python (Second Edition)" by Bradley N.Miller and David L.Ranum.
 
 ## 大O记法
 
@@ -23,7 +22,8 @@
 在字符列表中检查第1个字符串中的每个字符，如果找到了，就替换掉。
 
 这个方案的时间复杂度是O(n^2)。
-```
+
+```python
 def allotropyWord_1(s1, s2):
     list_a = list(s2)
     
@@ -49,12 +49,16 @@ def allotropyWord_1(s1, s2):
     
     return stillOK
 ```
+
 运行：
-```
+
+```python
 allotropyWord_1('hello', 'olleh')
 ```
+
 注意list_a的变化过程(匹配到即替换None)。
-```
+
+```python
 ['o', 'l', 'l', 'e', None]
 ['o', 'l', 'l', None, None]
 ['o', None, 'l', None, None]
@@ -67,7 +71,8 @@ allotropyWord_1('hello', 'olleh')
 按照字母表顺序给字符排序，异序词得到的结果将是同一个字符串。
 
 这个方案的时间复杂度是O(n^2)。
-```
+
+```python
 def allotropyWord_2(s1, s2):
     list1 = list(s1)
     list2 = list(s2)
@@ -86,8 +91,10 @@ def allotropyWord_2(s1, s2):
 
     return matched
 ```
+
 运行：
-```
+
+```python
 allotropyWord_2('hello', 'olleh')
 ```
 
@@ -98,7 +105,8 @@ allotropyWord_2('hello', 'olleh')
 如果两个计数器列表相同，那么两个字符串肯定是异序词。
 
 这个方案的时间复杂度是O(n)。
-```
+
+```python
 def allotropyWord_3(s1, s2):
     c1 = [0] * 26
     c2 = [0] * 26
@@ -122,16 +130,16 @@ def allotropyWord_3(s1, s2):
     
     return stillOK
 ```
+
 运行：
-```
+
+```python
 allotropyWord_3('hello', 'olleh')
 ```
 
+参考：
 
-!!! Reference
-    [Python的时间复杂度(Time Complexity)](https://wiki.python.org/moin/TimeComplexity)
-
-
+* [Python的时间复杂度(Time Complexity)](https://wiki.python.org/moin/TimeComplexity)
 
 ## 线性数据结构
 
@@ -148,7 +156,8 @@ allotropyWord_3('hello', 'olleh')
 栈的实现方法1:
 
 `append()`和`pop()`的时间复杂度都是O(1)，所以不论栈中有多少个元素，`push`操作和`pop`操作都会在恒定的时间内完成。
-```
+
+```python
 class Stack():
     def __init__(self) -> None:
         self.items = []
@@ -172,7 +181,8 @@ class Stack():
 栈的实现方法2:
 
 `insert(0)`和`pop(0)`的时间复杂度都是O(n)，元素越多就越慢，性能则受制于栈中的元素个数。
-```
+
+```python
 class Stack():
     def __init__(self) -> None:
         self.items = []
@@ -194,7 +204,8 @@ class Stack():
 ```
 
 对上面的实现，可以通过下面进行分别验证：
-```
+
+```python
 s = Stack()
 s.isEmpty()
 s.push(3)
@@ -209,7 +220,7 @@ s.size()
 
 #### 括号匹配问题
 
-```
+```python
 #!/usr/bin/python3
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
@@ -279,11 +290,11 @@ if __name__ == '__main__':
 ```
 
 执行结果如下，符合预期。
-```
+
+```python
 False
 True
 ```
-
 
 #### 进制转换问题
 
@@ -297,8 +308,7 @@ True
 可以将要构建的二进制数看成一系列数字；计算出的第一个余数是最后一位。
 这体现了反转特性，因此适用栈来处理。
 
-
-```
+```python
 class Stack():
     def __init__(self):
         self.items = []
@@ -342,26 +352,22 @@ if __name__ == '__main__':
     decConverter(233, 10)
     decConverter(233, 16)
 ```
+
 运行结果：
-```
+
+```python
 '11101001'
 '351'
 '233'
 'E9'
 ```
 
-
-
-
-
-
 ### 队列
-
 
 使用`insert()`向队列的尾部添加新元素，时间复杂度是O(n)。
 使用`pop()`移除队列头部的元素（列表中的最后一个元素），时间复杂度是O(1)。
 
-```
+```python
 class Queue():
     def __init__(self):
         self.items = []
@@ -389,8 +395,10 @@ if __name__ == '__main__':
     q.dequeue()
     q.size()
 ```
+
 运行结果:
-```
+
+```python
 True
 2
 False
@@ -398,12 +406,11 @@ False
 1
 ```
 
-
 #### 约瑟夫斯问题
 
 通过模拟实现传土豆游戏来解释约瑟夫斯问题。
 
-```
+```python
 class Queue():
     def __init__(self):
         self.items = []
@@ -440,31 +447,15 @@ if __name__ == '__main__':
     hotPotato(["Bill", "David", "Susan", "Jane", "Ken", "Brad"], 7)
 
  ```
+
  运行结果如下，最后只剩Susan。设定不同的num（这里是7）会得到不同的结果。
- ```
+
+ ```python
 'Susan'
  ```
 
-
-
 #### 打印任务
-
-
-
-
 
 ### 双端队列
 
-
-
-
 ### 列表
-
-
-
-
-
-
-
-
-
