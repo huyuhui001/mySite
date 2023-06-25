@@ -179,7 +179,7 @@ nav:
     - Python内置函数及文件: python/Foundation/ch03.md
     - Python面向对象概念: python/Foundation/ch04.md
     - Python面向对象三大特性: python/Foundation/ch05.md
-    - 数据结构和算法: python/Foundation/Algorithms.md
+    - Python数据结构和算法: python/Foundation/Algorithms.md
   - Python数据分析基础:
     - NumPy基础: python/DataAnalysis/ch01.md
     - NumPy进阶: python/DataAnalysis/ch10.md
