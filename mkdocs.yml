@@ -192,6 +192,8 @@ nav:
     - 时间序列: python/DataAnalysis/ch08.md
     - 高阶pandas: python/DataAnalysis/ch09.md
     - Python建模库介绍: python/DataAnalysis/ch11.md
+  - 数据结构和算法:
+    - 基础知识回顾: python/DataStructure/01_PythonFundmantal.md
   - Demos:
     - 选课系统: python/Demo/CourseSystem.md
 
