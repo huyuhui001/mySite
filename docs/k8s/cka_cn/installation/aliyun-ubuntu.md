@@ -357,14 +357,15 @@ sudo apt-get update && sudo apt-get install -y apt-transport-https ca-certificat
 安装gpg证书。
 
 ```bash
-sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://mirrors.aliyun.com/kubernetes/apt/doc/apt-key.gpg
+curl https://mirrors.aliyun.com/kubernetes/apt/doc/apt-key.gpg | sudo apt-key add - 
 ```
 
 添加Kubernetes安装源。
 
 ```bash
-echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://mirrors.aliyun.com/kubernetes/apt/ \
-  kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+cat << EOF > /etc/apt/sources.list.d/kubernetes.list
+deb https://mirrors.aliyun.com/kubernetes/apt/ kubernetes-xenial main
+EOF
 ```
 
 安装和升级Ubuntu系统依赖包。
