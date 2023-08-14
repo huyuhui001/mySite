@@ -47,7 +47,7 @@ Enter your guess: 15
 You’ve got it in 6 tries!
 ```
 
-拼写和命名惯例：
+### 1.1.拼写和命名惯例
 
 - 变量：salary，hoursWorked，isAbsent
 - 常数：ABSOLUTE_ZERO，INTEREST_RATE
@@ -61,7 +61,7 @@ You’ve got it in 6 tries!
 - Python使用空白符（空格、制表符、或换行符）来表示不同类型的语句的语法。
 - 通常约定使用4个空格作为锁进宽度。
 
-字符串：
+### 1.2.字符串
 
 - 单引号
 - 双引号
@@ -69,7 +69,7 @@ You’ve got it in 6 tries!
 - 成对的三个单引号（多行文本）
 - 转义字符`\`（反斜杠）
 
-运算符和表达式：
+### 1.3.运算符和表达式
 
 - 标准运算符：`+`、`-`、`*`、`/`、`%`
 - 算术表达式是用标准运算符和中缀表示法
@@ -81,20 +81,36 @@ You’ve got it in 6 tries!
 
 运算符优先级，依次是选择运算符、函数调用运算符、下标运算符、算术运算符、比较运算符、逻辑运算符、赋值运算符。括号用于让子表达式优先运行。
 
-函数调用：
+### 1.4.函数调用
 
 函数名称后面跟着用括号括起来的参数列表，例如：`min(5,2)`
 
 - 标准函数
 - 其他模块导入函数
 
-`print`函数：
+### 1.5.`print`函数
 
 - 自动为每个参数运行`str`函数，以得到其字符串表示
 - 在输出之前会用空格吧每个字符串隔开
 - 默认以换行符作为结束
 
-input函数：
+### 1.6.input函数
+
+- 标准输入函数input会一直等待用户通过键盘输入文本
+- 接受一个可选的字符串作为其参数
+
+### 1.7.类型转换函数和混合模式操作
+
+- Python允许算术表达式中的操作数具有不同的数值类型。例如，把int类型的操作数和float类型的操作数相加，会得到float类型的数。
+
+```python
+radius = float(input("Radius: "))
+print("The area is", 3.14 * radius ** 2)
+```
+
+### 1.8.可选和关键字函数参数
+
+- 必选参数是没有默认值的；可选参数有默认值；
 
 ## 2.控制语句
 
@@ -104,7 +120,7 @@ input函数：
 
 多项集collection，指能够包含元素的数据结构。下面是
 
-The collection Module in Python provides different types of containers. A Container is an object that is used to store different objects and provide a way to access the contained objects and iterate over them. Some of the built-in containers are Tuple, List, Dictionary, etc. 
+The collection Module in Python provides different types of containers. A Container is an object that is used to store different objects and provide a way to access the contained objects and iterate over them. Some of the built-in containers are Tuple, List, Dictionary, etc.
 
 Below is the list of different containers provided by the collections module.
 
