@@ -8,19 +8,19 @@
 import random
 
 def main():
-    smaller = int(input("Enter the smaller number: "))
-    larger = int(input("Enter the larger number: "))
+    smaller = int(input("输入最小值: "))
+    larger = int(input("输入最大值: "))
     myNumber = random.randint(smaller, larger)
     count = 0
     while True:
         count += 1
-        userNumber = int(input("Enter your guess: "))
+        userNumber = int(input("输入你猜的值: "))
         if userNumber < myNumber:
-            print("Too small")
+            print("你猜的太小！")
         elif userNumber > myNumber:
-            print("Too large")
+            print("你猜的太大！")
         else:
-            print("You’ve got it in", count, "tries!")
+            print("恭喜，你在第", count, "次猜对了!")
             break
 
 if __name__ == "__main__":
@@ -104,6 +104,7 @@ You’ve got it in 6 tries!
 - Python允许算术表达式中的操作数具有不同的数值类型。例如，把int类型的操作数和float类型的操作数相加，会得到float类型的数。
 
 ```python
+# 输入半径求圆面积
 radius = float(input("Radius: "))
 print("The area is", 3.14 * radius ** 2)
 ```
@@ -111,8 +112,102 @@ print("The area is", 3.14 * radius ** 2)
 ### 1.8.可选和关键字函数参数
 
 - 必选参数是没有默认值的；可选参数有默认值；
+- 在调用函数时，传递给它的参数数量必须至少和必选参数的数量相同。
+- 标准函数和Python的库函数在调用时都会对传入的参数进行类型检查
+
+### 1.9.变量和赋值语句
+
+- 简单的赋值语句 `PI = 3.1416`
+- 多变量赋值 `minValue, maxValue = 1, 100`
+- 变量交换 `a, b = b, a`
+- 赋值语句必须写在一行代码里，但是可以在逗号、圆括号、花括号或方括号之后换行，或者用转义符`\`进行换行。
+
+换行示例：
+
+```python
+minValue = min(100,
+               200)
+product = max(100, 200) \
+          * 30
+```
+
+### 1.10.数据类型
+
+- 变量都可以被指定为任何类型的值。这些变量并不像其他语言那样被声明为特定的类型，而只是被赋了一个值
+- 值和对象都是有类型的，会在运行时进行数据类型检查
+
+### 1.11.`import`语句
+
+- `import`语句使得一个模块中的标识符可以被另一个程序所见到。标识符可以是对象名、函数名或类名
+- 导入模块名称，例如 `import math`
+- 导入模块中的标识符，例如：`from math import sqrt`，或者`from math import pi, sqrt`
+- 也可以使用符号`*`导入一个模块中的所有名称，但不推荐
 
 ## 2.控制语句
+
+### 2.1.条件语句
+
+- 单向if语句的语法
+
+```python
+if <Boolean expression>:
+    <sequence of statements>
+```
+
+- 双向if语句的语法
+
+```python
+if <Boolean expression>:
+    <sequence of statements>
+else:
+    <sequence of statements>
+```
+
+- 多向if语句的语法
+
+```python
+if <Boolean expression>:
+    <sequence of statements>
+elif <Boolean expression>:
+    <sequence of statements>
+...
+else:
+    <sequence of statements>
+```
+
+### 2.2.使用if __name__ == "__main__"
+
+示例代码`numberguess.py`。
+
+```python
+import random
+
+def main():
+    smaller = int(input("输入最小值: "))
+    larger = int(input("输入最大值: "))
+    myNumber = random.randint(smaller, larger)
+    count = 0
+    while True:
+        count += 1
+        userNumber = int(input("输入你猜的值: "))
+        if userNumber < myNumber:
+            print("你猜的太小！")
+        elif userNumber > myNumber:
+            print("你猜的太大！")
+        else:
+            print("恭喜，你在第", count, "次猜对了!")
+            break
+
+if __name__ == "__main__":
+    main()
+```
+
+上面的if语句的作用是，
+
+- 要么将模块当作一个独立的程序运行，该模块的`_name_`变量会设置为字符串`_main_`，才会执行`main()`函数
+- 要么从另一个模块中导入，该模块的`_name_`变量会设置该模块的名称，上例中即`numberguess`
+
+### 2.3.循环语句
 
 ## 3.字符串及其运算
 
