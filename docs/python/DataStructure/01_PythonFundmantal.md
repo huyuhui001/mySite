@@ -209,7 +209,135 @@ if __name__ == "__main__":
 
 ### 2.3.循环语句
 
+通常：
+
+- 一般会使用for循环来迭代确定范围的值或值的序列
+- 如果继续循环的条件是某个布尔表达式，一般会使用while循环
+
+`while`语法格式：
+
+```python
+while <Boolean expression>: 
+    <sequence of statements>
+```
+
+示例：
+
+```python
+# 计算从1到10的乘积并输出结果
+result = 1
+value = 1
+
+while value <= 10:
+    result *= value
+    value += 1
+
+print(result, value)
+
+# 运行结果
+# 3628800 11
+```
+
+`for`语法格式：
+
+```python
+for <variable> in <iterable object>:
+    <sequence of statements>
+```
+
+示例：
+
+```python
+# 计算从1到10的乘积并输出结果
+result = 1
+value = 1
+
+for value in range(1, 11):
+    result *= value
+    value += 1
+
+print(result, value)
+
+# 运行结果
+# 3628800 11
+```
+
 ## 3.字符串及其运算
+
+- Python中的字符串也是一个复合对象
+- Python的字符串类型名为`str`
+
+约定：
+
+- 把单字符的字符串用单引号括起来
+- 把多字符的字符串用双引号括起来
+
+### 3.1.运算符
+
+- 比较运算符，是按照ASCII码的顺序比较两个字符串中每个位置的字符对
+
+示例：
+
+```python
+print('A' > 'a')
+# 运行结果 False
+
+print('A' < 'a')
+# 运行结果 True
+```
+
+- `+`运算符生成并返回一个包含两个操作数的新字符串
+
+示例：
+
+```python
+print("Hello" + "Python")
+# 运行结果 HelloPython
+```
+
+- 下标运算符，范围是从0到字符串的长度减去1的一个整数。
+
+运算符返回在字符串中该位置的字符。
+
+示例：
+
+```python
+print("Greater"[1])
+# 运行结果：r
+```
+
+当索引为负值时，Python会把这个值和字符串的长度相加，以确定要返回的字符的位置。负索引值不得小于字符串长度的负值。
+
+```python
+print("Greater"[-3])
+# 运行结果：t
+
+print("Greater"[-9])
+# 运行结果：IndexError: string index out of range
+```
+
+- 切片运算符（slice operator），下标运算符的一种变体。
+
+语法格式：`<a string>[<lower>:<upper>]`
+
+- `<lower>`：范围是从0到字符串的长度减去1的整数
+- `<upper>`：范围是从0到字符串的长度的整数
+
+切片检索规则：
+
+- 返回这样一个子字符串：这个子字符串会从`<lower>`索引处的字符开始，到`<upper>`索引减1的位置作为结束
+- 如果省略`<lower>`索引，那么切片运算符将返回一个以当前字符串的第一个字符作为开头的子字符串
+- 如果省略`<upper>`索引，那么切片运算符将返回一个以当前字符串的最后一个字符作为结尾的子字符串
+- 如果省略这两个值，那么切片运算符会返回整个字符串
+
+示例：
+
+```python
+print("Greater"[:])     # 返回字串 Greater 
+print("Greater"[2:])    # 返回字串 eater
+print("Greater"[:2])    # 返回字串 Gr
+print("Greater"[2:5])   # 返回字串 eat
+```
 
 ## 4.内置多项集及其操作
 
