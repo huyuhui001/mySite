@@ -27,11 +27,24 @@ print("Hello" + "Python")
 print('A' > 'a')
 print('A' < 'a')
 
-
+# =================
 print("Greater"[:])     # 返回字串 Greater 
 print("Greater"[2:])    # 返回字串 eater
 print("Greater"[:2])    # 返回字串 Gr
 print("Greater"[2:5])   # 返回字串 eat
+
+# =================
+for i in range(7, 11):
+    print(i, 10*i)
+
+for i in range(7, 11):
+    print("%2d" % i, "%3d" % 10*i)
+
+print("%6s" % "four")
+print("%-6s" % "four")
+#   four
+# four
+
 
 
 

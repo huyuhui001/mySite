@@ -339,6 +339,37 @@ print("Greater"[:2])    # 返回字串 Gr
 print("Greater"[2:5])   # 返回字串 eat
 ```
 
+### 3.2.字符串格式化
+
+- 格式化字符串里的数据字符以及满足给定基准线的附加空格的总数称为它的字段宽度（field width）。
+- `print`函数会在遇到第一列时自动开始打印输出基准线。
+
+示例，通过print语句输出2列。
+
+```python
+for i in range(7, 11):
+    print(i, 10*i)
+
+# 运行结果
+# 7 70
+# 8 80
+# 9 90
+# 10 100
+```
+
+- Python的通用格式化机制
+  - 语法格式`<format string> % <datum>`
+  - 其中`<format string>`使用`%<field width>s`表示法。当字段宽度为正时，数据是右对齐的；当字段宽度为负时，数据是左对齐的。
+
+示例：
+
+```python
+print("%6s" % "four")
+print("%-6s" % "four")
+#   four
+# four
+```
+
 ## 4.内置多项集及其操作
 
 多项集collection，指能够包含元素的数据结构。下面是
