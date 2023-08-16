@@ -34,16 +34,59 @@ print("Greater"[:2])    # 返回字串 Gr
 print("Greater"[2:5])   # 返回字串 eat
 
 # =================
-for i in range(7, 11):
-    print(i, 10*i)
-
-for i in range(7, 11):
-    print("%2d" % i, "%3d" % 10*i)
-
 print("%6s" % "four")
 print("%-6s" % "four")
 #   four
 # four
+
+for i in range(7, 11):
+    print(i, 10*i)
+# 7 70
+# 8 80
+# 9 90
+# 10 100
+
+for i in range(7, 11):
+    print("%-3d%5d" % (i, 10*i))
+# 7     70
+# 8     80
+# 9     90
+# 10   100
+
+for i in range(7, 11):
+    print("%-3d%5.3f" % (i, i/3))
+# 7  2.333
+# 8  2.667
+# 9  3.000
+# 10 3.333
+
+print("%6.3f" % 3.14)
+#  3.140
+print("%-6.3f" % 3.14)
+# 3.140
+print(3.14)
+
+
+salary = 100.00
+print("Salary: $" + str(salary))
+# Salary: $100.0
+print("Salary: $%0.2f" % salary)
+# Salary: $100.00
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
