@@ -444,18 +444,15 @@ print("great".__contains__("e"))
 # True
 ```
 
+提示：
 
+1. `dir()`方法会返回所传递的对象的有效属性，语法格式：`dir(object)`
+2. `help()`函数查看函数或模块用途的详细说明，语法格式：`help(object)`
 
-
-
-
-
-
-
-
-
-
-
+```python
+dir(str)
+help(str.__contains__)
+```
 
 ## 4.内置多项集及其操作
 

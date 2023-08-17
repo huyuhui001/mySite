@@ -103,8 +103,8 @@ print("great".__contains__("e"))
 # True
 
 
-
-
+dir(str)
+help(str.__contains__)
 
 
 
