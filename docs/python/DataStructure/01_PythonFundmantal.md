@@ -411,6 +411,52 @@ print("%-6.3f" % 3.14)
 
 ### 3.3.对象和方法调用
 
+语法格式：`<object>.<method name>(<list of arguments>)`
+
+示例：
+
+```python
+print("greater".isupper())
+# 运行结果
+# False 
+print("greater".upper())
+# 运行结果
+# GREATER
+print("greater".startswith("great"))
+# 运行结果
+# True
+```
+
+```python
+print(len("greater"))
+print("greater".__len__())
+# 运行结果
+# 7
+
+print("great" + "er")
+print("great".__add__("er"))
+# 运行结果
+# greater
+
+print("e" in "great")
+print("great".__contains__("e"))
+# 运行结果
+# True
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## 4.内置多项集及其操作
 
 多项集collection，指能够包含元素的数据结构。下面是

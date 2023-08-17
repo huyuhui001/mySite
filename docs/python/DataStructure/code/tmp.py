@@ -74,6 +74,33 @@ print("Salary: $%0.2f" % salary)
 # Salary: $100.00
 
 
+# =================
+
+print("greater".isupper())
+# 运行结果
+# False 
+print("greater".upper())
+# 运行结果
+# GREATER
+print("greater".startswith("great"))
+# 运行结果
+# True
+
+
+print(len("greater"))
+print("greater".__len__())
+# 运行结果
+# 7
+
+print("great" + "er")
+print("great".__add__("er"))
+# 运行结果
+# greater
+
+print("e" in "great")
+print("great".__contains__("e"))
+# 运行结果
+# True
 
 
 
