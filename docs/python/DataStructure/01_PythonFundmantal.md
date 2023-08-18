@@ -456,23 +456,313 @@ help(str.__contains__)
 
 ## 4.内置多项集及其操作
 
-多项集collection，指能够包含元素的数据结构。下面是
+Python中的多项集（collections）指能够包含元素的数据结构。多项集模块提供了不同类型的容器。容器是用于存储不同对象并提供访问所包含对象以及对它们进行迭代的方式的对象。一些内置的容器有元组（Tuple）、列表（List）、字典（Dictionary）等。
 
-The collection Module in Python provides different types of containers. A Container is an object that is used to store different objects and provide a way to access the contained objects and iterate over them. Some of the built-in containers are Tuple, List, Dictionary, etc.
+以下是由collections模块提供的不同容器的列表：
 
-Below is the list of different containers provided by the collections module.
+- 计数器（Counters）
+- 有序字典（OrderedDict）
+- 默认字典（DefaultDict）
+- 链映射（ChainMap）
+- 命名元组（NamedTuple）
+- 双向队列（DeQue）
+- 用户字典（UserDict）
+- 用户列表（UserList）
+- 用户字符串（UserString）
 
-- Counters
-- OrderedDict
-- DefaultDict
-- ChainMap
-- NamedTuple
-- DeQue
-- UserDict
-- UserList
-- UserString
+### 4.1.列表
+
+列表（list）是零个或多个Python对象的一个序列，这些对象通常称为项（item）。
+
+列表的表现形式是：用方括号括起整个列表，并用逗号分隔元素。
+
+示例：
+
+```python
+[]                             # 空列表
+["greater", "less", 10]        # 含不同类型的列表
+["greater", ["less", 10]]      # 含内嵌列表的列表
+```
+
+列表的切片操作：
+
+- 和字符串类似，可以通过标准运算符执行切片或连接操作，返回结果也是列表。
+- 和字符串不同，列表是可变的，即，可以替换、插入或删除列表中所包含的项。
+  - 切片和连接运算符所返回的列表是新的列表，而不是最初列表的一部分；
+  - 列表类型包含了几个叫作变异器（mutator）的方法，用于修改列表的结构。
+
+可以通过`dir(list)`来查看方法，包括变异器（mutator）的方法。
+
+```python
+dir(list)
+# 运行结果
+# ['__add__', '__class__', '__contains__', '__delattr__', '__delitem__', '__dir__', '__doc__', '__eq__', '__format__', '__ge__', '__getattribute__', '__getitem__', '__gt__', '__hash__', '__iadd__', '__imul__', '__init__', '__init_subclass__', '__iter__', '__le__', '__len__', '__lt__', '__mul__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__reversed__', '__rmul__', '__setattr__', '__setitem__', '__sizeof__', '__str__', '__subclasshook__', 'append', 'clear', 'copy', 'count', 'extend', 'index', 'insert', 'pop', 'remove', 'reverse', 'sort']
+```
+
+最常用的列表变异器方法是`append`、`insert`、`pop`、`remove`和`sort`。
+
+示例：
+
+```python
+myList = []              # myList当前为[] 
+myList.append(34)        # myList当前为[34]，默认尾部插入
+myList.append(22)        # myList当前为[34, 22]，默认尾部插入
+myList.sort()            # myList当前为[22, 34]
+myList.pop()             # 默认从索引位[0]删除，返回结果22；myList当前为[34]
+myList.insert(0, 22)     # 在指定索引位[0]插入；myList当前为[22, 34]
+myList.insert(1, 55)     # 在指定索引位[1]插入；myList当前为[22, 55, 34]
+myList.pop(1)            # 指定索引位[1]删除，返回结果55；myList当前为[22, 34]
+myList.remove(22)        # 删除首个匹配项的元素[22]；myList当前为[34]
+myList.remove(55)        # 报ValueError错，list.remove(x): x not in list
+```
+
+对于字符串，split方法会从字符串里分离出一个单词列表，而join方法会把单词列表连在一起从而形成字符串。例如：
+
+```python
+print("Python is cool".split())
+# 运行结果：
+# ['Python', 'is', 'cool']
+print(" ".join(["Python", "is", "cool"]))
+# 运行结果：
+# Python is cool
+```
+
+对于列表特性和操作的详细练习，参考[Python语言基础@github](../Foundation/ch01.md)或者[Python语言基础@web](https://huyuhui001.github.io/mySite/python/Foundation/ch01/#13-list)中“1.3 列表（list）”的内容。
+
+### 4.2.元组
+
+元组（tuple）是一个不可变的元素序列。
+
+- 元组（tuple）形式是用圆括号将各项括起来，并且必须至少包含两个项。
+- 元组实际上就像列表一样，只不过它没有变异器方法。
+- 如果要使元组只包含一个元素，则必须在元组里包含逗号。
+
+对比下面的区别：
+
+```python
+print((21))   # (21)被视为整数
+# 运行结果：
+# 21
+
+print((21,))  # (21,)被视为元组
+# 运行结果：
+# (21,)
+```
+
+对于列表特性和操作的详细练习，参考[Python语言基础@github](../Foundation/ch01.md)或者[Python语言基础@web](https://huyuhui001.github.io/mySite/python/Foundation/ch01/#16-tuple)中“1.6 元组（tuple）”的内容。
+
+### 4.3.序列遍历
+
+`for`循环可以用来遍历序列（如字符串、列表或元组）里的所有元素。
+
+遍历列表：
+
+```python
+myList = [67, 100, 'Monday', "It's good"]
+for item in myList:
+    print(item)
+
+myList = [67, 100, 'Monday', "It's good"]
+for idx in range(len(myList)):
+    print(myList[idx])
+```
+
+遍历元组：
+
+```python
+myString = "I love Python"
+myList = myString.split()
+myTuple = tuple(myList)
+for i in myTuple:
+    print(i)
+```
+
+遍历字符串：(注意，是遍历字符，不是单词)
+
+```python
+myString = "I love Python"
+for i in myString:
+    print(i)
+
+myString = "I love Python"
+for i in range(len(myString)):
+    print(myString[i])
+
+myString = "I love Python"
+for i in enumerate(myString):
+    print(i)
+
+myString = "I love Python"
+for i, j in enumerate(myString):
+    print(i, j)
+
+myString = "I love Python"
+for i in iter(myString):
+    print(i)
+```
+
+如果按照单词遍历字符串，则需要先把字串按单词拆解为列表。
+
+```python
+myString = "I love Python"
+myList = "I love Python".split()
+for i in myList:
+    print(i)
+```
+
+对于列表和元组遍历的更多例子，包括拆包遍历，参考[Python语言基础@github](../Foundation/ch01.md)或者[Python语言基础@web](https://huyuhui001.github.io/mySite/python/Foundation/ch01/)的内容。
+
+### 4.4.字典
+
+字典（dictionary）包含零个或多个条目。
+
+- 每个条目（entry）都有唯一的键和它所对应的值相关联。
+- 键通常是字符串或整数，而值是任意的Python对象。
+- 下标运算符可以用于访问一个给定键的值，给一个新键添加一个值，以及替换给定键的值。
+- `pop`方法会删除一个条目并返回给定键所对应的值。
+- `keys`方法会把所有键返回成一个可迭代对象。
+- `values`方法会把所有值返回成一个可迭代对象。
+
+示例：
+
+```python
+{}                                      # 空字典
+{"name":"Ken"}                          # 含一个条目
+{"name":"Ken", "age":67}                # 含二个条目
+{"hobbies":["reading", "running"]}      # 含一个条目，其中值是一个列表
+```
+
+- 字典本身也是一个可迭代对象。可以通过for语句进行遍历键或/和值。
+
+```python
+myDict = {'name': 'Ming', 'id': 1001, 'age': 35}
+for keys in myDict:
+    print(keys, myDict[keys])
+# 运行结果：
+# name Ming
+# id 1001
+# age 35
+```
+
+### 4.5.值检索
+
+- 可以在字符串列表、元组或字典里通过`in`运算符来对值或多项集进行搜索，返回`True`或`False`。对于字典来说，搜索的目标值应该是一个键。
+- 如果已知给定值存在于序列（字符串、列表或元组）里，那么`index`方法将返回这个值所出现的第一个位置。
+
+列表检索：
+
+```python
+myString = "I love Python"
+myList = myString.split()
+print(myList)
+# 运行结果：
+# ['I', 'love', 'Python']
+print(myList.index('love'))
+# 运行结果：
+# 1
+```
+
+元组检索：
+
+```python
+myString = "I love Python"
+myList = myString.split()
+myTuple = tuple(myList)
+print(myTuple)
+print(myTuple.index('love'))
+```
+
+字典检索：
+
+```python
+myDict = {'name': 'Ming', 'id': 1001, 'age': 35}
+print(myDict)
+
+for keys in myDict:
+    print(keys, myDict[keys])
+
+myDict.pop('city')  # 报错，KeyError: 'city'
+myDict.pop('id')
+print(myDict)
+# 运行结果：{'name': 'Ming', 'age': 35}
+```
+
+### 4.6.模式匹配访问多项集
+
+- 下标运算符可以用来访问列表、元组和字典里的元素。
+- 通过模式匹配可以一次访问多个元素。
+
+示例：`myTuple`是一个含内嵌元组的元组。
+
+```python
+myTuple = (('r', 'g', 'b'), 'hexString')
+print(myTuple)
+# 运行结果：
+# (('r', 'g', 'b'), 'hexString')
+print(myTuple[0])
+# 运行结果：
+# ('r', 'g', 'b')
+print(myTuple[0][0])
+# 运行结果：
+# r
+print(myTuple[0][1])
+# 运行结果：
+# g
+print(myTuple[0][2])
+# 运行结果：
+# b
+print(myTuple[1])
+# 运行结果：
+# hexString
+```
+
+通过上面的拆解，我们清楚了内嵌元组的结构详细情况。
+
+下面，我们通过模式匹配，把一个结构分配给形式完全相同的另一个结构。这里目标结构`newTuple`所包含的变量从源结构`(('r', 'g', 'b'), 'hexString')`里的相应位置处获得对应的值。
+
+```python
+newTuple = (('r', 'g', 'b'), 'hexString')
+
+print(newTuple[0])
+# ('r', 'g', 'b')
+print(newTuple[0][0])
+# 运行结果：
+# r
+print(newTuple[0][1])
+# 运行结果：
+# g
+print(newTuple[0][2])
+# 运行结果：
+# b
+print(newTuple[1])
+# 运行结果：
+# hexString
+```
 
 ## 5.创建函数
+
+Python支持完全函数式编程设计。
+
+- Python包含很多内置函数。
+- Python也运行创建新函数，可以使用递归，把函数作为数据进行传递和返回。
+
+函数定义语法：
+
+- 命名函数名称和参数名称的规则与惯例与命名变量的是相同的。
+- 必选参数的列表可以为空，也可以包含用逗号隔开的名称。
+- 与其他编程语言不同的是，参数名称或函数名称本身并不会和数据类型进行关联。
+
+```python
+def <function name>(<list of parameters>):
+    <sequence of statements>
+```
+
+
+
+
+
+
+
 
 ## 6.捕获异常
 
