@@ -223,3 +223,18 @@ print(newTuple[1])
 # hexString
 
 
+
+
+# =================
+def square(n): 
+    """返回n的平方数""" 
+    result = n ** 2 
+    return result
+
+print(square(5))
+
+
+
+
+
+

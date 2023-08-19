@@ -757,12 +757,24 @@ def <function name>(<list of parameters>):
     <sequence of statements>
 ```
 
+示例：
 
+- 在函数的标题下有一行用三引号括起来的字符串`返回n的平方数`，这是一个文档字符串（docstring）。
+  - 在shell里面输入help(square)时，会显示这个字符串。
+  - 定义的每一个函数都应该有文档字符串，来说明该函数的功能，并提供相关的所有参数以及返回值的信息。
+- 函数的参数和临时变量只会在函数调用的生存周期内存在，并且对其他函数及其外围程序都是不可见的。
+  - `n`是参数。
+  - `result`是临时变量。
+- 如果函数不包含`return`语句时，它将在最后一条语句执行之后自动返回`None`值。
 
+```python
+def square(n): 
+    """返回n的平方数""" 
+    result = n ** 2 
+    return result
 
-
-
-
+print(square(5))
+```
 
 ## 6.捕获异常
 
