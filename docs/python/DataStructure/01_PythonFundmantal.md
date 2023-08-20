@@ -746,6 +746,8 @@ Python支持完全函数式编程设计。
 - Python包含很多内置函数。
 - Python也运行创建新函数，可以使用递归，把函数作为数据进行传递和返回。
 
+### 5.1.定义函数
+
 函数定义语法：
 
 - 命名函数名称和参数名称的规则与惯例与命名变量的是相同的。
@@ -766,6 +768,8 @@ def <function name>(<list of parameters>):
   - `n`是参数。
   - `result`是临时变量。
 - 如果函数不包含`return`语句时，它将在最后一条语句执行之后自动返回`None`值。
+- 用`<parameter name> = <default value>`把参数指定为有默认值的可选参数。
+- 在参数列表中，必选参数（没有默认值的参数）必须位于可选参数之前。
 
 ```python
 def square(n): 
@@ -774,6 +778,293 @@ def square(n):
     return result
 
 print(square(5))
+```
+
+### 5.2.递归函数
+
+递归函数（recursive function）是指会调用自身的函数。
+
+为了防止函数无限地重复调用自身，代码中必须至少有一条用来查验条件的选择语句，用于确定接下来要继续递归还是停止递归。这个检查条件语句称为基本情况（base case）。
+
+示例：下面是通过循环实现输出从给定的最小值到最大值之间的整数和。
+
+```python
+def mySum(lower, upper):
+    """对给定的最小值到最大值之间的整数求和; lower:最小值; upper:最大值;"""
+    result = 0
+    while (lower <= upper):
+        result = result + lower
+        lower += 1
+    return result
+
+
+print(mySum(1, 10))
+# 运行结果：
+# 55
+```
+
+用递归函数改写上述函数。
+
+```python
+def mySum(lower, upper):
+    """对给定的最小值到最大值之间的整数求和; lower:最小值; upper:最大值;"""
+    if lower <= upper:
+        return lower + mySum(lower + 1, upper)
+    else:
+        return 0
+
+
+print(mySum(1, 10))
+# 运行结果：
+# 55
+```
+
+通常来说，递归函数至少有一个参数。
+
+- 这个参数的值会被用来对递归过程的基本情况进行判定，从而决定是否要结束整个调用。
+- 在每次递归调用之前，这个值也会被进行某种方式的修改。
+- 每次对这个值的修改，都应该产生一个新数据值，可以让函数最终达到基本情况。
+
+为了对`mySum`函数的递归进行跟踪，可以尝试添加一个代表缩进边距的参数并且添加一些print语句。这样在每次调用时，函数的第一条语句会计算缩进数量，然后再打印两个参数的值，每次返回调用之前的返回值时都使用相同的缩进，就可以实现对两个参数的值以及每次调用的返回值进行跟踪。
+
+```python
+def mySum(lower, upper, margin=0):
+    """对给定的最小值到最大值之间的整数求和，通过阶梯方式输出; lower:最小值; upper:最大值;"""
+    blanks = " " * margin
+    print(blanks, lower, upper)
+
+    if lower <= upper:
+        result = lower + mySum(lower + 1, upper, margin + 4)
+        print(blanks, result)
+        return result
+    else:
+        print(blanks, 0)
+        return 0
+
+
+print(mySum(1, 5))
+# 运行结果：
+#  1 5
+#      2 5
+#          3 5
+#              4 5
+#                  5 5
+#                      6 5
+#                      0
+#                  5
+#              9
+#          12
+#      14
+#  15
+# 15
+```
+
+### 5.3.函数嵌套
+
+嵌套函数类似于嵌套循环，就是函数内又嵌套着函数。即，函数的定义嵌套在一个函数的语句序列里。
+
+先看一个普通例子：
+
+```python
+# 定义inner函数
+def inner():
+    print('我是inner')
+
+# 定义outer函数，outer函数调用inner函数
+def outer():
+    print('我是outer')
+    inner()
+
+outer()
+# 运行结果：
+# 我是outer
+# 我是inner
+```
+
+改写上面的代码，把`inner`函数写在`outer`函数里面。
+
+```python
+# 定义outer函数，outer函数内嵌inner函数，并调用inner函数
+def outer():
+    print('我是outer')
+
+    # 定义inner函数
+    def inner():
+        print('我是inner')
+
+    inner()
+
+
+outer()
+# 运行结果：
+# 我是outer
+# 我是inner
+```
+
+上面的外层`outer`函数和内层`inner`函数都没有变量和参数。
+
+现在修改上面的代码，我们传入参数和变量，然后把外层函数返回值指向内层函数名。
+
+```python
+def outer():
+    a = 1
+    print('我是outer')
+
+    # 定义inner函数
+    def inner():
+        print('我是inner')
+        print('inner打印: ', a)
+    
+    # 返回内层inner函数名
+    return inner
+
+
+f = outer()
+# 运行结果：
+# 我是outer
+f()
+# 运行结果：
+# 我是inner
+# inner打印:  1
+```
+
+在上面的例子中：
+
+- `f = outer()`调用外层`outer`函数，并把结果赋值给`f`。注意，inner函数并没有被执行。
+- `f`其实就代表`inner`，指向`inner`的内存空间。通过`f()`验证了这一点，`outer`函数中的变量`a`被打印出来了。
+
+上面例子中`outer`就是闭包函数，外层函数的变量可以被内层函数调用，类似于封装的效果。内层函数不会立马被执行，当再次调用时，内层函数才会执行。
+
+闭包函数需要有三个条件：
+
+- 必须有一个内嵌函数，例如函数`inner`；
+- 内部函数引用外部函数变量，例如变量`a`；
+- 外部函数必须返回内嵌函数，例如`outer`函数中的`return inner`；
+
+对上面的代码再进行修改，在`inner`函数中再添加一个同名的变量a。从结果可以得出结论，`inner`函数优先在内部查找变量`a=5`。
+
+```python
+def outer():
+    a = 1
+    print('我是outer')
+
+    # 定义inner函数
+    def inner():
+        a = 5
+        print('我是inner')
+        print('inner打印: ', a)
+
+    return inner
+
+
+f = outer()
+# 运行结果：
+# 我是outer
+f()
+# 运行结果：
+# 我是inner
+# inner打印:  5
+```
+
+结论：内层函数中调用的变量：
+
+- 首先会从内层函数中找，
+- 找不到就去外层函数中找，
+- 再找不到就到函数外中找，
+- 再找不到就到内置的模块中找，
+- 再找不到，就报错。
+
+这就是作用域的概念。
+
+继续修改上面的代码，在`inner`函数中修改`outer`函数中变量`a`的值，运行结果报错。结论：内层函数不能修改外层函数的变量值。
+
+```python
+def outer():
+    a = 1
+    print('我是outer')
+
+    # 定义inner函数
+    def inner():
+        a += 5
+        print('我是inner')
+        print('inner打印: ', a)
+
+    return inner
+
+
+f = outer()
+# 运行结果：
+# 我是outer
+f()
+# 运行结果：
+# UnboundLocalError: local variable 'a' referenced before assignment
+```
+
+修正上面的代码。在`inner`函数中对变量a添加一个`nonlocal`的声明，就可以在`inner`函数中修改外层outer函数的变量`a`的值。
+
+```python
+def outer():
+    a = 1
+    print('我是outer')
+
+    # 定义inner函数
+    def inner():
+        nonlocal a
+        a += 5
+        print('我是inner')
+        print('inner打印: ', a)
+
+    return inner
+
+
+f = outer()
+# 运行结果：
+# 我是outer
+f()
+# 运行结果：
+# 我是inner
+# inner打印:  6
+```
+
+下面这段代码是阶乘（factorial）递归函数的两个不同的定义。
+
+- 第一个定义使用了嵌套的辅助函数`recurse`来对所需要的参数进行递归；这里的`factorial`函数就是闭包函数。
+- 第二个定义则是为第二个参数提供了默认值，从而简化了设计。
+
+```python
+# 第一个定义
+def factorial(n):
+    """返回 n 的阶乘"""
+
+    def recurse(n, product):
+        """阶乘计算的帮助器"""
+        if n == 1:
+            return product
+        else:
+            return recurse(n - 1, n * product)
+
+    return recurse(n, 1)
+
+
+print(factorial(5))
+
+# 运行结果
+# 120
+```
+
+```python
+# 第二个定义
+def factorial(n, product=1):
+    """返回 n 的阶乘"""
+    if n == 1:
+        return product
+    else:
+        return factorial(n - 1, n * product)
+
+
+print(factorial(5))
+# 运行结果
+# 120
 ```
 
 ## 6.捕获异常
