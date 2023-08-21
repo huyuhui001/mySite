@@ -170,25 +170,45 @@
 # print(newList)
 # # ['0', '1', '3', '5', '7', '9']
 
-oldList = [0, 1, 3, 5, 7, 9]
-newList = []
+# oldList = [0, 1, 3, 5, 7, 9]
+# newList = []
 
-for i in oldList:
-    if i > 0:
-        newList.append((str(i)))
+# for i in oldList:
+#     if i > 0:
+#         newList.append((str(i)))
 
-print(newList)
-# ['1', '3', '5', '7', '9']
-
-oldList = [0, 1, 3, 5, 7, 9]
-newList = []
+# print(newList)
+# # ['1', '3', '5', '7', '9']
 
 
-def isPositive(n):
-    if n > 0:
-        return True
 
 
-newList = list(filter(isPositive, oldList))
-print(newList)
-# [1, 3, 5, 7, 9]
+# oldList = [0, 1, 3, 5, 7, 9]
+# newList = []
+
+
+# def isPositive(n):
+#     if n > 0:
+#         return True
+
+
+# newList = list(filter(isPositive, oldList))
+# print(newList)
+# # [1, 3, 5, 7, 9]
+
+
+
+# oldList = [0, 1, 3, 5, 7, 9]
+# newList = []
+
+# newList = list(filter(lambda i: i > 0, oldList))
+
+# print(newList)
+# # [1, 3, 5, 7, 9]
+
+# import functools
+
+# result = functools.reduce(lambda x, y: x * y, range(1, 11))
+
+# print(result)
+# # 3628800
