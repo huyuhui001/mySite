@@ -1092,7 +1092,6 @@ Python有两个内置的高阶函数，分别是`map`和`filter`，它们可以�
 - `filter`会接受一个布尔函数和一个可迭代对象作为参数，返回这样一个可迭代对象，它的每一个元素都会被传递给布尔函数，如果这个函数返回True，那么这个元素将被保留在返回的可迭代对象里；否则，这个元素将被删除。简单说，`filter`函数会把所有能够通过检验的元素保留在可迭代对象里。
 - `functools.reduce`通过把接收两个参数的函数的结果以及迭代对象的下一个元素再次应用于这个接收两个参数的函数，来把可迭代对象计算成单一的值。
 
-
 示例：把一个整数列表转换成另一个包含这些整数的字符串形式的列表。
 
 传统方法实现：
@@ -1182,8 +1181,6 @@ print(result)
 # 3628800
 ```
 
-
-
 ### 5.5.lambda与匿名函数
 
 语法格式：
@@ -1206,12 +1203,321 @@ print(newList)
 # [1, 3, 5, 7, 9]
 ```
 
-
-
-
 ## 6.捕获异常
 
+考虑两种异常情况：
+
+- Python虚拟机在程序执行期间遇到了语义错误，则会得到相应的错误消息，从而引发一个异常并且暂停程序。语义错误包括例如未定义的变量名、除以0以及超出列表范围的索引等。
+- 用户引起的某些错误，例如，期望输入数字的时候输入了其他字符。对于在这些情况下产生的异常，程序不应该停止执行，而应该对这些异常进行捕获，并且允许用户修正错误。
+
+Python提供了try-except语句，可以让程序捕获异常并执行相应的恢复操作。
+
+- `try`子句中的语句将先被执行。如果这些语句中的一条引发了异常，那么控制权会立即转移到`except`子句去。
+  1. 如果引发的异常类型和这个子句里的类型一致，那么会执行它里面的语句；
+  2. 否则，将转移到try-except语句的调用者，并基于调用链向上传递，直到这个异常被成功捕获，或者是程序因错误消息而停止执行。
+- 如果`try`子句里的语句没有引发任何异常，那么会跳过`except`子句并继续执行，直到try-except语句的末尾。
+
+```python
+try:
+    <statements>
+except <exception type>:
+    <statements>
+```
+
+通常来说，
+
+- 对于已知可能会发生的异常类型，应该尽可能地包括在在`except`语句里。
+- 如果不知道异常的类型，可以在`except`中用更通用的Exception类型匹配可能会引发的任何异常。
+
+示例：
+
+```python
+def getYourAge(prompt): 
+    """提示用户输入一个整数，否则给出错误提示，并继续提示用户输入。""" 
+    inputStr = input(prompt) 
+    try: 
+        number = int(inputStr)
+        return number
+    except ValueError:
+        print("Error in number format:", inputStr)
+        return getYourAge(prompt)
+
+if __name__ == "__main__": 
+    age = getYourAge("Enter your age: ") 
+    print("Your age is", age)
+
+# 运行结果
+# Enter your age: 3a
+# Error in number format: 3a
+# Enter your age: 3.5
+# Error in number format: 3.5
+# Enter your age: 20
+# Your age is 20
+```
+
 ## 7.文件及其操作
+
+### 7.1.文本文件读取
+
+可以把文本文件里的数据看作字符、单词、数字或者若干行文本。
+
+如果把文本文件里的数据当作整数或浮点数，就必须用空白字符（空格、制表符和换行符）将其分隔开。输出或输入到文本文件的所有数据必须是字符串形式的，所以在输入/输出时需要做相应的类型转换。
+
+如下例：
+
+```python
+34.6 22.33 66.75 
+77.12 21.44 99.01
+```
+
+Python的open函数接收下面两个主要参数，打开一个与磁盘文件的连接并且返回相应的文件对象。
+
+- 文件路径；
+- 打开模式：
+
+打开模式：
+
+- `r`表示文件只能读取；
+- `w`表示文件只能写入；
+- `a`表示打开文件，在原有内容的基础上追加内容，在末尾写入；
+- `w+`表示可以对文件进行读写双重操作；
+- `rb`以二进制格式打开一个文件，用于只读；
+- `wb`以二进制格式打开一个文件，用于只写；
+- `ab`以二进制格式打开一个文件，用于追加；
+- `wb+`以二进制格式打开一个文件，用于读写；
+
+示例：
+
+- 为`myfile.txt`文件打开一个用来输出的文件对象。
+- 字符串数据通过`write`方法和文件对象写入（或输出）到文件里。
+- 转义符`\n`实现换行。
+- 使用`close`方法关闭文件。如果没有关闭输出文件，则可能导致数据丢失。
+
+```python
+f = open("./docs/python/DataStructure/code/myfile.txt", 'w')
+f.write("First line.\nSecond line.\n")
+f.close()
+```
+
+文件myfile.txt的内容：
+
+```text
+First line.
+Second line.
+```
+
+### 7.2.文本文件写入
+
+- 文件的`write`方法接收一个字符串作为参数。因此，其他类型的数据（如整数或浮点数）在写入输出文件之前，都必须先被转换为字符串。
+- 在Python里，可以使用`str`函数把绝大多数的数据类型的值转换为字符串，以空格或换行符作为分隔符，将其写入文件里。
+
+示例：生成500个介于1和500之间的随机数，并输出到文本文件。
+
+```python
+import random
+
+f = open("./docs/python/DataStructure/code/myfile.txt", 'w')
+
+for count in range(500):
+    number = random.randint(1, 500)
+    f.write(str(number) + "\n")
+
+f.close()
+```
+
+### 7.3.从文本文件读取数据
+
+示例：读取文件内容。
+
+```python
+import random
+
+f = open("./docs/python/DataStructure/code/myfile.txt", 'w')
+
+f.write("First line.\nSecond line.\n")  # 初始化文件内容
+f.close()
+
+# 打开文件读取内容
+f = open("./docs/python/DataStructure/code/myfile.txt", 'r')
+
+text1 = f.read()  # 把文件的全部内容输入单个字符串中
+print(text1)
+# 运行结果：
+# First line.
+# Second line
+
+text2 = f.read()  # 再次read，得到一个空字串，表述已经到达文件末尾。要再次读取需要重新打开文件
+print("======")
+print(text2)
+# 运行结果：
+# ======
+#
+
+f.close()
+
+# 重新打开文件读取内容
+f = open("./docs/python/DataStructure/code/myfile.txt", 'r')
+
+for line in f:  # 逐行读取文件内容
+    print("======")
+    print(line)  # 每行都有一个换行符，这是print函数默认行为
+
+# 运行结果：
+# ======
+# First line.
+
+# ======
+# Second line.
+#
+
+f.close()
+
+# 重新打开文件读取内容
+f = open("./docs/python/DataStructure/code/myfile.txt", 'r')
+
+while True:
+    line = f.readline()  # readline方法会从输入的文本里只获取一行数据，并且返回这个包含换行符的字符串。如果readline遇到了文件末尾，那么会返回空字符串。
+    if line == "":
+        break
+    print("******")
+    print(line)
+
+# 运行结果：
+# ******
+# First line.
+
+# ******
+# Second line.
+# 
+
+f.close()
+
+# 重新打开文件读取内容
+f = open("./docs/python/DataStructure/code/myfile.txt", 'r')
+
+line = f.readlines()  # readlines方法则是读取所有行，返回的是所有行组成的列表。
+print(line)
+# 运行结果：
+# ['First line.\n', 'Second line.\n']
+
+f.close()
+```
+
+### 7.4.从其它文件读取数据
+
+示例：读取文件中的整数，每行只有一个整数。
+
+```python
+import random
+
+f = open("./docs/python/DataStructure/code/myfile.txt", 'w')
+
+# 生成0~9整数，并写入文件
+for count in range(10):
+    f.write(str(count) + "\n")
+
+f.close()
+
+# 打开文件
+f = open("./docs/python/DataStructure/code/myfile.txt", 'r')
+
+# 依次读取文件中的数字，并求和
+theSum = 0
+for line in f:
+    line = line.strip()
+    number = int(line)
+    theSum += number
+
+print("The sum is : ", theSum)
+# 运行结果：
+# The sum is :  45
+
+f.close()
+```
+
+示例：读取文件中的整数，每行有多个整数。需要事先把下面的内容写入`myfile.txt`文件中。
+
+文件`myfile.txt`的内容。
+
+```text
+1 3 5 7 9
+2 4 6 8 10
+31 200 3000 50000
+```
+
+```python
+import random
+
+# 打开文件
+f = open("./docs/python/DataStructure/code/myfile.txt", 'r')
+
+# 依次读取文件中的数字，并求和
+theSum = 0
+for line in f:
+    lines = line.split()  # split方法会自动处理换行符
+    for word in lines:
+        number = int(word)
+        theSum += number
+
+print("The sum is : ", theSum)
+# 运行结果：
+# The sum is :  53286
+
+f.close()
+```
+
+简写上面的代码。
+
+```python
+import random
+
+f = open("./docs/python/DataStructure/code/myfile.txt", 'r')
+print("The sum is: ", sum(map(int, f.read().split())))
+# 运行结果：
+# The sum is :  53286
+
+f.close()
+```
+
+### 7.5.使用pickle读写对象
+
+在把任何对象保存到文件之前，我们可以对它进行“腌制”；在把对象从文件加载到程序中时，也可以对它进行“反腌制”。
+
+示例：
+
+- 使用pickle模块的`pickle.dump`把名为lyst的列表里的所有对象保存到名为items.dat的文件里（“腌制”）。我们不需要知道列表里有哪些类型的对象，也不需要知道有多少个对象。
+
+```python
+import pickle
+
+myList = [60, "A string object", 1977]
+
+fObj = open("./docs/python/DataStructure/code/items.dat", "wb")
+
+for item in myList:
+    pickle.dump(item, fObj)
+
+fObj.close()
+```
+
+- 使用pickle模块的`pickle.load`把items.dat的文件内容加载回程序（“反腌制”）。
+
+```python
+import pickle
+
+lyst = list()
+fileObj = open("./docs/python/DataStructure/code/items.dat", "rb")
+while True:
+    try:
+        item = pickle.load(fileObj)
+        lyst.append(item)
+    except EOFError:  # 检测已经到达文件末尾
+        fileObj.close()
+        break
+print(lyst)
+# 运行结果：
+# [60, 'A string object', 1977]
+```
 
 ## 8.创建类
 
