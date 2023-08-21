@@ -1,19 +1,19 @@
 import random
 
 def main():
-    smaller = int(input("Enter the smaller number: "))
-    larger = int(input("Enter the larger number: "))
+    smaller = int(input("输入最小值: "))
+    larger = int(input("输入最大值: "))
     myNumber = random.randint(smaller, larger)
     count = 0
     while True:
         count += 1
-        userNumber = int(input("Enter your guess: "))
+        userNumber = int(input("输入你猜的值: "))
         if userNumber < myNumber:
-            print("Too small")
+            print("你猜的太小！")
         elif userNumber > myNumber:
-            print("Too large")
+            print("你猜的太大！")
         else:
-            print("You’ve got it in", count, "tries!")
+            print("恭喜，你在第", count, "次猜对了!")
             break
 
 if __name__ == "__main__":
