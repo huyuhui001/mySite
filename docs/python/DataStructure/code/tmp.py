@@ -122,25 +122,24 @@
 # # 我是inner
 # # inner打印:  6
 
+# # 第一个定义
+# def factorial(n):
+#     """返回 n 的阶乘"""
 
-# 第一个定义
-def factorial(n):
-    """返回 n 的阶乘"""
+#     def recurse(n, product):
+#         """计算阶乘的帮助器"""
+#         print(n, product)
+#         if n == 1:
+#             return product
+#         else:
+#             return recurse(n - 1, n * product)
 
-    def recurse(n, product):
-        """计算阶乘的帮助器"""
-        if n == 1:
-            return product
-        else:
-            return recurse(n - 1, n * product)
+#     return recurse(n, 1)
 
-    return recurse(n, 1)
-
-
-f = factorial(5)
-f(5, 1)
-# 运行结果
-# 120
+# f = factorial(5)
+# # f(5, 1)
+# # 运行结果
+# # 120
 
 # # 第二个定义
 # def factorial(n, product=1):
@@ -153,3 +152,43 @@ f(5, 1)
 # print(factorial(5))
 # # 运行结果
 # # 120
+
+# oldList = [0, 1, 3, 5, 7, 9]
+# newList = []
+
+# for i in oldList:
+#     newList.append(str(i))
+
+# print(newList)
+# # ['0', '1', '3', '5', '7', '9']
+
+# oldList = [0, 1, 3, 5, 7, 9]
+# newList = []
+
+# newList = list(map(str, oldList))
+
+# print(newList)
+# # ['0', '1', '3', '5', '7', '9']
+
+oldList = [0, 1, 3, 5, 7, 9]
+newList = []
+
+for i in oldList:
+    if i > 0:
+        newList.append((str(i)))
+
+print(newList)
+# ['1', '3', '5', '7', '9']
+
+oldList = [0, 1, 3, 5, 7, 9]
+newList = []
+
+
+def isPositive(n):
+    if n > 0:
+        return True
+
+
+newList = list(filter(isPositive, oldList))
+print(newList)
+# [1, 3, 5, 7, 9]

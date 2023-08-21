@@ -746,7 +746,7 @@ Python支持完全函数式编程设计。
 - Python包含很多内置函数。
 - Python也运行创建新函数，可以使用递归，把函数作为数据进行传递和返回。
 
-### 5.1.定义函数
+### 5.1.函数定义
 
 函数定义语法：
 
@@ -780,7 +780,7 @@ def square(n):
 print(square(5))
 ```
 
-### 5.2.递归函数
+### 5.2.函数递归
 
 递归函数（recursive function）是指会调用自身的函数。
 
@@ -931,9 +931,9 @@ f()
 在上面的例子中：
 
 - `f = outer()`调用外层`outer`函数，并把结果赋值给`f`。注意，inner函数并没有被执行。
-- `f`其实就代表`inner`，指向`inner`的内存空间。通过`f()`验证了这一点，`outer`函数中的变量`a`被打印出来了。
+- `f`其实就是`inner`，指向`inner`的内存空间。通过`f()`验证了这一点，`outer`函数中的变量`a`被打印出来了。
 
-上面例子中`outer`就是闭包函数，外层函数的变量可以被内层函数调用，类似于封装的效果。内层函数不会立马被执行，当再次调用时，内层函数才会执行。
+上面例子中`outer`就是闭包函数，外层函数的变量可以被内层函数调用，类似于封装的效果。内层函数不会立刻被执行，当再次调用时，内层函数才会执行。
 
 闭包函数需要有三个条件：
 
@@ -1029,6 +1029,15 @@ f()
 下面这段代码是阶乘（factorial）递归函数的两个不同的定义。
 
 - 第一个定义使用了嵌套的辅助函数`recurse`来对所需要的参数进行递归；这里的`factorial`函数就是闭包函数。
+  - 第一步：第一次调用`factorial()`函数，即`n=5`；
+  - 第二步：第一次调用内层函数`recurse()`，但不会立刻被执行；
+  - 第三步，执行`return recurse(5, 1)`，对参数`product`初始化赋值`1`
+  - 第四步：执行`return recurse(5, 5 * 1)`，此时`n=5`，`product=1`。
+  - 第五步：执行`return recurse(4, 4 * 5)`，此时`n=4`，`product=5`。
+  - 第六步：执行`return recurse(3, 3 * 20)`，此时`n=3`，`product=20`。
+  - 第七步：执行`return recurse(2, 2 * 60)`，此时`n=2`，`product=60`。
+  - 第八步：执行`return recurse(1, 1 * 120)`，此时`n=1`，`product=120`。
+  - 第九步：此时`n=1`，执行`return product`，即`return 120`，结束。
 - 第二个定义则是为第二个参数提供了默认值，从而简化了设计。
 
 ```python
@@ -1037,19 +1046,23 @@ def factorial(n):
     """返回 n 的阶乘"""
 
     def recurse(n, product):
-        """阶乘计算的帮助器"""
+        """计算阶乘的帮助器"""
+        print(n, product)  # 插入这一句是为了能看清楚每一次递归调用的n和product变化
         if n == 1:
             return product
         else:
             return recurse(n - 1, n * product)
-
+    
     return recurse(n, 1)
 
 
-print(factorial(5))
-
+f = factorial(5)
 # 运行结果
-# 120
+5 1
+4 5
+3 20
+2 60
+1 120
 ```
 
 ```python
@@ -1065,6 +1078,85 @@ def factorial(n, product=1):
 print(factorial(5))
 # 运行结果
 # 120
+```
+
+### 5.4.高阶函数
+
+函数本身也是一种独特的数据对象。可以把它们赋给变量、存储在数据结构里、作为参数传递给其他函数以及作为其他函数的值返回。
+
+高阶函数（higher-order function）：它接收另一个函数作为参数，并且以某种方式应用该函数。
+
+Python有两个内置的高阶函数，分别是`map`和`filter`，它们可以用于处理可迭代对象。
+
+- `map`函数会接收另一个函数和一个可迭代对象作为参数，返回另一个可迭代对象。这个函数会把作为参数传递的函数应用在可迭代对象里的每个元素上。简单来说，`map`函数会对可迭代对象里的每个元素进行转换。
+- `filter`会接受一个布尔函数和一个可迭代对象作为参数，返回这样一个可迭代对象，它的每一个元素都会被传递给布尔函数，如果这个函数返回True，那么这个元素将被保留在返回的可迭代对象里；否则，这个元素将被删除。简单说，`filter`函数会把所有能够通过检验的元素保留在可迭代对象里。
+
+示例：把一个整数列表转换成另一个包含这些整数的字符串形式的列表。
+
+传统方法实现：
+
+```python
+oldList = [0, 1, 3, 5, 7, 9]
+newList = []
+
+for i in oldList:
+    newList.append(str(i))
+
+print(newList)
+# ['0', '1', '3', '5', '7', '9']
+```
+
+用`map`实现：
+
+```python
+oldList = [0, 1, 3, 5, 7, 9]
+newList = []
+
+newList = list(map(str, oldList))
+
+print(newList)
+# ['0', '1', '3', '5', '7', '9']
+```
+
+对上例进行拓展：把一个整数列表中的正整数转换成另一个包含这些整数的字符串形式的列表。
+
+传统实现：
+
+```python
+oldList = [0, 1, 3, 5, 7, 9]
+newList = []
+
+for i in oldList:
+    if i > 0:
+        newList.append((str(i)))
+
+print(newList)
+# ['1', '3', '5', '7', '9']
+```
+
+使用`filter`实现：
+
+```python
+oldList = [0, 1, 3, 5, 7, 9]
+newList = []
+
+
+def isPositive(n):
+    if n > 0:
+        return True
+
+# 创建一个不包含任何零的可迭代对象
+newList = list(filter(isPositive, oldList))
+print(newList)
+# [1, 3, 5, 7, 9]
+```
+
+### 5.5.lambda与匿名函数
+
+语法格式：
+
+```python
+lambda <argument list> : <expression>
 ```
 
 ## 6.捕获异常
