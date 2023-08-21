@@ -1521,4 +1521,87 @@ print(lyst)
 
 ## 8.创建类
 
+类（class）用来描述与一组对象有关的数据和方法。它提供了用来创建对象的蓝图，以及在对象上调用方法时所需要执行的代码。
+
+- Python里的数据类型都是类；
+- 类名按照惯例首字母应为大写样式；
+- 定义类的代码通常会被存放在首字母小写的类名的模块文件里。
+- 相关的类也可能会出现在同一个模块里。
+
+类的语法：
+
+```python
+def <class name>(<parent class name>)[2]:
+
+    <class variable assignments>
+
+    <instance method definitions>
+```
+
+父类（parent class）的名称是可选的，在默认情况下，它会是object。
+
+- 所有Python类属于一个以`object`作为根节点的层次结构。
+- 在`object`里，Python定义了几种方法：`__str__`和`__eq__`，因此所有子类会自动继承这些方法。
+
+实例方法（instance method）是在类的对象上运行的。它们包含用来访问或修改实例变量的代码。
+
+实例变量（instance variable）是指由单个对象所拥有的存储信息。
+
+类变量（class variable）是指由类的所有对象存储所有的信息。
+
+示例：解读Counter类。
+
+- `Counter`类是`object`的子类；
+- `instances`是类变量，跟踪已创建的计数器对象的数量；
+- 实例方法`__init__`也称为构造函数；这个方法用来初始化实例变量，并且对类变量进行更新；
+- `self`是指在运行时这个方法的对象本身；
+- 使用实例变量都会加上前缀`self`；和参数或临时变量不同的地方是，实例变量在类的任何方法里是可见的；
+- 其他实例方法可以分为两种：变异器（mutator）和访问器（accessor）。变异器会通过修改对象的实例变量对其内部状态进行修改或更改。访问器则只会查看或使用对象的实例变量的值，而不会去修改它们；
+- `__str__`方法将覆盖object类里的这个方法；
+- 当Python的`print`函数接收到一个参数时，这个参数的`__str__`方法将自动运行，从而得到它的字符串表达式，以便用来输出；
+- 当看到`==`运算符时，Python将运行`__eq__`方法；在`object`类里，这个方法的默认定义是运行`is`运算符。
+
+```python
+class Counter(object):
+    """Models a counter."""
+
+    # Class variable 类变量
+    instances = 0         # 跟踪已创建的计数器对象的数量
+
+    # Constructor 构造器
+    def __init__(self):
+        """Sets up the counter."""
+        Counter.instances += 1
+        self.reset()
+
+    # Mutator methods
+    def reset(self):
+        """Sets the counter to 0."""
+        self.value = 0
+
+    def increment(self, amount = 1):
+        """Adds amount to the counter."""
+        self.value += amount
+
+    def decrement(self, amount = 1):
+        """Subtracts amount from the counter."""
+        self.value -= amount
+
+    # Accessor methods
+    def getValue(self):
+        """Returns the counter's value."""
+        return self.value
+
+    def __str__(self):
+        """Returns the string representation of the counter."""
+        return str(self._value) 
+
+    def __eq__(self, other):
+        """Returns True if self equals other
+        or False otherwise."""
+        if self is other: return True
+        if type(self) != type(other): return False
+        return self.value == other.value
+```
+
 ## 9.编程项目

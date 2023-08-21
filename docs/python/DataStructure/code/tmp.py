@@ -380,22 +380,95 @@
 # fObj.close()
 
 # ===========================
-import pickle
+# import pickle
 
-lyst = list()
-fileObj = open("./docs/python/DataStructure/code/items.dat", "rb")
-while True:
-    try:
-        item = pickle.load(fileObj)
-        lyst.append(item)
-    except EOFError:  # 检测已经到达文件末尾
-        fileObj.close()
-        break
-print(lyst)
-# 运行结果：
-# [60, 'A string object', 1977]
-
-
+# lyst = list()
+# fileObj = open("./docs/python/DataStructure/code/items.dat", "rb")
+# while True:
+#     try:
+#         item = pickle.load(fileObj)
+#         lyst.append(item)
+#     except EOFError:  # 检测已经到达文件末尾
+#         fileObj.close()
+#         break
+# print(lyst)
+# # 运行结果：
+# # [60, 'A string object', 1977]
 
 
+
+# ============================
+class Counter(object):    # Counter类是object的子类
+    """Models a counter."""
+
+    # Class variable 类变量
+    instances = 0         # 跟踪已创建的计数器对象的数量
+
+    # Constructor 构造器
+    # 实例方法__init__也称为构造函数；这个方法用来初始化实例变量，并且对类变量进行更新；
+    def __init__(self):   # self是指在运行时这个方法的对象本身
+        """Sets up the counter."""
+        Counter.instances += 1
+        self.reset()
+
+    # Mutator methods
+    def reset(self):
+        """Sets the counter to 0."""
+        self.value = 0
+
+    def increment(self, amount = 1):
+        """Adds amount to the counter."""
+        self.value += amount
+
+    def decrement(self, amount = 1):
+        """Subtracts amount from the counter."""
+        self.value -= amount
+
+    # Accessor methods
+    def getValue(self):
+        """Returns the counter's value."""
+        return self.value
+
+    def __str__(self):
+        """Returns the string representation of the counter."""
+        return str(self._value) 
+
+    def __eq__(self, other):
+        """Returns True if self equals other
+        or False otherwise."""
+        if self is other: return True
+        if type(self) != type(other): return False
+        return self.value == other.value
+
+from collections import Counter
+
+from counter import Counter
+c1 = Counter()
+print(c1)
+0
+c1.getValue()
+0
+str(c1)
+'0'
+c1.increment()
+print(c1)
+1
+c1.increment(5)
+print(c1)
+6
+c1.reset()
+print(c1)
+0
+c2 = Counter()
+Counter.instances
+2
+c1 == c1
+True
+c1 == 0
+False
+c1 == c2
+True
+c2.increment()
+c1 == c2
+False
 
