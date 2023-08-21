@@ -1,474 +1,126 @@
-# =================
-# def mySum(lower, upper):
-#     """对给定的最小值到最大值之间的整数求和; lower:最小值; upper:最大值;"""
-#     result = 0
-#     while (lower <= upper):
-#         result = result + lower
-#         lower += 1
-#     return result
+"""
+- 编写一个程序，使之能够接收球体的半径（浮点数），并且可以输出球体的直径、周长、表面积以及体积。
+"""
 
-# print(mySum(1, 10))
+# PAI = 3.14
+# radius = float(input("输入球半径："))
+
+# diameter = radius * 2
+# circumference = 2 * PAI * radius
+# surfaceArea = 4 * PAI * radius ** 2
+# sphereVolume = 4 * (PAI * radius ** 3) / 3
+
+# print("球半径：", radius, "球直径：", diameter, "球表面积：", surfaceArea, "球体积：", sphereVolume)
 # # 运行结果：
-# # 55
+# # 输入球半径：3.5
+# # 球半径： 3.5 球直径： 7.0 球表面积： 153.86 球体积： 179.50333333333333
+"""
+- 员工的周工资等于小时工资乘以正常的总工作时间再加上加班工资。加班工资等于总加班时间乘以小时工资的1.5倍。
+编写一个程序，让用户可以输入小时工资、正常的总工作时间以及加班总时间，然后显示出员工的周工资。
+"""
 
-# # def mySum(lower, upper):
-# #     """对给定的最小值到最大值之间的整数求和; lower:最小值; upper:最大值;"""
-# #     if lower <= upper:
-# #         return lower + mySum(lower + 1, upper)
-# #     else:
-# #         return 0
+# hourSalary = float(input("输入小时工资（元）："))
+# totalWorkingHours = float(input("输入本周正常总工作时间（小时）："))
+# totalOvertimeHours = float(input("输入本周总加班总工作时间（小时）："))
+# weeklySalary = hourSalary * totalWorkingHours + hourSalary * totalOvertimeHours * 1.5
 
-# mySum(1, 10)
+# print("员工的周工资（元）是：", weeklySalary)
 # # 运行结果：
-# # 55
+# # 输入小时工资（元）：20
+# # 输入每周正常总工作时间（小时）：40
+# # 输入每周总加班总工作时间（小时）：10
+# # 员工的周工资（元）是： 1100.0
+"""
+- 有一个标准的科学实验：扔一个球，看看它能反弹多高。一旦确定了球的“反弹高度”，这个比值就给出了相应的反弹度指数。
+例如，如果从10ft（1ft=0.3048m）高处掉落的球可以反弹到6 ft高，那么相应的反弹度指数就是0.6；在一次反弹之后，球的总行进距离是16 ft。接下来，球继续弹跳，那么两次弹跳后的总距离应该是：10 ft + 6 ft + 6 ft + 3.6 ft = 25.6 ft。可以看到，每次连续弹跳所经过的距离是：球到地面的距离，加上这个距离乘以 0.6，这时球又弹回来了。编写一个程序，可以让用户输入球的初始高度和允许球弹跳的次数，并输出球所经过的总距离。
+"""
 
-# def mySum(lower, upper, margin=0):
-#     """对给定的最小值到最大值之间的整数求和，通过阶梯方式输出; lower:最小值; upper:最大值;"""
-#     blanks = " " * margin
-#     print(blanks, lower, upper)
+# height = float(input("输入小球初始高度（ft）："))
+# times = float(input("输入允许小球弹跳次数："))
+# distance = 0
+# traceDistance = 0
 
-#     if lower <= upper:
-#         result = lower + mySum(lower + 1, upper, margin + 4)
-#         print(blanks, result)
-#         return result
-#     else:
-#         print(blanks, 0)
-#         return 0
+# while times:
+#     distance = height + 0.6 * height
+#     traceDistance += distance
+#     height = 0.6 * height
+#     times -= 1
 
-# print(mySum(1, 5))
+# print("小球经过的总距离（ft）：", traceDistance)
 # # 运行结果：
-# #  1 5
-# #      2 5
-# #          3 5
-# #              4 5
-# #                  5 5
-# #                      6 5
-# #                      0
-# #                  5
-# #              9
-# #          12
-# #      14
-# #  15
-# # 15
-
-# # 定义inner函数
-# def inner():
-#     print('我是inner')
-
-# # 定义outer函数，outer函数调用inner函数
-# def outer():
-#     print('我是outer')
-#     inner()
-
-# outer()
-# # 运行结果：
-# # 我是outer
-# # 我是inner
-
-# 定义inner函数
-
-# # 定义outer函数，outer函数内嵌inner函数，并调用inner函数
-# def outer():
-#     print('我是outer')
-
-#     # 定义inner函数
-#     def inner():
-#         print('我是inner')
-
-#     inner()
-
-# outer()
-# # 运行结果：
-# # 我是outer
-# # 我是inner
-
-# def outer():
-#     a = 1
-#     print('我是outer')
-
-#     # 定义inner函数
-#     def inner():
-#         print('我是inner')
-#         print('inner打印: ', a)
-
-#     return inner
-
-# f = outer()
-# # 运行结果：
-# # 我是outer
-# f()
-# # 运行结果：
-# # 我是inner
-# # inner打印:  1
-
-# def outer():
-#     a = 1
-#     print('我是outer')
-
-#     # 定义inner函数
-#     def inner():
-#         nonlocal a
-#         a += 5
-#         print('我是inner')
-#         print('inner打印: ', a)
-
-#     return inner
-
-# f = outer()
-# # 运行结果：
-# # 我是outer
-# f()
-# # 运行结果：
-# # 我是inner
-# # inner打印:  6
-
-# # 第一个定义
-# def factorial(n):
-#     """返回 n 的阶乘"""
-
-#     def recurse(n, product):
-#         """计算阶乘的帮助器"""
-#         print(n, product)
-#         if n == 1:
-#             return product
-#         else:
-#             return recurse(n - 1, n * product)
-
-#     return recurse(n, 1)
-
-# f = factorial(5)
-# # f(5, 1)
-# # 运行结果
-# # 120
-
-# # 第二个定义
-# def factorial(n, product=1):
-#     """返回 n 的阶乘"""
-#     if n == 1:
-#         return product
-#     else:
-#         return factorial(n - 1, n * product)
-
-# print(factorial(5))
-# # 运行结果
-# # 120
-
-# oldList = [0, 1, 3, 5, 7, 9]
-# newList = []
-
-# for i in oldList:
-#     newList.append(str(i))
-
-# print(newList)
-# # ['0', '1', '3', '5', '7', '9']
-
-# oldList = [0, 1, 3, 5, 7, 9]
-# newList = []
-
-# newList = list(map(str, oldList))
-
-# print(newList)
-# # ['0', '1', '3', '5', '7', '9']
-
-# oldList = [0, 1, 3, 5, 7, 9]
-# newList = []
-
-# for i in oldList:
-#     if i > 0:
-#         newList.append((str(i)))
-
-# print(newList)
-# # ['1', '3', '5', '7', '9']
-
-# oldList = [0, 1, 3, 5, 7, 9]
-# newList = []
-
-# def isPositive(n):
-#     if n > 0:
-#         return True
-
-# newList = list(filter(isPositive, oldList))
-# print(newList)
-# # [1, 3, 5, 7, 9]
-
-# oldList = [0, 1, 3, 5, 7, 9]
-# newList = []
-
-# newList = list(filter(lambda i: i > 0, oldList))
-
-# print(newList)
-# # [1, 3, 5, 7, 9]
-
-# import functools
-
-# result = functools.reduce(lambda x, y: x * y, range(1, 11))
-
-# print(result)
-# # 3628800
-
-# def getYourAge(prompt):
-#     """提示用户输入一个整数，否则给出错误提示，并继续提示用户输入。"""
-#     inputStr = input(prompt)
-#     try:
-#         number = int(inputStr)
-#         return number
-#     except ValueError:
-#         print("Error in number format:", inputStr)
-#         return getYourAge(prompt)
-
-# if __name__ == "__main__":
-#     age = getYourAge("Enter your age: ")
-#     print("Your age is", age)
-
-# # 运行结果
-# # Enter your age: 3a
-# # Error in number format: 3a
-# # Enter your age: 3.5
-# # Error in number format: 3.5
-# # Enter your age: 20
-# # Your age is 20
-
-# import random
-
-# f = open("./docs/python/DataStructure/code/myfile.txt", 'w')
-
-# for count in range(500):
-#     number = random.randint(1, 500)
-#     f.write(str(number) + "\n")
-
-# f.close()
-
-# import random
-
-# f = open("./docs/python/DataStructure/code/myfile.txt", 'w')
-
-# f.write("first line.\nSecond line.\n")  # 初始化文件内容
-# f.close()
-
-# # 打开文件读取内容
-# f = open("./docs/python/DataStructure/code/myfile.txt", 'r')
-
-# text1 = f.read()  # 把文件的全部内容输入单个字符串中
-# print(text1)
-# # 运行结果：
-# # first line.
-# # Second line
-
-# text2 = f.read()  # 再次read，得到一个空字串，表述已经到达文件末尾。要再次读取需要重新打开文件
-# print("======")
-# print(text2)
-# # 运行结果：
-# # ======
-# #
-
-# f.close()
-
-# # 重新打开文件读取内容
-# f = open("./docs/python/DataStructure/code/myfile.txt", 'r')
-
-# for line in f:  # 逐行读取文件内容
-#     print("======")
-#     print(line)  # 每行都有一个换行符，这是print函数默认行为
-
-# # 运行结果：
-# # ======
-# # first line.
-
-# # ======
-# # Second line.
-# #
-
-# f.close()
-
-# # 重新打开文件读取内容
-# f = open("./docs/python/DataStructure/code/myfile.txt", 'r')
-
-# while True:
-#     line = f.readline()  # readline方法会从输入的文本里只获取一行数据，并且返回这个包含换行符的字符串。如果readline遇到了文件末尾，那么会返回空字符串。
-#     if line == "":
-#         break
-#     print("******")
-#     print(line)
-
-# # 运行结果：
-# # ******
-# # first line.
-
-# # ******
-# # Second line.
-# #
-
-# f.close()
-
-# # 重新打开文件读取内容
-# f = open("./docs/python/DataStructure/code/myfile.txt", 'r')
-
-# line = f.readlines()  # readlines方法则是读取所有行，返回的是所有行组成的列表。
-# print(line)
-# # 运行结果：
-# # ['first line.\n', 'Second line.\n']
-
-# f.close()
-
-# ========================================
-# import random
-
-# f = open("./docs/python/DataStructure/code/myfile.txt", 'w')
-
-# # 生成0~9整数，并写入文件
-# for count in range(10):
-#     f.write(str(count) + "\n")
-
-# f.close()
-
-# # 打开文件
-# f = open("./docs/python/DataStructure/code/myfile.txt", 'r')
-
-# # 依次读取文件中的数字，并求和
-# theSum = 0
-# for line in f:
-#     line = line.strip()
-#     number = int(line)
-#     theSum += number
-
-# print("The sum is : ", theSum)
-# # 运行结果：
-# # The sum is :  45
-
-# f.close()
-
-# ========================================
-# import random
-#
-# # 打开文件
-# f = open("./docs/python/DataStructure/code/myfile.txt", 'r')
-
-# # 依次读取文件中的数字，并求和
-# theSum = 0
-# for line in f:
-#     lines = line.split()  # split方法会自动处理换行符
-#     for word in lines:
-#         number = int(word)
-#         theSum += number
-
-# print("The sum is : ", theSum)
-# # 运行结果：
-# # The sum is :  53286
-
-# f.close()
-
-# ========================================
-# import random
-
-# f = open("./docs/python/DataStructure/code/myfile.txt", 'r')
-# print("The sum is: ", sum(map(int, f.read().split())))
-# # 运行结果：
-# # The sum is :  53286
-
-# f.close()
-
-# ========================================
-# import pickle
-
-# myList = [60, "A string object", 1977]
-
-# fObj = open("./docs/python/DataStructure/code/items.dat", "wb")
-
-# for item in myList:
-#     pickle.dump(item, fObj)
-
-# fObj.close()
-
-# ===========================
-# import pickle
-
-# lyst = list()
-# fileObj = open("./docs/python/DataStructure/code/items.dat", "rb")
-# while True:
-#     try:
-#         item = pickle.load(fileObj)
-#         lyst.append(item)
-#     except EOFError:  # 检测已经到达文件末尾
-#         fileObj.close()
-#         break
-# print(lyst)
-# # 运行结果：
-# # [60, 'A string object', 1977]
-
-
-
-# ============================
-class Counter(object):    # Counter类是object的子类
-    """Models a counter."""
-
-    # Class variable 类变量
-    instances = 0         # 跟踪已创建的计数器对象的数量
-
-    # Constructor 构造器
-    # 实例方法__init__也称为构造函数；这个方法用来初始化实例变量，并且对类变量进行更新；
-    def __init__(self):   # self是指在运行时这个方法的对象本身
-        """Sets up the counter."""
-        Counter.instances += 1
-        self.reset()
-
-    # Mutator methods
-    def reset(self):
-        """Sets the counter to 0."""
-        self.value = 0
-
-    def increment(self, amount = 1):
-        """Adds amount to the counter."""
-        self.value += amount
-
-    def decrement(self, amount = 1):
-        """Subtracts amount from the counter."""
-        self.value -= amount
-
-    # Accessor methods
-    def getValue(self):
-        """Returns the counter's value."""
-        return self.value
-
-    def __str__(self):
-        """Returns the string representation of the counter."""
-        return str(self._value) 
-
-    def __eq__(self, other):
-        """Returns True if self equals other
-        or False otherwise."""
-        if self is other: return True
-        if type(self) != type(other): return False
-        return self.value == other.value
-
-from collections import Counter
-
-from counter import Counter
-c1 = Counter()
-print(c1)
-0
-c1.getValue()
-0
-str(c1)
-'0'
-c1.increment()
-print(c1)
-1
-c1.increment(5)
-print(c1)
-6
-c1.reset()
-print(c1)
-0
-c2 = Counter()
-Counter.instances
-2
-c1 == c1
-True
-c1 == 0
-False
-c1 == c2
-True
-c2.increment()
-c1 == c2
-False
-
+# # 输入小球初始高度（ft）：50
+# # 输入允许小球弹跳次数：5
+# # 小球经过的总距离（ft）： 184.448
+# # 输入小球初始高度（ft）：100
+# # 输入允许小球弹跳次数：10
+# # 小球经过的总距离（ft）： 397.58135296000006
+"""
+- 德国数学家Gottfried Leibniz发明了下面这个用来求π的近似值的方法：`π/4 = 1 - 1/3 + 1/5 - 1/7 + ......`，请编写一个程序，让用户可以指定这个近似值所使用的迭代次数，并且显示出结果。
+"""
+
+n = int(input("输入迭代次数："))
+mySum = 0
+
+while n:
+    mySum += 1 / (2 * n - 1) * ((-1)**(n + 1))
+    n -= 1
+
+print("π的近似值是：", mySum * 4)
+# 运行结果：
+# 输入迭代次数：5
+# π的近似值是： 3.33968253968254
+# 输入迭代次数：10
+# π的近似值是： 3.0418396189294024
+# 输入迭代次数：20
+# π的近似值是： 3.0916238066678385
+# 输入迭代次数：10000000
+# π的近似值是： 3.1415925535897933
+"""
+- TidBit计算机商店有购买计算机的信贷计划：首付10%，年利率为12%，每月所付款为购买价格减去首付之后的5%。编写一个以购买价格为输入的程序，可以输出一个有适当标题的表格，显示贷款期限内的付款计划。表的每一行都应包含下面各项：
+
+- 月数（以1开头）；
+- 当前所欠的余额；
+- 当月所欠的利息；
+- 当月所欠的本金；
+- 当月所需付款金额；
+- 付款之后所欠的金额。
+一个月的利息等于余额 × 利率/12；一个月所欠的本金等于当月还款额减去所欠的利息。
+"""
+"""
+- 财务部门在文本文件里保存了所有员工在每个工资周期里的信息列表。文件中每一行的格式为`<last name> <hourly wage> <hours worked>`。请编写一个程序，让用户可以输入文件的名称，并在终端上打印出给定时间内支付给每个员工的工资报告。这个报告是一个有合适标题的表，其中每行都应该包含员工的姓名、工作时长以及给定时间内所支付的工资。
+"""
+"""
+- 统计学家希望使用一组函数计算数字列表的中位数（median）和众数（mode）。中位数是指如果对列表进行排序将会出现在列表中点的数字，众数是指列表中最常出现的数字。把这些功能定义在名叫stats.py的模块中。除此之外，模块还应该包含一个名叫mean的函数，用来计算一组数字的平均值。每个函数都会接收一个数字列表作为参数，并返回一个数字。
+"""
+"""
+- 编写程序，让用户可以浏览文件里的文本行。这个程序会提示用户输入文件名，然后把文本行都输入列表。接下来，这个程序会进入一个循环，在这个循环里打印出文件的总行数，并提示用户输入行号。这个行号的范围应当是1到文件的总行数。如果输入是0，那么程序退出；否则，程序将打印出行号所对应的文本行。
+"""
+"""
+- 在本章讨论的numberguess程序里，计算机会“构思”一个数字，而用户则输入猜测的值，直到猜对为止。编写这样一个程序，使其可以调换这两个角色，也就是：用户去“构思”一个数字，然后计算机去计算并输出猜测的值。和前面那个游戏版本一样，当计算机猜错时，用户必须给出相应的提示，例如“<”和“>”（分别代表“我的数字更小”和“我的数字更大”）。当计算机猜对时，用户应该输入“=”。用户需要在程序启动的时候输入数字的下限和上限。计算机应该在最多`[log2(high−low)+1]`次猜测里找到正确的数字。程序应该能够跟踪猜测次数，如果猜测错误的次数到了允许猜测的最大值但还没有猜对，就输出消息“You're cheating！”。下面是和这个程序进行交互的示例：
+
+```python
+Enter the smaller number: 1
+Enter the larger number: 100
+Your number is 50
+Enter =, <, or >: >
+Your number is 75
+Enter =, <, or >: <
+Your number is 62
+Enter =, <, or >: <
+Your number is 56
+Enter =, <, or >: =
+Hooray, I've got it in 4 tries!
+```
+"""
+"""
+- 有一个简单的课程管理系统，它通过使用名字和一组考试分数来模拟学生的信息。这个系统应该能够创建一个具有给定名字和分数（起初均为0）的学生对象。系统应该能够访问和替换指定位置处的分数（从0开始计数）、得到学生有多少次考试、得到的最高分、得到的平均分以及学生的姓名。除此之外，在打印学生对象的时候，应该像下面这样显示学生的姓名和分数：
+
+```python
+Name: Ken Lambert
+Score 1: 88
+Score 2: 77
+Score 3: 100
+```
+
+请定义一个支持这些功能和行为的Student类，并且编写一个创建Student对象并运行其方法的简短的测试函数。
+"""
