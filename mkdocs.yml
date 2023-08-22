@@ -194,6 +194,7 @@ nav:
     - Python建模库介绍: python/DataAnalysis/ch11.md
   - 数据结构和算法:
     - 基础知识回顾: python/DataStructure/01_PythonFundmantal.md
+    - 多项集的概述: python/DataStructure/02_CollectionsOverview.md
   - Demos:
     - 选课系统: python/Demo/CourseSystem.md
 
