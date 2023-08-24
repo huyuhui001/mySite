@@ -285,7 +285,7 @@ help(str)
 
 ```python
 # 使用 dir() 函数列出列表类型的所有方法和属性
-dir(list)
+dir(list)x
 
 # 使用 help() 函数获取关于列表类型的详细信息
 help(list)
