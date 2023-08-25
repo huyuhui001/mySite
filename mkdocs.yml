@@ -195,6 +195,7 @@ nav:
   - 数据结构和算法:
     - 基础知识回顾: python/DataStructure/01_PythonFundmantal.md
     - 多项集的概述: python/DataStructure/02_CollectionsOverview.md
+    - 搜索、排序以及复杂度分析: python/DataStructure/03_TimeComplexity.md
   - Demos:
     - 选课系统: python/Demo/CourseSystem.md
 
