@@ -561,11 +561,87 @@ Python中有`min`函数，会返回列表里的最小值或最小元素，下面
 - 如果找到，那么把最小元素的位置重置为当前位置；
 - 当算法到达列表末尾时，它将返回最小元素的位置。
 
-如下所示为函数indexOfMin里实现这个算法的代码。
+算法实现：
+
+```python
+def indexOfMin(lyst):
+    """返回最小元素的索引，相同最小元素返回第一个索引"""
+    
+    # 算法开始
+    minIndex = 0
+    currentIndex = 1
+
+    while currentIndex < len(lyst):
+        if lyst[currentIndex] < lyst[minIndex]: # 改成<=，相同最小元素则返回最后一个索引
+            minIndex = currentIndex
+        currentIndex += 1
+    return minIndex
+    # 算法结束
+
+def main():
+    myList = [2, 20, 5, 0 , 1, 0, 9]
+    minIndex = indexOfMin(myList)
+    print(minIndex, myList[minIndex])
+
+if __name__ == "__main__":
+    main()
+
+# 运算结果：
+# 3 0
+
+# 如果改成改成yst[currentIndex] <= lyst[minIndex]，则相同最小元素则返回最后一个索引
+# 5 0
+```
+
+无论列表的大小如何，循环外的3条指令（2条赋值语句，一条while语句本身）都会执行相同的次数，可以忽略它们都影响。
+
+循环里还有3条指令，其中`if`语句内的比较`lyst[currentIndex] < lyst[minIndex]`和`currentIndex += 1`的自增，会在每次循环时都执行，且没有其它嵌套或隐藏的循环。`if`语句中的比较操作实现了访问列表里的每个元素，从而能够找到最小元素的位置。
+
+因此，这个算法必须对大小为`n`的列表进行`n-1`次比较，即，它的复杂度为O(n)。
 
 ### 3.3.2.顺序搜索列表
 
+Python的`in`运算符在list类里被实现为叫作`__contains__`的方法，这个方法会在任意的元素列表里搜索特定的元素，即目标元素（target item）。
+
+在列表里，找到目标元素的唯一方法是从位于第一个位置的元素开始，并把它和目标元素进行比较。如果两个元素相等，那么这个方法返回`True`；否则，这个方法将移动到下一个位置，并把它和目标元素进行比较。如果这个方法到了最后一个位置仍然找不到目标，那么返回`False`。这种搜索称为顺序搜索（sequential search）或线性搜索（linear search）。
+
+下面是顺序搜索函数的实现。若顺序搜索算法在列表开头就找到目标元素，那么这时的工作量明显会比在列表末尾找到的工作量要少。
+
+```python
+def sequentialSearch(target, lyst):
+    """找到目标元素时返回元素的索引, 否则返回-1"""
+    position = 0
+    while position < len(lyst):
+        if target == lyst[position]:
+             return position
+        position += 1
+    return -1
+
+
+def main():
+    myList = [2, 20, 5, 0 , 1, 0, 9]
+    locatedIndex = sequentialSearch(9, myList)
+    print(locatedIndex, myList[locatedIndex])
+
+
+if __name__ == "__main__":
+    main()
+
+# 运算结果：
+# 6 9
+```
+
 ### 3.3.3.最好情况、最坏情况以及平均情况下的性能
+
+一般来说，重点关注在平均情况和最坏情况下的性能，不会特别关注最好情况。
+
+对顺序搜索的分析需要考虑下面3种情况。
+
+- 在最坏情况下，目标元素位于列表的末尾或者根本就不在列表里。这时，这个算法就必须访问每一个元素，对大小为`n`的列表需要执行`n`次迭代。因此，顺序搜索的最坏情况的复杂度为O(n)。
+- 在最好情况下，只需要O(1)的复杂度，因为这个算法在一次迭代之后就会在第一个位置找到目标元素。
+- 要确定平均情况，就需要把每个可能位置找到目标所需要的迭代次数相加，然后再将它们的总和除以`n`。因此，这种情况下，算法会执行`(n + n−1 + n−2+ ... +1)/n`或`(n+1)/2`次迭代。对于非常大的`n`来说，常数系数2是可以忽略的，因此，平均情况的复杂度仍然是O(2)。
+
+结论：最好情况下顺序搜索的性能和其他两种情况比起来小很多，而其他两种情况下的性能是差不多的。
 
 ### 3.3.4.基于有序列表的二分搜索
 
