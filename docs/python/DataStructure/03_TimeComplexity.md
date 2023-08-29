@@ -646,18 +646,122 @@ if __name__ == "__main__":
 ### 3.3.4.基于有序列表的二分搜索
 
 在数据无序的情况下，使用顺序搜索来找到目标元素。
-在数据有序的情况下，就可以使用二分搜索了。
+在数据有序的情况下，使用二分搜索来找到目标元素。
+
+Python中实现二分搜索的思路：
+
+- 假设列表里的元素都以升序排序。
+- 搜索算法首先到列表的中间位置，并把这个位置的元素与目标元素进行比较；
+- 如果匹配，那么算法就返回当前位置。如果目标元素小于当前元素，那么算法将会搜索中间位置之前的部分；
+- 如果目标元素大于当前元素，则搜索中间位置之后的部分。
+- 在找到了目标元素或者当前开始位置大于当前结束位置时，停止搜索过程。
+
+下面是二分搜索函数的代码。
+
+以列表`[2, 20, 5, 0, 1, 0, 9]`为例：
+
+- 排序后的列表为`[0, 0, 1, 2, 5, 9, 20]`；
+- 排序后列表长度是7，所以初始midpoint=3，对应列表值是2；
+-
+
+```python
+def binarySearch(target, sortedLyst):
+    left = 0
+    right = len(sortedLyst) - 1
+    while left <= right:
+        midpoint = (left + right) // 2
+        if target == sortedLyst[midpoint]:
+            return midpoint
+        elif target < sortedLyst[midpoint]:
+            right = midpoint - 1
+        else:
+            left = midpoint + 1
+    return -1
 
 
+def main():
+    myList = [2, 20, 5, 0, 1, 0, 9]
+    sortedList = sorted(myList)  # 如果使用myList.sort()，则会修改myList本身
+    locatedIndex = binarySearch(5, sortedList)
+    print(sortedList)
+    print(locatedIndex, sortedList[locatedIndex])
 
 
+if __name__ == "__main__":
+    main()
 
+# 运算结果：
+# [0, 0, 1, 2, 5, 9, 20]
+# 4 5
 
+# 如果执行binarySearch(0, sortedList)，则会返回第二个0的索引
+# [0, 0, 1, 2, 5, 9, 20]
+# 1 0
+```
 
+上面二分法算法复杂度分析：
 
+- 算法里只有一个循环，并且没有嵌套或隐藏的循环。如果目标不在列表里，就会得到最坏情况，即遍历列表的一半，即循环列表大小不断除以2直至商为1的次数。
+- 对于大小为`n`的列表来说，也就是你需要执行`n/2/2/.../2`次，直到结果为1。假设`k`是`n`可以除以2的次数，那么求解`k`会有`n/(2^k)=1`，即`n=2^k`，即`k=log(n,2)`。因此，二分搜索在最坏情况下的复杂度为O(log(n,2))。
 
+![二分法搜索](./assets/binarySearch.png)
 
 ### 3.3.5.比较数据元素
+
+二分搜索和最小值搜索都有一个假设，那就是“列表里的元素彼此之间是可以比较的”。即，这些元素属于同一个类型，即，可以使用比较运算符`==`、`<`和`>`。
+
+Python内置的类型对象，如数字、字符串和列表，都支持比较运算符。
+
+为了能够让算法对新的类对象使用比较运算符`==`、`<`和`>`，应该在这个类里定义`__eq__`、`__lt__`和`__gt__`方法。在定义了这些方法之后，其他比较运算符的方法将自动生成。
+
+例如，`__lt__`的定义如下，如果`self`小于`other`，那么这个方法将返回`True`；否则，返回`False`。
+
+```python
+def __lt__(self, other):
+```
+
+示例：
+
+```python
+class SavingsAccount(object):
+    """返回储蓄账户的所有人名字、PIN码、余额"""
+
+    def __init__(self, name, pin, balance=0.0):
+        self.name = name
+        self.pin = pin
+        self.balance = balance
+
+    def __lt__(self, other):
+        return self.name < other.name
+
+    # Other methods, including __eq__
+
+
+def main():
+    s1 = SavingsAccount("Ken", "1001", 0)
+    s2 = SavingsAccount("Bill", "1001", 30)
+    s3 = SavingsAccount("Ken", "1000", 0)
+    s4 = s1
+
+    print("s1 < s2: ", s1 < s2)
+    print("s2 < s1: ", s2 < s1)
+    print("s2 > s1: ", s2 > s1)
+    print("s2 == s1: ", s2 == s1)
+    print("s1 == s3: ", s1 == s3)
+    print("s1 == s4: ", s1 == s4)
+
+
+if __name__ == "__main__":
+    main()
+
+# 运算结果：
+# s1 < s2:  False
+# s2 < s1:  True
+# s2 > s1:  False
+# s2 == s1:  False
+# s1 == s3:  False
+# s1 == s4:  True
+```
 
 ### 3.3.6.练习题
 
