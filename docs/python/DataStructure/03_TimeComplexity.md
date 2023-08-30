@@ -770,7 +770,144 @@ if __name__ == "__main__":
 
 1. 假设一个列表在索引0～9的位置处包含值20、44、48、55、62、66、74、88、93、99，请在用二分搜索查找目标元素90的时候，对变量left、right和midpoint的值进行跟踪。改变目标元素为44，并重复这个步骤。
 
+   解答：
+   
+   下面是代码和跟踪结果。
+
+   ```python
+   def binarySearch(target, sortedLyst):
+       left = 0
+       right = len(sortedLyst) - 1
+       print("%5s%10s%10s" % ("left", "midpoint", "right"))
+       while left <= right:
+           midpoint = (left + right) // 2
+           print("%5s%10s%10s" % (left, midpoint, right))
+           if target == sortedLyst[midpoint]:
+               return midpoint
+           elif target < sortedLyst[midpoint]:
+               right = midpoint - 1
+           else:
+               left = midpoint + 1
+       return -1
+   
+   
+   def main():
+       myList = [20, 44, 48, 55, 62, 66, 74, 88, 93, 99]
+       sortedList = sorted(myList)
+       locatedIndex = binarySearch(44, sortedList)
+   
+   
+   if __name__ == "__main__":
+       main()
+   
+   # 运算结果：
+   # Target = 90
+   #  left  midpoint     right
+   #     0         4         9
+   #     5         7         9
+   #     8         8         9
+   # 
+   # Target = 44
+   #  left  midpoint     right
+   #     0         4         9
+   #     0         1         3
+   ```
+
 2. 通常来说，查找电话簿中条目的方法与二分搜索并不完全相同，因为使用电话簿的时候，并不会每次都翻到被搜索的子列表的中点。一般来说，可以根据这个人的姓氏的第一个字母顺序来估算目标可能会在的位置。例如，当查找“Smith”的电话时，你会首先查看电话簿下半部分的中间，而不是整个电话簿的中间。请对二分搜索算法尝试进行修改，从而可以在处理名称列表的时候模拟这个策略。它的计算复杂度与标准的二分搜索相比较会更好吗？
+
+   解答：
+   
+   下面是代码和追踪结果。
+
+   在搜索的第一轮中，中间位置将取决于列表的大小和目标名字的第一个字母的顺序值。因此，第一轮搜索将消除比以前更多的元素，并且如果需要其他轮搜索，它们的搜索空间也会更小。然而，在最坏   情况下，修改后的算法仍然比O(1)更接近O(log n)。
+
+   ```python
+   def binarySearch(target, sortedLyst):
+       left = 0
+       right = len(sortedLyst) - 1
+   
+       print("%5s%10s%10s" % ("left", "midpoint", "right"))
+   
+       while left <= right:
+           midpoint = (left + right) // 2
+   
+           print("%5s%10s%10s" % (left, midpoint, right))
+   
+           if target == sortedLyst[midpoint]:
+               return midpoint
+           elif target < sortedLyst[midpoint]:
+               right = midpoint - 1
+           else:
+               left = midpoint + 1
+   
+       return -1
+   
+   
+   def dictSearch(target, sortedLyst):
+       left = 0
+       right = len(sortedLyst) - 1
+   
+       print("%5s%10s%10s" % ("left", "midpoint", "right"))
+   
+       while left <= right:
+           midpoint = (left + right) // 2
+           current_name = sortedLyst[midpoint]
+   
+           print("%5s%10s%10s" % (left, midpoint, right))
+   
+           # 按首字母移动
+           if current_name[0] == target[0]:  # 比较名字的首字母
+               # 比较名字后续字母
+               if current_name == target:
+                   return midpoint
+               elif current_name < target:
+                   left = midpoint + 1
+               else:
+                   right = midpoint - 1
+           elif current_name[0] < target[0]:
+               left = midpoint + 1
+           else:
+               right = midpoint - 1
+   
+       return -1
+   
+   
+   def main():
+       myList = [
+           "Bob", "Charlie", "Eva", "Alice", "Grace", "David", "Smith", "Frank", "Zoe", "Jack"
+       ]
+       sortedList = sorted(myList)
+   
+       print("call binarySearch")
+       locatedIndex = binarySearch("Smith", sortedList)
+       print(sortedList)
+       print(locatedIndex, sortedList[locatedIndex])
+   
+       print("call dictSearch")
+       locatedIndex = dictSearch("Smith", sortedList)
+       print(sortedList)
+       print(locatedIndex, sortedList[locatedIndex])
+   
+   
+   if __name__ == "__main__":
+       main()
+   
+   # 运算结果：
+   # call binarySearch
+   #  left  midpoint     right
+   #     0         4         9
+   #     5         7         9
+   #     8         8         9
+   # ['Alice', 'Bob', 'Charlie', 'David', 'Eva', 'Frank', 'Grace', 'Jack', 'Smith', 'Zoe']
+   # 8 Smith
+   # call dictSearch
+   #  left  midpoint     right
+   #     0         4         9
+   #     5         7         9
+   #     8         8         9
+   # ['Alice', 'Bob', 'Charlie', 'David', 'Eva', 'Frank', 'Grace', 'Jack', 'Smith', 'Zoe']
+   # 8 Smith
+   ```
 
 ## 3.4.基本的排序算法
 
