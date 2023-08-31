@@ -815,11 +815,9 @@ if __name__ == "__main__":
 
 2. 通常来说，查找电话簿中条目的方法与二分搜索并不完全相同，因为使用电话簿的时候，并不会每次都翻到被搜索的子列表的中点。一般来说，可以根据这个人的姓氏的第一个字母顺序来估算目标可能会在的位置。例如，当查找“Smith”的电话时，你会首先查看电话簿下半部分的中间，而不是整个电话簿的中间。请对二分搜索算法尝试进行修改，从而可以在处理名称列表的时候模拟这个策略。它的计算复杂度与标准的二分搜索相比较会更好吗？
 
-   解答：
+   解答：下面是代码和追踪结果。通过对比不同权重单词到的搜索，可以发现权重二分法的效率若要优于传统二分法，是需要满足一定的条件的。
 
-   下面是代码和追踪结果。
-
-   在搜索的第一轮中，中间位置将取决于列表的大小和目标名字的第一个字母的顺序值。因此，第一轮搜索将消除比以前更多的元素，并且如果需要其他轮搜索，它们的搜索空间也会更小。然而，在最坏   情况下，修改后的算法仍然比O(1)更接近O(log n)。
+   在搜索的第一轮中，中间位置将取决于列表的大小和目标名字的第一个字母的顺序值。因此，第一轮搜索将消除比以前更多的元素，并且如果需要其他轮搜索，它们的搜索空间也会更小。然而，在最坏情况下，修改后的算法仍然比O(1)更接近O(log n)。
 
    ```python
    def binarySearch(target, sortedLyst):
@@ -843,70 +841,118 @@ if __name__ == "__main__":
        return -1
    
    
+   def letter_position(myLetter):
+       letter = myLetter.lower()  # 转成小写字母
+       alphabet = "abcdefghijklmnopqrstuvwxyz"
+   
+       if letter in alphabet:
+           return alphabet.index(letter) + 1  # 位置按1～26计算
+       else:
+           return None  # 非字母
+   
+   
    def dictSearch(target, sortedLyst):
        left = 0
        right = len(sortedLyst) - 1
    
+       # 首字母在字母表中的百分位
+       letter_position_range = letter_position(target[0]) * 100 // 26
+       # 按照所得的首字母在字母表中的百分位，作为给定字串中设定搜索起始百分位
+       midpoint = letter_position_range * (len(sortedLyst) - 1) // 100
+   
        print("%5s%10s%10s" % ("left", "midpoint", "right"))
    
        while left <= right:
-           midpoint = (left + right) // 2
-           current_name = sortedLyst[midpoint]
-   
            print("%5s%10s%10s" % (left, midpoint, right))
    
-           # 按首字母移动
-           if current_name[0] == target[0]:  # 比较名字的首字母
-               # 比较名字后续字母
-               if current_name == target:
-                   return midpoint
-               elif current_name < target:
-                   left = midpoint + 1
-               else:
-                   right = midpoint - 1
-           elif current_name[0] < target[0]:
-               left = midpoint + 1
-           else:
+           if target == sortedLyst[midpoint]:
+               return midpoint
+           elif target < sortedLyst[midpoint]:
                right = midpoint - 1
+           else:
+               left = midpoint + 1
+   
+           midpoint = (left + right) // 2
    
        return -1
    
    
    def main():
        myList = [
-           "Bob", "Charlie", "Eva", "Alice", "Grace", "David", "Smith", "Frank", "Zoe", "Jack"
+           "Bob", "Charlie", "Eva", "Alice", "Grace", "David", "Smith", "Frank",
+           "Zoe", "Jack"
        ]
        sortedList = sorted(myList)
-   
-       print("call binarySearch")
-       locatedIndex = binarySearch("Smith", sortedList)
        print(sortedList)
-       print(locatedIndex, sortedList[locatedIndex])
    
-       print("call dictSearch")
-       locatedIndex = dictSearch("Smith", sortedList)
-       print(sortedList)
-       print(locatedIndex, sortedList[locatedIndex])
+       print("=====call binarySearch=====")
+       locatedIndex = binarySearch("Alice", sortedList)
+       print("Found", sortedList[locatedIndex], "in position", locatedIndex)
+   
+       print("=====call dictSearch=====")
+       locatedIndex = dictSearch("Alice", sortedList)
+       print("Found", sortedList[locatedIndex], "in position", locatedIndex)
    
    
    if __name__ == "__main__":
        main()
    
    # 运算结果：
-   # call binarySearch
+   # 搜索Alice
+   # ['Alice', 'Bob', 'Charlie', 'David', 'Eva', 'Frank', 'Grace', 'Jack', 'Smith', 'Zoe']
+   # =====call binarySearch=====
+   #  left  midpoint     right
+   #     0         4         9
+   #     0         1         3
+   #     0         0         0
+   # Found Alice in position 0
+   # =====call dictSearch=====
+   #  left  midpoint     right
+   #     0         0         9
+   # Found Alice in position 0
+   
+   # 搜索Bob
+   # ['Alice', 'Bob', 'Charlie', 'David', 'Eva', 'Frank', 'Grace', 'Jack', 'Smith', 'Zoe']
+   # =====call binarySearch=====
+   #  left  midpoint     right
+   #     0         4         9
+   #     0         1         3
+   # Found Bob in position 1
+   # =====call dictSearch=====
+   #  left  midpoint     right
+   #     0         0         9
+   #     1         5         9
+   #     1         2         4
+   #     1         1         1
+   # Found Bob in position 1
+   
+   # 搜索Smith
+   # ['Alice', 'Bob', 'Charlie', 'David', 'Eva', 'Frank', 'Grace', 'Jack', 'Smith', 'Zoe']
+   # =====call binarySearch=====
    #  left  midpoint     right
    #     0         4         9
    #     5         7         9
    #     8         8         9
+   # Found Smith in position 8
+   # =====call dictSearch=====
+   #  left  midpoint     right
+   #     0         6         9
+   #     7         8         9
+   # Found Smith in position 8
+   
+   # 搜索Zoe
    # ['Alice', 'Bob', 'Charlie', 'David', 'Eva', 'Frank', 'Grace', 'Jack', 'Smith', 'Zoe']
-   # 8 Smith
-   # call dictSearch
+   # =====call binarySearch=====
    #  left  midpoint     right
    #     0         4         9
    #     5         7         9
    #     8         8         9
-   # ['Alice', 'Bob', 'Charlie', 'David', 'Eva', 'Frank', 'Grace', 'Jack', 'Smith', 'Zoe']
-   # 8 Smith
+   #     9         9         9
+   # Found Zoe in position 9
+   # =====call dictSearch=====
+   #  left  midpoint     right
+   #     0         9         9
+   # Found Zoe in position 9
    ```
 
 ## 3.4.基本的排序算法
