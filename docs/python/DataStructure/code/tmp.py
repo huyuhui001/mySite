@@ -1,4 +1,4 @@
-import random
+# from array import Array
 
 
 def swap(lyst, i, j):
@@ -8,80 +8,59 @@ def swap(lyst, i, j):
     lyst[j] = temp
 
 
-def quicksort(lyst):
-    # left的初始值是0
-    # right的初始值是列表长度减1
-    quicksortHelper(lyst, 0, len(lyst) - 1)
+def mergeSort(lyst):
+    # lyst        list being sorted
+    # copyBuffer temporary space needed during merge
+    copyBuffer = Array(len(lyst))
+    mergeSortHelper(lyst, copyBuffer, 0, len(lyst) - 1)
 
 
-def quicksortHelper(lyst, left, right):
-    print(lyst)
-    if left < right:
-        pivotLocation = partition(lyst, left, right)
-        quicksortHelper(lyst, left, pivotLocation - 1)
-        quicksortHelper(lyst, pivotLocation + 1, right)
+def mergeSortHelper(lyst, copyBuffer, low, high):
+    # lyst        list being sorted
+    # copyBuffer  temp space needed during merge
+    # low, high   bounds of sublist
+    # middle      midpoint of sublist
+    if low < high:
+        middle = (low + high) // 2
+        mergeSortHelper(lyst, copyBuffer, low, middle)
+        mergeSortHelper(lyst, copyBuffer, middle + 1, high)
+        merge(lyst, copyBuffer, low, middle, high)
 
 
-def partition(lyst, left, right):
-    """对列表进行分区"""
-    # 找到基准元素（pivot），并和最后一个元素互换
-    middle = (left + right) // 2
-    pivot = lyst[middle]
-    lyst[middle] = lyst[right]
-    lyst[right] = pivot
+def merge(lyst, copyBuffer, low, middle, high):
+    # lyst          list that is being sorted
+    # copyBuffer    temp space needed during the merge process
+    # low           beginning of first sorted sublist
+    # middle        end of first sorted sublist
+    # middle + 1    beginning of second sorted sublist
+    # high          end of second sorted sublist
+    # Initialize i1 and i2 to the first items in each sublist
+    i1 = low
+    i2 = middle + 1
+    # Interleave items from the sublists into the
+    # copyBuffer in such a way that order is maintained.
+    for i in range(low, high + 1):
+        if i1 > middle:
+            copyBuffer[i] = lyst[i2]  # First sublist exhausted
+            i2 += 1
+        elif i2 > high:
+            copyBuffer[i] = lyst[i1]  # Second sublist exhausted
+            i1 += 1
+        elif lyst[i1] < lyst[i2]:
+            copyBuffer[i] = lyst[i1]  # Item in first sublist <
+            i1 += 1
+        else:
+            copyBuffer[i] = lyst[i2]  # Item in second sublist <
+            i2 += 1
+    for i in range(low, high + 1):  # Copy sorted items back to
+        lyst[i] = copyBuffer[i]  # proper position in lyst
 
-    # 设定边界元素（boundary point），初始是第一个元素
-    boundary = left
-    print("pivot: ", pivot, "boundary: ", lyst[boundary])
 
-    # 把所有小于基准的元素都移动到边界的左边
-    for index in range(left, right):
-        if lyst[index] < pivot:
-            swap(lyst, index, boundary)
-            boundary += 1
-    
-    # 交换基准元素和边界元素
-    swap(lyst, right, boundary)
-    print(lyst)
-    return boundary
-
-
-def main(size=20, sort=quicksort):
-    # lyst = []
-    # for count in range(size):
-    #     lyst.append(random.randint(1, size + 1))
+def main():
     lyst = [12, 19, 17, 18, 14, 11, 15, 13, 16]
-    # print(lyst)
-    sort(lyst)
-    # print(lyst)
-
+    mergeSort(lyst)
 
 if __name__ == "__main__":
     main()
 
 # 运行结果：
-# [12, 19, 17, 18, 14, 11, 15, 13, 16]
-# pivot:  14 boundary:  12
-# [12, 11, 13, 14, 16, 19, 15, 17, 18]
-# [12, 11, 13, 14, 16, 19, 15, 17, 18]
-# pivot:  11 boundary:  12
-# [11, 13, 12, 14, 16, 19, 15, 17, 18]
-# [11, 13, 12, 14, 16, 19, 15, 17, 18]
-# [11, 13, 12, 14, 16, 19, 15, 17, 18]
-# pivot:  13 boundary:  12
-# [11, 12, 13, 14, 16, 19, 15, 17, 18]
-# [11, 12, 13, 14, 16, 19, 15, 17, 18]
-# [11, 12, 13, 14, 16, 19, 15, 17, 18]
-# [11, 12, 13, 14, 16, 19, 15, 17, 18]
-# pivot:  15 boundary:  16
-# [11, 12, 13, 14, 15, 19, 18, 17, 16]
-# [11, 12, 13, 14, 15, 19, 18, 17, 16]
-# [11, 12, 13, 14, 15, 19, 18, 17, 16]
-# pivot:  18 boundary:  19
-# [11, 12, 13, 14, 15, 16, 17, 18, 19]
-# [11, 12, 13, 14, 15, 16, 17, 18, 19]
-# pivot:  16 boundary:  17
-# [11, 12, 13, 14, 15, 16, 17, 18, 19]
-# [11, 12, 13, 14, 15, 16, 17, 18, 19]
-# [11, 12, 13, 14, 15, 16, 17, 18, 19]
-# [11, 12, 13, 14, 15, 16, 17, 18, 19]
