@@ -68,7 +68,7 @@ extra_css: [extra.css]
 
 nav:
 - UPSkilling: 
-  - Welcome: index.md
+  - Index: index.md
   - About: about.md
 - Linux:
   - Index: linux/index.md
