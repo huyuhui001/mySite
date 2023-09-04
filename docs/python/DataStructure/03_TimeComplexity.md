@@ -1520,22 +1520,9 @@ def main(size=20, sort=quicksort):
 
 #### 3.5.2.1.合并过程的实现
 
-合并过程用到一个与列表大小相同的数组，这个数组可以把它称为`copyBuffer`。
+合并过程用到一个与列表大小相同的数组，这个数组可以把它称为`copyBuffer`。为了避免每次调用`merge`时都要为`copyBuffer`的分配和释放产生开销，这个缓冲区会在`mergeSort`函数里就分配好，然后作为参数传递给`mergeSortHelper`和`merge`函数。每次调用`mergeSortHelper`函数时，它还需要知道应该使用的子列表的范围。这个范围可以由另外两个参数`low`和`high`来提供。具体参考`mergeSort`函数的代码。
 
-为了避免每次调用`merge`时都要为`copyBuffer`的分配和释放产生开销，这个缓冲区会在`mergeSort`函数里就分配好，然后作为参数传递给`mergeSortHelper`和`merge`函数。
-
-每次调用`mergeSortHelper`函数时，它还需要知道应该使用的子列表的范围。这个范围可以由另外两个参数`low`和`high`来提供。
-
-具体可以参考`mergeSort`函数的代码。
-
-
-
-
-
-
-
-
-
+在检查传递的子列表是不是至少有两个元素之后，`mergeSortHelper`函数将会计算这个子列表的中点，并且对中点左右两部分进行递归排序，最后再调用`merge`函数来合并结果。具体参考`mergeSortHelper`函数的代码。
 
 #### 3.5.2.2.归并排序的复杂度分析
 
