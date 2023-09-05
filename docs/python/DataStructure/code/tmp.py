@@ -32,13 +32,6 @@ class Array(object):
         self.items[index] = newItem
 
 
-def swap(lyst, i, j):
-    """交换元素位置为i和j的元素"""
-    temp = lyst[i]
-    lyst[i] = lyst[j]
-    lyst[j] = temp
-
-
 def mergeSort(lyst):
     # lyst       : 用于排序的列表
     # copyBuffer : 用于合并的临时空间
@@ -53,6 +46,7 @@ def mergeSortHelper(lyst, copyBuffer, low, high):
     # middle     : 子列表的中点
     if low < high:
         middle = (low + high) // 2
+        # print(lyst[low], lyst[middle], lyst[high], copyBuffer)
         mergeSortHelper(lyst, copyBuffer, low, middle)  # 第一个排序子列表
         mergeSortHelper(lyst, copyBuffer, middle + 1, high)  # 第二个排序子列表
         merge(lyst, copyBuffer, low, middle, high)  # 合并
@@ -82,12 +76,14 @@ def merge(lyst, copyBuffer, low, middle, high):
         else:
             copyBuffer[i] = lyst[i2]  # 第二个子表中的元素 <
             i2 += 1
+    print(copyBuffer)
     for i in range(low, high + 1):  # 将已排序的元素复制回lyst中的正确位置
         lyst[i] = copyBuffer[i]
 
 
 def main():
     lyst = [12, 19, 17, 18, 14, 11, 15, 13, 16]
+    print(lyst)
     mergeSort(lyst)
     print(lyst)
 
