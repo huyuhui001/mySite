@@ -46,7 +46,7 @@ def mergeSortHelper(lyst, copyBuffer, low, high):
     # middle     : 子列表的中点
     if low < high:
         middle = (low + high) // 2
-        # print(lyst[low], lyst[middle], lyst[high], copyBuffer)
+        print(f'low: {lyst[low]}, middle: {lyst[middle]}, high: {lyst[high]}, copyBuffer: {copyBuffer}')
         mergeSortHelper(lyst, copyBuffer, low, middle)  # 第一个排序子列表
         mergeSortHelper(lyst, copyBuffer, middle + 1, high)  # 第二个排序子列表
         merge(lyst, copyBuffer, low, middle, high)  # 合并
@@ -76,20 +76,39 @@ def merge(lyst, copyBuffer, low, middle, high):
         else:
             copyBuffer[i] = lyst[i2]  # 第二个子表中的元素 <
             i2 += 1
-    print(copyBuffer)
+
+    print("i=", i, "", "i1=", i1, "i2=", i2, "copyBuffer:", copyBuffer)
+
     for i in range(low, high + 1):  # 将已排序的元素复制回lyst中的正确位置
         lyst[i] = copyBuffer[i]
 
 
 def main():
     lyst = [12, 19, 17, 18, 14, 11, 15, 13, 16]
-    print(lyst)
+    print("Original List", lyst)
     mergeSort(lyst)
-    print(lyst)
+    print("Sorted List", lyst)
 
 
 if __name__ == "__main__":
     main()
 
 # 运行结果：
-# [11, 12, 13, 14, 15, 16, 17, 18, 19]
+# Original List [12, 19, 17, 18, 14, 11, 15, 13, 16]
+# low: 12, middle: 14, high: 16, copyBuffer: [None, None, None, None, None, None, None, None, None]
+# low: 12, middle: 17, high: 14, copyBuffer: [None, None, None, None, None, None, None, None, None]
+# low: 12, middle: 19, high: 17, copyBuffer: [None, None, None, None, None, None, None, None, None]
+# low: 12, middle: 12, high: 19, copyBuffer: [None, None, None, None, None, None, None, None, None]
+# i= 1  i1= 1 i2= 2 copyBuffer: [12, 19, None, None, None, None, None, None, None]
+# i= 2  i1= 2 i2= 3 copyBuffer: [12, 17, 19, None, None, None, None, None, None]
+# low: 18, middle: 18, high: 14, copyBuffer: [12, 17, 19, None, None, None, None, None, None]
+# i= 4  i1= 4 i2= 5 copyBuffer: [12, 17, 19, 14, 18, None, None, None, None]
+# i= 4  i1= 3 i2= 5 copyBuffer: [12, 14, 17, 18, 19, None, None, None, None]
+# low: 11, middle: 15, high: 16, copyBuffer: [12, 14, 17, 18, 19, None, None, None, None]
+# low: 11, middle: 11, high: 15, copyBuffer: [12, 14, 17, 18, 19, None, None, None, None]
+# i= 6  i1= 6 i2= 7 copyBuffer: [12, 14, 17, 18, 19, 11, 15, None, None]
+# low: 13, middle: 13, high: 16, copyBuffer: [12, 14, 17, 18, 19, 11, 15, None, None]
+# i= 8  i1= 8 i2= 9 copyBuffer: [12, 14, 17, 18, 19, 11, 15, 13, 16]
+# i= 8  i1= 7 i2= 9 copyBuffer: [12, 14, 17, 18, 19, 11, 13, 15, 16]
+# i= 8  i1= 5 i2= 9 copyBuffer: [11, 12, 13, 14, 15, 16, 17, 18, 19]
+# Sorted List [11, 12, 13, 14, 15, 16, 17, 18, 19]
