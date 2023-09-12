@@ -1762,7 +1762,106 @@ if __name__ == "__main__":
 
 ## 3.6.指数复杂度的算法
 
+### 斐波那契递归算法
+
+下面是斐波那契递归算法的例子。
+
+```python
+def fib(n, depth = 0):
+    """斐波那契递归数列"""
+    if n <= 1:
+        return 1
+    else:
+        print(f'Depth:{depth},fib({n}) calls fib({n-1}) and fib({n-2})')
+        return fib(n - 1, depth + 1) + fib(n - 2, depth + 1)
+
+
+def main():
+    fib(6)
+
+
+if __name__ == "__main__":
+    main()
+
+# 运行结果：
+# Depth:0,fib(6) calls fib(5) and fib(4)
+# Depth:1,fib(5) calls fib(4) and fib(3)
+# Depth:2,fib(4) calls fib(3) and fib(2)
+# Depth:3,fib(3) calls fib(2) and fib(1)
+# Depth:4,fib(2) calls fib(1) and fib(0)
+# Depth:3,fib(2) calls fib(1) and fib(0)
+# Depth:2,fib(3) calls fib(2) and fib(1)
+# Depth:3,fib(2) calls fib(1) and fib(0)
+# Depth:1,fib(4) calls fib(3) and fib(2)
+# Depth:2,fib(3) calls fib(2) and fib(1)
+# Depth:3,fib(2) calls fib(1) and fib(0)
+# Depth:2,fib(2) calls fib(1) and fib(0)
+```
+
+![斐波那契递归算法图示](./assets/fib.png)
+
+上例可以看出，斐波那契递归算法的调用次数比问题规模的平方数增长的还要快很多。例如，`fib(4)`只需要4次递归调用，看起来它好像是线性增长的，但在总共的14次递归调用里，`fib(6)`需要调用2次`fib(4)`。随着问题规模的扩大，工作量会显著增加，这是因为在调用树（call tree）里可能有很多重复的相同子树。
+
+如果这棵调用树是完全平衡的，并且完全填充了最下面的两层调用，那么当参数为6时，会有2 + 4 + 8 + 16 = 30次递归调用。每一层里的满调用数量都是它上一层的2倍。因此，在完全平衡的调用树里，递归调用的总数量通常是`2^(n+1)-2`，其中`n`是调用树顶部（根）的参数。这是一个指数级的增长，也就是`O(k^n)`算法。
+
+尽管在递归斐波那契调用树的底部两层并没有被完全填充满，但它的调用树形状和完全平衡的树已经足够相近了，因此，可以把递归斐波那契归为指数算法。经过计算，递归斐波那契的常数`k`大约是1.63。
+
+指数算法通常只适合用于非常小的问题规模。
+
+### 将斐波那契转换为线性算法
+
+下面的代码用线性算法改写了上面的递归算法。它的时间复杂度是O(n)。
+
+```python
+def fibonacci_linear(n):
+    if n <= 1:
+        return 1
+    
+    prev, current = 0, 1
+    
+    for _ in range(2, n + 1):
+        next_value = prev + current
+        prev, current = current, next_value
+    
+    return current
+
+def main():
+    n = 6
+    result = fibonacci_linear(n)
+    print(f"Fibonacci({n}) = {result}")
+
+if __name__ == "__main__":
+    main()
+
+# 运行结果：
+# Fibonacci(6) = 8
+```
+
 ## 3.7.案例研究:算法分析器
+
+目标：编写一个可以用来分析不同排序算法的程序。
+
+需求：
+
+- 分析器可以运行排序算法以对数字列表进行排序；
+- 分析器可以追踪算法的运行时、比较次数以及执行交换的次数；
+- 当算法交换两个值的时候，分析器可以打印出列表的变化轨迹；
+- 允许给分析器提供自定义的数字列表，或者生成一个大小给定的随机数字列表；允许列表只包含一个数字，或者包含重复数值；
+- 在运行算法之前，允许用户选择上述这些功能；
+- 分析器的默认行为是在一个包含10个不重复数字的随机列表上运行算法，并记录算法的运行时、比较次数以及交换次数；
+
+实现：
+
+分析器是`Profiler`类的一个实例。我们可以通过运行分析器里的`test`方法来分析排序函数，这个排序函数会作为方法的第一个参数，上面需求中提到的那些选项也会作为参数同时传递给这个方法。
+
+两个模块：
+
+- `profiler`：这个模块会定义`Profiler`类。
+- `algorithms`：这个模块定义针对分析器修改过的排序函数。
+
+```python
+
+```
 
 ## 3.8.小结
 
