@@ -1,22 +1,19 @@
-"""
-File: profiler.py
-Defines a class for profiling sort algorithms.
-A Profiler object tracks the list, the number of comparisons
-and exchanges, and the running time. The Profiler can also
-print a trace and can create a list of unique or duplicate
-numbers.
-Example use:
-from profiler import Profiler
-from algorithms import selectionSort
-p = Profiler()
-p.test(selectionSort, size = 15, comp = True,
-        exch = True, trace = True)
-"""
-
 import time
 import random
 
 class Profiler(object):
+    """
+    定义一个Profiler类, 用来分析排序算法。
+    A Profiler object tracks the list, the number of comparisons and exchanges, and the running time. 
+    Profiler对象跟踪一个列表的比较次数、交换次数、和运行时间。
+    The Profiler can also print a trace and can create a list of unique or duplicate numbers.
+    Example use:
+    from profiler import Profiler
+    from algorithms import selectionSort
+    p = Profiler()
+    p.test(selectionSort, size = 15, comp = True,
+            exch = True, trace = True)
+    """
 
     def test(self, function, lyst = None, size = 10,
              unique = True, comp = True, exch = True,
