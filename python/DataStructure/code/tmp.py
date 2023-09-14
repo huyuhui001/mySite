@@ -1,114 +1,174 @@
-class Array(object):
+import time
+import random
+
+
+class Profiler(object):
     """
-    描述一个数组。
-    数组类似列表，但数组只能使用[], len, iter, 和 str这些属性。
-    实例化一个数组，使用 <variable> = Array(<capacity>, <optional fill value>) 其中fill value默认值是None。
+    定义一个Profiler类, 用来分析排序算法。
+    Profiler对象跟踪一个列表的比较次数、交换次数、和运行时间。
+    Profiler对象也能输出上述追踪信息, 并创建一个含有重复或不重复数字的列表。
+    示例：
+    from profiler import Profiler
+    from algorithms import selectionSort
+    p = Profiler()
+    p.test(selectionSort, size = 15, comp = True, exch = True, trace = True)
     """
 
-    def __init__(self, capacity, fillValue=None):
-        """Capacity是数组的大小.  fillValue会填充在每个元素位置, 默认值是None"""
-        self.items = list()
-        for count in range(capacity):
-            self.items.append(fillValue)
+    def test(self,
+             function,
+             lyst=None,
+             size=10,
+             unique=True,
+             comp=True,
+             exch=True,
+             trace=False):
+        """
+        function: 配置的算法
+        target: 配置的搜索目标
+        lyst: 允许调用者使用的列表
+        size: 列表的大小, 默认值是10
+        unique: 如果是True, 则列表包含不重复的整数
+        comp: 如果是True, 则统计比较次数
+        exch: 如果是True, 则统计交换次数
+        trace: 如果是True, 则在每次交换后都输出列表内容
 
-    def __len__(self):
-        """-> 数组的大小"""
-        return len(self.items)
+        此函数依据给定的上述属性, 打印输出相应的结果
+        """
+        self.comp = comp
+        self.exch = exch
+        self.trace = trace
+        if lyst != None:
+            self.lyst = lyst
+        elif unique:
+            self.lyst = list(range(1, size + 1))
+            random.shuffle(self.lyst)
+        else:
+            self.lyst = []
+        for count in range(size):
+            self.lyst.append(random.randint(1, size))
+        self.exchCount = 0
+        self.cmpCount = 0
+        self.startClock()
+        function(self.lyst, self)
+        self.stopClock()
+        print(self)
+
+    def exchange(self):
+        """统计交换次数"""
+        if self.exch:
+            self.exchCount += 1
+        if self.trace:
+            print(self.lyst)
+
+    def comparison(self):
+        """统计交换次数"""
+        if self.comp:
+            self.cmpCount += 1
+
+    def startClock(self):
+        """记录开始时间"""
+        self.start = time.time()
+
+    def stopClock(self):
+        """停止计时并以秒为单位计算消耗时间"""
+        self.elapsedTime = round(time.time() - self.start, 3)
 
     def __str__(self):
-        """-> 将数组字符串化"""
-        return str(self.items)
-
-    def __iter__(self):
-        """支持for循环对数组进行遍历."""
-        return iter(self.items)
-
-    def __getitem__(self, index):
-        """用于访问索引处的下标运算符."""
-        return self.items[index]
-
-    def __setitem__(self, index, newItem):
-        """下标运算符用于在索引处进行替换."""
-        self.items[index] = newItem
+        """以字符串方式返回结果"""
+        result = "Problem size: "
+        result += str(len(self.lyst)) + "\n"
+        result += "Elapsed time: "
+        result += str(self.elapsedTime) + "\n"
+        if self.comp:
+            result += "Comparisons: "
+            result += str(self.cmpCount) + "\n"
+        if self.exch:
+            result += "Exchanges: "
+            result += str(self.exchCount) + "\n"
+        return result
 
 
-def mergeSort(lyst):
-    # lyst       : 用于排序的列表
-    # copyBuffer : 用于合并的临时空间
-    copyBuffer = Array(len(lyst))
-    mergeSortHelper(lyst, copyBuffer, 0, len(lyst) - 1)
+def selectionSort(lyst, profiler):
+    i = 0
+    while i < len(lyst) - 1:
+        minIndex = i
+        j = i + 1
+        while j < len(lyst):
+            profiler.comparison()  # Count
+            if lyst[j] < lyst[minIndex]:
+                minIndex = j
+            j += 1
+        if minIndex != i:
+            swap(lyst, minIndex, i, profiler)
+        i += 1
 
 
-def mergeSortHelper(lyst, copyBuffer, low, high):
-    # lyst       : 用于排序的列表
-    # copyBuffer : 用于合并的临时空间
-    # low, high  : 子列表的边界
-    # middle     : 子列表的中点
-    if low < high:
-        middle = (low + high) // 2
-        print(f'low: {lyst[low]}, middle: {lyst[middle]}, high: {lyst[high]}, copyBuffer: {copyBuffer}')
-        mergeSortHelper(lyst, copyBuffer, low, middle)  # 第一个排序子列表
-        mergeSortHelper(lyst, copyBuffer, middle + 1, high)  # 第二个排序子列表
-        merge(lyst, copyBuffer, low, middle, high)  # 合并
-
-
-def merge(lyst, copyBuffer, low, middle, high):
-    # lyst       : 用于排序的列表
-    # copyBuffer : 用于合并的临时空间
-    # low        : 第一个排序子列表的开头
-    # middle     : 第一个排序子列表的结尾
-    # middle + 1 : 第二个排序子列表的开头
-    # high       : 第二个排序子列表的结尾
-    # 将 i1 和 i2 初始化为每个子列表中的第一项
-    i1 = low
-    i2 = middle + 1
-    # 将子列表中的元素交错放入copyBuffer中，并保持顺序。
-    for i in range(low, high + 1):
-        if i1 > middle:
-            copyBuffer[i] = lyst[i2]  # 第一个子列表已用完
-            i2 += 1
-        elif i2 > high:
-            copyBuffer[i] = lyst[i1]  # 第二个子列表已用完
-            i1 += 1
-        elif lyst[i1] < lyst[i2]:
-            copyBuffer[i] = lyst[i1]  # 第一个子表中的元素 <
-            i1 += 1
-        else:
-            copyBuffer[i] = lyst[i2]  # 第二个子表中的元素 <
-            i2 += 1
-
-    print("i=", i, "", "i1=", i1, "i2=", i2, "copyBuffer:", copyBuffer)
-
-    for i in range(low, high + 1):  # 将已排序的元素复制回lyst中的正确位置
-        lyst[i] = copyBuffer[i]
+def swap(lyst, i, j, profiler):
+    """交换处于位置i和j的元素"""
+    profiler.exchange()  # Count
+    temp = lyst[i]
+    lyst[i] = lyst[j]
+    lyst[j] = temp
 
 
 def main():
-    lyst = [12, 19, 17, 18, 14, 11, 15, 13, 16]
-    print("Original List", lyst)
-    mergeSort(lyst)
-    print("Sorted List", lyst)
+    p = Profiler()
+
+    # 默认行为
+    print("The result of p.test(selectionSort)")
+    p.test(selectionSort)
+
+    print("The result of p.test(selectionSort, size=5, trace=True)")
+    p.test(selectionSort, size=5, trace=True)
+
+    print("The result of p.test(selectionSort, size=100)")
+    p.test(selectionSort, size=100)
+
+    print("The result of p.test(selectionSort, size=1000)")
+    p.test(selectionSort, size=1000)
+
+    print(
+        "The result of p.test(selectionSort, size=10000, exch=False, comp=False)"
+    )
+    p.test(selectionSort, size=10000, exch=False, comp=False)
 
 
 if __name__ == "__main__":
     main()
 
 # 运行结果：
-# Original List [12, 19, 17, 18, 14, 11, 15, 13, 16]
-# low: 12, middle: 14, high: 16, copyBuffer: [None, None, None, None, None, None, None, None, None]
-# low: 12, middle: 17, high: 14, copyBuffer: [None, None, None, None, None, None, None, None, None]
-# low: 12, middle: 19, high: 17, copyBuffer: [None, None, None, None, None, None, None, None, None]
-# low: 12, middle: 12, high: 19, copyBuffer: [None, None, None, None, None, None, None, None, None]
-# i= 1  i1= 1 i2= 2 copyBuffer: [12, 19, None, None, None, None, None, None, None]
-# i= 2  i1= 2 i2= 3 copyBuffer: [12, 17, 19, None, None, None, None, None, None]
-# low: 18, middle: 18, high: 14, copyBuffer: [12, 17, 19, None, None, None, None, None, None]
-# i= 4  i1= 4 i2= 5 copyBuffer: [12, 17, 19, 14, 18, None, None, None, None]
-# i= 4  i1= 3 i2= 5 copyBuffer: [12, 14, 17, 18, 19, None, None, None, None]
-# low: 11, middle: 15, high: 16, copyBuffer: [12, 14, 17, 18, 19, None, None, None, None]
-# low: 11, middle: 11, high: 15, copyBuffer: [12, 14, 17, 18, 19, None, None, None, None]
-# i= 6  i1= 6 i2= 7 copyBuffer: [12, 14, 17, 18, 19, 11, 15, None, None]
-# low: 13, middle: 13, high: 16, copyBuffer: [12, 14, 17, 18, 19, 11, 15, None, None]
-# i= 8  i1= 8 i2= 9 copyBuffer: [12, 14, 17, 18, 19, 11, 15, 13, 16]
-# i= 8  i1= 7 i2= 9 copyBuffer: [12, 14, 17, 18, 19, 11, 13, 15, 16]
-# i= 8  i1= 5 i2= 9 copyBuffer: [11, 12, 13, 14, 15, 16, 17, 18, 19]
-# Sorted List [11, 12, 13, 14, 15, 16, 17, 18, 19]
+# The result of p.test(selectionSort)
+# Problem size: 20
+# Elapsed time: 0.0
+# Comparisons: 190
+# Exchanges: 12
+
+# The result of p.test(selectionSort, size=5, trace=True)
+# [5, 1, 4, 3, 2, 1, 1, 2, 4, 4]
+# [1, 5, 4, 3, 2, 1, 1, 2, 4, 4]
+# [1, 1, 4, 3, 2, 5, 1, 2, 4, 4]
+# [1, 1, 1, 3, 2, 5, 4, 2, 4, 4]
+# [1, 1, 1, 2, 3, 5, 4, 2, 4, 4]
+# [1, 1, 1, 2, 2, 5, 4, 3, 4, 4]
+# [1, 1, 1, 2, 2, 3, 4, 5, 4, 4]
+# [1, 1, 1, 2, 2, 3, 4, 4, 5, 4]
+# Problem size: 10
+# Elapsed time: 0.0
+# Comparisons: 45
+# Exchanges: 8
+
+# The result of p.test(selectionSort, size=100)
+# Problem size: 200
+# Elapsed time: 0.003
+# Comparisons: 19900
+# Exchanges: 195
+
+# The result of p.test(selectionSort, size=1000)
+# Problem size: 2000
+# Elapsed time: 0.36
+# Comparisons: 1999000
+# Exchanges: 1992
+
+# The result of p.test(selectionSort, size=10000, exch=False, comp=False)
+# Problem size: 20000
+# Elapsed time: 26.535
