@@ -1,47 +1,51 @@
 import time
 import random
 
+
 class Profiler(object):
     """
     定义一个Profiler类, 用来分析排序算法。
-    A Profiler object tracks the list, the number of comparisons and exchanges, and the running time. 
     Profiler对象跟踪一个列表的比较次数、交换次数、和运行时间。
-    The Profiler can also print a trace and can create a list of unique or duplicate numbers.
-    Example use:
+    Profiler对象也能输出上述追踪信息, 并创建一个含有重复或不重复数字的列表。
+    示例：
     from profiler import Profiler
     from algorithms import selectionSort
     p = Profiler()
-    p.test(selectionSort, size = 15, comp = True,
-            exch = True, trace = True)
+    p.test(selectionSort, size = 15, comp = True, exch = True, trace = True)
     """
 
-    def test(self, function, lyst = None, size = 10,
-             unique = True, comp = True, exch = True,
-             trace = False):
+    def test(self,
+             function,
+             lyst=None,
+             size=10,
+             unique=True,
+             comp=True,
+             exch=True,
+             trace=False):
         """
-        function: the algorithm being profiled
-        target: the search target if profiling a search
-        lyst: allows the caller to use her list
-        size: the size of the list, 10 by default
-        unique: if True, list contains unique integers
-        comp: if True, count comparisons
-        exch: if True, count exchanges
-        trace: if True, print the list after each exchange
-        Run the function with the given attributes and print
-        its profile results.
+        function: 配置的算法
+        target: 配置的搜索目标
+        lyst: 允许调用者使用的列表
+        size: 列表的大小, 默认值是10
+        unique: 如果是True, 则列表包含不重复的整数
+        comp: 如果是True, 则统计比较次数
+        exch: 如果是True, 则统计交换次数
+        trace: 如果是True, 则在每次交换后都输出列表内容
+
+        此函数依据给定的上述属性, 打印输出相应的结果
         """
         self.comp = comp
         self.exch = exch
         self.trace = trace
         if lyst != None:
-             self.lyst = lyst
+            self.lyst = lyst
         elif unique:
             self.lyst = list(range(1, size + 1))
             random.shuffle(self.lyst)
         else:
             self.lyst = []
         for count in range(size):
-             self.lyst.append(random.randint(1, size))
+            self.lyst.append(random.randint(1, size))
         self.exchCount = 0
         self.cmpCount = 0
         self.startClock()
@@ -50,39 +54,39 @@ class Profiler(object):
         print(self)
 
     def exchange(self):
-         """Counts exchanges if on."""
-         if self.exch:
-              self.exchCount += 1
-         if self.trace:
-              print(self.lyst)
+        """统计交换次数"""
+        if self.exch:
+            self.exchCount += 1
+        if self.trace:
+            print(self.lyst)
 
     def comparison(self):
-         """Counts comparisons if on."""
-         if self.comp:
-              self.cmpCount += 1
+        """统计交换次数"""
+        if self.comp:
+            self.cmpCount += 1
 
     def startClock(self):
-         """Record the starting time."""
-         self.start = time.time()
+        """记录开始时间"""
+        self.start = time.time()
 
     def stopClock(self):
-         """Stops the clock and computes the elapsed time
-         in seconds, to the nearest millisecond."""
-         self.elapsedTime = round(time.time() - self.start, 3)
+        """停止计时并以秒为单位计算消耗时间"""
+        self.elapsedTime = round(time.time() - self.start, 3)
 
     def __str__(self):
-         """Returns the results as a string."""
-         result = "Problem size: "
-         result += str(len(self.lyst)) + "\n"
-         result += "Elapsed time: "
-         result += str(self.elapsedTime) + "\n"
-         if self.comp:
-               result += "Comparisons: "
-               result += str(self.cmpCount) + "\n"
-         if self.exch:
-               result += "Exchanges: "
-               result += str(self.exchCount) + "\n"
-         return result
+        """以字符串方式返回结果"""
+        result = "Problem size: "
+        result += str(len(self.lyst)) + "\n"
+        result += "Elapsed time: "
+        result += str(self.elapsedTime) + "\n"
+        if self.comp:
+            result += "Comparisons: "
+            result += str(self.cmpCount) + "\n"
+        if self.exch:
+            result += "Exchanges: "
+            result += str(self.exchCount) + "\n"
+        return result
+
 
 def selectionSort(lyst, profiler):
     i = 0
@@ -90,7 +94,7 @@ def selectionSort(lyst, profiler):
         minIndex = i
         j = i + 1
         while j < len(lyst):
-            profiler.comparison()                # Count
+            profiler.comparison()  # Count
             if lyst[j] < lyst[minIndex]:
                 minIndex = j
             j += 1
@@ -98,50 +102,73 @@ def selectionSort(lyst, profiler):
             swap(lyst, minIndex, i, profiler)
         i += 1
 
+
 def swap(lyst, i, j, profiler):
-    """Exchanges the elements at positions i and j."""
-    profiler.exchange()                                   # Count
+    """交换处于位置i和j的元素"""
+    profiler.exchange()  # Count
     temp = lyst[i]
     lyst[i] = lyst[j]
     lyst[j] = temp
 
+
 def main():
     p = Profiler()
-    p.test(selectionSort) # Default behavior
-    p.test(selectionSort, size = 5, trace = True)
-    p.test(selectionSort, size = 100)
-    p.test(selectionSort, size = 1000)
-    p.test(selectionSort, size = 10000, exch = False, comp = False)
+
+    # 默认行为
+    print("The result of p.test(selectionSort)")
+    p.test(selectionSort)
+
+    print("The result of p.test(selectionSort, size=5, trace=True)")
+    p.test(selectionSort, size=5, trace=True)
+
+    print("The result of p.test(selectionSort, size=100)")
+    p.test(selectionSort, size=100)
+
+    print("The result of p.test(selectionSort, size=1000)")
+    p.test(selectionSort, size=1000)
+
+    print(
+        "The result of p.test(selectionSort, size=10000, exch=False, comp=False)"
+    )
+    p.test(selectionSort, size=10000, exch=False, comp=False)
+
 
 if __name__ == "__main__":
-     main()
+    main()
 
-# >>> from profiler import Profiler
-# >>> from algorithms import selectionSort
-# >>> p = Profiler()
-# >>> p.test(selectionSort)       # Default behavior
+# 运行结果：
+# The result of p.test(selectionSort)
+# Problem size: 20
+# Elapsed time: 0.0
+# Comparisons: 190
+# Exchanges: 12
+
+# The result of p.test(selectionSort, size=5, trace=True)
+# [5, 1, 4, 3, 2, 1, 1, 2, 4, 4]
+# [1, 5, 4, 3, 2, 1, 1, 2, 4, 4]
+# [1, 1, 4, 3, 2, 5, 1, 2, 4, 4]
+# [1, 1, 1, 3, 2, 5, 4, 2, 4, 4]
+# [1, 1, 1, 2, 3, 5, 4, 2, 4, 4]
+# [1, 1, 1, 2, 2, 5, 4, 3, 4, 4]
+# [1, 1, 1, 2, 2, 3, 4, 5, 4, 4]
+# [1, 1, 1, 2, 2, 3, 4, 4, 5, 4]
 # Problem size: 10
 # Elapsed time: 0.0
-# Comparisons:  45
-# Exchanges:    7
-# >>> p.test(selectionSort, size = 5, trace = True)
-# [4, 2, 3, 5, 1]
-# [1, 2, 3, 5, 4]
-# Problem size: 5
-# Elapsed time: 0.117
-# Comparisons:  10
-# Exchanges:    2
-# >>> p.test(selectionSort, size = 100)
-# Problem size: 100
-# Elapsed time: 0.044
-# Comparisons:  4950
-# Exchanges:    97
-# >>> p.test(selectionSort, size = 1000)
-# Problem size: 1000
-# Elapsed time: 1.628
-# Comparisons:  499500
-# Exchanges:    995
-# >>> p.test(selectionSort, size = 10000,
-#            exch = False, comp = False)
-# Problem size: 10000
-# Elapsed time: 111.077
+# Comparisons: 45
+# Exchanges: 8
+
+# The result of p.test(selectionSort, size=100)
+# Problem size: 200
+# Elapsed time: 0.003
+# Comparisons: 19900
+# Exchanges: 195
+
+# The result of p.test(selectionSort, size=1000)
+# Problem size: 2000
+# Elapsed time: 0.36
+# Comparisons: 1999000
+# Exchanges: 1992
+
+# The result of p.test(selectionSort, size=10000, exch=False, comp=False)
+# Problem size: 20000
+# Elapsed time: 26.535

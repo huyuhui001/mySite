@@ -1860,13 +1860,290 @@ if __name__ == "__main__":
 - `algorithms`：这个模块定义针对分析器修改过的排序函数。
 
 ```python
+import time
+import random
 
+
+class Profiler(object):
+    """
+    定义一个Profiler类, 用来分析排序算法。
+    Profiler对象跟踪一个列表的比较次数、交换次数、和运行时间。
+    Profiler对象也能输出上述追踪信息, 并创建一个含有重复或不重复数字的列表。
+    示例：
+    from profiler import Profiler
+    from algorithms import selectionSort
+    p = Profiler()
+    p.test(selectionSort, size = 15, comp = True, exch = True, trace = True)
+    """
+
+    def test(self,
+             function,
+             lyst=None,
+             size=10,
+             unique=True,
+             comp=True,
+             exch=True,
+             trace=False):
+        """
+        function: 配置的算法
+        target: 配置的搜索目标
+        lyst: 允许调用者使用的列表
+        size: 列表的大小, 默认值是10
+        unique: 如果是True, 则列表包含不重复的整数
+        comp: 如果是True, 则统计比较次数
+        exch: 如果是True, 则统计交换次数
+        trace: 如果是True, 则在每次交换后都输出列表内容
+
+        此函数依据给定的上述属性, 打印输出相应的结果
+        """
+        self.comp = comp
+        self.exch = exch
+        self.trace = trace
+        if lyst != None:
+            self.lyst = lyst
+        elif unique:
+            self.lyst = list(range(1, size + 1))
+            random.shuffle(self.lyst)
+        else:
+            self.lyst = []
+        for count in range(size):
+            self.lyst.append(random.randint(1, size))
+        self.exchCount = 0
+        self.cmpCount = 0
+        self.startClock()
+        function(self.lyst, self)
+        self.stopClock()
+        print(self)
+
+    def exchange(self):
+        """统计交换次数"""
+        if self.exch:
+            self.exchCount += 1
+        if self.trace:
+            print(self.lyst)
+
+    def comparison(self):
+        """统计交换次数"""
+        if self.comp:
+            self.cmpCount += 1
+
+    def startClock(self):
+        """记录开始时间"""
+        self.start = time.time()
+
+    def stopClock(self):
+        """停止计时并以秒为单位计算消耗时间"""
+        self.elapsedTime = round(time.time() - self.start, 3)
+
+    def __str__(self):
+        """以字符串方式返回结果"""
+        result = "Problem size: "
+        result += str(len(self.lyst)) + "\n"
+        result += "Elapsed time: "
+        result += str(self.elapsedTime) + "\n"
+        if self.comp:
+            result += "Comparisons: "
+            result += str(self.cmpCount) + "\n"
+        if self.exch:
+            result += "Exchanges: "
+            result += str(self.exchCount) + "\n"
+        return result
+
+
+def selectionSort(lyst, profiler):
+    i = 0
+    while i < len(lyst) - 1:
+        minIndex = i
+        j = i + 1
+        while j < len(lyst):
+            profiler.comparison()  # Count
+            if lyst[j] < lyst[minIndex]:
+                minIndex = j
+            j += 1
+        if minIndex != i:
+            swap(lyst, minIndex, i, profiler)
+        i += 1
+
+
+def swap(lyst, i, j, profiler):
+    """交换处于位置i和j的元素"""
+    profiler.exchange()  # Count
+    temp = lyst[i]
+    lyst[i] = lyst[j]
+    lyst[j] = temp
+
+
+def main():
+    p = Profiler()
+
+    # 默认行为
+    print("The result of p.test(selectionSort)")
+    p.test(selectionSort)
+
+    print("The result of p.test(selectionSort, size=5, trace=True)")
+    p.test(selectionSort, size=5, trace=True)
+
+    print("The result of p.test(selectionSort, size=100)")
+    p.test(selectionSort, size=100)
+
+    print("The result of p.test(selectionSort, size=1000)")
+    p.test(selectionSort, size=1000)
+
+    print(
+        "The result of p.test(selectionSort, size=10000, exch=False, comp=False)"
+    )
+    p.test(selectionSort, size=10000, exch=False, comp=False)
+
+
+if __name__ == "__main__":
+    main()
+
+# 运行结果：
+# The result of p.test(selectionSort)
+# Problem size: 20
+# Elapsed time: 0.0
+# Comparisons: 190
+# Exchanges: 12
+
+# The result of p.test(selectionSort, size=5, trace=True)
+# [5, 1, 4, 3, 2, 1, 1, 2, 4, 4]
+# [1, 5, 4, 3, 2, 1, 1, 2, 4, 4]
+# [1, 1, 4, 3, 2, 5, 1, 2, 4, 4]
+# [1, 1, 1, 3, 2, 5, 4, 2, 4, 4]
+# [1, 1, 1, 2, 3, 5, 4, 2, 4, 4]
+# [1, 1, 1, 2, 2, 5, 4, 3, 4, 4]
+# [1, 1, 1, 2, 2, 3, 4, 5, 4, 4]
+# [1, 1, 1, 2, 2, 3, 4, 4, 5, 4]
+# Problem size: 10
+# Elapsed time: 0.0
+# Comparisons: 45
+# Exchanges: 8
+
+# The result of p.test(selectionSort, size=100)
+# Problem size: 200
+# Elapsed time: 0.003
+# Comparisons: 19900
+# Exchanges: 195
+
+# The result of p.test(selectionSort, size=1000)
+# Problem size: 2000
+# Elapsed time: 0.36
+# Comparisons: 1999000
+# Exchanges: 1992
+
+# The result of p.test(selectionSort, size=10000, exch=False, comp=False)
+# Problem size: 20000
+# Elapsed time: 26.535
 ```
 
 ## 3.8.小结
 
 ![排序种类和对应的时间空间复杂度](./assets/sort.png)
 
+- 根据所需要的时间和内存资源，我们可以对解决同一个问题的不同算法进行排名。与需要更多资源的算法相比，我们通常认为耗费更少运行时和占用更少内存的算法更好。但是，这两种资源也通常需要进行权衡取舍：有时以更多内存为代价来改善运行时；有时以较慢的运行时作为代价来提高内存的使用率。
+- 可以根据计算机的时钟按照过往经验测算算法的运行时。但是，这个时间会随着硬件和所用编程语言的不同而变化。
+- 统计指令的数量提供了另一种对算法所需工作量进行经验性度量的方式。指令的计数可以显示出算法工作量的增长率的变化，而且这个数据和硬件以及软件平台都没有关系。
+- 算法工作量的增长率可以用基于问题规模的函数来表示。复杂度分析查看算法里的代码以得到这些数学表达式，从而让程序员预测在任何计算机上执行这个算法的效果。
+- 大O表示法是用来表示算法运行时行为的常用方法。它用`O(f(n))`的形式来表示解决这个问题所需要的工作量，其中`n`是算法问题的规模、`f(n)`是数学函数。
+- 运行时行为的常见表达式有`O(log(n, 2))`（对数）、`O(n)`（线性）、`O(n^2)`（平方）以及`O(k^n)`（指数）。
+- 算法在最好情况、最坏情况以及平均情况下的性能可以是不同的。比如，冒泡排序和插入排序在最好情况下都是线性复杂度，但是它们在平均情况和最坏情况下是平方阶复杂度。
+- 通常来说，要提高算法的性能最好是尝试降低它的运行时复杂度的阶数，而不是对代码进行微调。
+- 二分搜索会比顺序搜索要快得多。但是，在用二分搜索进行搜索时，数据必须是有序的。
+- `nlogn`排序算法通过递归、分治法策略来突破`n^2`的性能障碍。快速排序会在基准元素左右对其他元素重新排列，然后对基准两侧的子列表递归地排序。归并排序则会把一个列表进行拆分，递归地对每个部分进行排序，然后合并出最终结果。
+- 指数复杂度的算法通常只在理论上被关注，在处理大型问题的时候，它们是没有使用价值的。
+
 ## 3.9.复习题
 
+1. 在不同问题规模的情况下记录算法运行时：
+
+    - 可以让你大致了解算法的运行时行为
+    - 可以让你了解算法在特定硬件平台和特定软件平台上的运行时行为
+
+2. 统计指令的数量会：
+
+    - 在不同的硬件和软件平台上得到相同的数据
+    - 可以证明在问题规模很大的情况下，指数算法是没法使用的
+
+3. 表达式`O(n)`、`O(n^2)`和`O(k^n)`分别代表的复杂度是：
+
+    - 指数、线性和平方
+    - 线性、平方和指数
+    - 对数、线性和平方
+
+4. 二分搜索需要假定数据：
+
+    - 没有任何特别的顺序关系
+    - 有序的
+
+5. 选择排序最多可以有：
+
+    - `n^2`次数据元素的交换
+    - `n`次数据元素的交换
+
+6. 插入排序和修改后的冒泡排序在最好情况下是：
+
+    - 线性的
+    - 平方的
+    - 指数的
+
+7. 最好情况、平均情况以及最坏情况下复杂度都相同的算法是：
+
+    - 顺序搜索
+    - 选择排序
+    - 快速排序
+
+8. 一般来说，下面哪个选择更好：
+
+    - 调整算法从而节省若干秒的运行时
+    - 选择计算复杂度更低的算法
+
+9. 对于递归斐波那契函数：
+
+    - 问题规模为`n`的时候，有`n^2`次递归调用
+    - 问题规模为`n`的时候，有`2n`次递归调用
+
+10. 完全填充的二叉调用树里每一层：
+
+    - 调用次数是上一层调用次数的2倍
+    - 与上一层相同的调用次数
+
 ## 3.10.练习题
+
+1. 对一个有序列表进行顺序搜索，当目标小于有序列表里的某个元素时，顺序搜索可以提前停止。定义这个算法的修改版本，并使用大O表示法来描述它在最好情况、最坏情况以及平均情况下的计算复杂度。
+
+2. 列表的reverse方法用来反转列表里的元素。定义一个叫作reverse的函数，这个函数可以在不使用reverse方法的情况下，反转列表参数里的所有元素。尝试让这个函数尽可能地高效，并使用大O表示法描述它的计算复杂度。
+
+3. Python的pow函数会返回数字特定幂次的结果。定义执行这个任务的expo函数，并使用大O表示法描述它的计算复杂度。这个函数的第一个参数是数字，第二个参数是指数（非负数）。你可以通过循环或递归函数来实现，但不要使用Python内置的**运算符或是pow函数。
+
+4. 另一个实现expo函数的策略使用下面这个递归。请定义使用这个策略的递归函数expo，并使用大O表示法描述它的计算复杂度。
+
+    ```python
+    expo(number，exponent)
+    = 1，当 exponent = 0的时候
+    = number * expo(number, exponent −1)，当exponent为奇数的时候
+    = (expo(number, exponent/2))2，当exponent为偶数的时候
+    ```
+
+5. Python中list里的sort方法包含一个用关键字命名的参数reverse，它的默认值为False。程序员可以通过覆盖这个值以对列表进行降序排序。修改本章讨论的selectionSort函数，使它可以提供这个附加参数来让程序员决定排序的方向。
+
+6. 修改递归斐波那契函数，让它支持本章里讨论过的记忆化技术。这个函数应添加一个字典类型的参数。它的顶层调用会接收一个空字典作为参数，这个字典的键和值应该是递归调用所传递的参数和计算出的值。之后，用本章讨论过的计数器对象对递归调用的数量进行统计。
+
+7. 分析编程项目6里定义的记忆化斐波那契函数的性能，统计这个函数递归调用的次数。使用大O表示法描述它的计算复杂度，并证明你的答案是合理的。
+
+8. 函数makeRandomList会创建并返回一个给定大小（它的参数）的数字列表。列表里的数字没有重复，它们的范围为1～size，位置是随机的。下面是这个函数的代码。可以假定range、randint和append函数都是常数时间的复杂度。还可以假设random.randint随着参数之间差值的增加而更少地返回重复的数字。使用大O表示法描述这个函数的计算复杂度，并证明你的答案是合理的。
+
+    ```python
+    def makeRandomList(size):
+         lyst = []
+         for count in range(size):
+              while True:
+                  number = random.randint(1, size)
+                  if not number in lyst:
+                       lyst.append(number)
+                       break
+        return lyst
+    ```
+
+9. 修改quicksort函数，让它可以对任何尺寸小于50的子列表调用插入排序。使用有50、500和5000个元素的数据集比较这个版本与原始版本的性能。然后调整这个阈值，从而确定使用插入排序的最佳设置。
+
+10. 计算机使用名为调用栈的结构来为递归函数的调用提供支持。一般而言，计算机会为函数的每次调用都保留一定数量的内存。因此，可以对递归函数使用的内存数量进行复杂度分析。请说明递归阶乘函数和递归斐波那契函数使用的内存的计算复杂度。
