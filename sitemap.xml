@@ -466,6 +466,21 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://huyuhui001.github.io/mySite/python/DataStructure/04_ArrayChain/</loc>
+         <lastmod>2023-09-15</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://huyuhui001.github.io/mySite/python/DataStructure/05_InterfacePolymorphism/</loc>
+         <lastmod>2023-09-15</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://huyuhui001.github.io/mySite/python/DataStructure/06_InheritanceAbstractClass/</loc>
+         <lastmod>2023-09-15</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://huyuhui001.github.io/mySite/python/Demo/CourseSystem/</loc>
          <lastmod>2023-09-15</lastmod>
          <changefreq>daily</changefreq>
