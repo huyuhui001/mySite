@@ -170,9 +170,12 @@ Demos
 
 ### 3.3.数据结构和算法
 
-- [基础知识回顾](python/DataStructure/01_PythonFundmantal.md)
-- [多项集的概述](python/DataStructure/02_CollectionsOverview.md)
-- [搜索、排序以及复杂度分析](python/DataStructure/03_TimeComplexity.md)
+- [1.基础知识回顾](python/DataStructure/01_PythonFundmantal.md)
+- [2.多项集的概述](python/DataStructure/02_CollectionsOverview.md)
+- [3.搜索、排序以及复杂度分析](python/DataStructure/03_TimeComplexity.md)
+- [4.数组和链接结构](./python/DataStructure/04_ArrayChain.md)
+- [5.接口、实现和多态](./python/DataStructure/05_InterfacePolymorphism.md)
+- [6.继承与抽象类](./python/DataStructure/06_InheritanceAbstractClass.md)
 
 ### 3.4.Demos
 
