@@ -1,4 +1,4 @@
-# 搜索、排序以及复杂度分析
+# 3.搜索、排序以及复杂度分析
 
 算法描述了一个随着问题被解决而停止的计算过程。
 
@@ -2107,458 +2107,458 @@ if __name__ == "__main__":
     - 调用次数是上一层调用次数的2倍
     - 与上一层相同的调用次数
 
-## 3.10.练习题
+## 3.10.编程练习
 
-1. 对一个有序列表进行顺序搜索，当目标小于有序列表里的某个元素时，顺序搜索可以提前停止。定义这个算法的修改版本，并使用大O表示法来描述它在最好情况、最坏情况以及平均情况下的计算复杂度。
+1．对一个有序列表进行顺序搜索，当目标小于有序列表里的某个元素时，顺序搜索可以提前停止。定义这个算法的修改版本，并使用大O表示法来描述它在最好情况、最坏情况以及平均情况下的计算复杂度。
 
-    解答：代码如下：
+解答：
 
-    在最好的情况下，目标元素在有序列表的第一个位置。在这种情况下，函数只需要进行一次比较。所以，最佳情况复杂度为`O(1)`。
+在最好的情况下，目标元素在有序列表的第一个位置。在这种情况下，函数只需要进行一次比较。所以，最佳情况复杂度为`O(1)`。
 
-    在最坏的情况下，目标元素不在列表中，并且所有列表元素都小于目标元素。这将导致函数遍历整个列表，所以最坏情况复杂度为`O(n)`。
+在最坏的情况下，目标元素不在列表中，并且所有列表元素都小于目标元素。这将导致函数遍历整个列表，所以最坏情况复杂度为`O(n)`。
 
-    对于平均情况，假设有`n`个项在列表中，搜索目标会在列表前`n/2`个项或者不在所有。在这个约定下，平均我们需要寻找`n/2`个项，因此复杂度为`O(n)`。之所以是`n/2`，是因为这个任务可能会在任何地方被停止，我们对此做平均处理。然而在大O标记法中，常数将被遗忘，所以它仍然是`O(n)`。
+对于平均情况，假设有`n`个项在列表中，搜索目标会在列表前`n/2`个项或者不在所有。在这个约定下，平均我们需要寻找`n/2`个项，因此复杂度为`O(n)`。之所以是`n/2`，是因为这个任务可能会在任何地方被停止，我们对此做平均处理。然而在大O标记法中，常数将被遗忘，所以它仍然是`O(n)`。
 
-    ```Python
-    def ordered_sequential_search(arr, target):
-        comparisons = 0  # 用于统计比较次数
-        index = 0
-    
-        while index < len(arr):
-            comparisons += 1
-            if arr[index] == target:
-                return comparisons, index  # 找到目标并返回比较次数和索引
-            elif arr[index] > target:
-                break  # 如果目标小于当前元素，提前停止搜索
-            index += 1
-    
-        return comparisons, -1  # 没找到目标返回比较次数和-1
-    
-    
-    def main():
-        # 测试
-        arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-    
-        for target in [5, 11]:
-            comparisons, index = ordered_sequential_search(arr, target)
-            if index != -1:
-                print(f"目标 {target} 在索引 {index} 处找到，比较次数为 {comparisons}")
-            else:
-                print(f"目标 {target} 未找到，比较次数为 {comparisons}")
+代码如下：
+
+```Python
+def ordered_sequential_search(arr, target):
+    comparisons = 0  # 用于统计比较次数
+    index = 0
+
+    while index < len(arr):
+        comparisons += 1
+        if arr[index] == target:
+            return comparisons, index  # 找到目标并返回比较次数和索引
+        elif arr[index] > target:
+            break  # 如果目标小于当前元素，提前停止搜索
+        index += 1
+
+    return comparisons, -1  # 没找到目标返回比较次数和-1
     
     
-    if __name__ == "__main__":
-        main()
-    
-    # 运行结果
-    # 目标 5 在索引 4 处找到，比较次数为 5
-    # 目标 11 未找到，比较次数为 10
-    ```
+def main():
+    # 测试
+    arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
-2. 列表的`reverse`方法用来反转列表里的元素。定义一个叫作`reverse`的函数，这个函数可以在不使用`reverse`方法的情况下，反转列表参数里的所有元素。尝试让这个函数尽可能地高效，并使用大O表示法描述它的计算复杂度。
-
-    解答：
-
-    只需要遍历列表的一半，我们就能到达列表的中间位置把列表两边的元素互换，这样就完成了列表的反转。
-
-    这个算法的时间复杂度是`O(n/2)`，其中`n`是列表的长度。但在大O表示法中，常数被忽略，因此该算法的时间复杂度是`O(n)`。在这个算法中，`n`就代表着列表的长度。意味着时间复杂度受列表长度的影响。列表长度每增加一次，执行反转的时间就增加一次。这就是`O(n)`的概念。
-
-    这个函数的空间复杂度是`O(1)`，因为它只是在原地修改列表，不需要额外的存储空间。
-
-    代码如下：
-
-    ```python
-    def custom_reverse(arr):
-        left, right = 0, len(arr) - 1
-    
-        while left < right:
-            arr[left], arr[right] = arr[right], arr[left]
-            left += 1
-            right -= 1
-    
-    
-    def main():
-        # 测试列表reverse方法
-        my_list = [1, 2, 3, 4, 5]
-        my_list.reverse()
-        print(my_list)
-        # 测试自定义的reverse方法
-        my_list = [1, 2, 3, 4, 5]
-        custom_reverse(my_list)
-        print(my_list)
-    
-    
-    if __name__ == "__main__":
-        main()
-    
-    # 运行结果
-    # [5, 4, 3, 2, 1]
-    # [5, 4, 3, 2, 1]
-    ```
-
-3. Python的pow函数会返回数字特定幂次的结果。定义执行这个任务的expo函数，并使用大O表示法描述它的计算复杂度。这个函数的第一个参数是数字，第二个参数是指数（非负数）。你可以通过循环或递归函数来实现，但不要使用Python内置的**运算符或是pow函数。
-
-    解答：
-
-    下面实现的`expo`函数使用循环来连续乘以`base`，循环的次数等于`exponent`的值。
-
-    时间复杂度是`O(exponent)`，其中`exponent`是指数的值。
-
-    - 最好情况：O(exponent)
-    - 最坏情况：O(exponent)
-    - 平均情况：O(exponent)
-
-    ```python
-    def expo(base, exponent):
-        result = 1
-        for _ in range(exponent):
-            result *= base
-        return result
-
-
-    def main():
-        # 测试
-        base = 2
-        
-        for exponent in [3, -3]:
-            result = expo(base, exponent)
-            print(f"{base} 的 {exponent} 次方等于 {result}")
-
-
-    if __name__ == "__main__":
-        main()
-
-    # 运行结果
-    # 2 的 3 次方等于 8
-    # 2 的 -3 次方等于 1
-    ```
-
-4. 另一个实现`expo`函数的策略使用下面这个递归。请定义使用这个策略的递归函数`expo`，并使用大O表示法描述它的计算复杂度。
-
-    ```python
-    expo(number，exponent)
-    = 1，当 exponent = 0 的时候
-    = number * expo(number, exponent −1)，当exponent为奇数的时候
-    = (expo(number, exponent/2))2，当exponent为偶数的时候
-    ```
-
-    解答：
-
-    下面实现expo函数是通过递归实现，并采用了分而治之的策略。
-
-    - 如果指数是奇数，就把问题分解为一个更小的版本（即`num * num^(exp - 1)`）；
-    - 如果指数是偶数，则可以将指数分成两半，并只计算其中的一半（即`num^(exp / 2) * num^(exp / 2)`）。
-
-    这就利用了幂的性质`a^(m * n) = (a^m)^n`。
-
-    该递归实现的时间复杂度为`O(log n)`，其中n为指数。这是因为在指数为偶数的情况下，每次递归调用都会把问题规模缩小一半，类似于二分查找等课分割问题。
-    空间复杂度也是`O(log n)`，这主要是由于函数调用栈的深度在指数为偶数的情况下，会变为原来的一半。
-
-    ```python
-    def expo(number, exponent):
-        if exponent <= 0:
-            return 1
-        elif exponent % 2 == 1:  # 当 exponent 为奇数
-            return number * expo(number, exponent - 1)
-        else:  # 当 exponent 为偶数
-            half_expo = expo(number, exponent // 2)
-            return half_expo * half_expo
-    
-    
-    def main():
-        # 测试
-        base = 2
-    
-        for exponent in [3, -3]:
-            result = expo(base, exponent)
-            print(f"{base} 的 {exponent} 次方等于 {result}")
-    
-    
-    if __name__ == "__main__":
-        main()
-    
-    # 运行结果
-    # 2 的 3 次方等于 8
-    # 2 的 -3 次方等于 1
-    ```
-
-5. Python中list里的sort方法包含一个用关键字命名的参数reverse，它的默认值为False。程序员可以通过覆盖这个值以对列表进行降序排序。修改本章讨论的selectionSort函数，使它可以提供这个附加参数来让程序员决定排序的方向。
-
-    解答：
-
-    通过添加一个名为`reverse`的参数来修改`selectionSort`函数，以便让程序员决定排序的方向。如果`reverse`为`True`，排序将是降序的，如果为`False`（默认值），排序将是升序的。
-
-    下面是修改后的`selectionSort`函数：
-
-    ```python
-    def swap(lyst, i, j):
-        """交换元素位置为i和j的元素"""
-        temp = lyst[i]
-        lyst[i] = lyst[j]
-        lyst[j] = temp
-
-
-    def selectionSort(lyst, reverse=False):
-        """实现交换排序算法，可以选择升序或降序排序"""
-        i = 0
-        while i < len(lyst) - 1:  # 实现n-1次搜索
-            index = i  # 最小或最大元素位置
-            j = i + 1
-            while j < len(lyst):  # 向后遍历搜索，更新最小或最大元素位置
-                if not reverse:
-                    if (lyst[j] < lyst[index]):
-                        index = j
-                else:
-                    if (lyst[j] > lyst[index]):
-                        index = j
-                j += 1
-            if index != i:  # 如果需要，则交换元素位置
-                swap(lyst, index, i)
-            i += 1
-
-
-    def main():
-        myList = [9, 4, 2, 7, 6, 8, 1]
-        print("Before selection sort ", myList)
-        selectionSort(myList)
-        print("After selection sort ", myList)
-
-
-    if __name__ == "__main__":
-        main()
-
-    # 运行结果：
-    # Before selection sort  [9, 4, 2, 7, 6, 8, 1]
-    # After selection sort  [1, 2, 4, 6, 7, 8, 9]
-    ```
-
-6. 修改递归斐波那契函数，让它支持本章里讨论过的记忆化技术。这个函数应添加一个字典类型的参数。它的顶层调用会接收一个空字典作为参数，这个字典的键和值应该是递归调用所传递的参数和计算出的值。之后，用本章讨论过的计数器对象对递归调用的数量进行统计。
-
-    解答：
-
-    下面是一个修改后的版本，它使用一个字典（缓存）来存储已计算的结果，并且添加了一个计数器对象来统计递归调用次数。这个代码会输出指定项数的斐波那契数以及递归调用的总次数。记忆化技术可以显著提高斐波那契函数的性能，避免了重复计算。
-
-    ```python
-    class Counter:
-
-        def __init__(self):
-            self.count = 0
-
-        def increment(self):
-            self.count += 1
-
-
-    def fib(n, cache, counter):
-        """斐波那契递归数列，带有记忆化和调用计数器"""
-        if n in cache:
-            return cache[n]
-
-        counter.increment()
-
-        if n <= 1:
-            result = 1
+    for target in [5, 11]:
+        comparisons, index = ordered_sequential_search(arr, target)
+        if index != -1:
+            print(f"目标 {target} 在索引 {index} 处找到，比较次数为 {comparisons}")
         else:
-            result = fib(n - 1, cache, counter) + fib(n - 2, cache, counter)
+            print(f"目标 {target} 未找到，比较次数为 {comparisons}")
+    
+    
+if __name__ == "__main__":
+    main()
 
-        cache[n] = result
-        return result
+# 运行结果
+# 目标 5 在索引 4 处找到，比较次数为 5
+# 目标 11 未找到，比较次数为 10
+```
 
+2．列表的`reverse`方法用来反转列表里的元素。定义一个叫作`reverse`的函数，这个函数可以在不使用`reverse`方法的情况下，反转列表参数里的所有元素。尝试让这个函数尽可能地高效，并使用大O表示法描述它的计算复杂度。
 
-    def main():
-        n = 10  # 你可以设置不同的斐波那契数列项数
-        cache = {}  # 用于缓存已计算结果的字典
-        counter = Counter()  # 用于计数递归调用次数的计数器对象
-        result = fib(n, cache, counter)
+解答：
 
-        print(f"Fibonacci({n}) = {result}")
-        print(f"Total recursive calls: {counter.count}")
+只需要遍历列表的一半，我们就能到达列表的中间位置把列表两边的元素互换，这样就完成了列表的反转。
 
+这个算法的时间复杂度是`O(n/2)`，其中`n`是列表的长度。但在大O表示法中，常数被忽略，因此该算法的时间复杂度是`O(n)`。在这个算法中，`n`就代表着列表的长度。意味着时间复杂度受列表长度的影响。列表长度每增加一次，执行反转的时间就增加一次。这就是`O(n)`的概念。
 
-    if __name__ == "__main__":
-        main()
+这个函数的空间复杂度是`O(1)`，因为它只是在原地修改列表，不需要额外的存储空间。
 
-    # 运行结果：
-    # Fibonacci(10) = 89
-    # Total recursive calls: 11
-    ```
+代码如下：
 
-7. 分析上面斐波那契数列里定义的记忆化斐波那契函数的性能，统计这个函数递归调用的次数。使用大O表示法描述它的计算复杂度，并证明你的答案是合理的。
+```python
+def custom_reverse(arr):
+    left, right = 0, len(arr) - 1
 
-    解答：
+    while left < right:
+        arr[left], arr[right] = arr[right], arr[left]
+        left += 1
+        right -= 1
+    
+    
+def main():
+    # 测试列表reverse方法
+    my_list = [1, 2, 3, 4, 5]
+    my_list.reverse()
+    print(my_list)
+    # 测试自定义的reverse方法
+    my_list = [1, 2, 3, 4, 5]
+    custom_reverse(my_list)
+    print(my_list)
+    
+    
+if __name__ == "__main__":
+    main()
 
-    在上面的记忆化斐波那契函数中，我们使用了记忆化技术来避免重复计算。这种优化会显著减少计算时间，因为每个斐波那契数只会被计算一次。
+# 运行结果
+# [5, 4, 3, 2, 1]
+# [5, 4, 3, 2, 1]
+```
 
-    计算复杂度分析：
+3．Python的pow函数会返回数字特定幂次的结果。定义执行这个任务的expo函数，并使用大O表示法描述它的计算复杂度。这个函数的第一个参数是数字，第二个参数是指数（非负数）。你可以通过循环或递归函数来实现，但不要使用Python内置的**运算符或是pow函数。
 
-    - 记忆化斐波那契函数的计算复杂度是 `O(n)`。这是因为它需要计算斐波那契数列的前 `n` 项，每一项只需计算一次，然后存储在缓存中。因此，总共执行的计算量与 `n` 成正比，即 `O(n)`。
+解答：
 
-    递归调用次数：
+下面实现的`expo`函数使用循环来连续乘以`base`，循环的次数等于`exponent`的值。
 
-    - 递归调用的次数取决于输入参数 `n`。对于斐波那契数列，递归调用的次数大致等于 `n`。因为每个项需要计算一次，所以递归调用的次数与计算的项数是一致的。
+时间复杂度是`O(exponent)`，其中`exponent`是指数的值。
 
-    所以，这个记忆化斐波那契函数的计算复杂度是 `O(n)`，而递归调用的次数也大致等于 `n`。这个性能是相对较好的，因为它避免了指数级别的重复计算，而是线性地计算斐波那契数列的各项。
+- 最好情况：O(exponent)
+- 最坏情况：O(exponent)
+- 平均情况：O(exponent)
 
-8. 函数makeRandomList会创建并返回一个给定大小（它的参数）的数字列表。列表里的数字没有重复，它们的范围为1～size，位置是随机的。下面是这个函数的代码。可以假定range、randint和append函数都是常数时间的复杂度。还可以假设random.randint随着参数之间差值的增加而更少地返回重复的数字。使用大O表示法描述这个函数的计算复杂度，并证明你的答案是合理的。
-
-    ```python
-    def makeRandomList(size):
-        lyst = []
-        for count in range(size):
-            while True:
-                number = random.randint(1, size)
-                if not number in lyst:
-                    lyst.append(number)
-                    break
-        return lyst
-    ```
-
-    解答：
-
-    这个函数的计算复杂度取决于它的内部循环，该循环会不断生成随机数，并检查它是否已经在列表 `lyst` 中。具体分析如下：
-
-    1. 创建一个空列表 `lyst`，时间复杂度为 O(1)。
-
-    2. 进入 `for` 循环，循环次数为 `size`，时间复杂度为 O(size)。
-
-    3. 在内部 `while` 循环中，生成一个随机数 `number`，最坏情况下需要生成 `size` 次随机数才能找到一个不在 `lyst` 中的数字。这部分的时间复杂度为 O(size)。
-
-    综上所述，这个函数的总体时间复杂度为 O(size^2)。这是因为在最坏情况下，每次生成的随机数都需要检查是否在 `lyst` 中，而随机数的生成可能需要多次才能生成一个不在列表中的数字。
-
-    需要注意的是，随着 `size` 的增加，内部循环的迭代次数也会增加，导致时间复杂度呈二次增长。因此，这个函数的性能在大规模数据上可能会受到限制。如果需要更好的性能，可以考虑其他算法，以避免重复检查和生成随机数。
-
-    ```Python
-    import random
-
-
-    def makeRandomList(size):
-        lyst = []
-        for count in range(size):
-            while True:
-                number = random.randint(1, size)
-                if not number in lyst:
-                    lyst.append(number)
-                    break
-            print("count=", count, "list=", lyst)
-        return lyst
+```python
+def expo(base, exponent):
+    result = 1
+    for _ in range(exponent):
+        result *= base
+    return result
 
 
-    def main():
-        print("final list=", makeRandomList(10))
+def main():
+    # 测试
+    base = 2
+    
+    for exponent in [3, -3]:
+        result = expo(base, exponent)
+        print(f"{base} 的 {exponent} 次方等于 {result}")
 
 
-    if __name__ == "__main__":
-        main()
+if __name__ == "__main__":
+    main()
 
-    # 运行结果：
-    # count= 0 list= [2]
-    # count= 1 list= [2, 10]
-    # count= 2 list= [2, 10, 9]
-    # count= 3 list= [2, 10, 9, 5]
-    # count= 4 list= [2, 10, 9, 5, 3]
-    # count= 5 list= [2, 10, 9, 5, 3, 4]
-    # count= 6 list= [2, 10, 9, 5, 3, 4, 8]
-    # count= 7 list= [2, 10, 9, 5, 3, 4, 8, 7]
-    # count= 8 list= [2, 10, 9, 5, 3, 4, 8, 7, 6]
-    # count= 9 list= [2, 10, 9, 5, 3, 4, 8, 7, 6, 1]
-    # final list= [2, 10, 9, 5, 3, 4, 8, 7, 6, 1]
-    ```
+# 运行结果
+# 2 的 3 次方等于 8
+# 2 的 -3 次方等于 1
+```
 
-9. 修改quicksort函数，让它可以对任何尺寸小于50的子列表调用插入排序。使用有50、500和5000个元素的数据集比较这个版本与原始版本的性能。然后调整这个阈值，从而确定使用插入排序的最佳设置。
+4．另一个实现`expo`函数的策略使用下面这个递归。请定义使用这个策略的递归函数`expo`，并使用大O表示法描述它的计算复杂度。
 
-    解答：
+```python
+expo(number，exponent)
+= 1，当 exponent = 0 的时候
+= number * expo(number, exponent −1)，当exponent为奇数的时候
+= (expo(number, exponent/2))2，当exponent为偶数的时候
+```
 
-    可以在 quicksortHelper 函数中添加一个条件，检查子列表的大小。然后再修改 quicksort 函数，实现在小于50的子列表上使用插入排序。
+解答：
 
-    如果子列表的大小小于50，就使用插入排序算法，否则使用快速排序算法。下面是修改后的代码：
+下面实现expo函数是通过递归实现，并采用了分而治之的策略。
 
-    ```python
-    import random
+- 如果指数是奇数，就把问题分解为一个更小的版本（即`num * num^(exp - 1)`）；
+- 如果指数是偶数，则可以将指数分成两半，并只计算其中的一半（即`num^(exp / 2) * num^(exp / 2)`）。
+
+这就利用了幂的性质`a^(m * n) = (a^m)^n`。
+
+该递归实现的时间复杂度为`O(log n)`，其中n为指数。这是因为在指数为偶数的情况下，每次递归调用都会把问题规模缩小一半，类似于二分查找等课分割问题。
+空间复杂度也是`O(log n)`，这主要是由于函数调用栈的深度在指数为偶数的情况下，会变为原来的一半。
+
+```python
+def expo(number, exponent):
+    if exponent <= 0:
+        return 1
+    elif exponent % 2 == 1:  # 当 exponent 为奇数
+        return number * expo(number, exponent - 1)
+    else:  # 当 exponent 为偶数
+        half_expo = expo(number, exponent // 2)
+        return half_expo * half_expo
+    
+    
+def main():
+    # 测试
+    base = 2
+
+    for exponent in [3, -3]:
+        result = expo(base, exponent)
+        print(f"{base} 的 {exponent} 次方等于 {result}")
+    
+    
+if __name__ == "__main__":
+    main()
+    
+# 运行结果
+# 2 的 3 次方等于 8
+# 2 的 -3 次方等于 1
+```
+
+5．Python中list里的sort方法包含一个用关键字命名的参数reverse，它的默认值为False。程序员可以通过覆盖这个值以对列表进行降序排序。修改本章讨论的selectionSort函数，使它可以提供这个附加参数来让程序员决定排序的方向。
+
+解答：
+
+通过添加一个名为`reverse`的参数来修改`selectionSort`函数，以便让程序员决定排序的方向。如果`reverse`为`True`，排序将是降序的，如果为`False`（默认值），排序将是升序的。
+
+下面是修改后的`selectionSort`函数：
+
+```python
+def swap(lyst, i, j):
+    """交换元素位置为i和j的元素"""
+    temp = lyst[i]
+    lyst[i] = lyst[j]
+    lyst[j] = temp
 
 
-    def swap(lyst, i, j):
-        """交换元素位置为i和j的元素"""
-        temp = lyst[i]
-        lyst[i] = lyst[j]
-        lyst[j] = temp
-
-
-    def quicksort(lyst):
-        quicksortHelper(lyst, 0, len(lyst) - 1)
-
-
-    def quicksortHelper(lyst, left, right):
-        if left < right:
-            # 检查子列表的大小是否小于50
-            if right - left < 50:
-                # 如果小于50，使用插入排序
-                insertionSort(lyst, left, right)
+def selectionSort(lyst, reverse=False):
+    """实现交换排序算法，可以选择升序或降序排序"""
+    i = 0
+    while i < len(lyst) - 1:  # 实现n-1次搜索
+        index = i  # 最小或最大元素位置
+        j = i + 1
+        while j < len(lyst):  # 向后遍历搜索，更新最小或最大元素位置
+            if not reverse:
+                if (lyst[j] < lyst[index]):
+                    index = j
             else:
-                pivotLocation = partition(lyst, left, right)
-                quicksortHelper(lyst, left, pivotLocation - 1)
-                quicksortHelper(lyst, pivotLocation + 1, right)
+                if (lyst[j] > lyst[index]):
+                    index = j
+            j += 1
+        if index != i:  # 如果需要，则交换元素位置
+            swap(lyst, index, i)
+        i += 1
 
 
-    def partition(lyst, left, right):
-        """对列表进行分区"""
-        # 找到基准元素（pivot），并和最后一个元素互换
-        middle = (left + right) // 2
-        pivot = lyst[middle]
-        lyst[middle] = lyst[right]
-        lyst[right] = pivot
-
-        # 设定边界元素（boundary point），初始是第一个元素
-        boundary = left
-        print("pivot: ", pivot, "boundary: ", lyst[boundary])
-
-        # 把所有小于基准的元素都移动到边界的左边
-        for index in range(left, right):
-            if lyst[index] < pivot:
-                swap(lyst, index, boundary)
-                boundary += 1
-
-        # 交换基准元素和边界元素
-        swap(lyst, right, boundary)
-        print(lyst)
-        return boundary
+def main():
+    myList = [9, 4, 2, 7, 6, 8, 1]
+    print("Before selection sort ", myList)
+    selectionSort(myList)
+    print("After selection sort ", myList)
 
 
-    def insertionSort(lyst, left, right):
-        """插入排序算法"""
-        for i in range(left + 1, right + 1):
-            currentElement = lyst[i]
-            j = i
-            while j > left and currentElement < lyst[j - 1]:
-                lyst[j] = lyst[j - 1]
-                j -= 1
-            lyst[j] = currentElement
+if __name__ == "__main__":
+    main()
+
+# 运行结果：
+# Before selection sort  [9, 4, 2, 7, 6, 8, 1]
+# After selection sort  [1, 2, 4, 6, 7, 8, 9]
+```
+
+6．修改递归斐波那契函数，让它支持本章里讨论过的记忆化技术。这个函数应添加一个字典类型的参数。它的顶层调用会接收一个空字典作为参数，这个字典的键和值应该是递归调用所传递的参数和计算出的值。之后，用本章讨论过的计数器对象对递归调用的数量进行统计。
+
+解答：
+
+下面是一个修改后的版本，它使用一个字典（缓存）来存储已计算的结果，并且添加了一个计数器对象来统计递归调用次数。这个代码会输出指定项数的斐波那契数以及递归调用的总次数。记忆化技术可以显著提高斐波那契函数的性能，避免了重复计算。
+
+```python
+class Counter:
+
+    def __init__(self):
+        self.count = 0
+
+    def increment(self):
+        self.count += 1
 
 
-    def main(size=20, sort=quicksort):
-        lyst = [random.randint(1, size) for _ in range(size)]
-        print("Before sorted", lyst)
-        sort(lyst)
-        print("After sorted", lyst)
+def fib(n, cache, counter):
+    """斐波那契递归数列，带有记忆化和调用计数器"""
+    if n in cache:
+        return cache[n]
+
+    counter.increment()
+
+    if n <= 1:
+        result = 1
+    else:
+        result = fib(n - 1, cache, counter) + fib(n - 2, cache, counter)
+
+    cache[n] = result
+    return result
 
 
-    if __name__ == "__main__":
-        main()
+def main():
+    n = 10  # 你可以设置不同的斐波那契数列项数
+    cache = {}  # 用于缓存已计算结果的字典
+    counter = Counter()  # 用于计数递归调用次数的计数器对象
+    result = fib(n, cache, counter)
 
-    # 运行结果：
-    # Before sorted [1, 3, 6, 14, 9, 6, 14, 15, 17, 13, 4, 3, 1, 13, 11, 16, 2, 4, 6, 2]
-    # After sorted [1, 1, 2, 2, 3, 3, 4, 4, 6, 6, 6, 9, 11, 13, 13, 14, 14, 15, 16, 17]
-    ```
+    print(f"Fibonacci({n}) = {result}")
+    print(f"Total recursive calls: {counter.count}")
 
-10. 计算机使用名为调用栈的结构来为递归函数的调用提供支持。一般而言，计算机会为函数的每次调用都保留一定数量的内存。因此，可以对递归函数使用的内存数量进行复杂度分析。请说明递归阶乘函数和递归斐波那契函数使用的内存的计算复杂度。
 
-    解答：
+if __name__ == "__main__":
+    main()
 
-    递归阶乘函数和递归斐波那契函数使用的内存的计算复杂度都与递归的深度（递归调用的层数）相关。递归函数每次调用都会在调用栈中分配一定数量的内存，包括函数的参数、局部变量以及返回地址等信息。
+# 运行结果：
+# Fibonacci(10) = 89
+# Total recursive calls: 11
+```
 
-    1. 递归阶乘函数的内存复杂度：
-       - 递归阶乘函数是一个非常简单的递归函数，它只需要保存一个整数参数 `n` 和返回地址。因此，它的内存复杂度是 O(1)，与输入参数 `n` 的大小无关。每个递归调用都只需要常数级别的内存空间。
+7．分析上面斐波那契数列里定义的记忆化斐波那契函数的性能，统计这个函数递归调用的次数。使用大O表示法描述它的计算复杂度，并证明你的答案是合理的。
 
-    2. 递归斐波那契函数的内存复杂度：
-       - 递归斐波那契函数的内存复杂度取决于递归的深度。每个递归调用都需要保存两个整数参数 `n` 和 `depth`，以及返回地址。因此，每次递归调用需要的内存空间是常数级别的。
-       - 递归斐波那契函数的递归深度取决于输入参数 `n`。具体来说，递归深度等于 `n`。因此，递归斐波那契函数的内存复杂度是 O(n)，与输入参数 `n` 成正比。
+解答：
 
-    总结来说，递归阶乘函数的内存复杂度是 O(1)，而递归斐波那契函数的内存复杂度是 O(n)。在递归算法中，内存复杂度通常与递归深度成正比，因此需要谨慎处理递归调用，以避免出现栈溢出等问题。可以使用迭代或动态规划等方法来降低内存消耗。
+在上面的记忆化斐波那契函数中，我们使用了记忆化技术来避免重复计算。这种优化会显著减少计算时间，因为每个斐波那契数只会被计算一次。
+
+计算复杂度分析：
+
+- 记忆化斐波那契函数的计算复杂度是 `O(n)`。这是因为它需要计算斐波那契数列的前 `n` 项，每一项只需计算一次，然后存储在缓存中。因此，总共执行的计算量与 `n` 成正比，即 `O(n)`。
+
+递归调用次数：
+
+- 递归调用的次数取决于输入参数 `n`。对于斐波那契数列，递归调用的次数大致等于 `n`。因为每个项需要计算一次，所以递归调用的次数与计算的项数是一致的。
+
+所以，这个记忆化斐波那契函数的计算复杂度是 `O(n)`，而递归调用的次数也大致等于 `n`。这个性能是相对较好的，因为它避免了指数级别的重复计算，而是线性地计算斐波那契数列的各项。
+
+8．函数makeRandomList会创建并返回一个给定大小（它的参数）的数字列表。列表里的数字没有重复，它们的范围为1～size，位置是随机的。下面是这个函数的代码。可以假定range、randint和append函数都是常数时间的复杂度。还可以假设random.randint随着参数之间差值的增加而更少地返回重复的数字。使用大O表示法描述这个函数的计算复杂度，并证明你的答案是合理的。
+
+```python
+def makeRandomList(size):
+    lyst = []
+    for count in range(size):
+        while True:
+            number = random.randint(1, size)
+            if not number in lyst:
+                lyst.append(number)
+                break
+    return lyst
+```
+
+解答：
+
+这个函数的计算复杂度取决于它的内部循环，该循环会不断生成随机数，并检查它是否已经在列表 `lyst` 中。具体分析如下：
+
+1. 创建一个空列表 `lyst`，时间复杂度为 O(1)。
+2. 进入 `for` 循环，循环次数为 `size`，时间复杂度为 O(size)。
+3. 在内部 `while` 循环中，生成一个随机数 `number`，最坏情况下需要生成 `size` 次随机数才能找到一个不在 `lyst` 中的数字。这部分的时间复杂度为 O(size)。
+
+综上所述，这个函数的总体时间复杂度为 O(size^2)。这是因为在最坏情况下，每次生成的随机数都需要检查是否在 `lyst` 中，而随机数的生成可能需要多次才能生成一个不在列表中的数字。
+
+需要注意的是，随着 `size` 的增加，内部循环的迭代次数也会增加，导致时间复杂度呈二次增长。因此，这个函数的性能在大规模数据上可能会受到限制。如果需要更好的性能，可以考虑其他算法，以避免重复检查和生成随机数。
+
+```Python
+import random
+
+
+def makeRandomList(size):
+    lyst = []
+    for count in range(size):
+        while True:
+            number = random.randint(1, size)
+            if not number in lyst:
+                lyst.append(number)
+                break
+        print("count=", count, "list=", lyst)
+    return lyst
+
+
+def main():
+    print("final list=", makeRandomList(10))
+
+
+if __name__ == "__main__":
+    main()
+
+# 运行结果：
+# count= 0 list= [2]
+# count= 1 list= [2, 10]
+# count= 2 list= [2, 10, 9]
+# count= 3 list= [2, 10, 9, 5]
+# count= 4 list= [2, 10, 9, 5, 3]
+# count= 5 list= [2, 10, 9, 5, 3, 4]
+# count= 6 list= [2, 10, 9, 5, 3, 4, 8]
+# count= 7 list= [2, 10, 9, 5, 3, 4, 8, 7]
+# count= 8 list= [2, 10, 9, 5, 3, 4, 8, 7, 6]
+# count= 9 list= [2, 10, 9, 5, 3, 4, 8, 7, 6, 1]
+# final list= [2, 10, 9, 5, 3, 4, 8, 7, 6, 1]
+```
+
+9．修改quicksort函数，让它可以对任何尺寸小于50的子列表调用插入排序。使用有50、500和5000个元素的数据集比较这个版本与原始版本的性能。然后调整这个阈值，从而确定使用插入排序的最佳设置。
+
+解答：
+
+可以在 quicksortHelper 函数中添加一个条件，检查子列表的大小。然后再修改 quicksort 函数，实现在小于50的子列表上使用插入排序。
+
+如果子列表的大小小于50，就使用插入排序算法，否则使用快速排序算法。下面是修改后的代码：
+
+```python
+import random
+
+
+def swap(lyst, i, j):
+    """交换元素位置为i和j的元素"""
+    temp = lyst[i]
+    lyst[i] = lyst[j]
+    lyst[j] = temp
+
+
+def quicksort(lyst):
+    quicksortHelper(lyst, 0, len(lyst) - 1)
+
+
+def quicksortHelper(lyst, left, right):
+    if left < right:
+        # 检查子列表的大小是否小于50
+        if right - left < 50:
+            # 如果小于50，使用插入排序
+            insertionSort(lyst, left, right)
+        else:
+            pivotLocation = partition(lyst, left, right)
+            quicksortHelper(lyst, left, pivotLocation - 1)
+            quicksortHelper(lyst, pivotLocation + 1, right)
+
+
+def partition(lyst, left, right):
+    """对列表进行分区"""
+    # 找到基准元素（pivot），并和最后一个元素互换
+    middle = (left + right) // 2
+    pivot = lyst[middle]
+    lyst[middle] = lyst[right]
+    lyst[right] = pivot
+
+    # 设定边界元素（boundary point），初始是第一个元素
+    boundary = left
+    print("pivot: ", pivot, "boundary: ", lyst[boundary])
+
+    # 把所有小于基准的元素都移动到边界的左边
+    for index in range(left, right):
+        if lyst[index] < pivot:
+            swap(lyst, index, boundary)
+            boundary += 1
+
+    # 交换基准元素和边界元素
+    swap(lyst, right, boundary)
+    print(lyst)
+    return boundary
+
+
+def insertionSort(lyst, left, right):
+    """插入排序算法"""
+    for i in range(left + 1, right + 1):
+        currentElement = lyst[i]
+        j = i
+        while j > left and currentElement < lyst[j - 1]:
+            lyst[j] = lyst[j - 1]
+            j -= 1
+        lyst[j] = currentElement
+
+
+def main(size=20, sort=quicksort):
+    lyst = [random.randint(1, size) for _ in range(size)]
+    print("Before sorted", lyst)
+    sort(lyst)
+    print("After sorted", lyst)
+
+
+if __name__ == "__main__":
+    main()
+
+# 运行结果：
+# Before sorted [1, 3, 6, 14, 9, 6, 14, 15, 17, 13, 4, 3, 1, 13, 11, 16, 2, 4, 6, 2]
+# After sorted [1, 1, 2, 2, 3, 3, 4, 4, 6, 6, 6, 9, 11, 13, 13, 14, 14, 15, 16, 17]
+```
+
+10．计算机使用名为调用栈的结构来为递归函数的调用提供支持。一般而言，计算机会为函数的每次调用都保留一定数量的内存。因此，可以对递归函数使用的内存数量进行复杂度分析。请说明递归阶乘函数和递归斐波那契函数使用的内存的计算复杂度。
+
+解答：
+
+递归阶乘函数和递归斐波那契函数使用的内存的计算复杂度都与递归的深度（递归调用的层数）相关。递归函数每次调用都会在调用栈中分配一定数量的内存，包括函数的参数、局部变量以及返回地址等信息。
+
+1. 递归阶乘函数的内存复杂度：
+    - 递归阶乘函数是一个非常简单的递归函数，它只需要保存一个整数参数 `n` 和返回地址。因此，它的内存复杂度是 O(1)，与输入参数 `n` 的大小无关。每个递归调用都只需要常数级别的内存空间。
+
+2. 递归斐波那契函数的内存复杂度：
+    - 递归斐波那契函数的内存复杂度取决于递归的深度。每个递归调用都需要保存两个整数参数 `n` 和 `depth`，以及返回地址。因此，每次递归调用需要的内存空间是常数级别的。
+    - 递归斐波那契函数的递归深度取决于输入参数 `n`。具体来说，递归深度等于 `n`。因此，递归斐波那契函数的内存复杂度是 O(n)，与输入参数 `n` 成正比。
+
+总结来说，递归阶乘函数的内存复杂度是 O(1)，而递归斐波那契函数的内存复杂度是 O(n)。在递归算法中，内存复杂度通常与递归深度成正比，因此需要谨慎处理递归调用，以避免出现栈溢出等问题。可以使用迭代或动态规划等方法来降低内存消耗。
