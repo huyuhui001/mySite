@@ -196,6 +196,9 @@ nav:
     - 基础知识回顾: python/DataStructure/01_PythonFundmantal.md
     - 多项集的概述: python/DataStructure/02_CollectionsOverview.md
     - 搜索、排序以及复杂度分析: python/DataStructure/03_TimeComplexity.md
+    - 数组和链接结构: python/DataStructure/04_ArrayChain.md
+    - 接口、实现和多态: python/DataStructure/05_InterfacePolymorphism.md
+    - 继承与抽象类: python/DataStructure/06_InheritanceAbstractClass.md
   - Demos:
     - 选课系统: python/Demo/CourseSystem.md
 
