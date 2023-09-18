@@ -17,6 +17,66 @@
 
 ## 4.1.数组数据结构
 
+关于数组（array）：
+
+- 数组是指在给定索引位置可以访问和替换的元素序列。
+- Python列表的底层数据结构正是一个数组。
+- Python中数组的限制要比列表更多。只能在指定位置访问和替换数组中的元素、检查数组的长度、获取它的字符串表达式；不能基于位置添加或删除元素；数组的长度也就是它的容量，在创建之后就是固定的。
+
+Python的`array`模块包含一个叫作`array`的类，它非常类似于列表，但是只能存储数字。我们会定义一个叫作`Array`的新类，使用列表保存元素，存储任何类型的元素。
+
+```python
+class Array(object):
+    """
+    描述一个数组。
+    数组类似列表，但数组只能使用[], len, iter, 和 str这些属性。
+    实例化一个数组，使用 <variable> = Array(<capacity>, <optional fill value>) 其中fill value默认值是None。
+    """
+
+    def __init__(self, capacity, fillValue=None):
+        """Capacity是数组的大小.  fillValue会填充在每个元素位置, 默认值是None"""
+        self.items = list()
+        for count in range(capacity):
+            self.items.append(fillValue)
+
+    def __len__(self):
+        """-> 数组的大小"""
+        return len(self.items)
+
+    def __str__(self):
+        """-> 将数组字符串化"""
+        return str(self.items)
+
+    def __iter__(self):
+        """支持for循环对数组进行遍历."""
+        return iter(self.items)
+
+    def __getitem__(self, index):
+        """用于访问索引处的下标运算符."""
+        return self.items[index]
+
+    def __setitem__(self, index, newItem):
+        """下标运算符用于在索引处进行替换."""
+        self.items[index] = newItem
+```
+
+```python
+def main(size=10):
+    my_array = Array(5)
+    print("The array is", my_array)
+    print("__len__() of the array:", my_array.__len__())
+    print("len() of the arry:", len(my_array))
+
+
+# 运行结果：
+# The array is [None, None, None, None, None]
+# __len__() of the array: 5
+# len() of the arry: 5
+```
+
+
+
+
 ### 4.1.1.随机访问和连续内存
 
 ### 4.1.2.静态内存和动态内存
