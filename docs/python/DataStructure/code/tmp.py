@@ -45,12 +45,11 @@ def main(size=10):
         my_array[i] = i
         print(i)
 
-# 运行结果：
-# The array is [None, None, None, None, None]
-# __len__() of the array: 5
-# len() of the arry: 5
 
 if __name__ == "__main__":
     main()
 
 # 运行结果：
+# The array is [None, None, None, None, None]
+# __len__() of the array: 5
+# len() of the arry: 5
