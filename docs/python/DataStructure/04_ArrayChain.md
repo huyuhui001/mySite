@@ -25,6 +25,8 @@
 
 Python的`array`模块包含一个叫作`array`的类，它非常类似于列表，但是只能存储数字。我们会定义一个叫作`Array`的新类，使用列表保存元素，存储任何类型的元素。
 
+下面的示例定义了一个数组以及对应用法。
+
 ```python
 class Array(object):
     """
@@ -58,27 +60,70 @@ class Array(object):
     def __setitem__(self, index, newItem):
         """下标运算符用于在索引处进行替换."""
         self.items[index] = newItem
-```
 
-```python
+
 def main(size=10):
     my_array = Array(5)
-    print("The array is", my_array)
-    print("__len__() of the array:", my_array.__len__())
-    print("len() of the arry:", len(my_array))
+    print("The array is: ", my_array)
+    print("__len__() of the array: ", my_array.__len__())
+    print("len() of the arry: ", len(my_array))
 
+    for i in range(len(my_array)):
+        my_array[i] = i
+
+    for i in my_array:
+        print(my_array[i], end=" ")
+
+
+if __name__ == "__main__":
+    main()
 
 # 运行结果：
 # The array is [None, None, None, None, None]
 # __len__() of the array: 5
 # len() of the arry: 5
+# 0 1 2 3 4
 ```
 
 ### 4.1.1.随机访问和连续内存
 
+通过下标操作或索引操作实现对数组在指定位置对元素进行存储或检索。
+
+数组索引是随机访问（random access）操作，而在随机访问时，计算机总会执行固定的步骤来获取第`i`个元素的位置。因此，不论数组有多大，访问第一个元素所需的时间和访问最后一个元素所需要的时间都是相同的。
+
+计算机通过分配一块连续内存（contiguous memory）单元来存储数组里的元素，从而支持对数组的随机访问。
+
+由于数组里的元素地址都是按照数字顺序进行排列的，因此可以通过添加两个值来计算出数组元素的机器地址，它们是数组的基地址（base address）以及元素的偏移量（offset）。其中，数组的基地址就是第一个元素的机器地址，而元素的偏移量就是它的索引值再乘以一个代表数组元素所需内存单元数的常量（在Python里，这个值始终是1）。
+
+简而言之，Python数组里的索引操作包括下面两个步骤：
+
+- 得到数组内存块的基地址。
+- 将索引值添加到这个地址并返回。
+
 ### 4.1.2.静态内存和动态内存
 
+在比较老的编程语言（如FORTRAN或Pascal）里，数组是静态数据结构。在这种情况下，数组的长度或容量在编译时就确定了，程序员需要申请足够多的内存来满足在数组里存储可能有最大数量元素的情况，这样做会浪费大量的内存。
+
+像Java和C++这类的现代编程语言会允许程序员创建动态数组（dynamic array），从而为这个问题提供了一种补救方法。和静态数组相似的是，动态数组也会占用一块连续内存，并支持随机访问。动态数组的长度只在运行时才知道，在动态数组实例化的时候指定它的长度。在Python里实现的Array类的行为也是这样的。
+
+我们可以通过另一种方法在运行时根据应用程序的数据要求来调整数组的长度，这些调整会由Python列表自动进行。这时，数组有以下3种不同形式。
+
+- 在程序启动时创建一个具有合理默认大小的数组。
+- 当数组无法容纳更多数据时，创建一个更大的新数组，并把旧数组里的数据元素传输给它。
+- 如果数组在浪费内存（应用程序删除了一些数据），那么用类似的方式减小数组的长度。
+
 ### 4.1.3.物理尺寸和逻辑尺寸
+
+数组的物理尺寸（physical size）是指数组单元的总数，或者创建数组时指定其容量的那个数字；
+
+数组的逻辑尺寸（logical size）是指当前应用程序使用的元素数量。
+
+
+
+
+
+
+
 
 ### 4.1.4.练习题
 

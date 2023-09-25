@@ -1,4 +1,4 @@
-import random
+# import random
 
 
 class Array(object):
@@ -37,13 +37,15 @@ class Array(object):
 
 def main(size=10):
     my_array = Array(5)
-    print("The array is", my_array)
-    print("__len__() of the array:", my_array.__len__())
-    print("len() of the arry:", len(my_array))
+    print("The array is: ", my_array)
+    print("__len__() of the array: ", my_array.__len__())
+    print("len() of the arry: ", len(my_array))
 
-    for i in len(my_array):
+    for i in range(len(my_array)):
         my_array[i] = i
-        print(i)
+
+    for i in my_array:
+        print(my_array[i], end=" ")
 
 
 if __name__ == "__main__":
@@ -53,3 +55,4 @@ if __name__ == "__main__":
 # The array is [None, None, None, None, None]
 # __len__() of the array: 5
 # len() of the arry: 5
+# 0 1 2 3 4
