@@ -1,6 +1,3 @@
-import random
-
-
 class Array(object):
     """
     描述一个数组。
@@ -36,20 +33,30 @@ class Array(object):
 
 
 def main(size=10):
-    my_array = Array(5)
-    print("The array is", my_array)
-    print("__len__() of the array:", my_array.__len__())
-    print("len() of the arry:", len(my_array))
+    DEFAULT_CAPACITY = 5
+    logicalSize = 0
+    my_array = Array(DEFAULT_CAPACITY)
 
-    for i in len(my_array):
+    print("Initial array is: ", my_array)
+    print("Len of the array: ", my_array.__len__())
+
+    for i in range(len(my_array)):
         my_array[i] = i
-        print(i)
+
+    print("The array is: ", my_array.items)
+
+    # 增大数组物理尺寸
+    if logicalSize == len(my_array):
+        temp = Array(len(my_array) * 2)  # 创建一个新数组
+        for i in range(logicalSize):
+            temp[i] = my_array[i]  # 从原数组复制内容到新数组
+        my_array = temp  # 把新数组赋值给原数组
 
 
 if __name__ == "__main__":
     main()
 
 # 运行结果：
-# The array is [None, None, None, None, None]
-# __len__() of the array: 5
-# len() of the arry: 5
+# Initial array is:  [None, None, None, None, None]
+# Len of the array:  5
+# The array is:  [0, 1, 2, 3, 4]
