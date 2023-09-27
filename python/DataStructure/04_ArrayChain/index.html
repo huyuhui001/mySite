@@ -86,29 +86,88 @@
     <span class=o>...</span>
 
 <span class=k>def</span> <span class=nf>main</span><span class=p>(</span><span class=n>size</span><span class=o>=</span><span class=mi>10</span><span class=p>):</span>
+    <span class=c1># 初始值</span>
     <span class=n>DEFAULT_CAPACITY</span> <span class=o>=</span> <span class=mi>5</span>
     <span class=n>logicalSize</span> <span class=o>=</span> <span class=mi>0</span>
     <span class=n>my_array</span> <span class=o>=</span> <span class=n>Array</span><span class=p>(</span><span class=n>DEFAULT_CAPACITY</span><span class=p>)</span>
 
+    <span class=c1># 打印输出初始数组信息</span>
     <span class=nb>print</span><span class=p>(</span><span class=s2>&quot;Initial array is: &quot;</span><span class=p>,</span> <span class=n>my_array</span><span class=p>)</span>
     <span class=nb>print</span><span class=p>(</span><span class=s2>&quot;Len of the array: &quot;</span><span class=p>,</span> <span class=n>my_array</span><span class=o>.</span><span class=fm>__len__</span><span class=p>())</span>
 
+    <span class=c1># 给数组赋值</span>
     <span class=k>for</span> <span class=n>i</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=nb>len</span><span class=p>(</span><span class=n>my_array</span><span class=p>)):</span>
         <span class=n>my_array</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>=</span> <span class=n>i</span>
 
-    <span class=nb>print</span><span class=p>(</span><span class=s2>&quot;The array is: &quot;</span><span class=p>,</span> <span class=n>my_array</span><span class=o>.</span><span class=n>items</span><span class=p>)</span>
+    <span class=nb>print</span><span class=p>(</span><span class=s2>&quot;The array is: &quot;</span><span class=p>,</span> <span class=n>my_array</span><span class=o>.</span><span class=n>items</span><span class=p>)</span>  <span class=c1># 打印输出数组</span>
 
     <span class=c1># 增大数组物理尺寸</span>
-    <span class=k>if</span> <span class=n>logicalSize</span> <span class=o>==</span> <span class=nb>len</span><span class=p>(</span><span class=n>my_array</span><span class=p>):</span>
-        <span class=n>temp</span> <span class=o>=</span> <span class=n>Array</span><span class=p>(</span><span class=nb>len</span><span class=p>(</span><span class=n>my_array</span><span class=p>)</span> <span class=o>*</span> <span class=mi>2</span><span class=p>)</span>  <span class=c1># 创建一个新数组</span>
-        <span class=k>for</span> <span class=n>i</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=n>logicalSize</span><span class=p>):</span>
-            <span class=n>temp</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>=</span> <span class=n>my_array</span><span class=p>[</span><span class=n>i</span><span class=p>]</span>  <span class=c1># 从原数组复制内容到新数组</span>
-        <span class=n>my_array</span> <span class=o>=</span> <span class=n>temp</span>  <span class=c1># 把新数组赋值给原数组</span>
+    <span class=k>while</span> <span class=n>logicalSize</span> <span class=o>&lt;</span> <span class=n>DEFAULT_CAPACITY</span> <span class=o>*</span> <span class=mi>2</span><span class=p>:</span>
+        <span class=n>logicalSize</span> <span class=o>+=</span> <span class=mi>1</span>
+        <span class=k>if</span> <span class=n>logicalSize</span> <span class=o>==</span> <span class=nb>len</span><span class=p>(</span><span class=n>my_array</span><span class=p>):</span>  <span class=c1># 触发条件</span>
+            <span class=n>temp</span> <span class=o>=</span> <span class=n>Array</span><span class=p>(</span><span class=nb>len</span><span class=p>(</span><span class=n>my_array</span><span class=p>)</span> <span class=o>+</span> <span class=mi>1</span><span class=p>)</span>  <span class=c1># 创建一个新数组</span>
+            <span class=k>for</span> <span class=n>i</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=n>logicalSize</span><span class=p>):</span>
+                <span class=n>temp</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>=</span> <span class=n>my_array</span><span class=p>[</span><span class=n>i</span><span class=p>]</span>  <span class=c1># 从原数组复制内容到新数组</span>
+            <span class=n>my_array</span> <span class=o>=</span> <span class=n>temp</span>  <span class=c1># 把新数组赋值给原数组</span>
 
+    <span class=nb>print</span><span class=p>(</span><span class=s2>&quot;The array after increased is: &quot;</span><span class=p>,</span> <span class=n>my_array</span><span class=o>.</span><span class=n>items</span><span class=p>)</span>  <span class=c1># 打印输出数组</span>
 
 <span class=k>if</span> <span class=vm>__name__</span> <span class=o>==</span> <span class=s2>&quot;__main__&quot;</span><span class=p>:</span>
     <span class=n>main</span><span class=p>()</span>
-</code></pre></div> <p>将数组尺寸翻倍来扩展数组的方式是一种常见的策略，通常用于减少动态数组的频繁扩展次数，以提高性能。这种方式的操作时间复杂度主要取决于扩展操作的频率和元素的复制成本。</p> <ul> <li>摊还分析：对于将数组尺寸翻倍的策略，摊还分析表明，每次扩展操作的摊还时间复杂度仍然是常数时间的（通常是O(1)），这意味着平均下来，每次扩展的开销是固定的，而不会随数组的大小线性增加。</li> <li>操作时间：假设数组需要扩展，那么将数组尺寸翻倍需要分配新的内存块并复制现有元素，这个操作的时间复杂度是O(n)，其中n是数组的当前大小。然而，由于扩展操作不是每次都执行的，而是当数组已满时才执行，因此可以认为这个操作的摊还时间是常数时间，即O(1)。</li> <li>空间复杂度：将数组尺寸翻倍会占用额外的内存空间，但随着数组的增长，额外内存的占用相对于数组本身的大小来说是有限的。通常情况下，这种占用可以接受。</li> </ul> <p>总结，将数组尺寸翻倍的策略可以显著减少动态数组的扩展次数，从而提高性能。虽然每次扩展操作可能会花费一些时间和额外内存，但这些开销在一系列操作中被平摊，平均下来是常数时间。这是一种高效的动态数组实现方式，常见于许多编程语言的标准库中，包括Python的列表（list）。</p> <p>在增加数组的长度时，每次增加一个内存单元，与每次增大数组尺寸时把数组尺寸翻倍相比，后者的方法通常更高效。</p> <ul> <li>每次增加一个内存单元：这种方式在每次添加新元素时都需要分配额外的内存，导致数组尺寸的增长是线性的。如果频繁添加元素，这将导致大量的内存分配和数据复制操作，因此时间复杂度会变得相对较高。</li> <li>每次增大数组尺寸时把数组尺寸翻倍：这是一种更高效的策略。在这种方式下，每次扩展操作都会增加数组的尺寸，但增幅是指数级的，而不是线性的。这意味着随着数组的增长，扩展操作的频率会减少，因为数组能够容纳更多元素。这样，虽然每次扩展操作需要复制更多的元素，但它们的摊还时间复杂度仍然是常数时间，因为它们不是每次都执行的。</li> </ul> <p>总结，将数组尺寸翻倍的策略通常更高效，因为它可以减少频繁的内存分配和复制操作，降低了时间复杂度。这是许多动态数组实现的常见做法，包括Python的列表（list）。</p> <h3 id=422>4.2.2.减小数组的尺寸<a class=headerlink href=#422 title="Permanent link"> ¶</a></h3> <h3 id=423>4.2.3.将元素插入增大的数组<a class=headerlink href=#423 title="Permanent link"> ¶</a></h3> <h3 id=424>4.2.4.从数组里删除元素<a class=headerlink href=#424 title="Permanent link"> ¶</a></h3> <h3 id=425>4.2.5.复杂度的权衡：时间、空间和数组<a class=headerlink href=#425 title="Permanent link"> ¶</a></h3> <h3 id=426>4.2.6.练习题<a class=headerlink href=#426 title="Permanent link"> ¶</a></h3> <p>1．请说明为什么插入或删除给定元素时必须要移动数组里的某些元素。</p> <p>2．在插入过程中，移动数组元素时，要先移动哪个元素？先移动插入位置的元素，还是最后一个元素？为什么？</p> <p>3．如果插入位置是数组的逻辑末尾，请说明这个插入操作的运行时复杂度。</p> <p>4．假设数组当前包含14个元素，它的负载因子为0.70，那么它的物理容量是多少？</p> <h2 id=43>4.3.二维数组（网格）<a class=headerlink href=#43 title="Permanent link"> ¶</a></h2> <h3 id=431>4.3.1.使用网格<a class=headerlink href=#431 title="Permanent link"> ¶</a></h3> <h3 id=432>4.3.2.创建并初始化网格<a class=headerlink href=#432 title="Permanent link"> ¶</a></h3> <h3 id=433grid>4.3.3.定义Grid类<a class=headerlink href=#433grid title="Permanent link"> ¶</a></h3> <h3 id=434>4.3.4.参差不齐的网格和多维数组<a class=headerlink href=#434 title="Permanent link"> ¶</a></h3> <h3 id=435>4.3.5.练习题<a class=headerlink href=#435 title="Permanent link"> ¶</a></h3> <p>1．什么是二维数组（网格）？</p> <p>2．请描述一个可能会用到二维数组的应用程序。</p> <p>3．编写一个程序，使之可以在Grid对象里搜索一个负整数。循环应该在遇到网格里的第一个负整数的地方终止，这时变量row和column应该被设置为这个负数的位置。如果在网格里找不到负数，那么变量row和column应该等于网格的行数和列数。</p> <p>4．说说运行下面这段代码后网格里的内容是什么。</p> <div class=highlight><pre><span></span><code><span class=n>matrix</span> <span class=o>=</span> <span class=n>Grid</span><span class=p>(</span><span class=mi>3</span><span class=p>,</span> <span class=mi>3</span><span class=p>)</span>
+
+<span class=c1># 运行结果：</span>
+<span class=c1># Initial array is:  [None, None, None, None, None]</span>
+<span class=c1># Len of the array:  5</span>
+<span class=c1># The array is:  [0, 1, 2, 3, 4]</span>
+<span class=c1># The array after increased is:  [0, 1, 2, 3, 4, None, None, None, None, None, None]</span>
+</code></pre></div> <p>将数组尺寸翻倍来扩展数组的方式是一种常见的策略，通常用于减少动态数组的频繁扩展次数，以提高性能。这种方式的操作时间复杂度主要取决于扩展操作的频率和元素的复制成本。</p> <ul> <li>摊还分析：对于将数组尺寸翻倍的策略，摊还分析表明，每次扩展操作的摊还时间复杂度仍然是常数时间的（通常是O(1)），这意味着平均下来，每次扩展的开销是固定的，而不会随数组的大小线性增加。</li> <li>操作时间：假设数组需要扩展，那么将数组尺寸翻倍需要分配新的内存块并复制现有元素，这个操作的时间复杂度是O(n)，其中n是数组的当前大小。然而，由于扩展操作不是每次都执行的，而是当数组已满时才执行，因此可以认为这个操作的摊还时间是常数时间，即O(1)。</li> <li>空间复杂度：将数组尺寸翻倍会占用额外的内存空间，但随着数组的增长，额外内存的占用相对于数组本身的大小来说是有限的。通常情况下，这种占用可以接受。</li> </ul> <p>总结，将数组尺寸翻倍的策略可以显著减少动态数组的扩展次数，从而提高性能。虽然每次扩展操作可能会花费一些时间和额外内存，但这些开销在一系列操作中被平摊，平均下来是常数时间。这是一种高效的动态数组实现方式，常见于许多编程语言的标准库中，包括Python的列表（list）。</p> <p>在增加数组的长度时，每次增加一个内存单元，与每次增大数组尺寸时把数组尺寸翻倍相比，后者的方法通常更高效。</p> <ul> <li>每次增加一个内存单元：这种方式在每次添加新元素时都需要分配额外的内存，导致数组尺寸的增长是线性的。如果频繁添加元素，这将导致大量的内存分配和数据复制操作，因此时间复杂度会变得相对较高。</li> <li>每次增大数组尺寸时把数组尺寸翻倍：这是一种更高效的策略。在这种方式下，每次扩展操作都会增加数组的尺寸，但增幅是指数级的，而不是线性的。这意味着随着数组的增长，扩展操作的频率会减少，因为数组能够容纳更多元素。这样，虽然每次扩展操作需要复制更多的元素，但它们的摊还时间复杂度仍然是常数时间，因为它们不是每次都执行的。</li> </ul> <p>总结，将数组尺寸翻倍的策略通常更高效，因为它可以减少频繁的内存分配和复制操作，降低了时间复杂度。这是许多动态数组实现的常见做法，包括Python的列表（list）。</p> <h3 id=422>4.2.2.减小数组的尺寸<a class=headerlink href=#422 title="Permanent link"> ¶</a></h3> <p>如果减小数组的逻辑尺寸，就会浪费相应的内存单元。因此，当删除某一个元素，如果未使用的内存单元数达到或超过了某个阈值（如数组物理尺寸的&frac34;）时，则应该减小物理尺寸了。如果浪费的内存超过特定阈值，那么Python的list类型会在调用<code>pop</code>方法时执行减小数组物理尺寸的操作。</p> <p>减小数组尺寸的过程与增大数组尺寸的过程相反，步骤如下：</p> <ul> <li>创建一个更小的新数组。</li> <li>将数据从旧数组中复制到新数组。</li> <li>将指向旧数组的变量指向新数组对象。</li> </ul> <p>下面的代码实现了减小数组尺寸。</p> <p>当数组的逻辑尺寸小于或等于其物理尺寸的&frac14;，并且它的物理尺寸至少是这个数组建立时默认容量的2倍时，则下面的算法把数组的物理尺寸减小到原来的一半，并且也不会小于其默认容量。</p> <div class=highlight><pre><span></span><code><span class=k>def</span> <span class=nf>main</span><span class=p>(</span><span class=n>size</span><span class=o>=</span><span class=mi>10</span><span class=p>):</span>
+    <span class=c1># 初始值</span>
+    <span class=n>DEFAULT_CAPACITY</span> <span class=o>=</span> <span class=mi>5</span>
+    <span class=n>logicalSize</span> <span class=o>=</span> <span class=mi>0</span>
+    <span class=n>my_array</span> <span class=o>=</span> <span class=n>Array</span><span class=p>(</span><span class=n>DEFAULT_CAPACITY</span><span class=p>)</span>
+
+    <span class=c1># 打印输出初始数组信息</span>
+    <span class=nb>print</span><span class=p>(</span><span class=s2>&quot;Initial array is: &quot;</span><span class=p>,</span> <span class=n>my_array</span><span class=p>)</span>
+    <span class=nb>print</span><span class=p>(</span><span class=s2>&quot;Len of the array: &quot;</span><span class=p>,</span> <span class=n>my_array</span><span class=o>.</span><span class=fm>__len__</span><span class=p>())</span>
+
+    <span class=c1># 给数组赋值</span>
+    <span class=k>for</span> <span class=n>i</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=nb>len</span><span class=p>(</span><span class=n>my_array</span><span class=p>)):</span>
+        <span class=n>my_array</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>=</span> <span class=n>i</span>
+
+    <span class=nb>print</span><span class=p>(</span><span class=s2>&quot;The array is: &quot;</span><span class=p>,</span> <span class=n>my_array</span><span class=o>.</span><span class=n>items</span><span class=p>)</span>  <span class=c1># 打印输出数组</span>
+
+    <span class=c1># 增大数组物理尺寸</span>
+    <span class=k>while</span> <span class=n>logicalSize</span> <span class=o>&lt;</span> <span class=n>DEFAULT_CAPACITY</span> <span class=o>*</span> <span class=mi>2</span><span class=p>:</span>
+        <span class=n>logicalSize</span> <span class=o>+=</span> <span class=mi>1</span>
+        <span class=k>if</span> <span class=n>logicalSize</span> <span class=o>==</span> <span class=nb>len</span><span class=p>(</span><span class=n>my_array</span><span class=p>):</span>  <span class=c1># 触发条件</span>
+            <span class=n>temp</span> <span class=o>=</span> <span class=n>Array</span><span class=p>(</span><span class=nb>len</span><span class=p>(</span><span class=n>my_array</span><span class=p>)</span> <span class=o>+</span> <span class=mi>1</span><span class=p>)</span>  <span class=c1># 创建一个新数组</span>
+            <span class=k>for</span> <span class=n>i</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=n>logicalSize</span><span class=p>):</span>
+                <span class=n>temp</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>=</span> <span class=n>my_array</span><span class=p>[</span><span class=n>i</span><span class=p>]</span>  <span class=c1># 从原数组复制内容到新数组</span>
+            <span class=n>my_array</span> <span class=o>=</span> <span class=n>temp</span>  <span class=c1># 把新数组赋值给原数组</span>
+
+    <span class=nb>print</span><span class=p>(</span><span class=s2>&quot;The array after increased is: &quot;</span><span class=p>,</span> <span class=n>my_array</span><span class=o>.</span><span class=n>items</span><span class=p>)</span>  <span class=c1># 打印输出数组</span>
+
+    <span class=c1># 减小数组物理尺寸</span>
+    <span class=k>while</span> <span class=n>logicalSize</span> <span class=o>&gt;</span> <span class=nb>len</span><span class=p>(</span><span class=n>my_array</span><span class=p>)</span> <span class=o>//</span> <span class=mi>4</span><span class=p>:</span>
+        <span class=n>logicalSize</span> <span class=o>-=</span> <span class=mi>1</span>
+        <span class=k>if</span> <span class=n>logicalSize</span> <span class=o>&lt;=</span> <span class=nb>len</span><span class=p>(</span><span class=n>my_array</span><span class=p>)</span> <span class=o>//</span> <span class=mi>4</span> <span class=ow>and</span> <span class=nb>len</span><span class=p>(</span><span class=n>my_array</span><span class=p>)</span> <span class=o>&gt;=</span> <span class=n>DEFAULT_CAPACITY</span> <span class=o>*</span> <span class=mi>2</span><span class=p>:</span>  <span class=c1># 触发条件</span>
+            <span class=n>temp</span> <span class=o>=</span> <span class=n>Array</span><span class=p>(</span><span class=nb>len</span><span class=p>(</span><span class=n>my_array</span><span class=p>)</span> <span class=o>//</span> <span class=mi>2</span><span class=p>)</span>  <span class=c1># 创建一个新数组</span>
+            <span class=k>for</span> <span class=n>i</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=n>logicalSize</span><span class=p>):</span>
+                <span class=n>temp</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>=</span> <span class=n>my_array</span><span class=p>[</span><span class=n>i</span><span class=p>]</span>  <span class=c1># 从原数组复制内容到新数组</span>
+            <span class=n>my_array</span> <span class=o>=</span> <span class=n>temp</span>  <span class=c1># 把新数组赋值给原数组</span>
+
+    <span class=nb>print</span><span class=p>(</span><span class=s2>&quot;The array after decreased is: &quot;</span><span class=p>,</span> <span class=n>my_array</span><span class=o>.</span><span class=n>items</span><span class=p>)</span>  <span class=c1># 打印输出数组</span>
+
+<span class=k>if</span> <span class=vm>__name__</span> <span class=o>==</span> <span class=s2>&quot;__main__&quot;</span><span class=p>:</span>
+    <span class=n>main</span><span class=p>()</span>
+
+<span class=c1># 运行结果：</span>
+<span class=c1># Initial array is:  [None, None, None, None, None]</span>
+<span class=c1># Len of the array:  5</span>
+<span class=c1># The array is:  [0, 1, 2, 3, 4]</span>
+<span class=c1># The array after increased is:  [0, 1, 2, 3, 4, None, None, None, None, None, None]</span>
+<span class=c1># The array after decreased is:  [0, 1, None, None, None]</span>
+</code></pre></div> <p>按照上面算法减少数组的尺寸，我们可以分析其时间和空间复杂度如下：</p> <p>时间复杂度：主要涉及两个操作：</p> <ul> <li>创建新数组并将元素从旧数组复制到新数组；</li> <li>将旧数组引用更改为新数组。</li> </ul> <p>复制操作的时间复杂度取决于数组的物理尺寸，可以表示为<code>O(n)</code>，其中<code>n</code>是数组的当前物理尺寸。引用更改是一个常数时间操作，不影响时间复杂度。所以，整体的时间复杂度是<code>O(n)</code>。</p> <p>空间复杂度：空间复杂度也涉及两个方面：</p> <ul> <li>创建新数组的内存消耗，其空间复杂度是O(N)；</li> <li>引用更改所需的常数额外空间，通常忽略不计。</li> </ul> <p>所以，总的空间复杂度是<code>O(n)</code>。</p> <p>这个算法策略会在适当的时候减小数组的物理尺寸，以减少内存占用，但仍然保持着数组的动态性。时间复杂度和空间复杂度都与当前数组的物理尺寸成线性关系，因此是线性的，这是一种有效的策略来优化内存使用。同时，保留了一定的冗余空间，以避免频繁地扩展和缩小数组，从而提高了性能。</p> <h3 id=423>4.2.3.将元素插入增大的数组<a class=headerlink href=#423 title="Permanent link"> ¶</a></h3> <h3 id=424>4.2.4.从数组里删除元素<a class=headerlink href=#424 title="Permanent link"> ¶</a></h3> <h3 id=425>4.2.5.复杂度的权衡：时间、空间和数组<a class=headerlink href=#425 title="Permanent link"> ¶</a></h3> <h3 id=426>4.2.6.练习题<a class=headerlink href=#426 title="Permanent link"> ¶</a></h3> <p>1．请说明为什么插入或删除给定元素时必须要移动数组里的某些元素。</p> <p>2．在插入过程中，移动数组元素时，要先移动哪个元素？先移动插入位置的元素，还是最后一个元素？为什么？</p> <p>3．如果插入位置是数组的逻辑末尾，请说明这个插入操作的运行时复杂度。</p> <p>4．假设数组当前包含14个元素，它的负载因子为0.70，那么它的物理容量是多少？</p> <h2 id=43>4.3.二维数组（网格）<a class=headerlink href=#43 title="Permanent link"> ¶</a></h2> <h3 id=431>4.3.1.使用网格<a class=headerlink href=#431 title="Permanent link"> ¶</a></h3> <h3 id=432>4.3.2.创建并初始化网格<a class=headerlink href=#432 title="Permanent link"> ¶</a></h3> <h3 id=433grid>4.3.3.定义Grid类<a class=headerlink href=#433grid title="Permanent link"> ¶</a></h3> <h3 id=434>4.3.4.参差不齐的网格和多维数组<a class=headerlink href=#434 title="Permanent link"> ¶</a></h3> <h3 id=435>4.3.5.练习题<a class=headerlink href=#435 title="Permanent link"> ¶</a></h3> <p>1．什么是二维数组（网格）？</p> <p>2．请描述一个可能会用到二维数组的应用程序。</p> <p>3．编写一个程序，使之可以在Grid对象里搜索一个负整数。循环应该在遇到网格里的第一个负整数的地方终止，这时变量row和column应该被设置为这个负数的位置。如果在网格里找不到负数，那么变量row和column应该等于网格的行数和列数。</p> <p>4．说说运行下面这段代码后网格里的内容是什么。</p> <div class=highlight><pre><span></span><code><span class=n>matrix</span> <span class=o>=</span> <span class=n>Grid</span><span class=p>(</span><span class=mi>3</span><span class=p>,</span> <span class=mi>3</span><span class=p>)</span>
 <span class=k>for</span> <span class=n>row</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=n>matrix</span><span class=o>.</span><span class=n>getHeight</span><span class=p>()):</span>
      <span class=k>for</span> <span class=n>column</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=n>matrix</span><span class=o>.</span><span class=n>getWidth</span><span class=p>()):</span>
          <span class=n>matrix</span><span class=p>[</span><span class=n>row</span><span class=p>][</span><span class=n>column</span><span class=p>]</span> <span class=o>=</span> <span class=n>row</span> <span class=o>*</span> <span class=n>column</span>
