@@ -282,28 +282,40 @@ class Array(object):
     ...
 
 def main(size=10):
+    # 初始值
     DEFAULT_CAPACITY = 5
     logicalSize = 0
     my_array = Array(DEFAULT_CAPACITY)
 
+    # 打印输出初始数组信息
     print("Initial array is: ", my_array)
     print("Len of the array: ", my_array.__len__())
 
+    # 给数组赋值
     for i in range(len(my_array)):
         my_array[i] = i
 
-    print("The array is: ", my_array.items)
+    print("The array is: ", my_array.items)  # 打印输出数组
 
     # 增大数组物理尺寸
-    if logicalSize == len(my_array):
-        temp = Array(len(my_array) * 2)  # 创建一个新数组
-        for i in range(logicalSize):
-            temp[i] = my_array[i]  # 从原数组复制内容到新数组
-        my_array = temp  # 把新数组赋值给原数组
+    while logicalSize < DEFAULT_CAPACITY * 2:
+        logicalSize += 1
+        if logicalSize == len(my_array):  # 触发条件
+            temp = Array(len(my_array) + 1)  # 创建一个新数组
+            for i in range(logicalSize):
+                temp[i] = my_array[i]  # 从原数组复制内容到新数组
+            my_array = temp  # 把新数组赋值给原数组
 
+    print("The array after increased is: ", my_array.items)  # 打印输出数组
 
 if __name__ == "__main__":
     main()
+
+# 运行结果：
+# Initial array is:  [None, None, None, None, None]
+# Len of the array:  5
+# The array is:  [0, 1, 2, 3, 4]
+# The array after increased is:  [0, 1, 2, 3, 4, None, None, None, None, None, None]
 ```
 
 将数组尺寸翻倍来扩展数组的方式是一种常见的策略，通常用于减少动态数组的频繁扩展次数，以提高性能。这种方式的操作时间复杂度主要取决于扩展操作的频率和元素的复制成本。
@@ -322,6 +334,86 @@ if __name__ == "__main__":
 总结，将数组尺寸翻倍的策略通常更高效，因为它可以减少频繁的内存分配和复制操作，降低了时间复杂度。这是许多动态数组实现的常见做法，包括Python的列表（list）。
 
 ### 4.2.2.减小数组的尺寸
+
+如果减小数组的逻辑尺寸，就会浪费相应的内存单元。因此，当删除某一个元素，如果未使用的内存单元数达到或超过了某个阈值（如数组物理尺寸的3/4）时，则应该减小物理尺寸了。如果浪费的内存超过特定阈值，那么Python的list类型会在调用`pop`方法时执行减小数组物理尺寸的操作。
+
+减小数组尺寸的过程与增大数组尺寸的过程相反，步骤如下：
+
+- 创建一个更小的新数组。
+- 将数据从旧数组中复制到新数组。
+- 将指向旧数组的变量指向新数组对象。
+
+下面的代码实现了减小数组尺寸。
+
+当数组的逻辑尺寸小于或等于其物理尺寸的1/4，并且它的物理尺寸至少是这个数组建立时默认容量的2倍时，则下面的算法把数组的物理尺寸减小到原来的一半，并且也不会小于其默认容量。
+
+```python
+def main(size=10):
+    # 初始值
+    DEFAULT_CAPACITY = 5
+    logicalSize = 0
+    my_array = Array(DEFAULT_CAPACITY)
+
+    # 打印输出初始数组信息
+    print("Initial array is: ", my_array)
+    print("Len of the array: ", my_array.__len__())
+
+    # 给数组赋值
+    for i in range(len(my_array)):
+        my_array[i] = i
+
+    print("The array is: ", my_array.items)  # 打印输出数组
+
+    # 增大数组物理尺寸
+    while logicalSize < DEFAULT_CAPACITY * 2:
+        logicalSize += 1
+        if logicalSize == len(my_array):  # 触发条件
+            temp = Array(len(my_array) + 1)  # 创建一个新数组
+            for i in range(logicalSize):
+                temp[i] = my_array[i]  # 从原数组复制内容到新数组
+            my_array = temp  # 把新数组赋值给原数组
+
+    print("The array after increased is: ", my_array.items)  # 打印输出数组
+
+    # 减小数组物理尺寸
+    while logicalSize > len(my_array) // 4:
+        logicalSize -= 1
+        if logicalSize <= len(my_array) // 4 and len(my_array) >= DEFAULT_CAPACITY * 2:  # 触发条件
+            temp = Array(len(my_array) // 2)  # 创建一个新数组
+            for i in range(logicalSize):
+                temp[i] = my_array[i]  # 从原数组复制内容到新数组
+            my_array = temp  # 把新数组赋值给原数组
+    
+    print("The array after decreased is: ", my_array.items)  # 打印输出数组
+
+if __name__ == "__main__":
+    main()
+
+# 运行结果：
+# Initial array is:  [None, None, None, None, None]
+# Len of the array:  5
+# The array is:  [0, 1, 2, 3, 4]
+# The array after increased is:  [0, 1, 2, 3, 4, None, None, None, None, None, None]
+# The array after decreased is:  [0, 1, None, None, None]
+```
+
+按照上面算法减少数组的尺寸，我们可以分析其时间和空间复杂度如下：
+
+时间复杂度：主要涉及两个操作：
+
+- 创建新数组并将元素从旧数组复制到新数组；
+- 将旧数组引用更改为新数组。
+
+复制操作的时间复杂度取决于数组的物理尺寸，可以表示为`O(n)`，其中`n`是数组的当前物理尺寸。引用更改是一个常数时间操作，不影响时间复杂度。所以，整体的时间复杂度是`O(n)`。
+
+空间复杂度：空间复杂度也涉及两个方面：
+
+- 创建新数组的内存消耗，其空间复杂度是O(N)；
+- 引用更改所需的常数额外空间，通常忽略不计。
+
+所以，总的空间复杂度是`O(n)`。
+
+这个算法策略会在适当的时候减小数组的物理尺寸，以减少内存占用，但仍然保持着数组的动态性。时间复杂度和空间复杂度都与当前数组的物理尺寸成线性关系，因此是线性的，这是一种有效的策略来优化内存使用。同时，保留了一定的冗余空间，以避免频繁地扩展和缩小数组，从而提高了性能。
 
 ### 4.2.3.将元素插入增大的数组
 
