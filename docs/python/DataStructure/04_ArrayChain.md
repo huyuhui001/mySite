@@ -23,79 +23,6 @@
 - Python列表的底层数据结构正是一个数组。
 - Python中数组的限制要比列表更多。只能在指定位置访问和替换数组中的元素、检查数组的长度、获取它的字符串表达式；不能基于位置添加或删除元素；数组的长度也就是它的容量，在创建之后就是固定的。
 
-Python的`array`模块包含一个叫作`array`的类，它非常类似于列表，但是只能存储数字。我们会定义一个叫作`Array`的新类，使用列表保存元素，存储任何类型的元素。
-
-下面的示例定义了一个数组以及一些常用方法。
-
-```python
-class Array(object):
-    """描述一个数组。"""
-
-    def __init__(self, capacity, fillValue=None):
-        """Capacity是数组的大小.  fillValue会填充在每个元素位置, 默认值是None"""
-        # 初始化数组的逻辑尺寸和物理尺寸
-        self.logicalSize = 0
-        self.capacity = capacity
-        #初始化内部数组，并填充元素值
-        self.items = list()
-        for count in range(capacity):
-            self.items.append(fillValue)
-
-    def __len__(self):
-        """返回数组的大小"""
-        return len(self.items)
-
-    def __str__(self):
-        """将数组字符串化并返回"""
-        result = ""
-        for index in range(self.size()):
-            result += str(self.items[index]) + " "
-        return result
-
-    def size(self):
-        """返回数组的逻辑尺寸"""
-        return self.logicalSize
-
-    def __iter__(self):
-        """支持for循环对数组进行遍历."""
-        print("__iter__ called")  # 仅用来测试何时__iter__会被调用
-        return iter(self.items)
-
-    def __getitem__(self, index):
-        """
-        用于访问索引处的下标运算符.
-        先决条件: 0 <= index < size()
-        """
-        if index < 0 or index >= self.size():
-            raise IndexError("数组索引越界(不在数组逻辑边界范围内)")
-        return self.items[index]
-
-    def __setitem__(self, index, newItem):
-        """
-        下标运算符用于在索引处进行替换.
-        先决条件: 0 <= index < size()
-        """
-        if index < 0 or index >= self.size():
-            raise IndexError("数组索引越界(不在数组逻辑边界范围内)")
-        self.items[index] = newItem
-
-
-def main():
-    my_arr = Array(5)
-    print ("Physical size:", len(my_arr))
-    print ("Logical size:", my_arr.size())
-    print ("Initial items:", my_arr.items)
-
-
-if __name__ == "__main__":
-    main()
-
-# 运行结果
-# Physical size: 5
-# Logical size: 0
-# Initial items: [None, None, None, None, None]
-```
-
 ### 4.1.1.随机访问和连续内存
 
 通过下标操作或索引操作实现对数组在指定位置对元素进行存储或检索。
@@ -221,12 +148,284 @@ if __name__ == "__main__":
 
 ## 4.2.数组的操作
 
-在下面的例子里，我们假定有下面这些数据配置。
+Python的`array`模块包含一个叫作`array`的类，它非常类似于列表，但是只能存储数字。我们会定义一个叫作`Array`的新类，使用列表保存元素，存储任何类型的元素。
+
+下面的示例定义了一个数组类`Array`，下面对数组的一些操作的代码实现也已经包含在下面的代码中。其中：
+
+- 数组默认的物理尺寸（也就是容量）是5
+- 数组的初始逻辑尺寸是0
 
 ```python
-DEFAULT_CAPACITY = 5  # 数组默认的物理尺寸（也就是容量）是5
-logicalSize = 0  # 数组的初始逻辑尺寸是0
-a = Array(DEFAULT_CAPACITY)
+class Array(object):
+    """描述一个数组。"""
+
+    def __init__(self, capacity, fillValue=None):
+        """Capacity是数组的大小.  fillValue会填充在每个元素位置, 默认值是None"""
+        # 初始化数组的逻辑尺寸和物理尺寸
+        self.logicalSize = 0
+        self.capacity = capacity
+        self.fillValue = fillValue
+        #初始化内部数组，并填充元素值
+        self.items = list()
+        for count in range(capacity):
+            self.items.append(fillValue)
+
+    def __len__(self):
+        """返回数组的大小"""
+        return len(self.items)
+
+    def __str__(self):
+        """将数组字符串化并返回"""
+        result = ""
+        for index in range(self.size()):
+            result += str(self.items[index]) + " "
+        return result
+
+    def size(self):
+        """返回数组的逻辑尺寸"""
+        return self.logicalSize
+
+    def __iter__(self):
+        """支持for循环对数组进行遍历."""
+        print("__iter__ called")  # 仅用来测试何时__iter__会被调用
+        return iter(self.items)
+
+    def __getitem__(self, index):
+        """
+        用于访问索引处的下标运算符.
+        先决条件: 0 <= index < size()
+        """
+        if index < 0 or index >= self.size():
+            raise IndexError("读取操作出错, 数组索引越界(不在数组逻辑边界范围内)")
+
+        return self.items[index]
+
+    def __setitem__(self, index, newItem):
+        """
+        下标运算符用于在索引处进行替换.
+        先决条件: 0 <= index < size()
+        """
+        if index < 0 or index >= self.size():
+            raise IndexError("更新操作出错, 数组索引越界(不在数组逻辑边界范围内)")
+        self.items[index] = newItem
+
+    def __eq__(self, other):
+        """
+        两个数组相等则返回True，否则返回False
+        """
+        # 判断两个数组是否是同一个对象，注意，不是它们的值是否相等
+        if self is other:
+            return True
+        # 判断两个对象类型是否一样
+        if type(self) != type(other):
+            return False
+        # 判断两个数组大小是否一样
+        if self.size() != other.size():
+            return False
+        # 比较两个数组的值是否一样
+        for index in range(self.size()):
+            if self[index] != other[index]:
+                return False
+        return True
+
+    def grow(self):
+        """增大数组物理尺寸"""
+        # 基于当前物理尺寸加倍，并将fillValue赋值底层列表的新元素
+        for count in range(len(self)):
+            self.items.append(self.fillValue)
+
+    def insert(self, index, newItem):
+        """在数组指定索引处插入新元素"""
+        # 当数组的物理尺寸和逻辑尺寸一样时，则增加物理尺寸
+        if self.size() == len(self):
+            self.grow()
+        # 插入新元素
+        # 当插入位置大于或等于最大逻辑位置，则在数组末端插入新元素
+        # 当插入位置介于数组逻辑位置的中间，则从插入位置起将剩余数组元素向尾部平移一个位置
+        if index >= self.size():
+            self.items[self.size()] = newItem
+        else:
+            index = max(index, 0)
+
+            # 将数组元素向尾部平移一个位置
+            for i in range(self.size(), index, -1):
+                self.items[i] = self.items[i - 1]
+
+            # 插入新元素
+            self.items[index] = newItem
+
+        # 增加数组的逻辑尺寸
+        self.logicalSize += 1
+
+    def shrink(self):
+        """
+        减少数组的物理尺寸
+        当:
+        - 数组的逻辑尺寸小于或等于其物理尺寸的1/4
+        - 并且它的物理尺寸至少是这个数组建立时默认容量的2倍时
+        则把数组的物理尺寸减小到原来的一半，并且也不会小于其默认容量
+        """
+        # 在逻辑尺寸和物理尺寸的一半之间选择最大值作为数组收缩后的物理尺寸
+        newSize = max(self.capacity, len(self) // 2)
+        # 释放多余的数组空间
+        for count in range(len(self) - newSize):
+            self.items.pop()
+
+    def pop(self, index):
+        """
+        删除指定索引值的数组元素,并返回删除的数组元素值
+        先决条件: 0 <= index < size()
+        """
+        if index < 0 or index >= self.size():
+            raise IndexError("删除操作出错, 数组索引越界(不在数组逻辑边界范围内)")
+
+        # 保存即将被删除的数组元素值
+        itemToReturn = self.items[index]
+
+        # 将数组元素向头部平移一个位置
+        for i in range(index, self.size() - 1):
+            self.items[i] = self.items[i + 1]
+
+        # 将数组尾部的空余位赋值fillValue，默认是None
+        self.items[self.size() - 1] = self.fillValue
+
+        # 减少数组逻辑尺寸
+        self.logicalSize -= 1
+
+        # 减少数组物理尺寸
+        # 当:
+        # - 数组的逻辑尺寸小于或等于其物理尺寸的1/4
+        # - 并且它的物理尺寸至少是这个数组建立时默认容量的2倍时
+        # 则把数组的物理尺寸减小到原来的一半，并且也不会小于其默认容量
+        if self.size() <= len(self) // 4 and len(self) > self.capacity:
+            self.shrink()
+
+        # 返回被删除元素的值
+        print(f'Item {itemToReturn} was deleted')
+        return itemToReturn
+
+
+def main():
+    # 初始化空数组
+    DEFAULT_CAPACITY = 5
+    my_arr = Array(DEFAULT_CAPACITY)
+
+    # 打印输出数组初始信息
+    print("Physical size:", len(my_arr))
+    print("Logical size:", my_arr.size())
+    print("Initial items:", my_arr.items)
+
+    # 初始化数组元素
+    print('------')
+    for item in range(4):
+        my_arr.insert(0, item)  # 在数组头部插入，每插入一次都需要向后移动已有数组元素
+    print("Items(logical):", my_arr)
+    print("Items(physical):", my_arr.items)
+
+    # 在数组中间插入新元素
+    print('------')
+    my_arr.insert(3, 99)
+    print("Items(logical):", my_arr)
+    print("Items(physical):", my_arr.items)
+
+    # 在数组逻辑尺寸外插入新元素
+    print('------')
+    my_arr.insert(20, 88)
+    print("Items(logical):", my_arr)
+    print("Items(physical):", my_arr.items)
+
+    # 删除数组元素
+    print('------')
+    my_arr.pop(3)
+    my_arr.pop(3)
+    print("Items(logical):", my_arr)
+    print("Items(physical):", my_arr.items)
+
+    # 清空数组元素
+    print('------')
+    for count in range(my_arr.size()):
+        my_arr.pop(0)
+    print("Items(logical):", my_arr)
+    print("Items(physical):", my_arr.items)
+
+    # 数组元素已经全部删除，逻辑尺寸为零，下面命令返回错误
+    # print('------')
+    # print(my_arr.pop(0))
+
+    # 数组比较
+    # 初始化数组
+    print('------')
+    arr_a = Array(5)
+    for item in range(4):
+        arr_a.insert(0, item)
+    arr_b = arr_a
+    arr_c = Array(5)
+    for item in range(4):
+        arr_c.insert(0, item)
+    arr_d = []
+
+    print("arr_a(physical):", arr_a.items)
+    print("arr_b(physical):", arr_b.items)
+    print("arr_c(physical):", arr_c.items)
+    print("arr_d(physical):", arr_d)
+
+    print("arr_a == arr_b:", arr_a == arr_b)
+    print("arr_a is arr_b:", arr_a is arr_b)
+    print("arr_a == arr_c:", arr_a == arr_c)
+    print("arr_a is arr_c:", arr_a is arr_c)
+
+    arr_c.insert(10, 10)
+    print("arr_a == arr_c:", arr_a == arr_c)
+    arr_c.pop(arr_c.size() - 1)
+    arr_c[2] = 6
+    print("arr_a == arr_c:", arr_a == arr_c)
+
+    print("arr_a == arr_d:", arr_a == arr_d)
+
+
+if __name__ == "__main__":
+    main()
+
+# 运行结果
+# Physical size: 5
+# Logical size: 0
+# Initial items: [None, None, None, None, None]
+# ------
+# Items(logical): 3 2 1 0
+# Items(physical): [3, 2, 1, 0, None]
+# ------
+# Items(logical): 3 2 1 99 0
+# Items(physical): [3, 2, 1, 99, 0]
+# ------
+# Items(logical): 3 2 1 99 0 88
+# Items(physical): [3, 2, 1, 99, 0, 88, None, None, None, None]
+# ------
+# Item 99 was deleted
+# Item 0 was deleted
+# Items(logical): 3 2 1 88
+# Items(physical): [3, 2, 1, 88, None, None, None, None, None, None]
+# ------
+# Item 3 was deleted
+# Item 2 was deleted
+# Item 1 was deleted
+# Item 88 was deleted
+# Items(logical):
+# Items(physical): [None, None, None, None, None]
+# ------
+# IndexError: 删除操作出错, 数组索引越界(不在数组逻辑边界范围内)
+# ------
+# arr_a(physical): [3, 2, 1, 0, None]
+# arr_b(physical): [3, 2, 1, 0, None]
+# arr_c(physical): [3, 2, 1, 0, None]
+# arr_d(physical): []
+# arr_a == arr_b: True
+# arr_a is arr_b: True
+# arr_a == arr_c: True
+# arr_a is arr_c: False
+# arr_a == arr_c: False
+# Item 10 was deleted
+# arr_a == arr_c: False
+# arr_a == arr_d: False
 ```
 
 ### 4.2.1.增大数组的尺寸
@@ -243,32 +442,12 @@ a = Array(DEFAULT_CAPACITY)
 下面代码实现。
 
 ```python
-class Array(object):
-    ...
-
-def main(size=10):
-    DEFAULT_CAPACITY = 5
-    logicalSize = 0
-    my_array = Array(DEFAULT_CAPACITY)
-
-    print("Initial array is: ", my_array)
-    print("Len of the array: ", my_array.__len__())
-
-    for i in range(len(my_array)):
-        my_array[i] = i
-
-    print("The array is: ", my_array.items)
-
-    # 增大数组物理尺寸
-    if logicalSize == len(my_array):
-        temp = Array(len(my_array) + 1)  # 创建一个新数组
-        for i in range(logicalSize):
-            temp[i] = my_array[i]  # 从原数组复制内容到新数组
-        my_array = temp  # 把新数组赋值给原数组
-
-
-if __name__ == "__main__":
-    main()
+# 增大数组物理尺寸
+if logicalSize == len(my_array):
+    temp = Array(len(my_array) + 1)  # 创建一个新数组
+    for i in range(logicalSize):
+        temp[i] = my_array[i]  # 从原数组复制内容到新数组
+    my_array = temp  # 把新数组赋值给原数组
 ```
 
 在上面代码中，通过`temp[i] = my_array[i]`来调整数组尺寸，这个复制操作的数量是线性增长的。因此，将`n`个元素添加到数组里的总时间复杂度是`1+2+3...+n`，也就是`n(n+1)/2`，因此是`O(n^2)`。
@@ -289,44 +468,14 @@ if __name__ == "__main__":
 下面，尝试在每次增大数组尺寸时把数组尺寸翻倍，代码实现如下：
 
 ```python
-class Array(object):
-    ...
-
-def main(size=10):
-    # 初始值
-    DEFAULT_CAPACITY = 5
-    logicalSize = 0
-    my_array = Array(DEFAULT_CAPACITY)
-
-    # 打印输出初始数组信息
-    print("Initial array is: ", my_array)
-    print("Len of the array: ", my_array.__len__())
-
-    # 给数组赋值
-    for i in range(len(my_array)):
-        my_array[i] = i
-
-    print("The array is: ", my_array.items)  # 打印输出数组
-
-    # 增大数组物理尺寸
-    while logicalSize < DEFAULT_CAPACITY * 2:
-        logicalSize += 1
-        if logicalSize == len(my_array):  # 触发条件
-            temp = Array(len(my_array) + 1)  # 创建一个新数组
-            for i in range(logicalSize):
-                temp[i] = my_array[i]  # 从原数组复制内容到新数组
-            my_array = temp  # 把新数组赋值给原数组
-
-    print("The array after increased is: ", my_array.items)  # 打印输出数组
-
-if __name__ == "__main__":
-    main()
-
-# 运行结果：
-# Initial array is:  [None, None, None, None, None]
-# Len of the array:  5
-# The array is:  [0, 1, 2, 3, 4]
-# The array after increased is:  [0, 1, 2, 3, 4, None, None, None, None, None, None]
+# 增大数组物理尺寸
+while logicalSize < DEFAULT_CAPACITY * 2:
+    logicalSize += 1
+    if logicalSize == len(my_array):  # 触发条件
+        temp = Array(len(my_array) + 1)  # 创建一个新数组
+        for i in range(logicalSize):
+            temp[i] = my_array[i]  # 从原数组复制内容到新数组
+        my_array = temp  # 把新数组赋值给原数组
 ```
 
 将数组尺寸翻倍来扩展数组的方式是一种常见的策略，通常用于减少动态数组的频繁扩展次数，以提高性能。这种方式的操作时间复杂度主要取决于扩展操作的频率和元素的复制成本。
@@ -344,6 +493,16 @@ if __name__ == "__main__":
 
 总结，将数组尺寸翻倍的策略通常更高效，因为它可以减少频繁的内存分配和复制操作，降低了时间复杂度。这是许多动态数组实现的常见做法，包括Python的列表（list）。
 
+在`Array`类实现中，是通过下面代码段实现的数组物理尺寸增加的，即将数组尺寸翻倍。
+
+```python
+    def grow(self):
+        """增大数组物理尺寸"""
+        # 基于当前物理尺寸加倍，并将fillValue赋值底层列表的新元素
+        for count in range(len(self)):
+            self.items.append(self.fillValue)
+```
+
 ### 4.2.2.减小数组的尺寸
 
 如果减小数组的逻辑尺寸，就会浪费相应的内存单元。因此，当删除某一个元素，如果未使用的内存单元数达到或超过了某个阈值（如数组物理尺寸的3/4）时，则应该减小物理尺寸了。如果浪费的内存超过特定阈值，那么Python的list类型会在调用`pop`方法时执行减小数组物理尺寸的操作。
@@ -359,53 +518,14 @@ if __name__ == "__main__":
 当数组的逻辑尺寸小于或等于其物理尺寸的1/4，并且它的物理尺寸至少是这个数组建立时默认容量的2倍时，则下面的算法把数组的物理尺寸减小到原来的一半，并且也不会小于其默认容量。
 
 ```python
-def main(size=10):
-    # 初始值
-    DEFAULT_CAPACITY = 5
-    logicalSize = 0
-    my_array = Array(DEFAULT_CAPACITY)
-
-    # 打印输出初始数组信息
-    print("Initial array is: ", my_array)
-    print("Len of the array: ", my_array.__len__())
-
-    # 给数组赋值
-    for i in range(len(my_array)):
-        my_array[i] = i
-
-    print("The array is: ", my_array.items)  # 打印输出数组
-
-    # 增大数组物理尺寸
-    while logicalSize < DEFAULT_CAPACITY * 2:
-        logicalSize += 1
-        if logicalSize == len(my_array):  # 触发条件
-            temp = Array(len(my_array) + 1)  # 创建一个新数组
-            for i in range(logicalSize):
-                temp[i] = my_array[i]  # 从原数组复制内容到新数组
-            my_array = temp  # 把新数组赋值给原数组
-
-    print("The array after increased is: ", my_array.items)  # 打印输出数组
-
-    # 减小数组物理尺寸
-    while logicalSize > len(my_array) // 4:
-        logicalSize -= 1
-        if logicalSize <= len(my_array) // 4 and len(my_array) >= DEFAULT_CAPACITY * 2:  # 触发条件
-            temp = Array(len(my_array) // 2)  # 创建一个新数组
-            for i in range(logicalSize):
-                temp[i] = my_array[i]  # 从原数组复制内容到新数组
-            my_array = temp  # 把新数组赋值给原数组
-    
-    print("The array after decreased is: ", my_array.items)  # 打印输出数组
-
-if __name__ == "__main__":
-    main()
-
-# 运行结果：
-# Initial array is:  [None, None, None, None, None]
-# Len of the array:  5
-# The array is:  [0, 1, 2, 3, 4]
-# The array after increased is:  [0, 1, 2, 3, 4, None, None, None, None, None, None]
-# The array after decreased is:  [0, 1, None, None, None]
+# 减小数组物理尺寸
+while logicalSize > len(my_array) // 4:
+    logicalSize -= 1
+    if logicalSize <= len(my_array) // 4 and len(my_array) >= DEFAULT_CAPACITY * 2:  # 触发条件
+        temp = Array(len(my_array) // 2)  # 创建一个新数组
+        for i in range(logicalSize):
+            temp[i] = my_array[i]  # 从原数组复制内容到新数组
+        my_array = temp  # 把新数组赋值给原数组
 ```
 
 按照上面算法减少数组的尺寸，我们可以分析其时间和空间复杂度如下：
@@ -426,6 +546,24 @@ if __name__ == "__main__":
 
 这个算法策略会在适当的时候减小数组的物理尺寸，以减少内存占用，但仍然保持着数组的动态性。时间复杂度和空间复杂度都与当前数组的物理尺寸成线性关系，因此是线性的，这是一种有效的策略来优化内存使用。同时，保留了一定的冗余空间，以避免频繁地扩展和缩小数组，从而提高了性能。
 
+下面是在`Array`类中实现减小数组的物理尺寸的代码。
+
+```python
+    def shrink(self):
+        """
+        减少数组的物理尺寸
+        当:
+        - 数组的逻辑尺寸小于或等于其物理尺寸的1/4
+        - 并且它的物理尺寸至少是这个数组建立时默认容量的2倍时
+        则把数组的物理尺寸减小到原来的一半，并且也不会小于其默认容量
+        """
+        # 在逻辑尺寸和物理尺寸的一半之间选择最大值作为数组收缩后的物理尺寸
+        newSize = max(self.capacity, len(self) // 2)
+        # 释放多余的数组空间
+        for count in range(len(self) - newSize):
+            self.items.pop()
+```
+
 ### 4.2.3.将元素插入增大的数组
 
 把元素插入数组中和替换数组里的元素是不一样的。
@@ -438,17 +576,6 @@ if __name__ == "__main__":
 - 将数组里从逻辑结尾到目标索引的所有元素向后移动。这个过程会在目标索引位置处为新元素留下一个空格。
 - 将新元素分配到目标索引位置。
 - 将逻辑尺寸加1。
-
-
-
-
-
-
-
-
-
-
-
 
 ### 4.2.4.从数组里删除元素
 

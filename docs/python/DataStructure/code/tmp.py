@@ -6,6 +6,7 @@ class Array(object):
         # 初始化数组的逻辑尺寸和物理尺寸
         self.logicalSize = 0
         self.capacity = capacity
+        self.fillValue = fillValue
         #初始化内部数组，并填充元素值
         self.items = list()
         for count in range(capacity):
@@ -37,7 +38,8 @@ class Array(object):
         先决条件: 0 <= index < size()
         """
         if index < 0 or index >= self.size():
-            raise IndexError("数组索引越界(不在数组逻辑边界范围内)")
+            raise IndexError("读取操作出错, 数组索引越界(不在数组逻辑边界范围内)")
+
         return self.items[index]
 
     def __setitem__(self, index, newItem):
@@ -46,34 +48,181 @@ class Array(object):
         先决条件: 0 <= index < size()
         """
         if index < 0 or index >= self.size():
-            raise IndexError("数组索引越界(不在数组逻辑边界范围内)")
+            raise IndexError("更新操作出错, 数组索引越界(不在数组逻辑边界范围内)")
         self.items[index] = newItem
 
+    def __eq__(self, other):
+        """
+        两个数组相等则返回True，否则返回False
+        """
+        # 判断两个数组是否是同一个对象，注意，不是它们的值是否相等
+        if self is other:
+            return True
+        # 判断两个对象类型是否一样
+        if type(self) != type(other):
+            return False
+        # 判断两个数组大小是否一样
+        if self.size() != other.size():
+            return False
+        # 比较两个数组的值是否一样
+        for index in range(self.size()):
+            if self[index] != other[index]:
+                return False
+        return True
+
     def grow(self):
-        """Increases the physical size of the array if necessary."""
-        # Double the physical size if no more room for items
-        # and add the fillValue to the new cells in the underlying list
+        """增大数组物理尺寸"""
+        # 基于当前物理尺寸加倍，并将fillValue赋值底层列表的新元素
         for count in range(len(self)):
             self.items.append(self.fillValue)
 
+    def insert(self, index, newItem):
+        """在数组指定索引处插入新元素"""
+        # 当数组的物理尺寸和逻辑尺寸一样时，则增加物理尺寸
+        if self.size() == len(self):
+            self.grow()
+        # 插入新元素
+        # 当插入位置大于或等于最大逻辑位置，则在数组末端插入新元素
+        # 当插入位置介于数组逻辑位置的中间，则从插入位置起将剩余数组元素向尾部平移一个位置
+        if index >= self.size():
+            self.items[self.size()] = newItem
+        else:
+            index = max(index, 0)
+
+            # 将数组元素向尾部平移一个位置
+            for i in range(self.size(), index, -1):
+                self.items[i] = self.items[i - 1]
+
+            # 插入新元素
+            self.items[index] = newItem
+
+        # 增加数组的逻辑尺寸
+        self.logicalSize += 1
+
+    def shrink(self):
+        """
+        减少数组的物理尺寸
+        当:
+        - 数组的逻辑尺寸小于或等于其物理尺寸的1/4
+        - 并且它的物理尺寸至少是这个数组建立时默认容量的2倍时
+        则把数组的物理尺寸减小到原来的一半，并且也不会小于其默认容量
+        """
+        # 在逻辑尺寸和物理尺寸的一半之间选择最大值作为数组收缩后的物理尺寸
+        newSize = max(self.capacity, len(self) // 2)
+        # 释放多余的数组空间
+        for count in range(len(self) - newSize):
+            self.items.pop()
+
+    def pop(self, index):
+        """
+        删除指定索引值的数组元素,并返回删除的数组元素值
+        先决条件: 0 <= index < size()
+        """
+        if index < 0 or index >= self.size():
+            raise IndexError("删除操作出错, 数组索引越界(不在数组逻辑边界范围内)")
+
+        # 保存即将被删除的数组元素值
+        itemToReturn = self.items[index]
+
+        # 将数组元素向头部平移一个位置
+        for i in range(index, self.size() - 1):
+            self.items[i] = self.items[i + 1]
+
+        # 将数组尾部的空余位赋值fillValue，默认是None
+        self.items[self.size() - 1] = self.fillValue
+
+        # 减少数组逻辑尺寸
+        self.logicalSize -= 1
+
+        # 减少数组物理尺寸
+        # 当:
+        # - 数组的逻辑尺寸小于或等于其物理尺寸的1/4
+        # - 并且它的物理尺寸至少是这个数组建立时默认容量的2倍时
+        # 则把数组的物理尺寸减小到原来的一半，并且也不会小于其默认容量
+        if self.size() <= len(self) // 4 and len(self) > self.capacity:
+            self.shrink()
+
+        # 返回被删除元素的值
+        print(f'Item {itemToReturn} was deleted')
+        return itemToReturn
+
+
 def main():
-    my_arr = Array(5)
+    # 初始化空数组
+    DEFAULT_CAPACITY = 5
+    my_arr = Array(DEFAULT_CAPACITY)
+
+    # 打印输出数组初始信息
     print("Physical size:", len(my_arr))
     print("Logical size:", my_arr.size())
     print("Initial items:", my_arr.items)
 
-    # for item in range(4):
-    #     my_arr.insert(0, item)
-    # print ("Items:", my_arr)
-    # my_arr.insert(1, 77)
-    # print ("Items:", my_arr)
-    # my_arr.insert(10, 10)
-    # print ("Items:", my_arr)
-    # print(my_arr.pop(3))
-    # print ("Items:", my_arr)
-    # for count in range(6):
-    #     print(my_arr.pop(0), end = " ")
-    # print (my_arr.pop(0))
+    # 初始化数组元素
+    print('------')
+    for item in range(4):
+        my_arr.insert(0, item)  # 在数组头部插入，每插入一次都需要向后移动已有数组元素
+    print("Items(logical):", my_arr)
+    print("Items(physical):", my_arr.items)
+
+    # 在数组中间插入新元素
+    print('------')
+    my_arr.insert(3, 99)
+    print("Items(logical):", my_arr)
+    print("Items(physical):", my_arr.items)
+
+    # 在数组逻辑尺寸外插入新元素
+    print('------')
+    my_arr.insert(20, 88)
+    print("Items(logical):", my_arr)
+    print("Items(physical):", my_arr.items)
+
+    # 删除数组元素
+    print('------')
+    my_arr.pop(3)
+    my_arr.pop(3)
+    print("Items(logical):", my_arr)
+    print("Items(physical):", my_arr.items)
+
+    # 清空数组元素
+    print('------')
+    for count in range(my_arr.size()):
+        my_arr.pop(0)
+    print("Items(logical):", my_arr)
+    print("Items(physical):", my_arr.items)
+
+    # 数组元素已经全部删除，逻辑尺寸为零，下面命令返回错误
+    # print('------')
+    # print(my_arr.pop(0))
+
+    # 数组比较
+    # 初始化数组
+    print('------')
+    arr_a = Array(5)
+    for item in range(4):
+        arr_a.insert(0, item)
+    arr_b = arr_a
+    arr_c = Array(5)
+    for item in range(4):
+        arr_c.insert(0, item)
+    arr_d = []
+
+    print("arr_a(physical):", arr_a.items)
+    print("arr_b(physical):", arr_b.items)
+    print("arr_c(physical):", arr_c.items)
+    print("arr_d(physical):", arr_d)
+
+    print("arr_a == arr_b:", arr_a == arr_b)
+    print("arr_a is arr_b:", arr_a is arr_b)
+    print("arr_a == arr_c:", arr_a == arr_c)
+    print("arr_a is arr_c:", arr_a is arr_c)
+
+    arr_c.insert(10, 10)
+    print("arr_a == arr_c:", arr_a == arr_c)
+    arr_c.pop(arr_c.size() - 1)
+    arr_c[2] = 6
+    print("arr_a == arr_c:", arr_a == arr_c)
+
+    print("arr_a == arr_d:", arr_a == arr_d)
 
 
 if __name__ == "__main__":
@@ -83,61 +232,39 @@ if __name__ == "__main__":
 # Physical size: 5
 # Logical size: 0
 # Initial items: [None, None, None, None, None]
-
-# def main(size=10):
-#     # 初始值
-#     DEFAULT_CAPACITY = 5
-#     logicalSize = 0
-#     my_array = Array(DEFAULT_CAPACITY)
-
-#     # 打印输出初始数组信息
-#     print("Initial array is: ", my_array)
-#     print("Len of the array: ", my_array.__len__())
-
-#     # 给数组赋值
-#     for i in range(len(my_array)):
-#         my_array[i] = i
-
-#     print("The array is: ", my_array.items)  # 打印输出数组
-
-#     # 增大数组物理尺寸
-#     while logicalSize < DEFAULT_CAPACITY * 2:
-#         logicalSize += 1
-#         if logicalSize == len(my_array):  # 触发条件
-#             temp = Array(len(my_array) + 1)  # 创建一个新数组
-#             for i in range(logicalSize):
-#                 temp[i] = my_array[i]  # 从原数组复制内容到新数组
-#             my_array = temp  # 把新数组赋值给原数组
-
-#     print("The array after increased is: ", my_array.items)  # 打印输出数组
-
-#     # 减小数组物理尺寸
-#     while logicalSize > len(my_array) // 4:
-#         logicalSize -= 1
-#         if logicalSize <= len(my_array) // 4 and len(my_array) >= DEFAULT_CAPACITY * 2:  # 触发条件
-#             temp = Array(len(my_array) // 2)  # 创建一个新数组
-#             for i in range(logicalSize):
-#                 temp[i] = my_array[i]  # 从原数组复制内容到新数组
-#             my_array = temp  # 把新数组赋值给原数组
-
-#     print("The array after decreased is: ", my_array.items)  # 打印输出数组
-
-#     # 增大数组物理尺寸，并向后移动一个索引位
-#     targetIndex = 0 # 插入元素的索引位，初始值是0，在数组首部插入
-#     newItem = 99 # 插入元素的值，初始值为99
-#     print(logicalSize)
-#     for i in range(logicalSize, targetIndex, -1):
-#         my_array[i] = my_array[i - 1]
-#     # Add new item and increment logical size
-#     my_array[targetIndex] = newItem  # 增加一个元素
-#     logicalSize += 1  # 增加数组的逻辑大小
-
-# if __name__ == "__main__":
-#     main()
-
-# # 运行结果：
-# # Initial array is:  [None, None, None, None, None]
-# # Len of the array:  5
-# # The array is:  [0, 1, 2, 3, 4]
-# # The array after increased is:  [0, 1, 2, 3, 4, None, None, None, None, None, None]
-# # The array after decreased is:  [0, 1, None, None, None]
+# ------
+# Items(logical): 3 2 1 0
+# Items(physical): [3, 2, 1, 0, None]
+# ------
+# Items(logical): 3 2 1 99 0
+# Items(physical): [3, 2, 1, 99, 0]
+# ------
+# Items(logical): 3 2 1 99 0 88
+# Items(physical): [3, 2, 1, 99, 0, 88, None, None, None, None]
+# ------
+# Item 99 was deleted
+# Item 0 was deleted
+# Items(logical): 3 2 1 88
+# Items(physical): [3, 2, 1, 88, None, None, None, None, None, None]
+# ------
+# Item 3 was deleted
+# Item 2 was deleted
+# Item 1 was deleted
+# Item 88 was deleted
+# Items(logical):
+# Items(physical): [None, None, None, None, None]
+# ------
+# IndexError: 删除操作出错, 数组索引越界(不在数组逻辑边界范围内)
+# ------
+# arr_a(physical): [3, 2, 1, 0, None]
+# arr_b(physical): [3, 2, 1, 0, None]
+# arr_c(physical): [3, 2, 1, 0, None]
+# arr_d(physical): []
+# arr_a == arr_b: True
+# arr_a is arr_b: True
+# arr_a == arr_c: True
+# arr_a is arr_c: False
+# arr_a == arr_c: False
+# Item 10 was deleted
+# arr_a == arr_c: False
+# arr_a == arr_d: False
