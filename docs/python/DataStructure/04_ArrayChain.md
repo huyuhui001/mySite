@@ -25,64 +25,75 @@
 
 Python的`array`模块包含一个叫作`array`的类，它非常类似于列表，但是只能存储数字。我们会定义一个叫作`Array`的新类，使用列表保存元素，存储任何类型的元素。
 
-下面的示例定义了一个数组以及对应用法。
+下面的示例定义了一个数组以及一些常用方法。
 
 ```python
 class Array(object):
-    """
-    描述一个数组。
-    数组类似列表，但数组只能使用[], len, iter, 和 str这些属性。
-    实例化一个数组，使用 <variable> = Array(<capacity>, <optional fill value>) 其中fill value默认值是None。
-    """
+    """描述一个数组。"""
 
     def __init__(self, capacity, fillValue=None):
         """Capacity是数组的大小.  fillValue会填充在每个元素位置, 默认值是None"""
+        # 初始化数组的逻辑尺寸和物理尺寸
+        self.logicalSize = 0
+        self.capacity = capacity
+        #初始化内部数组，并填充元素值
         self.items = list()
         for count in range(capacity):
             self.items.append(fillValue)
 
     def __len__(self):
-        """-> 数组的大小"""
+        """返回数组的大小"""
         return len(self.items)
 
     def __str__(self):
-        """-> 将数组字符串化"""
-        return str(self.items)
+        """将数组字符串化并返回"""
+        result = ""
+        for index in range(self.size()):
+            result += str(self.items[index]) + " "
+        return result
+
+    def size(self):
+        """返回数组的逻辑尺寸"""
+        return self.logicalSize
 
     def __iter__(self):
         """支持for循环对数组进行遍历."""
+        print("__iter__ called")  # 仅用来测试何时__iter__会被调用
         return iter(self.items)
 
     def __getitem__(self, index):
-        """用于访问索引处的下标运算符."""
+        """
+        用于访问索引处的下标运算符.
+        先决条件: 0 <= index < size()
+        """
+        if index < 0 or index >= self.size():
+            raise IndexError("数组索引越界(不在数组逻辑边界范围内)")
         return self.items[index]
 
     def __setitem__(self, index, newItem):
-        """下标运算符用于在索引处进行替换."""
+        """
+        下标运算符用于在索引处进行替换.
+        先决条件: 0 <= index < size()
+        """
+        if index < 0 or index >= self.size():
+            raise IndexError("数组索引越界(不在数组逻辑边界范围内)")
         self.items[index] = newItem
 
 
-def main(size=10):
-    my_array = Array(5)
-    print("The array is: ", my_array)
-    print("__len__() of the array: ", my_array.__len__())
-    print("len() of the arry: ", len(my_array))
-
-    for i in range(len(my_array)):
-        my_array[i] = i
-
-    for i in my_array:
-        print(my_array[i], end=" ")
+def main():
+    my_arr = Array(5)
+    print ("Physical size:", len(my_arr))
+    print ("Logical size:", my_arr.size())
+    print ("Initial items:", my_arr.items)
 
 
 if __name__ == "__main__":
     main()
 
-# 运行结果：
-# The array is [None, None, None, None, None]
-# __len__() of the array: 5
-# len() of the arry: 5
-# 0 1 2 3 4
+# 运行结果
+# Physical size: 5
+# Logical size: 0
+# Initial items: [None, None, None, None, None]
 ```
 
 ### 4.1.1.随机访问和连续内存
@@ -220,10 +231,10 @@ a = Array(DEFAULT_CAPACITY)
 
 ### 4.2.1.增大数组的尺寸
 
-当数组的逻辑尺寸等于它的物理尺寸时，如果要插入新的元素，就需要增大数组的尺寸。
+当数组的逻辑尺寸等于它的物理尺寸时，如果要插入新的元素，就需要增大数组的物理尺寸。
 如果需要为数组提供更多内存，Python的list类型会在调用insert或append方法时执行这个操作。
 
-调整数组尺寸的过程包含如下3个步骤。
+调整数组物理尺寸的过程包含如下3个步骤。
 
 - 创建一个更大的新数组。
 - 将数据从旧数组中复制到新数组。
