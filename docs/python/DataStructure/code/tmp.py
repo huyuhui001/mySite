@@ -53,7 +53,7 @@ class Array(object):
 
     def __eq__(self, other):
         """
-        两个数组相等则返回True，否则返回False
+        两个数组相等则返回True, 否则返回False
         """
         # 判断两个数组是否是同一个对象，注意，不是它们的值是否相等
         if self is other:
