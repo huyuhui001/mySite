@@ -169,6 +169,7 @@ class Array(object):
         self.items = list()
         for count in range(capacity):
             self.items.append(fillValue)
+            self.logicalSize += 1  # 初始化数组物理大小时，也同时初始化其逻辑大小
 
     def __len__(self):
         """返回数组的大小"""
@@ -577,37 +578,505 @@ while logicalSize > len(my_array) // 4:
 - 将新元素分配到目标索引位置。
 - 将逻辑尺寸加1。
 
+实现算法：
+
+```Python
+# 当数组的物理尺寸和逻辑尺寸一样时，则增加物理尺寸
+
+# 将数组元素向尾部平移一个位置
+for i in range(logicalSize, targetIndex, -1):
+    my_array[i] = my_array[i - 1]
+
+# 插入新元素，增加数组的逻辑尺寸
+my_array[targetIndex] = newItem
+logicalSize += 1
+```
+
+下面是`Array`类中实现插入元素的方法。
+
+```Python
+    def insert(self, index, newItem):
+        """在数组指定索引处插入新元素"""
+        # 当数组的物理尺寸和逻辑尺寸一样时，则增加物理尺寸
+        if self.size() == len(self):
+            self.grow()
+        # 插入新元素
+        # 当插入位置大于或等于最大逻辑位置，则在数组末端插入新元素
+        # 当插入位置介于数组逻辑位置的中间，则从插入位置起将剩余数组元素向尾部平移一个位置
+        if index >= self.size():
+            self.items[self.size()] = newItem
+        else:
+            index = max(index, 0)
+
+            # 将数组元素向尾部平移一个位置
+            for i in range(self.size(), index, -1):
+                self.items[i] = self.items[i - 1]
+
+            # 插入新元素
+            self.items[index] = newItem
+
+        # 增加数组的逻辑尺寸
+        self.logicalSize += 1
+```
+
 ### 4.2.4.从数组里删除元素
 
+从数组里删除元素的步骤如下，和插入操作一样，元素的移动顺序非常重要。
+
+- 将数组里从目标索引到逻辑结尾的所有元素向前移动，把每个元素都复制到它前面的那个内存单元里。这个过程会关闭删除目标索引位置中的元素所留下的空格。
+- 将逻辑尺寸减1。
+- 检查是否存在内存空间的浪费，并根据需要减小数组的物理尺寸。
+
+在平均情况下，移动元素的时间复杂度是线性的，因此删除操作的时间复杂度也是线性的。
+
+下面是实现删除操作的代码。
+
+```python
+# 将数组元素向头部平移一个位置
+for i in range(targetIndex, logicalSize - 1):
+     my_array[i] = my_arraya[i + 1]
+
+# 减少数组逻辑尺寸
+logicalSize -= 1
+
+# 如果需要，则减少数组物理尺寸
+```
+
+下面是`Array`类中实现删除元素的方法。
+
+```python
+    def pop(self, index):
+        """
+        删除指定索引值的数组元素,并返回删除的数组元素值
+        先决条件: 0 <= index < size()
+        """
+        if index < 0 or index >= self.size():
+            raise IndexError("删除操作出错, 数组索引越界(不在数组逻辑边界范围内)")
+
+        # 保存即将被删除的数组元素值
+        itemToReturn = self.items[index]
+
+        # 将数组元素向头部平移一个位置
+        for i in range(index, self.size() - 1):
+            self.items[i] = self.items[i + 1]
+
+        # 将数组尾部的空余位赋值fillValue，默认是None
+        self.items[self.size() - 1] = self.fillValue
+
+        # 减少数组逻辑尺寸
+        self.logicalSize -= 1
+
+        # 减少数组物理尺寸
+        # 当:
+        # - 数组的逻辑尺寸小于或等于其物理尺寸的1/4
+        # - 并且它的物理尺寸至少是这个数组建立时默认容量的2倍时
+        # 则把数组的物理尺寸减小到原来的一半，并且也不会小于其默认容量
+        if self.size() <= len(self) // 4 and len(self) > self.capacity:
+            self.shrink()
+
+        # 返回被删除元素的值
+        print(f'Item {itemToReturn} was deleted')
+        return itemToReturn
+```
+
 ### 4.2.5.复杂度的权衡：时间、空间和数组
+
+下表列出了所有数组操作的运行时复杂度，包括在数组的逻辑结尾处插入和删除元素。
+
+- 数组提供了对已经存在的元素进行快速访问的功能，以及在逻辑结尾处快速插入和删除的功能。
+- 在任意位置处进行插入和删除操作的速度则会慢上一个数量级。
+- 调整数组的尺寸也需要线性时间，但是因为这个操作会把数组尺寸加倍或减半，所以可以最大限度地减少需要执行的次数。
+- 由于可能会调整数组的尺寸，因此插入和删除操作在使用内存的时候会有`O(n)`的复杂度，那么这就是最坏情况下的性能；而在平均情况下，这些操作的内存使用情况仍然为`O(1)`。
+
+| 操作 | 运行时复杂度 |
+| --- | --- |
+| 在位置i处访问 | O(1)，最好和最坏情况下 |
+| 在位置i处替换 | O(1)，最好和最坏情况下 |
+| 在逻辑结尾处插入 | O(1)，平均情况下 |
+| 在位置i处插入 | O(n)，平均情况下 |
+| 在位置i处删除 | O(n)，平均情况下 |
+| 增大容量 | O(n)，最好和最坏情况下 |
+| 减小容量 | O(n)，最好和最坏情况下 |
+| 在逻辑结尾处删除 | O(1)，平均情况下 |
+
+使用数组的时候，内存里唯一真正被浪费的是那些尚未填充满的数组单元。
+
+评估数组内存使用率的一个非常有用的概念是负载因子（load factor）。数组的负载因子等同于它所存储的元素数除以数组的容量。
+
+- 当数组已满的时候，负载因子就是1；
+- 当数组为空时，负载因子就是0；
+- 当内存单元的容量为10且占用了3个单元时，负载因子就是0.3；
+- 当数组的负载因子降到某个阈值（如0.25）以下时，可以通过调整数组尺寸将浪费的内存单元数保持在尽可能低的水平；
 
 ### 4.2.6.练习题
 
 1．请说明为什么插入或删除给定元素时必须要移动数组里的某些元素。
 
+解答：在 Python 中，列表（list）是基于数组实现的数据结构。所谓的“数组”，其本质上是一块连续的内存空间，由于其内存连续的特性，数组在进行插入或者删除一个元素时，为了保持内存的连续性，往往需要移动数组里的其它元素。
+
+当在数组的中间位置插入一个新的元素时，为了给新元素腾出空间，它后面的所有元素都需要向后移动一位。同样的，如果我们删除了数组的一个元素，为了避免在数组中出现一个空洞，被删除元素后面的所有元素都需要向前移动一位。
+
+然而，Python的 list 数据结构是动态的，也就是说，当插入或删除元素时，Python会自动分配或回收内存。当在 list 的末尾添加或移除元素时，不需要移动其他元素，因此操作效率较高；但是在 list 的中间或起始部分插入或删除元素时，就需要移动其它元素，相对而言，其操作效率就较低了。
+
 2．在插入过程中，移动数组元素时，要先移动哪个元素？先移动插入位置的元素，还是最后一个元素？为什么？
+
+解答：在 Python 中实现数组的插入过程时，应当先移动插入位置之后的最后一个元素。
+
+考虑以下的情况：值插入于数组的中间位置，你试图从插入位置开始，将每个元素后移一位。但是，当你把第一个元素移到第二个位置时，你会覆盖掉原有的第二个元素，由于你还没有保存或复制这个被覆盖的元素，它就会丢失。
+
+如果从最后一个元素开始，将每个元素向后移一位，那么每个元素都会被复制到它的下一位，然后才会被它前面的元素覆盖。这样就确保了每个元素都能正确地移动到它应该到达的位置，不会有任何元素丢失。
+所以，在插入过程中，我们应该从最后一个元素开始，逐个将元素后移一位，直到将插入位置的元素也后移一位，然后在插入位置放入新的元素。
 
 3．如果插入位置是数组的逻辑末尾，请说明这个插入操作的运行时复杂度。
 
+解答：如果在数组（在 Python 中就是 list）的逻辑末尾插入元素，这种操作通常可以在常数时间内完成，也就是说，这种操作的时间复杂度是 O(1)。
+
+因为数组是连续的内存空间，位于末尾的插入操作不需要移动任何元素，仅仅涉及在末尾添加新元素，并可能涉及一些额外的内存分配（如果数组已满，需要分配更大的数组来容纳新的元素）。
+
+需要注意的是，内存分配和复制元素在实际操作中可能还是需要一些时间的，尤其是在数组已满时，需要重新分配并复制整个数组到新的内存地址。但是在理论分析时，我们通常忽略这种情况，因为它是一种被称为摊还（amortized）操作的特例，从长期的平均运行时间来看，这种插入操作的时间复杂度仍然是 O(1) 的。
+
 4．假设数组当前包含14个元素，它的负载因子为0.70，那么它的物理容量是多少？
+
+解答：负载因子通常是指一个哈希表中已存元素数量对应于其底层数组容量的比例。对于一般的数组和 Python 的 list，我们通常不会谈论负载因子，因为这些数据结构的大小直接对应于其中包含的元素数量。
+
+然而，如果你要计算一个负载因子为 0.70 的容器，并且它包含了14个元素，那么它的物理容量可以计算为：`元素数量 / 负载因子 = 容量`
+
+在这种情况下，物理容量应该是 14 / 0.70 = 20。所以物理容量应该是 20。
 
 ## 4.3.二维数组（网格）
 
+- 一维数组（one-dimensional array）
+- 二维数组（two-dimensional array），或网格（grid）
+
+要访问grid里的元素，可以通过两个下标来指定其行和列的相应位置，并且这两个索引都是从0开始的。
+
+```python
+x = grid[2][3] # 将二维数组第二行第三列的值赋给变量x
+```
+
 ### 4.3.1.使用网格
+
+除了用双下标，网格还必须要有两个方法，用来返回行数和列数。我们把这两个方法分别命名为`getHeight`和`getWidth`。
+
+基于4.3.3中定义的Grid类，下面这段代码会实例化一个二维数组，并计算变量`my_grid`里所有数字的总和。外部循环会迭代5次并向下逐行移动，在每次进入外部循环的时候，内部循环都会迭代5次，从而在不同行的列之间移动。
+
+```python
+my_grid = Grid(5, 5, 1)
+
+sum = 0
+for row in range(my_grid.getHeight()):            # Go through rows
+     for column in range(my_grid.getWidth()):     # Go through columns
+          sum +=my_grid[row][column]
+```
 
 ### 4.3.2.创建并初始化网格
 
+基于4.3.3中定义的Grid类，下面代码实例化了一个二维数组，遍历该数组的每个元素并赋值。
+
+```python
+my_grid = Grid(5, 5, 1)
+print(my_grid)
+
+# 行遍历
+for row in range(my_grid.getHeight()):
+     # 列遍历
+     for column in range(my_grid.getWidth()):
+          my_grid[row][column] = int(str(row) + str(column))
+```
+
 ### 4.3.3.定义Grid类
 
+下面实现了一个`Grid`对象，包含3个参数（高度、宽度以及初始的填充值）的`Grid`构造函数。
+
+- 高度，即行数；宽度，即列数；
+- 实例化了一个5行5列的二维数组；
+
+```python
+class Array(object):
+    """描述一个数组。"""
+
+    def __init__(self, capacity, fillValue=None):
+        """Capacity是数组的大小.  fillValue会填充在每个元素位置, 默认值是None"""
+        # 初始化数组的逻辑尺寸和物理尺寸
+        self.logicalSize = 0
+        self.capacity = capacity
+        self.fillValue = fillValue
+        #初始化内部数组，并填充元素值
+        self.items = list()
+        for count in range(capacity):
+            self.items.append(fillValue)
+            self.logicalSize += 1  # 初始化数组物理大小时，也同时初始化其逻辑大小
+
+    def __len__(self):
+        """返回数组的大小"""
+        return len(self.items)
+
+    def __str__(self):
+        """将数组字符串化并返回"""
+        result = ""
+        for index in range(self.size()):
+            result += str(self.items[index]) + " "
+        return result
+
+    def size(self):
+        """返回数组的逻辑尺寸"""
+        return self.logicalSize
+
+    def __iter__(self):
+        """支持for循环对数组进行遍历."""
+        print("__iter__ called")  # 仅用来测试何时__iter__会被调用
+        return iter(self.items)
+
+    def __getitem__(self, index):
+        """
+        用于访问索引处的下标运算符.
+        先决条件: 0 <= index < size()
+        """
+        if index < 0 or index >= self.size():
+            raise IndexError("读取操作出错, 数组索引越界(不在数组逻辑边界范围内)")
+
+        return self.items[index]
+
+    def __setitem__(self, index, newItem):
+        """
+        下标运算符用于在索引处进行替换.
+        先决条件: 0 <= index < size()
+        """
+        if index < 0 or index >= self.size():
+            raise IndexError("更新操作出错, 数组索引越界(不在数组逻辑边界范围内)")
+        self.items[index] = newItem
+
+    def __eq__(self, other):
+        """
+        两个数组相等则返回True, 否则返回False
+        """
+        # 判断两个数组是否是同一个对象，注意，不是它们的值是否相等
+        if self is other:
+            return True
+        # 判断两个对象类型是否一样
+        if type(self) != type(other):
+            return False
+        # 判断两个数组大小是否一样
+        if self.size() != other.size():
+            return False
+        # 比较两个数组的值是否一样
+        for index in range(self.size()):
+            if self[index] != other[index]:
+                return False
+        return True
+
+    def grow(self):
+        """增大数组物理尺寸"""
+        # 基于当前物理尺寸加倍，并将fillValue赋值底层列表的新元素
+        for count in range(len(self)):
+            self.items.append(self.fillValue)
+
+    def insert(self, index, newItem):
+        """在数组指定索引处插入新元素"""
+        # 当数组的物理尺寸和逻辑尺寸一样时，则增加物理尺寸
+        if self.size() == len(self):
+            self.grow()
+        # 插入新元素
+        # 当插入位置大于或等于最大逻辑位置，则在数组末端插入新元素
+        # 当插入位置介于数组逻辑位置的中间，则从插入位置起将剩余数组元素向尾部平移一个位置
+        if index >= self.size():
+            self.items[self.size()] = newItem
+        else:
+            index = max(index, 0)
+
+            # 将数组元素向尾部平移一个位置
+            for i in range(self.size(), index, -1):
+                self.items[i] = self.items[i - 1]
+
+            # 插入新元素
+            self.items[index] = newItem
+
+        # 增加数组的逻辑尺寸
+        self.logicalSize += 1
+
+    def shrink(self):
+        """
+        减少数组的物理尺寸
+        当:
+        - 数组的逻辑尺寸小于或等于其物理尺寸的1/4
+        - 并且它的物理尺寸至少是这个数组建立时默认容量的2倍时
+        则把数组的物理尺寸减小到原来的一半，并且也不会小于其默认容量
+        """
+        # 在逻辑尺寸和物理尺寸的一半之间选择最大值作为数组收缩后的物理尺寸
+        newSize = max(self.capacity, len(self) // 2)
+        # 释放多余的数组空间
+        for count in range(len(self) - newSize):
+            self.items.pop()
+
+    def pop(self, index):
+        """
+        删除指定索引值的数组元素,并返回删除的数组元素值
+        先决条件: 0 <= index < size()
+        """
+        if index < 0 or index >= self.size():
+            raise IndexError("删除操作出错, 数组索引越界(不在数组逻辑边界范围内)")
+
+        # 保存即将被删除的数组元素值
+        itemToReturn = self.items[index]
+
+        # 将数组元素向头部平移一个位置
+        for i in range(index, self.size() - 1):
+            self.items[i] = self.items[i + 1]
+
+        # 将数组尾部的空余位赋值fillValue，默认是None
+        self.items[self.size() - 1] = self.fillValue
+
+        # 减少数组逻辑尺寸
+        self.logicalSize -= 1
+
+        # 减少数组物理尺寸
+        # 当:
+        # - 数组的逻辑尺寸小于或等于其物理尺寸的1/4
+        # - 并且它的物理尺寸至少是这个数组建立时默认容量的2倍时
+        # 则把数组的物理尺寸减小到原来的一半，并且也不会小于其默认容量
+        if self.size() <= len(self) // 4 and len(self) > self.capacity:
+            self.shrink()
+
+        # 返回被删除元素的值
+        print(f'Item {itemToReturn} was deleted')
+        return itemToReturn
+
+
+class Grid(object):
+    """描述一个二维数组。"""
+
+    def __init__(self, rows, columns, fillValue=None):
+        self.rows = rows
+        self.columns = columns
+        self.fillValue = fillValue
+        # 按行数初始化数组y轴物理尺寸
+        self.data = Array(rows, fillValue)
+        # 按列数初始化数组x轴物理尺寸，并赋值到y轴数组，填充None值
+        for row in range(rows):
+            self.data[row] = Array(columns, fillValue)
+
+    def getHeight(self):
+        """返回二维数组的y轴的大小(物理尺寸), 即数组的行数"""
+        return len(self.data)
+
+    def getWidth(self):
+        """返回二维数组的x轴的大小(物理尺寸), 即数组的列数"""
+        return len(self.data[0])
+
+    def __getitem__(self, index):
+        """返回二维数组指定行和列索引对应的元素值"""
+        return self.data[index]
+
+    def __str__(self):
+        """返回二维数组的字符串形式"""
+        result = ""
+        for row in range(self.getHeight()):
+            for col in range(self.getWidth()):
+                result += str(self.data[row][col]) + " "
+            result += "\n"
+        return result
+
+
+def main():
+    my_grid = Grid(5, 5, 1)
+    print(my_grid)
+
+
+if __name__ == "__main__":
+    main()
+
+# 运行结果
+# 1 1 1 1 1 
+# 1 1 1 1 1 
+# 1 1 1 1 1 
+# 1 1 1 1 1 
+# 1 1 1 1 1 
+```
+
 ### 4.3.4.参差不齐的网格和多维数组
+
+到目前为止，我们所讨论的网格都是二维并且是矩形的。我们也可以把网格创建成参差不齐的样子，也可以创建高于两个维度的网格。
+
+参差不齐的网格有固定的行数，但是每一行里的数据列数各有不同。列表数组或数组是可以实现这种网格的合适结构。
+
+比如，可以创建一个三维数组的时候需要指定它的深度、高度以及宽度。因此可以给数组类型添加一个叫作`getDepth`的方法，从而像`getWidth`和`getHeight`方法一样再得到这个维度的相关数据。在这个实现里，每个元素都可以通过3个作为索引的整数进行访问，也可以通过有3层循环的控制语句结构来使用它。
 
 ### 4.3.5.练习题
 
 1．什么是二维数组（网格）？
 
+解答：二维数组，有时被称为网格，是一个数据结构，它允许我们将数据以表格形式组织起来，即数据在两个维度上进行组织。可以把二维数组看作是一个数组的数组。例如，在 Python 中，一个二维数组可以是一个列表的列表。
+
+在二维数组中，每个元素都由两个索引确定，通常称为行索引和列索引。可以这样理解：首先选定一个行，然后再在该行中选择一个元素。用任何一种编程语言创建和操作二维数组的具体语法都不尽相同，但是原理是一样的。
+
+在 Python 中，创建二维数组的例子如下：
+
+```python
+# 创建一个 3x3 的二维数组
+grid = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+
+# 访问二维数组中特定的元素
+print(grid[1][2])  # 输出：6
+```
+
 2．请描述一个可能会用到二维数组的应用程序。
 
+解答：二维数组在各种类型的应用程序中都被广泛使用。一个常见的例子是在处理图像或像素的应用中。
+
+图像可以被看作一个二维数组（或者在彩色图像中，是一个三维数组，三个通道分别是红、绿、蓝），其中每个元素表示一个像素。二维数组中的行和列对应于图像的宽度和高度，元素值通常代表像素的颜色深度。
+
+例如，以下 Python 代码创建了一个简单的灰度图像，并使用 matplotlib 库显示它：
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+# 创建一个 10x10 的二维数组，每个元素值为 0-255 之间的随机整数
+image = np.random.randint(0, 256, (10, 10))
+
+# 显示这个图像
+plt.imshow(image, cmap='gray')
+plt.show()
+```
+
+在这个例子中，我们使用了 NumPy 库来创建和操作二维数组（在 NumPy 中，这种结构被称为 ndarray）。这是处理大规模数值数据的一个非常好的工具，尤其是对于涉及到科学计算和数据分析的应用程序。
+此外，二维数组也广泛应用于游戏开发（如棋盘游戏，如国际象棋或井字游戏的棋盘可以用二维数组来表示）、物理模拟、系统动力学模仿、地理信息系统（地图可以表示为二维数组的高程数据）等许多领域。
+
+
 3．编写一个程序，使之可以在Grid对象里搜索一个负整数。循环应该在遇到网格里的第一个负整数的地方终止，这时变量row和column应该被设置为这个负数的位置。如果在网格里找不到负数，那么变量row和column应该等于网格的行数和列数。
+
+解答：在Grid类中添加下面的方法，可以实现提名中的要求
+
+```python
+    def find_negative(self):
+        """返回第一个负整数的索引值"""
+        target_row = 0
+        target_col = 0
+        for row in range(self.getHeight()):
+            for col in range(self.getWidth()):
+                # 如果当前元素是负数
+                if self.data[row][col] < 0:
+                # 更新 row 和 column 为该元素的位置
+                    target_row = row
+                    target_col = col
+                    # 终止循环
+                    break
+            # 如果已找到负数，终止外层循环
+            if self.data[row][col] < 0:
+                break
+        # 返回负数的位置，或者如果没有找到负数，返回行数和列数
+        return row, col
+```
+
+```python
+import random
+
+def main():
+    
+    my_grid = Grid(5, 5, random.randint(-10, 10))
+    print(my_grid)
+    print(my_grid.find_negative())
+```
 
 4．说说运行下面这段代码后网格里的内容是什么。
 
@@ -616,6 +1085,15 @@ matrix = Grid(3, 3)
 for row in range(matrix.getHeight()):
      for column in range(matrix.getWidth()):
          matrix[row][column] = row * column
+```
+
+解答：这段代码首先创建了一个3x3的网格（或二维数组），然后使用两个嵌套的for循环来遍历这个网格的每一个元素。对于网格中的每一个元素，它的值被设置为其行索引乘以列索引。由于第一行和第一列的索引都是0，所以第一行和第一列的元素值都是0（因为任何数乘以0都等于0）。其它元素的值等于它们的行索引乘以列索引。
+
+```python
+
+0 0 0
+0 1 2
+0 2 4
 ```
 
 5．编写一段代码以创建一个参差不齐的网格，它的行分别用来存储3个、6个和9个元素。
