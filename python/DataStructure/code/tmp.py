@@ -11,6 +11,7 @@ class Array(object):
         self.items = list()
         for count in range(capacity):
             self.items.append(fillValue)
+            self.logicalSize += 1  # 初始化数组物理大小时，也同时初始化其逻辑大小
 
     def __len__(self):
         """返回数组的大小"""
@@ -53,7 +54,7 @@ class Array(object):
 
     def __eq__(self, other):
         """
-        两个数组相等则返回True，否则返回False
+        两个数组相等则返回True, 否则返回False
         """
         # 判断两个数组是否是同一个对象，注意，不是它们的值是否相等
         if self is other:
@@ -147,124 +148,215 @@ class Array(object):
         return itemToReturn
 
 
+class Grid(object):
+    """描述一个二维数组。"""
+
+    def __init__(self, rows, columns, fillValue=None):
+        self.rows = rows
+        self.columns = columns
+        self.fillValue = fillValue
+        # 按行数初始化数组y轴物理尺寸
+        self.data = Array(rows, fillValue)
+        # 按列数初始化数组x轴物理尺寸，并赋值到y轴数组，填充None值
+        for row in range(rows):
+            self.data[row] = Array(columns, fillValue)
+
+    def getHeight(self):
+        """返回二维数组的y轴的大小(物理尺寸), 即数组的行数"""
+        return len(self.data)
+
+    def getWidth(self):
+        """返回二维数组的x轴的大小(物理尺寸), 即数组的列数"""
+        return len(self.data[0])
+
+    def __getitem__(self, index):
+        """返回二维数组指定行和列索引对应的元素值"""
+        return self.data[index]
+
+    def __str__(self):
+        """返回二维数组的字符串形式"""
+        result = ""
+        for row in range(self.getHeight()):
+            for col in range(self.getWidth()):
+                result += str(self.data[row][col]) + " "
+            result += "\n"
+        return result
+
+    def find_negative(self):
+        """返回第一个负整数的索引值"""
+        target_row = 0
+        target_col = 0
+        for row in range(self.getHeight()):
+            for col in range(self.getWidth()):
+                # 如果当前元素是负数
+                if self.data[row][col] < 0:
+                    # 更新 row 和 column 为该元素的位置
+                    target_row = row
+                    target_col = col
+                    # 终止循环
+                    break
+            # 如果已找到负数，终止外层循环
+            if self.data[row][col] < 0:
+                break
+        # 返回负数的位置，或者如果没有找到负数，返回行数和列数
+        return row, col
+
+
+class ThreeDArray(object):
+    """描述一个三维数组。"""
+
+    # def __init__(self, depth, rows, columns, fillValue=None):
+    #     self.depth = depth
+    #     self.rows = rows
+    #     self.columns = columns
+    #     self.fillValue = fillValue
+    #     # 初始化三维数组，按照深度初始化每一层为一个二维数组
+    #     self.data = Array(depth, fillValue)
+    #     for d in range(depth):
+    #         self.data[d] = Grid(rows, columns, fillValue)
+    def __init__(self, depth, rows, columns):
+        self.depth = depth
+        self.rows = rows
+        self.columns = columns
+        # 初始化三维数组，按照深度初始化每一层为一个二维数组
+        self.data = Array(depth)
+        for d in range(depth):
+            self.data[d] = Grid(rows, columns)
+            for r in range(rows):
+                for c in range(columns):
+                    # 将每个位置的索引拼接成字符串作为元素值
+                    self.data[d][r][c] = str(d) + str(r) + str(c)
+
+    def getDepth(self):
+        """返回三维数组的z轴大小, 即数组的深度"""
+        return len(self.data)
+
+    def get_element(self, depth, row, column):
+        """获取指定深度、行和列的元素"""
+        return self.data[depth][row][column]
+
+    def set_element(self, depth, row, column, new_value):
+        """设置指定深度、行和列的元素"""
+        self.data[depth][row][column] = new_value
+
+    def add_element(self, depth, row, column, value):
+        """在指定深度、行和列添加元素 """
+        if self.data[depth][row][column] == self.fillValue:
+            self.data[depth][row][column] = value
+        else:
+            raise Exception("元素添加失败")
+
+    def remove_element(self, depth, row, column):
+        """在指定深度、行和列删除元素 """
+        if self.data[depth][row][column] != self.fillValue:
+            self.data[depth][row][column] = self.fillValue
+        else:
+            raise Exception("元素删除失败")
+
+    def printAllElements(self):
+        """打印三维数组中的所有元素。"""
+        for row in range(self.rows):
+            for col in range(self.columns):
+                for depth in range(self.depth):
+                    print(f"Element at position ({row}, {col}, {depth}): {self.data[depth][row][col]}")
+
+    # def __str__(self):
+    #     result = ""
+    #     for depth in range(self.getDepth()):
+    #         result += f"Depth {depth}:\n"
+    #         for row in range(self.rows):
+    #             for column in range(self.columns):
+    #                 result += str(self.data[depth][row][column]) + "\t"
+    #             result += "\n"
+    #     return result
+
+    def __str__(self):
+        result = ""
+        for depth in range(self.getDepth()):
+            result += f"Depth {depth}:\n"
+            for row in range(self.rows):
+                for column in range(self.columns):
+                    result += str(self.data[depth][row][column]) + "\t"
+                result += "\n"
+        return result
+
+import random
+
+
 def main():
-    # 初始化空数组
-    DEFAULT_CAPACITY = 5
-    my_arr = Array(DEFAULT_CAPACITY)
+    # my_grid = Grid(5, 5, random.randint(-10, 10))
+    # print(my_grid)
+    # print(my_grid.find_negative())
 
-    # 打印输出数组初始信息
-    print("Physical size:", len(my_arr))
-    print("Logical size:", my_arr.size())
-    print("Initial items:", my_arr.items)
-
-    # 初始化数组元素
-    print('------')
-    for item in range(4):
-        my_arr.insert(0, item)  # 在数组头部插入，每插入一次都需要向后移动已有数组元素
-    print("Items(logical):", my_arr)
-    print("Items(physical):", my_arr.items)
-
-    # 在数组中间插入新元素
-    print('------')
-    my_arr.insert(3, 99)
-    print("Items(logical):", my_arr)
-    print("Items(physical):", my_arr.items)
-
-    # 在数组逻辑尺寸外插入新元素
-    print('------')
-    my_arr.insert(20, 88)
-    print("Items(logical):", my_arr)
-    print("Items(physical):", my_arr.items)
-
-    # 删除数组元素
-    print('------')
-    my_arr.pop(3)
-    my_arr.pop(3)
-    print("Items(logical):", my_arr)
-    print("Items(physical):", my_arr.items)
-
-    # 清空数组元素
-    print('------')
-    for count in range(my_arr.size()):
-        my_arr.pop(0)
-    print("Items(logical):", my_arr)
-    print("Items(physical):", my_arr.items)
-
-    # 数组元素已经全部删除，逻辑尺寸为零，下面命令返回错误
-    # print('------')
-    # print(my_arr.pop(0))
-
-    # 数组比较
-    # 初始化数组
-    print('------')
-    arr_a = Array(5)
-    for item in range(4):
-        arr_a.insert(0, item)
-    arr_b = arr_a
-    arr_c = Array(5)
-    for item in range(4):
-        arr_c.insert(0, item)
-    arr_d = []
-
-    print("arr_a(physical):", arr_a.items)
-    print("arr_b(physical):", arr_b.items)
-    print("arr_c(physical):", arr_c.items)
-    print("arr_d(physical):", arr_d)
-
-    print("arr_a == arr_b:", arr_a == arr_b)
-    print("arr_a is arr_b:", arr_a is arr_b)
-    print("arr_a == arr_c:", arr_a == arr_c)
-    print("arr_a is arr_c:", arr_a is arr_c)
-
-    arr_c.insert(10, 10)
-    print("arr_a == arr_c:", arr_a == arr_c)
-    arr_c.pop(arr_c.size() - 1)
-    arr_c[2] = 6
-    print("arr_a == arr_c:", arr_a == arr_c)
-
-    print("arr_a == arr_d:", arr_a == arr_d)
-
+    my_3d = ThreeDArray(3, 4, 4)
+    print(my_3d)  # 打印初始状态
+    my_3d.printAllElements()
 
 if __name__ == "__main__":
     main()
 
 # 运行结果
-# Physical size: 5
-# Logical size: 0
-# Initial items: [None, None, None, None, None]
-# ------
-# Items(logical): 3 2 1 0
-# Items(physical): [3, 2, 1, 0, None]
-# ------
-# Items(logical): 3 2 1 99 0
-# Items(physical): [3, 2, 1, 99, 0]
-# ------
-# Items(logical): 3 2 1 99 0 88
-# Items(physical): [3, 2, 1, 99, 0, 88, None, None, None, None]
-# ------
-# Item 99 was deleted
-# Item 0 was deleted
-# Items(logical): 3 2 1 88
-# Items(physical): [3, 2, 1, 88, None, None, None, None, None, None]
-# ------
-# Item 3 was deleted
-# Item 2 was deleted
-# Item 1 was deleted
-# Item 88 was deleted
-# Items(logical):
-# Items(physical): [None, None, None, None, None]
-# ------
-# IndexError: 删除操作出错, 数组索引越界(不在数组逻辑边界范围内)
-# ------
-# arr_a(physical): [3, 2, 1, 0, None]
-# arr_b(physical): [3, 2, 1, 0, None]
-# arr_c(physical): [3, 2, 1, 0, None]
-# arr_d(physical): []
-# arr_a == arr_b: True
-# arr_a is arr_b: True
-# arr_a == arr_c: True
-# arr_a is arr_c: False
-# arr_a == arr_c: False
-# Item 10 was deleted
-# arr_a == arr_c: False
-# arr_a == arr_d: False
+# Depth 0:
+# 000     001     002     003
+# 010     011     012     013
+# 020     021     022     023
+# 030     031     032     033
+# Depth 1:
+# 100     101     102     103
+# 110     111     112     113
+# 120     121     122     123
+# 130     131     132     133
+# Depth 2:
+# 200     201     202     203
+# 210     211     212     213
+# 220     221     222     223
+# 230     231     232     233
+
+# Element at position (0, 0, 0): 000
+# Element at position (0, 0, 1): 100
+# Element at position (0, 0, 2): 200
+# Element at position (0, 1, 0): 001
+# Element at position (0, 1, 1): 101
+# Element at position (0, 1, 2): 201
+# Element at position (0, 2, 0): 002
+# Element at position (0, 2, 1): 102
+# Element at position (0, 2, 2): 202
+# Element at position (0, 3, 0): 003
+# Element at position (0, 3, 1): 103
+# Element at position (0, 3, 2): 203
+# Element at position (1, 0, 0): 010
+# Element at position (1, 0, 1): 110
+# Element at position (1, 0, 2): 210
+# Element at position (1, 1, 0): 011
+# Element at position (1, 1, 1): 111
+# Element at position (1, 1, 2): 211
+# Element at position (1, 2, 0): 012
+# Element at position (1, 2, 1): 112
+# Element at position (1, 2, 2): 212
+# Element at position (1, 3, 0): 013
+# Element at position (1, 3, 1): 113
+# Element at position (1, 3, 2): 213
+# Element at position (2, 0, 0): 020
+# Element at position (2, 0, 1): 120
+# Element at position (2, 0, 2): 220
+# Element at position (2, 1, 0): 021
+# Element at position (2, 1, 1): 121
+# Element at position (2, 1, 2): 221
+# Element at position (2, 2, 0): 022
+# Element at position (2, 2, 1): 122
+# Element at position (2, 2, 2): 222
+# Element at position (2, 3, 0): 023
+# Element at position (2, 3, 1): 123
+# Element at position (2, 3, 2): 223
+# Element at position (3, 0, 0): 030
+# Element at position (3, 0, 1): 130
+# Element at position (3, 0, 2): 230
+# Element at position (3, 1, 0): 031
+# Element at position (3, 1, 1): 131
+# Element at position (3, 1, 2): 231
+# Element at position (3, 2, 0): 032
+# Element at position (3, 2, 1): 132
+# Element at position (3, 2, 2): 232
+# Element at position (3, 3, 0): 033
+# Element at position (3, 3, 1): 133
+# Element at position (3, 3, 2): 233
