@@ -1042,7 +1042,6 @@ plt.show()
 在这个例子中，我们使用了 NumPy 库来创建和操作二维数组（在 NumPy 中，这种结构被称为 ndarray）。这是处理大规模数值数据的一个非常好的工具，尤其是对于涉及到科学计算和数据分析的应用程序。
 此外，二维数组也广泛应用于游戏开发（如棋盘游戏，如国际象棋或井字游戏的棋盘可以用二维数组来表示）、物理模拟、系统动力学模仿、地理信息系统（地图可以表示为二维数组的高程数据）等许多领域。
 
-
 3．编写一个程序，使之可以在Grid对象里搜索一个负整数。循环应该在遇到网格里的第一个负整数的地方终止，这时变量row和column应该被设置为这个负数的位置。如果在网格里找不到负数，那么变量row和column应该等于网格的行数和列数。
 
 解答：在Grid类中添加下面的方法，可以实现提名中的要求
@@ -1090,7 +1089,6 @@ for row in range(matrix.getHeight()):
 解答：这段代码首先创建了一个3x3的网格（或二维数组），然后使用两个嵌套的for循环来遍历这个网格的每一个元素。对于网格中的每一个元素，它的值被设置为其行索引乘以列索引。由于第一行和第一列的索引都是0，所以第一行和第一列的元素值都是0（因为任何数乘以0都等于0）。其它元素的值等于它们的行索引乘以列索引。
 
 ```python
-
 0 0 0
 0 1 2
 0 2 4
@@ -1098,11 +1096,400 @@ for row in range(matrix.getHeight()):
 
 5．编写一段代码以创建一个参差不齐的网格，它的行分别用来存储3个、6个和9个元素。
 
+解答：使用列表的列表（即列表的嵌套）来创建参差不齐的网格。下面是Python实现代码：
+
+```python
+# 创建空网格
+grid = []
+
+# 为网格添加行
+grid.append([""] * 3)    # 第一行3个元素
+grid.append([""] * 6)    # 第二行6个元素
+grid.append([""] * 9)    # 第三行9个元素
+
+# 打印网格
+for row in grid:
+    print(row)
+```
+
+上面代码创建一个具有三行的网格，其中第一行有三个元素，第二行有六个元素，第三行有九个元素。每个元素最初都被设置为一个空字符串，这个网格的形状将类似于：
+
+```python
+['', '', '']
+['', '', '', '', '', '']
+['', '', '', '', '', '', '', '', '']
+```
+
 6．提供一个把Grid类用作数据结构来实现三维array类的策略。
+
+解答：代码实现如下：
+
+```python
+class ThreeDArray(object):
+    """描述一个三维数组。"""
+
+    def __init__(self, depth, rows, columns, fillValue=None):
+        self.depth = depth
+        self.rows = rows
+        self.columns = columns
+        self.fillValue = fillValue
+        # 初始化三维数组，按照深度初始化每一层为一个二维数组
+        self.data = Array(depth, fillValue)
+        for d in range(depth):
+            self.data[d] = Grid(rows, columns, fillValue)
+
+    def getDepth(self):
+        """返回三维数组的z轴大小, 即数组的深度"""
+        return len(self.data)
+
+    def get_element(self, depth, row, column):
+        """获取指定深度、行和列的元素"""
+        return self.data[depth][row][column]
+
+    def set_element(self, depth, row, column, new_value):
+        """设置指定深度、行和列的元素"""
+        self.data[depth][row][column] = new_value
+
+    def add_element(self, depth, row, column, value):
+        """在指定深度、行和列添加元素 """
+        if self.data[depth][row][column] == self.fillValue:
+            self.data[depth][row][column] = value
+        else:
+            raise Exception("元素添加失败")
+
+    def remove_element(self, depth, row, column):
+        """在指定深度、行和列删除元素 """
+        if self.data[depth][row][column] != self.fillValue:
+            self.data[depth][row][column] = self.fillValue
+        else:
+            raise Exception("元素删除失败")
+
+    def __str__(self):
+        result = ""
+        for depth in range(self.getDepth()):
+            result += f"Depth {depth}:\n"
+            for row in range(self.rows):
+                for column in range(self.columns):
+                    result += str(self.data[depth][row][column]) + "\t"
+                result += "\n"
+        return result
+
+
+def main():
+    print("---Initial 3D Array---")
+    my_3d = ThreeDArray(3, 2, 2, 9)
+    print(my_3d)
+    
+    print("---Add element into 3D Array---")
+    my_3d.add_element(0, 1, 1, 0)
+    my_3d.add_element(1, 1, 1, 1)
+    my_3d.add_element(2, 1, 1, 2)
+    print(my_3d)
+
+    print("---Remove element from 3D Array---")
+    my_3d.remove_element(1, 1, 1)
+    print(my_3d)
+
+
+if __name__ == "__main__":
+    main()
+
+# 运行结果
+# ---Initial 3D Array---
+# Depth 0:
+# 9       9
+# 9       9
+# Depth 1:
+# 9       9
+# 9       9
+# Depth 2:
+# 9       9
+# 9       9
+
+# ---Add element into 3D Array---
+# Depth 0:
+# 9       9
+# 9       0
+# Depth 1:
+# 9       9
+# 9       1
+# Depth 2:
+# 9       9
+# 9       2
+
+# ---Remove element from 3D Array---
+# Depth 0:
+# 9       9
+# 9       0
+# Depth 1:
+# 9       9
+# 9       9
+# Depth 2:
+# 9       9
+# 9       2
+```
 
 7．编写一段代码：这段代码会把三维数组里每个单元的值都初始化为它的3个索引位置。例如，如果位置是（深度、行、列），则对于位置（2、3、3）来说，它的值就是233。
 
+解答：修改上面的代码中的`__init__`和`__str__`方法，代码实现如下。
+
+```python
+class ThreeDArray(object):
+    """描述一个三维数组。"""
+
+    # def __init__(self, depth, rows, columns, fillValue=None):
+    #     self.depth = depth
+    #     self.rows = rows
+    #     self.columns = columns
+    #     self.fillValue = fillValue
+    #     # 初始化三维数组，按照深度初始化每一层为一个二维数组
+    #     self.data = Array(depth, fillValue)
+    #     for d in range(depth):
+    #         self.data[d] = Grid(rows, columns, fillValue)
+    def __init__(self, depth, rows, columns):
+        self.depth = depth
+        self.rows = rows
+        self.columns = columns
+        # 初始化三维数组，按照深度初始化每一层为一个二维数组
+        self.data = Array(depth)
+        for d in range(depth):
+            self.data[d] = Grid(rows, columns)
+            for r in range(rows):
+                for c in range(columns):
+                    # 将每个位置的索引拼接成字符串作为元素值
+                    self.data[d][r][c] = str(d) + str(r) + str(c)
+
+    def getDepth(self):
+        """返回三维数组的z轴大小, 即数组的深度"""
+        return len(self.data)
+
+    def get_element(self, depth, row, column):
+        """获取指定深度、行和列的元素"""
+        return self.data[depth][row][column]
+
+    def set_element(self, depth, row, column, new_value):
+        """设置指定深度、行和列的元素"""
+        self.data[depth][row][column] = new_value
+
+    def add_element(self, depth, row, column, value):
+        """在指定深度、行和列添加元素 """
+        if self.data[depth][row][column] == self.fillValue:
+            self.data[depth][row][column] = value
+        else:
+            raise Exception("元素添加失败")
+
+    def remove_element(self, depth, row, column):
+        """在指定深度、行和列删除元素 """
+        if self.data[depth][row][column] != self.fillValue:
+            self.data[depth][row][column] = self.fillValue
+        else:
+            raise Exception("元素删除失败")
+
+    # def __str__(self):
+    #     result = ""
+    #     for depth in range(self.getDepth()):
+    #         result += f"Depth {depth}:\n"
+    #         for row in range(self.rows):
+    #             for column in range(self.columns):
+    #                 result += str(self.data[depth][row][column]) + "\t"
+    #             result += "\n"
+    #     return result
+
+    def __str__(self):
+        result = ""
+        for depth in range(self.getDepth()):
+            result += f"Depth {depth}:\n"
+            for row in range(self.rows):
+                for column in range(self.columns):
+                    result += str(self.data[depth][row][column]) + "\t"
+                result += "\n"
+        return result
+
+
+def main():
+    my_3d = ThreeDArray(3, 4, 4)
+    print(my_3d)  # 打印初始状态
+
+
+if __name__ == "__main__":
+    main()
+
+# 运行结果
+# Depth 0:
+# 000     001     002     003
+# 010     011     012     013
+# 020     021     022     023
+# 030     031     032     033
+# Depth 1:
+# 100     101     102     103
+# 110     111     112     113
+# 120     121     122     123
+# 130     131     132     133
+# Depth 2:
+# 200     201     202     203
+# 210     211     212     213
+# 220     221     222     223
+# 230     231     232     233
+```
+
 8．编写一段代码：这段代码可以显示出三维数组里的所有元素。打印出的每一行数据都应该代表给定行和列里的所有元素，而深度将从第一个位置向后递归到最后一个位置。遍历应该从第1行、第1列以及第一个深度位置开始，依次遍历所有的深度、列和行。
+
+解答：添加了一个方法`printAllElements`，代码实现如下：
+
+```python
+class ThreeDArray(object):
+    """描述一个三维数组。"""
+
+    # def __init__(self, depth, rows, columns, fillValue=None):
+    #     self.depth = depth
+    #     self.rows = rows
+    #     self.columns = columns
+    #     self.fillValue = fillValue
+    #     # 初始化三维数组，按照深度初始化每一层为一个二维数组
+    #     self.data = Array(depth, fillValue)
+    #     for d in range(depth):
+    #         self.data[d] = Grid(rows, columns, fillValue)
+    def __init__(self, depth, rows, columns):
+        self.depth = depth
+        self.rows = rows
+        self.columns = columns
+        # 初始化三维数组，按照深度初始化每一层为一个二维数组
+        self.data = Array(depth)
+        for d in range(depth):
+            self.data[d] = Grid(rows, columns)
+            for r in range(rows):
+                for c in range(columns):
+                    # 将每个位置的索引拼接成字符串作为元素值
+                    self.data[d][r][c] = str(d) + str(r) + str(c)
+
+    def getDepth(self):
+        """返回三维数组的z轴大小, 即数组的深度"""
+        return len(self.data)
+
+    def get_element(self, depth, row, column):
+        """获取指定深度、行和列的元素"""
+        return self.data[depth][row][column]
+
+    def set_element(self, depth, row, column, new_value):
+        """设置指定深度、行和列的元素"""
+        self.data[depth][row][column] = new_value
+
+    def add_element(self, depth, row, column, value):
+        """在指定深度、行和列添加元素 """
+        if self.data[depth][row][column] == self.fillValue:
+            self.data[depth][row][column] = value
+        else:
+            raise Exception("元素添加失败")
+
+    def remove_element(self, depth, row, column):
+        """在指定深度、行和列删除元素 """
+        if self.data[depth][row][column] != self.fillValue:
+            self.data[depth][row][column] = self.fillValue
+        else:
+            raise Exception("元素删除失败")
+
+    def printAllElements(self):
+        """打印三维数组中的所有元素。"""
+        for row in range(self.rows):
+            for col in range(self.columns):
+                for depth in range(self.depth):
+                    print(f"Element at position ({row}, {col}, {depth}): {self.data[depth][row][col]}")
+
+    # def __str__(self):
+    #     result = ""
+    #     for depth in range(self.getDepth()):
+    #         result += f"Depth {depth}:\n"
+    #         for row in range(self.rows):
+    #             for column in range(self.columns):
+    #                 result += str(self.data[depth][row][column]) + "\t"
+    #             result += "\n"
+    #     return result
+
+    def __str__(self):
+        result = ""
+        for depth in range(self.getDepth()):
+            result += f"Depth {depth}:\n"
+            for row in range(self.rows):
+                for column in range(self.columns):
+                    result += str(self.data[depth][row][column]) + "\t"
+                result += "\n"
+        return result
+
+
+def main():
+    my_3d = ThreeDArray(3, 4, 4)
+    print(my_3d)  # 打印初始状态
+    my_3d.printAllElements()
+
+if __name__ == "__main__":
+    main()
+
+# 运行结果
+# Depth 0:
+# 000     001     002     003
+# 010     011     012     013
+# 020     021     022     023
+# 030     031     032     033
+# Depth 1:
+# 100     101     102     103
+# 110     111     112     113
+# 120     121     122     123
+# 130     131     132     133
+# Depth 2:
+# 200     201     202     203
+# 210     211     212     213
+# 220     221     222     223
+# 230     231     232     233
+
+# Element at position (0, 0, 0): 000
+# Element at position (0, 0, 1): 100
+# Element at position (0, 0, 2): 200
+# Element at position (0, 1, 0): 001
+# Element at position (0, 1, 1): 101
+# Element at position (0, 1, 2): 201
+# Element at position (0, 2, 0): 002
+# Element at position (0, 2, 1): 102
+# Element at position (0, 2, 2): 202
+# Element at position (0, 3, 0): 003
+# Element at position (0, 3, 1): 103
+# Element at position (0, 3, 2): 203
+# Element at position (1, 0, 0): 010
+# Element at position (1, 0, 1): 110
+# Element at position (1, 0, 2): 210
+# Element at position (1, 1, 0): 011
+# Element at position (1, 1, 1): 111
+# Element at position (1, 1, 2): 211
+# Element at position (1, 2, 0): 012
+# Element at position (1, 2, 1): 112
+# Element at position (1, 2, 2): 212
+# Element at position (1, 3, 0): 013
+# Element at position (1, 3, 1): 113
+# Element at position (1, 3, 2): 213
+# Element at position (2, 0, 0): 020
+# Element at position (2, 0, 1): 120
+# Element at position (2, 0, 2): 220
+# Element at position (2, 1, 0): 021
+# Element at position (2, 1, 1): 121
+# Element at position (2, 1, 2): 221
+# Element at position (2, 2, 0): 022
+# Element at position (2, 2, 1): 122
+# Element at position (2, 2, 2): 222
+# Element at position (2, 3, 0): 023
+# Element at position (2, 3, 1): 123
+# Element at position (2, 3, 2): 223
+# Element at position (3, 0, 0): 030
+# Element at position (3, 0, 1): 130
+# Element at position (3, 0, 2): 230
+# Element at position (3, 1, 0): 031
+# Element at position (3, 1, 1): 131
+# Element at position (3, 1, 2): 231
+# Element at position (3, 2, 0): 032
+# Element at position (3, 2, 1): 132
+# Element at position (3, 2, 2): 232
+# Element at position (3, 3, 0): 033
+# Element at position (3, 3, 1): 133
+# Element at position (3, 3, 2): 233
+```
 
 ## 4.4.链接结构
 

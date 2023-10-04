@@ -190,7 +190,7 @@ class Grid(object):
             for col in range(self.getWidth()):
                 # 如果当前元素是负数
                 if self.data[row][col] < 0:
-                # 更新 row 和 column 为该元素的位置
+                    # 更新 row 和 column 为该元素的位置
                     target_row = row
                     target_col = col
                     # 终止循环
@@ -201,35 +201,162 @@ class Grid(object):
         # 返回负数的位置，或者如果没有找到负数，返回行数和列数
         return row, col
 
+
+class ThreeDArray(object):
+    """描述一个三维数组。"""
+
+    # def __init__(self, depth, rows, columns, fillValue=None):
+    #     self.depth = depth
+    #     self.rows = rows
+    #     self.columns = columns
+    #     self.fillValue = fillValue
+    #     # 初始化三维数组，按照深度初始化每一层为一个二维数组
+    #     self.data = Array(depth, fillValue)
+    #     for d in range(depth):
+    #         self.data[d] = Grid(rows, columns, fillValue)
+    def __init__(self, depth, rows, columns):
+        self.depth = depth
+        self.rows = rows
+        self.columns = columns
+        # 初始化三维数组，按照深度初始化每一层为一个二维数组
+        self.data = Array(depth)
+        for d in range(depth):
+            self.data[d] = Grid(rows, columns)
+            for r in range(rows):
+                for c in range(columns):
+                    # 将每个位置的索引拼接成字符串作为元素值
+                    self.data[d][r][c] = str(d) + str(r) + str(c)
+
+    def getDepth(self):
+        """返回三维数组的z轴大小, 即数组的深度"""
+        return len(self.data)
+
+    def get_element(self, depth, row, column):
+        """获取指定深度、行和列的元素"""
+        return self.data[depth][row][column]
+
+    def set_element(self, depth, row, column, new_value):
+        """设置指定深度、行和列的元素"""
+        self.data[depth][row][column] = new_value
+
+    def add_element(self, depth, row, column, value):
+        """在指定深度、行和列添加元素 """
+        if self.data[depth][row][column] == self.fillValue:
+            self.data[depth][row][column] = value
+        else:
+            raise Exception("元素添加失败")
+
+    def remove_element(self, depth, row, column):
+        """在指定深度、行和列删除元素 """
+        if self.data[depth][row][column] != self.fillValue:
+            self.data[depth][row][column] = self.fillValue
+        else:
+            raise Exception("元素删除失败")
+
+    def printAllElements(self):
+        """打印三维数组中的所有元素。"""
+        for row in range(self.rows):
+            for col in range(self.columns):
+                for depth in range(self.depth):
+                    print(f"Element at position ({row}, {col}, {depth}): {self.data[depth][row][col]}")
+
+    # def __str__(self):
+    #     result = ""
+    #     for depth in range(self.getDepth()):
+    #         result += f"Depth {depth}:\n"
+    #         for row in range(self.rows):
+    #             for column in range(self.columns):
+    #                 result += str(self.data[depth][row][column]) + "\t"
+    #             result += "\n"
+    #     return result
+
+    def __str__(self):
+        result = ""
+        for depth in range(self.getDepth()):
+            result += f"Depth {depth}:\n"
+            for row in range(self.rows):
+                for column in range(self.columns):
+                    result += str(self.data[depth][row][column]) + "\t"
+                result += "\n"
+        return result
+
 import random
 
-def main():
-    
-    my_grid = Grid(5, 5, random.randint(-10, 10))
-    print(my_grid)
-    print(my_grid.find_negative())
 
+def main():
+    # my_grid = Grid(5, 5, random.randint(-10, 10))
+    # print(my_grid)
+    # print(my_grid.find_negative())
+
+    my_3d = ThreeDArray(3, 4, 4)
+    print(my_3d)  # 打印初始状态
+    my_3d.printAllElements()
 
 if __name__ == "__main__":
     main()
 
 # 运行结果
-# 1 1 1 1 1 
-# 1 1 1 1 1 
-# 1 1 1 1 1 
-# 1 1 1 1 1 
-# 1 1 1 1 1 
+# Depth 0:
+# 000     001     002     003
+# 010     011     012     013
+# 020     021     022     023
+# 030     031     032     033
+# Depth 1:
+# 100     101     102     103
+# 110     111     112     113
+# 120     121     122     123
+# 130     131     132     133
+# Depth 2:
+# 200     201     202     203
+# 210     211     212     213
+# 220     221     222     223
+# 230     231     232     233
 
-# -----
-# 1 1 1 1 1 
-# 1 1 1 1 1 
-# 1 1 1 1 1 
-# 1 1 1 1 1 
-# 1 1 1 1 1 
-
-# -----
-# 1 1 1 1 1 
-# 1 1 1 1 1 
-# 1 1 1 1 1 
-# 1 1 1 1 1 
-# 1 1 1 1 1 
+# Element at position (0, 0, 0): 000
+# Element at position (0, 0, 1): 100
+# Element at position (0, 0, 2): 200
+# Element at position (0, 1, 0): 001
+# Element at position (0, 1, 1): 101
+# Element at position (0, 1, 2): 201
+# Element at position (0, 2, 0): 002
+# Element at position (0, 2, 1): 102
+# Element at position (0, 2, 2): 202
+# Element at position (0, 3, 0): 003
+# Element at position (0, 3, 1): 103
+# Element at position (0, 3, 2): 203
+# Element at position (1, 0, 0): 010
+# Element at position (1, 0, 1): 110
+# Element at position (1, 0, 2): 210
+# Element at position (1, 1, 0): 011
+# Element at position (1, 1, 1): 111
+# Element at position (1, 1, 2): 211
+# Element at position (1, 2, 0): 012
+# Element at position (1, 2, 1): 112
+# Element at position (1, 2, 2): 212
+# Element at position (1, 3, 0): 013
+# Element at position (1, 3, 1): 113
+# Element at position (1, 3, 2): 213
+# Element at position (2, 0, 0): 020
+# Element at position (2, 0, 1): 120
+# Element at position (2, 0, 2): 220
+# Element at position (2, 1, 0): 021
+# Element at position (2, 1, 1): 121
+# Element at position (2, 1, 2): 221
+# Element at position (2, 2, 0): 022
+# Element at position (2, 2, 1): 122
+# Element at position (2, 2, 2): 222
+# Element at position (2, 3, 0): 023
+# Element at position (2, 3, 1): 123
+# Element at position (2, 3, 2): 223
+# Element at position (3, 0, 0): 030
+# Element at position (3, 0, 1): 130
+# Element at position (3, 0, 2): 230
+# Element at position (3, 1, 0): 031
+# Element at position (3, 1, 1): 131
+# Element at position (3, 1, 2): 231
+# Element at position (3, 2, 0): 032
+# Element at position (3, 2, 1): 132
+# Element at position (3, 2, 2): 232
+# Element at position (3, 3, 0): 033
+# Element at position (3, 3, 1): 133
+# Element at position (3, 3, 2): 233
