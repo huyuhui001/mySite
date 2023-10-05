@@ -1560,23 +1560,434 @@ if __name__ == "__main__":
 
 ### 4.4.3.定义单向链接节点类
 
-节点类非常简单，因为节点对象的灵活性和易用性非常重要，所以通常会引用节点对象的实例变量而不是方法调用，并且构造函数也需要用户在创建节点时可以设置节点的链接。前文提到，单向链接节点只包含数据元素和对下一个节点的引用。下面是用来实现单向链接节点类的代码。
+单向链接节点只包含数据元素和对下一个节点的引用。因为节点对象的灵活性和易用性非常重要，所以通常会引用节点对象的实例变量而不是方法调用，并且构造函数也需要用户在创建节点时可以设置节点的链接。
+
+下面是用来实现单向链接节点类的代码。
+
+```python
+class Node(object):
+    """单向链接节点类"""
+
+    def __init__(self, data, next=None):
+        """实例化一个节点, 默认后继节点为None"""
+        self.data = data
+        self.next = next
+
+
+def main():
+    # 创建一个空链
+    node1 = None
+    # 创建一个单向链接节点，含数据元素和空链
+    node2 = Node("A", None)
+    # 创建一个单向链接节点，含数据元素和指向下一个节点的链接
+    node3 = Node("B", node2)
+
+
+if __name__ == "__main__":
+    main()
+```
 
 ### 4.4.4.使用单向链接节点类
+
+下面这段代码演示了节点变量被初始化为`None`或一个新的`Node`对象。
+
+- `node1`没有指向任何节点对象（是`None`）。
+- `node2`和`node3`都指向了链接的对象。
+- `node2`指向了下一个指针是`None`的对象。
+
+```python
+def main():
+    # 创建一个空链
+    node1 = None
+    # 创建一个单向链接节点，含数据元素和空链
+    node2 = Node("A", None)
+    # 创建一个单向链接节点，含数据元素和指向下一个节点的链接
+    node3 = Node("B", node2)
+```
+
+执行`node1.next = node3`会收到错误`AttributeError: 'NoneType' object has no attribute 'next'`，因为变量`node1`的值是`None`，所以它并不包含用来引用节点对象的`next`字段。
+
+应该先正确实例化`node1`，再将`node3`作为其后继。下面是示例代码。
+
+```python
+def main():
+    # 创建一个空链
+    node1 = None
+    # 创建一个单向链接节点，含数据元素和空链
+    node2 = Node("A", None)
+    # 创建一个单向链接节点，含数据元素和指向下一个节点的链接
+    node3 = Node("B", node2)
+
+    if node1 != None:
+        node1.next = node3
+    else:
+        node1 = Node("C", None)
+        node1.next = node3
+```
+
+下面的代码的功能是：创建一个单向链接结构，并打印出它的内容。
+
+- 代码中`head`是一个指针，用于生成整个链接结构。这个指针的用法是让所有新插入的元素始终位于链接结构的开头。
+- 在显示数据时，它们会以和插入时相反的顺序出现。此外，当显示数据时，头部指针`head`会被重置到下一个节点，直到头部指针变为`None`为止。
+- 代码执行结束之后，这些节点在程序里不再可用，并且会在下一次垃圾回收期间被回收。
+
+```python
+def main():
+    # 创建一个单向链接结构，并打印出它的内容
+    head = None
+    # 在链接结构的开头依次插入五个节点
+    for count in range(1, 6):
+        head = Node(count, head)
+    # 打印输出这个单向链接的五个节点的内容
+    while head != None:
+        print(head.data)
+        head = head.next
+    
+
+if __name__ == "__main__":
+    main()
+
+# 运行结果
+# 5
+# 4
+# 3
+# 2
+# 1
+```
 
 ### 4.4.5.练习题
 
 1．用框和指针绘制测试程序里第一个循环所创建的节点的示意图。
 
-2．当节点变量引用的是None时，如果程序员尝试访问节点的数据字段，则会发生什么？如何防止这种情况的发生？
+解答：在下面的代码中，我们首先创建了一个空的单链表`head`。然后我们在链表的开头依次插入五个节点，节点的数据依次为`1`, `2`, `3`, `4`, `5`。在插入过程中，每次都把新的节点插入到链表的头部，所以最后的链表顺序会是`5`, `4`, `3`, `2`, `1`。
+
+```python
+def main():
+    # 创建一个单向链接结构，并打印出它的内容
+    head = None
+    # 在链接结构的开头依次插入五个节点
+    for count in range(1, 6):
+        head = Node(count, head)
+    # 打印输出这个单向链接的五个节点的内容
+    while head != None:
+        print(head.data)
+        head = head.next
+```
+
+以下是图示，每个`[]`代表一个节点，节点中的数字代表节点的数据，箭头代表指针，指向了下一个节点。`NULL`表示链表的结束。
+
+```console
+[5]---> [4] ---> [3] ---> [2] ---> [1] ---> NULL
+```
+
+2．当节点变量引用的是`None`时，如果程序员尝试访问节点的数据字段，则会发生什么？如何防止这种情况的发生？
+
+解答：当节点变量引用的是`None`时，例如，执行`node1.next = node3`会收到错误`AttributeError: 'NoneType' object has no attribute 'next'`，因为变量`node1`的值是`None`，所以它并不包含用来引用节点对象的`next`字段。
+
+应该先正确实例化`node1`，再将`node3`作为其后继。下面是示例代码。
+
+```python
+    if node1 != None:
+        node1.next = node3
+    else:
+        node1 = Node("C", None)
+        node1.next = node3
+```
 
 3．编写一段代码：这段代码会把一个被填满的数组里的元素都转移为单向链接结构里的数据。这个操作应保留元素的顺序不变。
 
+解答：下面是代码实现。
+
+`LinkedList`类有两个方法，`insert_from_list`用于从列表中插入数据，`print_list`用于打印链表的所有元素。
+
+在`insert_from_list`方法中，我们首先创建第一个节点，然后对列表的剩余元素，依次创建新的节点并添加到链表尾部。
+由于我们是逐个将元素添加到链表的末尾，所以在创建Node时并不需要指定next节点。
+
+```python
+class Node(object):
+    """单向链接节点类"""
+
+    def __init__(self, data, next=None):
+        """实例化一个节点, 默认后继节点为None"""
+        self.data = data
+        self.next = next
+
+
+class LinkedList:
+    """将列表元素转移为单向链接结构里的数据，并保留元素的顺序不变"""
+
+    def __init__(self):
+        self.head = None # 初始化head
+
+    def insert_from_list(self, data_list):
+        # 创建了链表的头节点
+        self.head = Node(data_list[0]) # 读取列表索引0的元素值，并将地址赋值给head
+        current = self.head # 将head引用赋值给current
+        
+        # 在链表的尾部依次添加新的节点
+        # 在每次循环后，链表的尾部都会添加新的节点，并且current节点也会随之更新。
+        for data in data_list[1:]:
+            current.next = Node(data) # 创建一个新的节点，并且将current节点的next属性设置为这个新的节点。这样，current节点（也就是之前的尾节点）就和新的节点建立了链接关系。
+            current = current.next # 将current更新为新创建的节点。也就是说，current始终代表当前链表的尾节点。
+
+    def print_list(self):
+        current = self.head
+        while current:
+            print(current.data, end=' ')
+            current = current.next
+        print()
+
+
+def main():
+    # 将列表data_list中的元素插入到LinkedList实例中，再使用print_list方法打印出链表中所有元素。
+    data_list = [1, 2, 3, 4, 5]
+    linked_list = LinkedList()
+    linked_list.insert_from_list(data_list)
+    linked_list.print_list()  # 输出: 1 2 3 4 5
+
+
+if __name__ == "__main__":
+    main()
+
+# 运行结果
+# 1 2 3 4 5 
+```
+
+如果在创建Node的时候指定`next`节点，则可以修改为下面的代码。`insert_from_list`函数首先反转了输入的列表，然后遍历反转后的列表，每次都在链表头部插入一个新的节点。这样可以确保插入链表的元素顺序和它们在输入列表中的顺序是一样的。
+
+```python
+class Node(object):
+    """单向链接节点类"""
+
+    def __init__(self, data, next=None):
+        """实例化一个节点, 默认后继节点为None"""
+        self.data = data
+        self.next = next
+
+
+class LinkedList:
+    """将数组元素转移为单向链接结构里的数据，并保留元素的顺序不变"""
+
+    def __init__(self):
+        self.head = None # 初始化head
+
+    def insert_from_list(self, data_list):
+        for data in reversed(data_list):
+            self.head = Node(data, self.head)
+
+    def print_list(self):
+        current = self.head
+        while current:
+            print(current.data, end=' ')
+            current = current.next
+        print()
+
+
+def main():
+    data_list = [1, 2, 3, 4, 5]
+
+    linked_list = LinkedList()
+    linked_list.insert_from_list(data_list)
+    linked_list.print_list()  # 输出: 1 2 3 4 5
+
+
+if __name__ == "__main__":
+    main()
+
+# 运行结果
+# 1 2 3 4 5 
+```
+
 ## 4.5.单向链接结构上的操作
+
+数组上的操作几乎都是基于索引的。
+链接结构上的操作是通过操控结构里的链接来模拟这些基于索引的操作。
 
 ### 4.5.1.遍历
 
+在4.4中的示例代码中（如下），节点会在被打印之后从链接结构里删除。
+
+```python
+def main():
+    # 创建一个单向链接结构，并打印出它的内容
+    head = None
+    # 在链接结构的开头依次插入五个节点
+    for count in range(1, 6):
+        head = Node(count, head)
+    # 打印输出这个单向链接的五个节点的内容
+    while head != None:
+        print(head.data)
+        head = head.next
+    
+
+if __name__ == "__main__":
+    main()
+
+# 运行结果
+# 5
+# 4
+# 3
+# 2
+# 1
+```
+
+对于许多应用程序来说，只需要访问每个节点而不用删除它们。这个操作称为遍历（traversal）。
+
+在遍历中，会用到一个叫作`probe`的临时指针变量。一开始，这个变量被初始化为链接结构的head指针，然后通过循环来完成，在整个过程结束之后，probe指针是None，但head指针仍然引用第一个节点。
+
+下面是修改后的代码：
+
+```python
+def main():
+    print("------")
+    # 创建一个单向链接结构，并打印出它的内容
+    head = None
+    # 在链接结构的开头依次插入五个节点
+    for count in range(1, 6):
+        head = Node(count, head)
+    # 打印输出这个单向链接的五个节点的内容
+    probe = head
+    while probe != None:
+        print(probe.data)
+        probe = probe.next
+```
+
+通常来说，单向链接结构的遍历会访问所有节点，并且在到达空链接时终止遍历。因此，值`None`相当于停止进程的哨兵（sentinel）。
+
+遍历的时间复杂度是线性的，也不需要额外的内存。
+
 ### 4.5.2.搜索
+
+对链接结构进行顺序搜索有点类似于遍历操作，因为必须要从第一个节点开始并依照链接顺序移动，直至找到对应的标记。在这种情况下，这个标记有两种可能性。
+
+- 空链接，说明没有更多需要被检查的数据元素。
+- 等同于目标元素的数据元素，代表搜索成功。
+
+下面是搜索给定元素的代码。`search(self, target)`方法实现了在单向链表中搜索指定元素。
+
+```python
+class Node(object):
+    """单向链接节点类"""
+
+    def __init__(self, data, next=None):
+        """实例化一个节点, 默认后继节点为None"""
+        self.data = data
+        self.next = next
+
+
+class LinkedList:
+    """将列表元素转移为单向链接结构里的数据，并保留元素的顺序不变"""
+
+    def __init__(self):
+        """初始化head"""
+        self.head = None
+
+    def insert_from_list(self, data_list):
+        """将列表元素插入单向链接结构中"""
+        for data in reversed(data_list):
+            self.head = Node(data, self.head)
+
+    def search(self, target):
+        """在单向链表中搜索指定元素"""
+        probe = self.head
+        while probe is not None and target != probe.data:
+            probe = probe.next
+        if probe is not None:
+            print(target, "has been found")
+        else:
+            print(target, "is not in the linked structure")
+
+    def print_list(self):
+        """打印输出单向链表内容"""
+        current = self.head
+        while current:
+            print(current.data, end=' ')
+            current = current.next
+        print()
+
+
+def main():
+    print("------")
+    # 创建一个单向链接结构，并打印出它的内容
+    head = None
+    # 在链接结构的开头依次插入五个节点
+    for count in range(1, 6):
+        head = Node(count, head)
+    # 打印输出这个单向链接的五个节点的内容
+    probe = head
+    while probe != None:
+        print(probe.data)
+        probe = probe.next
+
+    # 将列表中的元素插入到链接结构实例中，再使用print_list方法打印出链表中所有元素。
+    print("------")
+    data_list = [1, 2, 3, 4, 5]
+
+    linked_list = LinkedList()
+    linked_list.insert_from_list(data_list)
+    linked_list.print_list()  # 输出: 1 2 3 4 5
+    # 搜索指定元素
+    print(linked_list.search(3))  # 输出: True
+    print(linked_list.search(6))  # 输出: False
+
+
+if __name__ == "__main__":
+    main()
+
+# 运行结果
+# ------
+# 5
+# 4
+# 3
+# 2
+# 1
+# ------
+# 1 2 3 4 5 
+# True
+# False
+```
+
+也可以用下面的方法重写`search(self, target)`方法。
+
+```python
+    def search(self, target):
+        """在单向链表中搜索指定元素"""
+        current = self.head
+        while current:
+            if current.data == target:
+                return True
+            current = current.next
+        return False
+```
+
+平均情况下，顺序搜索在单向链接结构上是线性的。
+
+访问链接结构的第`i`个元素时执行的也是顺序搜索。这是因为必须从第一个节点开始统计链接的数量，直至到达第`i`个节点为止。假设有`0<=i<n`（其中`n`是链接结构里的节点数），则访问第`i`个元素的代码如下。
+
+在`class LinkedList`中添加方法来实现搜索第`i`个元素的功能。
+
+```python
+    def find(self, index):
+        """返回单向链表中第index个元素, 假设 0 <= index < n"""
+        probe = self.head
+        while index > 0:
+            probe = probe.next
+            index -= 1
+        return probe.data
+```
+
+在`main()`中添加测试代码进行验证。
+
+```python
+def main():
+    ......
+    # 搜索指定元素
+    print(linked_list.search(3))  # 输出: True
+    print(linked_list.search(6))  # 输出: False
+    print(linked_list.find(2))  # 输出：3（链表第3个元素）
+```
+
+和数组不同的是，链接结构并不支持随机访问。因此，不能像在有序数组里那样对有序的单向链接结构进行高效搜索。
 
 ### 4.5.3.替换
 
