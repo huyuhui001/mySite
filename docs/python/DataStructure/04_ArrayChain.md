@@ -1805,7 +1805,146 @@ if __name__ == "__main__":
 下面是完整代码，包含了后面关于连接结构的操作示例。
 
 ```python
+# class Node(object):
+#     """单向链接节点类"""
 
+#     def __init__(self, data, next=None):
+#         """实例化一个节点, 默认后继节点为None"""
+#         self.data = data
+#         self.next = next
+
+# class TwoWayNode(Node):
+#     """双向链接节点类"""
+
+#     def __init__(self, data, previous=None, next=None):
+#         """实例化一个节点, 默认前序节点尾None, 默认后继节点为None"""
+#         Node.__init__(self, data, next)
+#         self.previous = previous
+
+# class LinkedList:
+#     """单向和双向链接结构"""
+
+#     def __init__(self, node):
+#         # 初始化头节点
+#         self.head = node
+#         # 属性size保存链接结构的逻辑大小，通常指的是链表所包含的元素的数量，初始化链接结构大小为0
+#         self.size = 0
+
+#     def insert_from_list(self, data_list, twoway=False):
+#         """
+#         把一个列表（已有的数据结构）转换为链接结构是一种比较常见实用的方式。这种做法可以通过控制代码，方便地从已有的集合类（如列表，数组等）中导入元素，并构建需要的的链接结构。
+#         在一些简单场景下，比如已知待添加的元素数量很少，或者有其他约束使得用列表不方便时，可以通过手动方式向链接结构添加元素。但如果元素很多，或者有未知数量的元素需要添加，用列表可以方便地一次性导入所有元素。
+#         """
+#         if twoway:  # 检查是否要创建双向链表
+#             for data in data_list:  # 对于数据列表中的每个数据创建一个新的双向链接节点
+#                 node = TwoWayNode(data)
+
+#                 if self.head is None:  # 如果链表为空把新节点设置为头节点
+#                     self.head = node
+#                 else:  # 如果链表不为空
+#                     tail = self.head  # 从头节点开始
+#                     while tail.next is not None:  # 通过遍历链表查找尾节点
+#                         tail = tail.next
+#                     tail.next = node  # 把新节点插入到尾节点
+#                     node.previous = tail  # 设置新节点的前一个节点指向尾节点
+#         else:  # 创建单向链表
+#             for data in reversed(data_list):  # 对于列表中的每个元素，反向迭代使得插入的节点与原数据顺序相同
+#                 self.head = Node(data, self.head)  # 创建一个新的单向链接节点并插入到头节点
+#         self.size += len(data_list)  # 更新链表大小
+
+#     def get_size(self):
+#         """获取链表大小（节点数量）"""
+#         return self.size
+
+#     def search(self, target):
+#         """在链接结构中搜索指定元素"""
+#         current = self.head  # 从头节点开始
+#         while current:  # 当当前节点非None时继续遍历
+#             if current.data == target:  # 如果当前节点的数据等于目标数据
+#                 return True  # 返回真值
+#             current = current.next  # 移动到下一节点
+#         return False  # 如果整个链表遍历完毕还找不到目标数据，返回假值
+
+#     def locate(self, index):
+#         """返回链接结构中第index个元素, 0 <= index < n"""
+#         if index >= self.get_size() or index < 0:   # 如果索引超出范围，立即抛出错误
+#             raise IndexError("链表索引超出范围")
+
+#         probe = self.head  # 确定起始点为头节点
+#         while index > 0:  # 当索引大于0时，进入循环
+#             probe = probe.next  # 将探针（probe）移动到下一个节点
+#             index -= 1  # 将索引值减1
+#         return probe.data  # 返回当前位置（index对应位置）的节点数据
+
+#     def replace(self, old, new):
+#         """替换链表中所有等于old的元素为new"""
+#         current = self.head  # 从链表的头节点开始遍历
+#         while current:  # 只要还有节点，就继续遍历
+#             if current.data == old:  # 检查当前节点的数据是否等于old
+#                 current.data = new  # 如果等于old，将当前节点的数据替换为new
+#             current = current.next  # 继续检查下一个节点
+
+#     def print_list(self):
+#         """打印输出链接结构内容"""
+#         current = self.head
+#         while current:
+#             print(current.data, end=' ')
+#             current = current.next
+#         print()
+
+# def main():
+#     # 创建测试数据
+#     test_data = [1, 2, 3, 4, 5]
+
+#     # 单向链表测试
+#     print("单向链表测试:")
+#     single_linked_list = LinkedList(None)
+#     print("插入数据")
+#     single_linked_list.insert_from_list(test_data)  # 插入测试数据
+#     single_linked_list.print_list()  # 打印链接结构内容
+#     print("链表大小：", single_linked_list.get_size())  # 显示链接结构大小
+#     print("搜索元素3: ", single_linked_list.search(3))  # 搜索链接结构中是否存在元素3
+#     print("查找第2个元素: ", single_linked_list.locate(2))  # 查找链接结构中第2个元素
+#     print("把元素1替换为10")
+#     single_linked_list.replace(1, 10)  # 替换元素1为10
+#     single_linked_list.print_list()
+
+#     print()
+
+#     # 双向链表测试
+#     print("双向链表测试:")
+#     double_linked_list = LinkedList(None)
+#     print("插入数据")
+#     double_linked_list.insert_from_list(test_data, twoway=True)
+#     double_linked_list.print_list()
+#     print("链表大小：", double_linked_list.get_size())
+#     print("搜索元素3：", double_linked_list.search(3))
+#     print("查找第2个元素：", double_linked_list.locate(2))
+#     print("替换元素1为10")
+#     double_linked_list.replace(1, 10)
+#     double_linked_list.print_list()
+
+# if __name__ == "__main__":
+#     main()
+
+# # 运行结果
+# # 单向链表测试:
+# # 插入数据
+# # 1 2 3 4 5
+# # 链表大小： 5
+# # 搜索元素3： True
+# # 查找第2个元素： 3
+# # 替换元素1为10
+# # 10 2 3 4 5
+
+# # 双向链表测试:
+# # 插入数据
+# # 1 2 3 4 5
+# # 链表大小： 5
+# # 搜索元素3： True
+# # 查找第2个元素： 3
+# # 替换元素1为10
+# # 10 2 3 4 5
 ```
 
 ### 4.5.1.遍历
@@ -1908,8 +2047,8 @@ def main():
 
 在替换给定元素时，并不需要假定目标元素已经存在于链接结构里。
 
-- 如果目标元素不存在，就不会发生任何替换操作，并且会返回False；
-- 如果目标元素存在，新的元素就会替换它，并且返回True；
+- 如果目标元素不存在，就不会发生任何替换操作，并且会返回`False`；
+- 如果目标元素存在，新的元素就会替换它，并且返回`True`；
 
 下面是这个操作的代码。
 
@@ -1925,103 +2064,338 @@ def main():
 
 ### 4.5.4.在开始处插入
 
-在下面的代码中，`for`循环实际上就是在头部插入了新节点。在每次迭代中，都会创建一个新的 `Node`，并且这个新 `Node` 的 `next` 就是当前的 `head`，然后再更新 `head` 为这个新 `Node`，这样就实现了在头部插入新节点。
+在链接结构头部插入分2种情况：
 
 - 第一种情况：`head`指针是`None`，插入操作会把第一个元素插入结构里；
 - 第二种情况：`head`指针不是`None`，，第二个元素会被插入这个结构的开头；
 
 从上面2种情况得出，在已经有数据的情况下，并不需要通过复制数据来让它们向后移动，也不需要额外的内存。这也就意味着在链接结构的开头处插入数据只会用到常数的时间和内存，这和对数组的相同操作是不一样的。
 
-对于输出部分，我们只需简单地从头部开始遍历链表，并且在每次遍历中都打印出当前节点的数据，然后更新当前节点为其 `next` 节点，直至遍历结束，即 `head` 为 `None`。
+下面是完整的代码。
 
 ```python
+"""
+实现了对单向链接进行如下操作：
+1. 在开始处插入
+2. 在结尾处插入
+3. 在开始处删除
+4. 在结尾处删除
+5. 在任意处插入
+6. 在任意处删除
+"""
+
 class Node(object):
     """单向链接节点类"""
 
     def __init__(self, data, next=None):
-        """实例化一个节点, 默认后继节点为None"""
-        self.data = data
-        self.next = next
+        """
+        实例化一个节点, 默认后继节点为None
+        
+        Args:
+            data: 节点存储的数据
+            next: 指向下一个节点的指针，默认为None
+        """
+        self.data = data  # 定义节点的数据部分
+        self.next = next  # 定义节点的指针部分，初始值为None表示没有下一个节点
+
+
+def insert_at_beginning(head, data):
+    """
+    在链表开始处插入新节点
+    
+    Args:
+        head: 当前链表的头节点
+        data: 新节点的数据
+        
+    Returns:
+        Node: 新的头节点
+    """
+    new_node = Node(data)  # 创建新的节点对象
+    new_node.next = head  # 将新节点的next指针指向当前头节点
+    return new_node  # 返回新的头节点
+
+
+def insert_at_end(head, data):
+    """
+    在链表末尾插入新节点
+    
+    Args:
+        head: 当前链表的头节点
+        data: 新节点的数据
+        
+    Returns:
+        Node: 头节点
+    """
+    new_node = Node(data)  # 创建新的节点对象
+    if head is None:  # 如果链表为空，将新节点设置为头节点
+        head = new_node
+    else:
+        probe = head  # 创建一个指针，从头节点开始遍历链表
+        while probe.next is not None:  # 当指针所指节点有下一个节点时
+            probe = probe.next  # 移动指针到下一个节点
+        probe.next = new_node  # 将新节点连接到当前指针所指节点的下一个位置，完成节点的插入
+    return head  # 返回头节点
+
+
+def delete_at_beginning(head):
+    """
+    从链表开始处删除节点
+    
+    Args:
+        head: 当前链表的头节点
+        
+    Returns:
+        Node: 新的头节点
+    """
+    if head is None:  # 如果链表为空，打印消息并返回空链表
+        print("Linked list is empty.")
+    else:
+        head = head.next  # 将头节点指向下一个节点，即删除第一个节点
+    return head  # 返回新的头节点
+
+
+def delete_at_end(head):
+    """
+    从链表末尾删除节点
+    
+    Args:
+        head: 当前链表的头节点
+        
+    Returns:
+        Node: 头节点
+    """
+    if head is None:  # 如果链表为空，返回None
+        return None
+    if head.next is None:  # 如果链表只有一个节点，将头节点置为None
+        return None
+    current = head
+    while current.next.next:  # 移动到倒数第二个节点
+        current = current.next
+    current.next = None  # 将倒数第二个节点的next置为None，即删除了最后一个节点
+    return head  # 返回头节点
+
+def insert_at_position(head, data, position):
+    """
+    在链表的任意位置插入新节点
+    
+    Args:
+        head: 当前链表的头节点
+        data: 新节点的数据
+        position: 插入的位置
+        
+    Returns:
+        Node: 头节点
+    """
+    new_node = Node(data)  # 创建新的节点对象
+    if position == 0:  # 如果插入位置为0，即在头部插入
+        new_node.next = head  # 新节点的next指向当前头节点
+        return new_node  # 返回新的头节点
+    probe = head  # 创建一个指针，从头节点开始遍历链表
+    count = 0
+    while probe.next is not None and count < position - 1:  # 找到插入位置的前一个节点
+        probe = probe.next
+        count += 1
+    new_node.next = probe.next  # 新节点的next指向插入位置的节点
+    probe.next = new_node  # 插入位置的前一个节点的next指向新节点
+    return head  # 返回头节点
+
+def delete_at_position(head, position):
+    """
+    从链表的任意位置删除节点
+    
+    Args:
+        head: 当前链表的头节点
+        position: 删除的位置
+        
+    Returns:
+        Node: 头节点
+    """
+    if head is None:  # 如果链表为空，返回None
+        return None
+    if position == 0:  # 如果删除位置为0，即删除头部节点
+        return head.next  # 返回头节点的下一个节点
+    probe = head  # 创建一个指针，从头节点开始遍历链表
+    count = 0
+    while probe.next is not None and count < position - 1:  # 找到删除位置的前一个节点
+        probe = probe.next
+        count += 1
+    if probe.next is None:  # 如果删除位置超过链表长度，不做操作
+        return head
+    probe.next = probe.next.next  # 删除位置的前一个节点的next指向删除位置的后一个节点
+    return head  # 返回头节点
+
+def print_linked_list(head):
+    """
+    打印链表中的所有节点
+    
+    Args:
+        head: 当前链表的头节点
+    """
+    probe = head
+    while probe is not None:
+        print(probe.data, end=" -> ")  # 打印当前节点的数据
+        probe = probe.next  # 移动到下一个节点
+    print("None")  # 打印链表结束的标志
+
 
 def main():
-    head = None  # 创建一个空链表
-    for count in range(1, 6):  # 从1到5遍历
-        head = Node(count, head)  # 创建一个新的节点，其next指向前一个节点，然后更新头节点为当前节点，实现插入头节点操作
+    head = None  # 创建一个空链表，初始时头节点为None
 
-    while head != None:  # 从头节点开始遍历链表
-        print(head.data)  # 打印当前节点的数据
-        head = head.next  # 移动到下一个节点
+    # 从尾部插入节点
+    for count in range(1, 6):  # 从1到5遍历
+        head = insert_at_end(head, count)  # 在尾部插入节点
+
+    print("初始链表:")
+    print_linked_list(head)  # 打印原始链表
+
+    # 验证从头部处插入节点
+    new_data_at_beginning = 0
+    head = insert_at_beginning(head, new_data_at_beginning)  # 在链表头部插入新节点
+    print(f"\n在头部插入 {new_data_at_beginning} 后的链表:")
+    print_linked_list(head)  # 打印插入新节点后的链表状态
+
+    # 验证从末尾处插入节点
+    new_data = 10
+    head = insert_at_end(head, new_data)  # 在链表末尾插入新节点
+    print(f"\n在尾部插入 {new_data} 后的链表:")
+    print_linked_list(head)  # 打印插入新节点后的链表状态
+
+    # 验证从头部删除节点
+    head = delete_at_beginning(head)  # 删除第一个节点
+    print("\n从头部删除节点后的链表:")
+    print_linked_list(head)  # 打印删除节点后的链表状态
+
+    # 验证从尾部删除节点
+    head = delete_at_end(head)  # 从链表末尾删除节点
+    print("\n从尾部删除节点后的链表:")
+    print_linked_list(head)  # 打印删除节点后的链表状态
+
+    # 验证从任意位置插入节点
+    position = 3
+    new_data = 99
+    head = insert_at_position(head, new_data, position)  # 在第3个位置插入节点
+    print(f"\n在位置 {position} 插入 {new_data} 后的链表:")
+    print_linked_list(head)
+
+    # 验证从任意位置删除节点
+    position = 2
+    head = delete_at_position(head, position)  # 删除第2个位置的节点
+    print(f"\n在位置 {position} 插入 {new_data} 后的链表:")
+    print_linked_list(head)
 
 if __name__ == "__main__":
     main()
+
+# 运行结果
+# 初始链表:
+# 1 -> 2 -> 3 -> 4 -> 5 -> None
+
+# 在头部插入 0 后的链表:
+# 0 -> 1 -> 2 -> 3 -> 4 -> 5 -> None
+
+# 在尾部插入 10 后的链表:
+# 0 -> 1 -> 2 -> 3 -> 4 -> 5 -> 10 -> None
+
+# 从头部删除节点后的链表:
+# 1 -> 2 -> 3 -> 4 -> 5 -> 10 -> None
+
+# 从尾部删除节点后的链表:
+# 1 -> 2 -> 3 -> 4 -> 5 -> None
+
+# 在位置 3 插入 99 后的链表:
+# 1 -> 2 -> 3 -> 99 -> 4 -> 5 -> None
+
+# 在位置 2 插入 99 后的链表:
+# 1 -> 2 -> 99 -> 4 -> 5 -> None
 ```
 
 ### 4.5.5.在结尾处插入
 
 对于单向链接结构，在结尾处插入时需要考虑两种情况：
 
-- 当head指针是None时，它会被设置为新节点。
-- 当head指针不是None时，代码会找到最后一个节点，并把它的下一个指针指向新节点。
+- 当`head`指针是`None`时，它会被设置为新节点。
+- 当`head`指针不是`None`时，代码会找到最后一个节点，并把它的下一个指针指向新节点。
 
 因此在有数据的情况下，会用到遍历模式。
 
-代码如下所示。
-
-```python
-class Node(object):
-    """单向链接节点类"""
-
-    def __init__(self, data, next=None):
-        """实例化一个节点, 默认后继节点为None"""
-        self.data = data
-        self.next = next
-
-
-def main():
-    head = None  # 创建一个空链表
-    for count in range(1, 6):  # 从1到5遍历
-        newNode = Node(count)
-        if head is None:
-            head = newNode
-        else:
-            probe = head
-            while probe.next != None:
-                probe = probe.next
-            probe.next = newNode
-
-    while head != None:  # 从头节点开始遍历链表
-        print(head.data)  # 打印当前节点的数据
-        head = head.next  # 移动到下一个节点
-
-
-if __name__ == "__main__":
-    main()
-
-# 运行结果
-# 1
-# 2
-# 3
-# 4
-# 5
-```
-
 ### 4.5.6.在开始处删除
+
+在执行从链接结构的开头删除元素的操作时，通常都会假定结构里至少存在一个节点，这个操作将返回被删除的元素。
+
+这个操作会用到常数的时间和内存，这与在数组上执行相同的操作是有所不同的。
 
 ### 4.5.7.在结尾处删除
 
+单向链接结构中的这个操作假定在结构里至少有一个节点，这样就有两种情况需要考虑。
+
+- 只有一个节点，这时只需要把head指针设置为`None`。
+- 最后一个节点之前还有一个节点。这时相应的代码会找到倒数第二个节点，并把下一个指针设置为`None`。
+
+无论是哪种情况，代码都会返回这个被删除节点里包含的数据元素。
+
+这个操作会用到常数的时间和内存。
+
 ### 4.5.8.在任意位置处插入
+
+在链接结构的任意位置插入元素时需要考虑2种情况：
+
+- 在开头插入，可以用前面提到的代码。
+- 在其他位置`i`处要进行插入，插入操作必须要先找到位置`i-1`（如果`i<n`）或`n-1`（如果`i>=n`）处的节点。这样，就有两种情况需要考虑。
+
+- 这个节点后面的指针是`None`。这意味着`i>=n`，因此应该把新的元素放在链接结构的末尾。
+- 这个节点后面的指针不是None。这意味着`0<i<n`，因此应该把这个新元素放在位置`i-1`和位置`i`的节点之间。
+
+和搜索第`i`个元素一样，插入操作也必须对节点进行计数，直至找到所需到达的位置。但是，给定的目标索引可能大于或等于总节点数，因此必须要避免在搜索过程中超出链接结构的末尾。这个循环还需要另一个条件以检测当前节点指向的下一个指针，从而知道是否已经到达最后一个节点。
+
+和通过遍历实现的其他单向链接结构操作一样，这个操作有线性时间的性能。但是，它的内存使用是常数。
 
 ### 4.5.9.在任意位置处删除
 
+从链接结构里删除第`i`个元素时，有下面3种情况需要考虑。
+
+● `i<=0`——通过代码删除第一个节点。
+● `0<i<n`——像插入操作那样，找到位置`i-1`处的节点，然后删除它后面的节点。
+● `i>=n`——删除最后一个节点。
+
+假设在链接结构里至少有一个节点。这个操作的模式和插入操作的模式是类似的，因此也要避免在搜索过程中超出链接结构的末尾。但是在这个过程中，你必须允许probe指针可以访问到链接结构的倒数第二个节点。
+
 ### 4.5.10.复杂度的权衡：时间、空间和单向链接结构
+
+单向链接结构各项操作的运行时复杂度
+
+| 操作 | 运行时复杂度 |
+| --- | --- |
+| 在位置i处访问 | O(n)，，平均情况下 |
+| 在位置i处替换 | O(n)，最好和最坏情况下 |
+| 在开始处插入 | O(1)，最好和最坏情况下 |
+| 在开始处删除 | O(1)，最好和最坏情况下 |
+| 在位置i处插入 | O(n)，平均情况下 |
+| 在位置i处删除 | O(n)，平均情况下 |
 
 ### 4.5.11.练习题
 
 1．假设已经找到了从单向链接结构里删除元素的位置，请说明从这个时候开始完成删除操作的运行时复杂度。
 
+解答：如果已经找到了单向链表中要删除元素的位置，删除操作的运行时复杂度取决于删除操作的具体实现。在单向链表中，删除一个节点通常需要找到待删除节点的前驱节点，然后将前驱节点的`next`指针指向待删除节点的下一个节点，从而将待删除节点从链表中移除。
+
+1. 查找待删除节点的时间复杂度：在最坏情况下，如果要删除的节点位于链表的末尾，或者需要遍历整个链表才能找到待删除节点，查找操作的时间复杂度为O(n)，其中n是链表的长度。
+2. 删除节点的时间复杂度：删除节点的操作是常数时间O(1)，因为它涉及的操作都是基本的赋值和指针调整。
+
+所以，如果已经找到了待删除节点的位置，删除操作的运行时复杂度是O(n)。
+
 2．可以对单向链接结构里按顺序排列的元素执行二分搜索吗？如果不可以，为什么？
 
+解答：在普通的单向链表中，无法直接执行二分搜索。二分搜索通常基于数组这种连续存储结构，可以直接通过索引进行快速访问。但在单向链表中，要查找中间元素，需要遍历链表以找到中间位置。因为链表的元素不是按照索引排列的，所以不能直接进行二分搜索。
+
+如果希望在有序链表中执行二分搜索，可以考虑使用另一种数据结构——二叉搜索树（Binary Search Tree）。在二叉搜索树中，每个节点的左子树的值小于该节点的值，右子树的值大于该节点的值，因此可以利用这种有序性进行快速搜索。
+
 3．请说明为什么Python列表会使用数组而不是链接结构来保存它的元素。
+
+解答：Python的列表使用数组而不是链接结构来保存元素，主要是因为数组在随机访问（根据索引直接访问元素）和切片（通过[start:stop:step]方式截取子列表）操作上具有更好的性能。数组的内存空间是连续的，因此可以通过索引迅速计算出元素的内存地址。这使得随机访问和切片的时间复杂度是O(1)，即常数时间。而链接结构在随机访问上的时间复杂度通常是O(n)，其中n是链表的长度，因为需要从头节点开始逐个遍历找到目标节点。
+
+在Python的列表中，支持通过索引随机访问元素，这是因为列表的元素是保存在一个连续的内存块中的。这种设计使得Python的列表在大多数常见操作（例如查找、插入、删除）上都能提供较好的性能，特别是当需要通过索引或切片快速访问或修改元素时。然而，对于在中间插入或删除元素这样的操作，列表的性能可能相对较低，因为在数组中间插入或删除元素通常需要移动其他元素，导致时间复杂度为O(n)。
+
+总的来说，Python的列表采用数组存储元素，是为了在大多数常见操作中提供较好的性能。如果需要在中间插入或删除元素的操作比较频繁，可能需要考虑使用链表等数据结构。Python中的`collections`模块提供了`deque`（双端队列）等数据结构，可以用于在两端高效地进行插入和删除操作。
 
 ## 4.6.链接上的变化
 
