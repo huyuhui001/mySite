@@ -1800,8 +1800,13 @@ if __name__ == "__main__":
 
 ## 4.5.单向链接结构上的操作
 
-数组上的操作几乎都是基于索引的。
-链接结构上的操作是通过操控结构里的链接来模拟这些基于索引的操作。
+数组上的操作几乎都是基于索引的。链接结构上的操作是通过操控结构里的链接来模拟这些基于索引的操作。
+
+下面是完整代码，包含了后面关于连接结构的操作示例。
+
+```python
+
+```
 
 ### 4.5.1.遍历
 
@@ -1863,7 +1868,104 @@ def main():
 - 空链接，说明没有更多需要被检查的数据元素。
 - 等同于目标元素的数据元素，代表搜索成功。
 
-下面是搜索给定元素的代码。`search(self, target)`方法实现了在单向链表中搜索指定元素。
+下面是搜索给定元素的代码。`search(self, target)`方法实现了在单向或双向链表中搜索指定元素。
+
+```python
+    def search(self, target):
+        """在链接结构中搜索指定元素"""
+        current = self.head  # 从头节点开始
+        while current:  # 当当前节点非None时继续遍历
+            if current.data == target:  # 如果当前节点的数据等于目标数据
+                return True  # 返回真值
+            current = current.next  # 移动到下一节点
+        return False  # 如果整个链表遍历完毕还找不到目标数据，返回假值
+```
+
+平均情况下，顺序搜索在单向链接结构上是线性的。
+
+访问链接结构的第`i`个元素时执行的也是顺序搜索。这是因为必须从第一个节点开始统计链接的数量，直至到达第`i`个节点为止。假设有`0<=i<n`（其中`n`是链接结构里的节点数），则访问第`i`个元素的代码如下。
+
+在`class LinkedList`中添加方法来实现搜索第`i`个元素的功能。
+
+```python
+    def locate(self, index):
+        """返回链接结构中第index个元素, 0 <= index < n"""
+        if index >= self.get_size() or index < 0:   # 如果索引超出范围，立即抛出错误
+            raise IndexError("链表索引超出范围")
+        
+        probe = self.head  # 确定起始点为头节点
+        while index > 0:  # 当索引大于0时，进入循环
+            probe = probe.next  # 将探针（probe）移动到下一个节点
+            index -= 1  # 将索引值减1
+        return probe.data  # 返回当前位置（index对应位置）的节点数据
+```
+
+和数组不同的是，链接结构并不支持随机访问。因此，不能像在有序数组里那样对有序的单向链接结构进行高效搜索。
+
+### 4.5.3.替换
+
+单向链接结构里的替换操作也会采用遍历的模式。在这种情况下，我们会在链接结构里搜索给定的元素或给定的位置，然后用一个新的元素替换这个元素。
+
+在替换给定元素时，并不需要假定目标元素已经存在于链接结构里。
+
+- 如果目标元素不存在，就不会发生任何替换操作，并且会返回False；
+- 如果目标元素存在，新的元素就会替换它，并且返回True；
+
+下面是这个操作的代码。
+
+```python
+    def replace(self, old, new):
+        """替换链表中所有等于old的元素为new"""
+        current = self.head  # 从链表的头节点开始遍历
+        while current:  # 只要还有节点，就继续遍历
+            if current.data == old:  # 检查当前节点的数据是否等于old
+                current.data = new  # 如果等于old，将当前节点的数据替换为new
+            current = current.next  # 继续检查下一个节点
+```
+
+### 4.5.4.在开始处插入
+
+在下面的代码中，`for`循环实际上就是在头部插入了新节点。在每次迭代中，都会创建一个新的 `Node`，并且这个新 `Node` 的 `next` 就是当前的 `head`，然后再更新 `head` 为这个新 `Node`，这样就实现了在头部插入新节点。
+
+- 第一种情况：`head`指针是`None`，插入操作会把第一个元素插入结构里；
+- 第二种情况：`head`指针不是`None`，，第二个元素会被插入这个结构的开头；
+
+从上面2种情况得出，在已经有数据的情况下，并不需要通过复制数据来让它们向后移动，也不需要额外的内存。这也就意味着在链接结构的开头处插入数据只会用到常数的时间和内存，这和对数组的相同操作是不一样的。
+
+对于输出部分，我们只需简单地从头部开始遍历链表，并且在每次遍历中都打印出当前节点的数据，然后更新当前节点为其 `next` 节点，直至遍历结束，即 `head` 为 `None`。
+
+```python
+class Node(object):
+    """单向链接节点类"""
+
+    def __init__(self, data, next=None):
+        """实例化一个节点, 默认后继节点为None"""
+        self.data = data
+        self.next = next
+
+def main():
+    head = None  # 创建一个空链表
+    for count in range(1, 6):  # 从1到5遍历
+        head = Node(count, head)  # 创建一个新的节点，其next指向前一个节点，然后更新头节点为当前节点，实现插入头节点操作
+
+    while head != None:  # 从头节点开始遍历链表
+        print(head.data)  # 打印当前节点的数据
+        head = head.next  # 移动到下一个节点
+
+if __name__ == "__main__":
+    main()
+```
+
+### 4.5.5.在结尾处插入
+
+对于单向链接结构，在结尾处插入时需要考虑两种情况：
+
+- 当head指针是None时，它会被设置为新节点。
+- 当head指针不是None时，代码会找到最后一个节点，并把它的下一个指针指向新节点。
+
+因此在有数据的情况下，会用到遍历模式。
+
+代码如下所示。
 
 ```python
 class Node(object):
@@ -1875,125 +1977,33 @@ class Node(object):
         self.next = next
 
 
-class LinkedList:
-    """将列表元素转移为单向链接结构里的数据，并保留元素的顺序不变"""
-
-    def __init__(self):
-        """初始化head"""
-        self.head = None
-
-    def insert_from_list(self, data_list):
-        """将列表元素插入单向链接结构中"""
-        for data in reversed(data_list):
-            self.head = Node(data, self.head)
-
-    def search(self, target):
-        """在单向链表中搜索指定元素"""
-        probe = self.head
-        while probe is not None and target != probe.data:
-            probe = probe.next
-        if probe is not None:
-            print(target, "has been found")
-        else:
-            print(target, "is not in the linked structure")
-
-    def print_list(self):
-        """打印输出单向链表内容"""
-        current = self.head
-        while current:
-            print(current.data, end=' ')
-            current = current.next
-        print()
-
-
 def main():
-    print("------")
-    # 创建一个单向链接结构，并打印出它的内容
-    head = None
-    # 在链接结构的开头依次插入五个节点
-    for count in range(1, 6):
-        head = Node(count, head)
-    # 打印输出这个单向链接的五个节点的内容
-    probe = head
-    while probe != None:
-        print(probe.data)
-        probe = probe.next
+    head = None  # 创建一个空链表
+    for count in range(1, 6):  # 从1到5遍历
+        newNode = Node(count)
+        if head is None:
+            head = newNode
+        else:
+            probe = head
+            while probe.next != None:
+                probe = probe.next
+            probe.next = newNode
 
-    # 将列表中的元素插入到链接结构实例中，再使用print_list方法打印出链表中所有元素。
-    print("------")
-    data_list = [1, 2, 3, 4, 5]
-
-    linked_list = LinkedList()
-    linked_list.insert_from_list(data_list)
-    linked_list.print_list()  # 输出: 1 2 3 4 5
-    # 搜索指定元素
-    print(linked_list.search(3))  # 输出: True
-    print(linked_list.search(6))  # 输出: False
+    while head != None:  # 从头节点开始遍历链表
+        print(head.data)  # 打印当前节点的数据
+        head = head.next  # 移动到下一个节点
 
 
 if __name__ == "__main__":
     main()
 
 # 运行结果
-# ------
-# 5
-# 4
-# 3
-# 2
 # 1
-# ------
-# 1 2 3 4 5 
-# True
-# False
+# 2
+# 3
+# 4
+# 5
 ```
-
-也可以用下面的方法重写`search(self, target)`方法。
-
-```python
-    def search(self, target):
-        """在单向链表中搜索指定元素"""
-        current = self.head
-        while current:
-            if current.data == target:
-                return True
-            current = current.next
-        return False
-```
-
-平均情况下，顺序搜索在单向链接结构上是线性的。
-
-访问链接结构的第`i`个元素时执行的也是顺序搜索。这是因为必须从第一个节点开始统计链接的数量，直至到达第`i`个节点为止。假设有`0<=i<n`（其中`n`是链接结构里的节点数），则访问第`i`个元素的代码如下。
-
-在`class LinkedList`中添加方法来实现搜索第`i`个元素的功能。
-
-```python
-    def find(self, index):
-        """返回单向链表中第index个元素, 假设 0 <= index < n"""
-        probe = self.head
-        while index > 0:
-            probe = probe.next
-            index -= 1
-        return probe.data
-```
-
-在`main()`中添加测试代码进行验证。
-
-```python
-def main():
-    ......
-    # 搜索指定元素
-    print(linked_list.search(3))  # 输出: True
-    print(linked_list.search(6))  # 输出: False
-    print(linked_list.find(2))  # 输出：3（链表第3个元素）
-```
-
-和数组不同的是，链接结构并不支持随机访问。因此，不能像在有序数组里那样对有序的单向链接结构进行高效搜索。
-
-### 4.5.3.替换
-
-### 4.5.4.在开始处插入
-
-### 4.5.5.在结尾处插入
 
 ### 4.5.6.在开始处删除
 
