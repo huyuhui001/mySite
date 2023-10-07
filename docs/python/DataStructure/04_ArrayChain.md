@@ -2406,9 +2406,46 @@ if __name__ == "__main__":
 
 总的来说，Python的列表采用数组存储元素，是为了在大多数常见操作中提供较好的性能。如果需要在中间插入或删除元素的操作比较频繁，可能需要考虑使用链表等数据结构。Python中的`collections`模块提供了`deque`（双端队列）等数据结构，可以用于在两端高效地进行插入和删除操作。
 
+补充：
+
+查看源代码的方法。
+
+```python
+import array
+import inspect
+
+# 获取array模块的源代码
+source_code = inspect.getsource(array)
+
+# 打印源代码
+print(source_code)
+```
+
+对于内置的模块，不能直接通过inspect模块查看源代码。可以通过在线查看Python的源代码。Python的源代码托管在GitHub上，你可以在以下链接中找到Python的源代码：
+
+[Python GitHub Repository](https://github.com/python/cpython)，包括[array的源代码](https://github.com/python/cpython/blob/main/Modules/arraymodule.c)。
+
 ## 4.6.链接上的变化
 
 ### 4.6.1.包含虚拟头节点的环状链接结构
+
+在第一个节点位置处执行插入和删除操作是单向链接结构里在任意位置进行插入和删除操作的特殊情况，是因为这个时候必须重置head指针。
+
+可以通过包含虚拟头节点（dummy header node）的环状链接结构（circular linked structure）简化这两个操作。
+
+环状链接结构包含了从最后一个节点到第一个节点的链接，并且它的实现里至少会包含一个节点。这个节点（虚拟头节点）不包含任何数据，但会被用来作为链接结构的开始和结束的标记。在最初的空链接结构里，head变量会指向虚拟头节点，而虚拟头节点的下一个指针会指向虚拟头节点本身。如下图所示。
+
+![虚拟头节点的环状链接结构](./assets/dummyHeaderNode.png)
+
+```python
+
+```
+
+
+
+
+
+
 
 ### 4.6.2.双向链接结构
 
