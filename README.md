@@ -187,5 +187,3 @@ Demos
 ### 3.4.Demos
 
 - [选课系统](python/Demo/CourseSystem.md)
-
-
