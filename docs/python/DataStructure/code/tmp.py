@@ -143,226 +143,226 @@
 # =============================================
 # =============================================
 # =============================================
-# class Node(object):
-#     """单向链接节点类"""
+class Node(object):
+    """单向链接节点类"""
 
-#     def __init__(self, data, next=None):
-#         """
-#         实例化一个节点, 默认后继节点为None
+    def __init__(self, data, next=None):
+        """
+        实例化一个节点, 默认后继节点为None
         
-#         Args:
-#             data: 节点存储的数据
-#             next: 指向下一个节点的指针，默认为None
-#         """
-#         self.data = data  # 定义节点的数据部分
-#         self.next = next  # 定义节点的指针部分，初始值为None表示没有下一个节点
+        Args:
+            data: 节点存储的数据
+            next: 指向下一个节点的指针，默认为None
+        """
+        self.data = data  # 定义节点的数据部分
+        self.next = next  # 定义节点的指针部分，初始值为None表示没有下一个节点
 
 
-# def insert_at_beginning(head, data):
-#     """
-#     在链表开始处插入新节点
+def insert_at_beginning(head, data):
+    """
+    在链表开始处插入新节点
     
-#     Args:
-#         head: 当前链表的头节点
-#         data: 新节点的数据
+    Args:
+        head: 当前链表的头节点
+        data: 新节点的数据
         
-#     Returns:
-#         Node: 新的头节点
-#     """
-#     new_node = Node(data)  # 创建新的节点对象
-#     new_node.next = head  # 将新节点的next指针指向当前头节点
-#     return new_node  # 返回新的头节点
+    Returns:
+        Node: 新的头节点
+    """
+    new_node = Node(data)  # 创建新的节点对象
+    new_node.next = head  # 将新节点的next指针指向当前头节点
+    return new_node  # 返回新的头节点
 
 
-# def insert_at_end(head, data):
-#     """
-#     在链表末尾插入新节点
+def insert_at_end(head, data):
+    """
+    在链表末尾插入新节点
     
-#     Args:
-#         head: 当前链表的头节点
-#         data: 新节点的数据
+    Args:
+        head: 当前链表的头节点
+        data: 新节点的数据
         
-#     Returns:
-#         Node: 头节点
-#     """
-#     new_node = Node(data)  # 创建新的节点对象
-#     if head is None:  # 如果链表为空，将新节点设置为头节点
-#         head = new_node
-#     else:
-#         probe = head  # 创建一个指针，从头节点开始遍历链表
-#         while probe.next is not None:  # 当指针所指节点有下一个节点时
-#             probe = probe.next  # 移动指针到下一个节点
-#         probe.next = new_node  # 将新节点连接到当前指针所指节点的下一个位置，完成节点的插入
-#     return head  # 返回头节点
+    Returns:
+        Node: 头节点
+    """
+    new_node = Node(data)  # 创建新的节点对象
+    if head is None:  # 如果链表为空，将新节点设置为头节点
+        head = new_node
+    else:
+        probe = head  # 创建一个指针，从头节点开始遍历链表
+        while probe.next is not None:  # 当指针所指节点有下一个节点时
+            probe = probe.next  # 移动指针到下一个节点
+        probe.next = new_node  # 将新节点连接到当前指针所指节点的下一个位置，完成节点的插入
+    return head  # 返回头节点
 
 
-# def delete_at_beginning(head):
-#     """
-#     从链表开始处删除节点
+def delete_at_beginning(head):
+    """
+    从链表开始处删除节点
     
-#     Args:
-#         head: 当前链表的头节点
+    Args:
+        head: 当前链表的头节点
         
-#     Returns:
-#         Node: 新的头节点
-#     """
-#     if head is None:  # 如果链表为空，打印消息并返回空链表
-#         print("Linked list is empty.")
-#     else:
-#         head = head.next  # 将头节点指向下一个节点，即删除第一个节点
-#     return head  # 返回新的头节点
+    Returns:
+        Node: 新的头节点
+    """
+    if head is None:  # 如果链表为空，打印消息并返回空链表
+        print("Linked list is empty.")
+    else:
+        head = head.next  # 将头节点指向下一个节点，即删除第一个节点
+    return head  # 返回新的头节点
 
 
-# def delete_at_end(head):
-#     """
-#     从链表末尾删除节点
+def delete_at_end(head):
+    """
+    从链表末尾删除节点
     
-#     Args:
-#         head: 当前链表的头节点
+    Args:
+        head: 当前链表的头节点
         
-#     Returns:
-#         Node: 头节点
-#     """
-#     if head is None:  # 如果链表为空，返回None
-#         return None
-#     if head.next is None:  # 如果链表只有一个节点，将头节点置为None
-#         return None
-#     current = head
-#     while current.next.next:  # 移动到倒数第二个节点
-#         current = current.next
-#     current.next = None  # 将倒数第二个节点的next置为None，即删除了最后一个节点
-#     return head  # 返回头节点
+    Returns:
+        Node: 头节点
+    """
+    if head is None:  # 如果链表为空，返回None
+        return None
+    if head.next is None:  # 如果链表只有一个节点，将头节点置为None
+        return None
+    current = head
+    while current.next.next:  # 移动到倒数第二个节点
+        current = current.next
+    current.next = None  # 将倒数第二个节点的next置为None，即删除了最后一个节点
+    return head  # 返回头节点
 
-# def insert_at_position(head, data, position):
-#     """
-#     在链表的任意位置插入新节点
+def insert_at_position(head, data, position):
+    """
+    在链表的任意位置插入新节点
     
-#     Args:
-#         head: 当前链表的头节点
-#         data: 新节点的数据
-#         position: 插入的位置
+    Args:
+        head: 当前链表的头节点
+        data: 新节点的数据
+        position: 插入的位置
         
-#     Returns:
-#         Node: 头节点
-#     """
-#     new_node = Node(data)  # 创建新的节点对象
-#     if position == 0:  # 如果插入位置为0，即在头部插入
-#         new_node.next = head  # 新节点的next指向当前头节点
-#         return new_node  # 返回新的头节点
-#     probe = head  # 创建一个指针，从头节点开始遍历链表
-#     count = 0
-#     while probe.next is not None and count < position - 1:  # 找到插入位置的前一个节点
-#         probe = probe.next
-#         count += 1
-#     new_node.next = probe.next  # 新节点的next指向插入位置的节点
-#     probe.next = new_node  # 插入位置的前一个节点的next指向新节点
-#     return head  # 返回头节点
+    Returns:
+        Node: 头节点
+    """
+    new_node = Node(data)  # 创建新的节点对象
+    if position == 0:  # 如果插入位置为0，即在头部插入
+        new_node.next = head  # 新节点的next指向当前头节点
+        return new_node  # 返回新的头节点
+    probe = head  # 创建一个指针，从头节点开始遍历链表
+    count = 0
+    while probe.next is not None and count < position - 1:  # 找到插入位置的前一个节点
+        probe = probe.next
+        count += 1
+    new_node.next = probe.next  # 新节点的next指向插入位置的节点
+    probe.next = new_node  # 插入位置的前一个节点的next指向新节点
+    return head  # 返回头节点
 
-# def delete_at_position(head, position):
-#     """
-#     从链表的任意位置删除节点
+def delete_at_position(head, position):
+    """
+    从链表的任意位置删除节点
     
-#     Args:
-#         head: 当前链表的头节点
-#         position: 删除的位置
+    Args:
+        head: 当前链表的头节点
+        position: 删除的位置
         
-#     Returns:
-#         Node: 头节点
-#     """
-#     if head is None:  # 如果链表为空，返回None
-#         return None
-#     if position == 0:  # 如果删除位置为0，即删除头部节点
-#         return head.next  # 返回头节点的下一个节点
-#     probe = head  # 创建一个指针，从头节点开始遍历链表
-#     count = 0
-#     while probe.next is not None and count < position - 1:  # 找到删除位置的前一个节点
-#         probe = probe.next
-#         count += 1
-#     if probe.next is None:  # 如果删除位置超过链表长度，不做操作
-#         return head
-#     probe.next = probe.next.next  # 删除位置的前一个节点的next指向删除位置的后一个节点
-#     return head  # 返回头节点
+    Returns:
+        Node: 头节点
+    """
+    if head is None:  # 如果链表为空，返回None
+        return None
+    if position == 0:  # 如果删除位置为0，即删除头部节点
+        return head.next  # 返回头节点的下一个节点
+    probe = head  # 创建一个指针，从头节点开始遍历链表
+    count = 0
+    while probe.next is not None and count < position - 1:  # 找到删除位置的前一个节点
+        probe = probe.next
+        count += 1
+    if probe.next is None:  # 如果删除位置超过链表长度，不做操作
+        return head
+    probe.next = probe.next.next  # 删除位置的前一个节点的next指向删除位置的后一个节点
+    return head  # 返回头节点
 
-# def print_linked_list(head):
-#     """
-#     打印链表中的所有节点
+def print_linked_list(head):
+    """
+    打印链表中的所有节点
     
-#     Args:
-#         head: 当前链表的头节点
-#     """
-#     probe = head
-#     while probe is not None:
-#         print(probe.data, end=" -> ")  # 打印当前节点的数据
-#         probe = probe.next  # 移动到下一个节点
-#     print("None")  # 打印链表结束的标志
+    Args:
+        head: 当前链表的头节点
+    """
+    probe = head
+    while probe is not None:
+        print(probe.data, end=" -> ")  # 打印当前节点的数据
+        probe = probe.next  # 移动到下一个节点
+    print("None")  # 打印链表结束的标志
 
 
-# def main():
-#     head = None  # 创建一个空链表，初始时头节点为None
+def main():
+    head = None  # 创建一个空链表，初始时头节点为None
 
-#     # 从尾部插入节点
-#     for count in range(1, 6):  # 从1到5遍历
-#         head = insert_at_end(head, count)  # 在尾部插入节点
+    # 从尾部插入节点
+    for count in range(1, 6):  # 从1到5遍历
+        head = insert_at_end(head, count)  # 在尾部插入节点
 
-#     print("初始链表:")
-#     print_linked_list(head)  # 打印原始链表
+    print("初始链表:")
+    print_linked_list(head)  # 打印原始链表
 
-#     # 验证从头部处插入节点
-#     new_data_at_beginning = 0
-#     head = insert_at_beginning(head, new_data_at_beginning)  # 在链表头部插入新节点
-#     print(f"\n在头部插入 {new_data_at_beginning} 后的链表:")
-#     print_linked_list(head)  # 打印插入新节点后的链表状态
+    # 验证从头部处插入节点
+    new_data_at_beginning = 0
+    head = insert_at_beginning(head, new_data_at_beginning)  # 在链表头部插入新节点
+    print(f"\n在头部插入 {new_data_at_beginning} 后的链表:")
+    print_linked_list(head)  # 打印插入新节点后的链表状态
 
-#     # 验证从末尾处插入节点
-#     new_data = 10
-#     head = insert_at_end(head, new_data)  # 在链表末尾插入新节点
-#     print(f"\n在尾部插入 {new_data} 后的链表:")
-#     print_linked_list(head)  # 打印插入新节点后的链表状态
+    # 验证从末尾处插入节点
+    new_data = 10
+    head = insert_at_end(head, new_data)  # 在链表末尾插入新节点
+    print(f"\n在尾部插入 {new_data} 后的链表:")
+    print_linked_list(head)  # 打印插入新节点后的链表状态
 
-#     # 验证从头部删除节点
-#     head = delete_at_beginning(head)  # 删除第一个节点
-#     print("\n从头部删除节点后的链表:")
-#     print_linked_list(head)  # 打印删除节点后的链表状态
+    # 验证从头部删除节点
+    head = delete_at_beginning(head)  # 删除第一个节点
+    print("\n从头部删除节点后的链表:")
+    print_linked_list(head)  # 打印删除节点后的链表状态
 
-#     # 验证从尾部删除节点
-#     head = delete_at_end(head)  # 从链表末尾删除节点
-#     print("\n从尾部删除节点后的链表:")
-#     print_linked_list(head)  # 打印删除节点后的链表状态
+    # 验证从尾部删除节点
+    head = delete_at_end(head)  # 从链表末尾删除节点
+    print("\n从尾部删除节点后的链表:")
+    print_linked_list(head)  # 打印删除节点后的链表状态
 
-#     # 验证从任意位置插入节点
-#     position = 3
-#     new_data = 99
-#     head = insert_at_position(head, new_data, position)  # 在第3个位置插入节点
-#     print(f"\n在位置 {position} 插入 {new_data} 后的链表:")
-#     print_linked_list(head)
+    # 验证从任意位置插入节点
+    position = 3
+    new_data = 99
+    head = insert_at_position(head, new_data, position)  # 在第3个位置插入节点
+    print(f"\n在位置 {position} 插入 {new_data} 后的链表:")
+    print_linked_list(head)
 
-#     # 验证从任意位置删除节点
-#     position = 2
-#     head = delete_at_position(head, position)  # 删除第2个位置的节点
-#     print(f"\n在位置 {position} 插入 {new_data} 后的链表:")
-#     print_linked_list(head)
+    # 验证从任意位置删除节点
+    position = 2
+    head = delete_at_position(head, position)  # 删除第2个位置的节点
+    print(f"\n在位置 {position} 插入 {new_data} 后的链表:")
+    print_linked_list(head)
 
-# if __name__ == "__main__":
-#     main()
+if __name__ == "__main__":
+    main()
 
-# # 运行结果
-# # 初始链表:
-# # 1 -> 2 -> 3 -> 4 -> 5 -> None
+# 运行结果
+# 初始链表:
+# 1 -> 2 -> 3 -> 4 -> 5 -> None
 
-# # 在头部插入 0 后的链表:
-# # 0 -> 1 -> 2 -> 3 -> 4 -> 5 -> None
+# 在头部插入 0 后的链表:
+# 0 -> 1 -> 2 -> 3 -> 4 -> 5 -> None
 
-# # 在尾部插入 10 后的链表:
-# # 0 -> 1 -> 2 -> 3 -> 4 -> 5 -> 10 -> None
+# 在尾部插入 10 后的链表:
+# 0 -> 1 -> 2 -> 3 -> 4 -> 5 -> 10 -> None
 
-# # 从头部删除节点后的链表:
-# # 1 -> 2 -> 3 -> 4 -> 5 -> 10 -> None
+# 从头部删除节点后的链表:
+# 1 -> 2 -> 3 -> 4 -> 5 -> 10 -> None
 
-# # 从尾部删除节点后的链表:
-# # 1 -> 2 -> 3 -> 4 -> 5 -> None
+# 从尾部删除节点后的链表:
+# 1 -> 2 -> 3 -> 4 -> 5 -> None
 
-# # 在位置 3 插入 99 后的链表:
-# # 1 -> 2 -> 3 -> 99 -> 4 -> 5 -> None
+# 在位置 3 插入 99 后的链表:
+# 1 -> 2 -> 3 -> 99 -> 4 -> 5 -> None
 
-# # 在位置 2 插入 99 后的链表:
-# # 1 -> 2 -> 99 -> 4 -> 5 -> None
+# 在位置 2 插入 99 后的链表:
+# 1 -> 2 -> 99 -> 4 -> 5 -> None
