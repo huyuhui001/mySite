@@ -1,4 +1,4 @@
-site_name: 知行斋 Studio
+site_name: 知行斋
 site_url: https://huyuhui001.github.io/mySite/
 repo_name: "huyuhui001/mySite"
 repo_url: https://github.com/huyuhui001/mySite
@@ -67,7 +67,7 @@ plugins:
 extra_css: [extra.css]
 
 nav:
-- UPSkilling: 
+- Knowledge and Action: 
   - Index: index.md
   - About: about.md
 - Linux:
