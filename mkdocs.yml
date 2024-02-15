@@ -291,4 +291,5 @@ nav:
     - 第90条 考虑通过typing做静态分析,以消除bug: python/Pythonic90Rules/Rule90.md
   - Demos:
     - 选课系统: python/Demo/CourseSystem.md
-
+- 读书有感:
+  - 程序员的职业和生存指南: Reading/Developers/index.md
