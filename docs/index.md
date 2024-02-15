@@ -282,3 +282,7 @@ Demos
 ### 3.5.Demos
 
 - [选课系统](python/Demo/CourseSystem.md)
+
+## 4. 读书有感
+
+- [约翰·森梅兹的2本书](./Reading/Developers/index.md)
