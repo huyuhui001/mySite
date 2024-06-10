@@ -292,4 +292,27 @@ nav:
   - Demos:
     - 选课系统: python/Demo/CourseSystem.md
 - 读书有感:
-  - 程序员的职业和生存指南: Reading/Developers/index.md
+  - 程序员的职业和生存指南:
+    - 读后感之：前言: Reading/Developers/index.md
+    - 读后感之：入行: Reading/Developers/01-入行.md
+    - 读后感之：求职: Reading/Developers/02-求职.md
+    - 读后感之：与同事相处: Reading/Developers/03-与同事相处.md
+    - 读后感之：与老板相处: Reading/Developers/04-与老板相处.md
+    - 读后感之：团队协作: Reading/Developers/05-团队协作.md
+    - 读后感之：推销你的想法: Reading/Developers/06-推销你的想法.md
+    - 读后感之：着装: Reading/Developers/07-着装.md
+    - 读后感之：处理偏见: Reading/Developers/08-处理偏见.md
+    - 读后感之：身为领导: Reading/Developers/09-身为领导.md
+    - 读后感之：绩效考核: Reading/Developers/10-绩效考核.md
+    - 读后感之：提拔与晋升: Reading/Developers/11-提拔与晋升.md
+    - 读后感之：自我营销: Reading/Developers/12-自我营销.md
+    - 读后感之：社交人脉: Reading/Developers/13-社交人脉.md
+    - 读后感之：持续学习: Reading/Developers/14-持续学习.md
+    - 读后感之：专才与通才: Reading/Developers/15-专才与通才.md
+    - 读后感之：专注与高效: Reading/Developers/16-专注与高效.md
+    - 读后感之：经验分享: Reading/Developers/17-经验分享.md
+    - 读后感之：导师: Reading/Developers/18-导师.md
+    - 读后感之：职业发展: Reading/Developers/19-职业发展.md
+    - 读后感之：工作稳定性: Reading/Developers/20-工作稳定性.md
+    - 读后感之：兼职与自由职业: Reading/Developers/21-兼职与自由职业.md
+    - 读后感之：心态: Reading/Developers/22-心态.md
