@@ -19,219 +19,174 @@ UTF-8编码规定英文字母系列用1个字节表示，汉字用3个字节表�
 | 000800 - 00FFFF      | 1110xxxx 10xxxxxx 10xxxxxx          |
 | 010000 - 10FFFF      | 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx |
 
-Python有两种类型可以表示字符序列(sequence)：一种是bytes，另一种是str。
+Python有两种类型可以表示字符序列(sequence)：一种是`bytes`，另一种是`str`。
 
-* bytes实例包含的是原始数据，即8位的无符号值（通常按照ASCII编码标准来显示）。
-* str实例包含的是Unicode码点（code point，也叫作代码点），这些码点与人类语言之中的文本字符相对应。
+* `bytes`实例包含的是原始数据，即8位的无符号值（通常按照ASCII编码标准来显示）。
+* `str`实例包含的是Unicode码点（code point，也叫作代码点），这些码点与人类语言之中的文本字符相对应。
 
-```
->>> a = b'h\x65llo'
->>> a
-b'hello'
->>> list(a)
-[104, 101, 108, 108, 111]
+```python
+str1 = b"h\x65llo"
+print(str1) # b'hello'
+print(list(str1)) # [104, 101, 108, 108, 111]
 
->>> b = 'a\u0300 hello'
->>> b
-'à hello'
->>> list(b)
-['a', '̀', ' ', 'h', 'e', 'l', 'l', 'o']
+str2 = b"hello"
+print(str2) # b'hello'
+
+str3 = "a\u0300 hello"
+print(str3) # à hello
+print(list(str3)) # ['a', '̀', ' ', 'h', 'e', 'l', 'l', 'o']
 ```
 
 内存是unicode编码格式，硬盘是utf-8。 在做编码转换时候，通常用unicode作为中间编码。 先将其他编码的字符串解码(decode)成unicode,再从unicode编码(encode)成另一种编码格式。
 decode的作用是将二进制数据解码成unicode编码。 encode的作用是将unicode编码的字符串编码成二进制数据。
 
-要把Unicode数据转换成二进制数据，必须调用str的encode方法。 要把二进制数据转换成Unicode数据，必须调用bytes的decode方法。
-调用这些方法的时候，可以明确指出自己要使用的编码方案，也可以采用系统默认的方案，通常是指UTF-8。 在bytes和str的互相转换过程中，实际就是编码解码的过程，必须显式地指定编码格式。
+要把Unicode数据转换成二进制数据，必须调用`str`的`encode`方法。 要把二进制数据转换成Unicode数据，必须调用`bytes`的`decode`方法。
+调用这些方法的时候，可以明确指出自己要使用的编码方案，也可以采用系统默认的方案，通常是指UTF-8。 在`bytes`和`str`的互相转换过程中，实际就是编码解码的过程，必须显式地指定编码格式。
 
-```
->>> s = '中文'
->>> s
-'中文'
->>> type(s)
-<class 'str'>
+```python
+str1 = "中文"
+print(str1)  # 中文
+print(type(str1))  # <class 'str'>
 
->>> b = bytes(s, encoding='utf-8')
->>> b
-b'\xe4\xb8\xad\xe6\x96\x87'
->>> type(b)
-<class 'bytes'>
+str2 = bytes(str1, encoding="utf-8")
+print(str2)  # b'\xe4\xb8\xad\xe6\x96\x87'
+print(type(str2))  # <class 'bytes'>
 
->>> s.encode('utf-8')
-b'\xe4\xb8\xad\xe6\x96\x87'
+str3 = str1.encode("utf-8")
+print(str3)  # b'\xe4\xb8\xad\xe6\x96\x87'
 
->>> b.decode('utf-8')
-'中文'
->>> 
->>> str(b, encoding='utf-8')
-'中文'
+str4 = str(str2, encoding="utf-8")
+print(str4)  # 中文
 ```
 
-编写Python程序的时候，一定要把解码和编码操作放在界面最外层来做，让程序的核心部分可以使用Unicode数据来运作，这种办法通常叫作Unicode三明治（Unicode sandwich）。
+编写Python程序的时候，一定要把解码和编码操作放在界面最外层来做，让程序的核心部分可以使用Unicode数据来运作，这种办法通常叫作**Unicode三明治（Unicode sandwich）**。
 
 我们可以编写辅助函数来确保程序收到的字符序列确实是期望要操作的类型（要知道自己想操作的到底是Unicode码点，还是原始的8位值。用UTF-8标准给字符串编码，得到的就是这样的一系列8位值）。
 
-辅助函数to_str接受bytes或str实例，并返回str：
+辅助函数`to_str`接受`bytes`或`str`实例，并返回`str`：
 
-```
->>> def to_str(bytes_or_str):
-...     if isinstance(bytes_or_str, bytes):
-...         value = bytes_or_str.decode('utf-8')
-...     else:
-...         value = bytes_or_str
-...     return value
-... 
->>> repr(to_str(b'foo'))
-"'foo'"
->>> repr(to_str('foo'))
-"'foo'"
->>> to_str('foo')
-'foo'
->>> to_str(b'foo')
-'foo'
+```python
+def to_str(bytes_or_str):
+    if isinstance(bytes_or_str, bytes):
+        value = bytes_or_str.decode("utf-8")
+    else:
+        value = bytes_or_str
+    return value
+
+
+print(repr(to_str(b"foo")))  # 'foo'
+print(repr(to_str("foo")))  # 'foo'
+print(to_str("foo"))  # foo
+print(to_str(b"foo"))  # foo
 ```
 
-辅助函数to_bytes接受bytes或str实例，并返回bytes：
+辅助函数`to_bytes`接受`bytes`或`str`实例，并返回`bytes`：
 
-```
->>> def to_bytes(bytes_or_str):
-...     if isinstance(bytes_or_str, str):
-...         value = bytes_or_str.encode('utf-8')
-...     else:
-...         value = bytes_or_str
-...     return value
-... 
->>> repr(to_bytes(b'foo'))
-"b'foo'"
->>> repr(to_bytes('foo'))
-"b'foo'"
->>> to_bytes(b'foo')
-b'foo'
->>> to_bytes('foo')
+```python
+def to_bytes(bytes_or_str):
+    if isinstance(bytes_or_str, str):
+        value = bytes_or_str.encode("utf-8")
+    else:
+        value = bytes_or_str
+    return value
+
+
+print(repr(to_bytes(b"foo")))  # b'foo'
+print(repr(to_bytes("foo")))  # b'foo'
+print(to_bytes(b"foo"))  # b'foo'
+print(to_bytes("foo"))  # b'foo'
 ```
 
-bytes与str这两种实例不能在某些操作符（例如>、==、+、%操作符）上面混用。
+`bytes`与`str`这两种实例不能在某些操作符（例如`>`、`==`、`+`、`%`操作符）上面混用。
 
-```
->>> b'one' + b'two'
-b'onetwo'
->>> 'one'+'two'
-'onetwo'
+```python
+print(b"one" + b"two")  # b'onetwo'
+print("one" + "two")  # onetwo
 ```
 
-不能将str实例添加到bytes实例：
+不能将`str`实例添加到`bytes`实例：
 
-```
->>> b'one' + 'two'
-Traceback (most recent call last):
-  File "<stdin>", line 1, in <module>
-TypeError: can't concat str to bytes
+```python
+print(b"one" + "two")
+# TypeError: can't concat str to bytes
 ```
 
-不能将byte实例添加到str实例：
+不能将`byte`实例添加到`str`实例：
 
-```
-> > > 'one' + b'two'
-Traceback (most recent call last):
-File "<stdin>", line 1, in <module>
-TypeError: can only concatenate str (not "bytes") to str
+```python
+print("one" + b"two")
+# TypeError: can only concatenate str (not "bytes") to str
 ```
 
-str实例不能与bytes实例比较，即便这两个实例表示的字符完全相同，它们也不相等：
+`str`实例不能与`bytes`实例比较，即便这两个实例表示的字符完全相同，它们也不相等：
 
-```
->>> assert 'red' >= b'red'
-Traceback (most recent call last):
-  File "<stdin>", line 1, in <module>
-TypeError: '>=' not supported between instances of 'str' and 'bytes'
+```python
+assert "red" >= b"red"
+# TypeError: '>=' not supported between instances of 'str' and 'bytes'
 
->>> assert b'red' >= 'red'
-Traceback (most recent call last):
-  File "<stdin>", line 1, in <module>
-TypeError: '>=' not supported between instances of 'bytes' and 'str'
+assert b"red" >= "red"
+# TypeError: '>=' not supported between instances of 'bytes' and 'str'
 ```
 
-两种类型的实例都可以出现在%操作符的右侧，用来替换左侧那个格式字符串（format string）里面的%s。
+两种类型的实例都可以出现在%操作符的右侧，用来替换左侧那个格式字符串（format string）里面的`%s`。
 
-```
->>> print(b'red %s' % b'blue')
-b'red blue'
->>> print('red %s' % 'blue')
-red blue
+```python
+print(b"red %s" % b"blue")  # b'red blue'
+print("red %s" % "blue")  # red blue
 ```
 
-如果格式字符串是bytes类型，那么不能用str实例来替换其中的%s。 如果格式字符串是str类型，则可以用bytes实例来替换其中的%s。(系统在bytes实例上面调用__repr__
-方法（Rule75），然后用这次调用所得到的结果替换格式字符串里的%s，因此程序会直接输出b'blue'，而不是输出blue本身。)
+如果格式字符串是`bytes`类型，那么不能用`str`实例来替换其中的`%s`。
+如果格式字符串是`str`类型，则可以用`bytes`实例来替换其中的`%s`。(系统在bytes实例上面调用`__repr__`方法（Rule75），然后用这次调用所得到的结果替换格式字符串里的`%s`，因此程序会直接输出`b'blue'`，而不是输出`blue`本身。)
 
-```
->>> print(b'red %s' % 'blue')
-Traceback (most recent call last):
-  File "<stdin>", line 1, in <module>
-TypeError: %b requires a bytes-like object, or an object that implements __bytes__, not 'str'
+```python
+print(b"red %s" % "blue")
+# TypeError: %b requires a bytes-like object, or an object that implements __bytes__, not 'str'
 
->>> print('red %s' % b'blue')
-red b'blue'
+print("red %s" % b"blue")
+# red b'blue'
 ```
 
 在操作文件句柄的时候，这里的句柄指由内置的open函数返回的句柄。这样的句柄默认需要使用Unicode字符串操作，而不能采用原始的bytes。
 
 从文件中读取二进制数据（或者把二进制数据写入文件）时，应该用'rb'（'wb'）这样的二进制模式打开文件。
 
-```
->>> with open('./temp/data.bin', 'w') as f:
-...     f.write(b'\xf1\xf2\xf3\xf4\xf5')
-... 
-Traceback (most recent call last):
-  File "<stdin>", line 2, in <module>
-TypeError: write() argument must be str, not bytes
->>> 
->>> with open('./temp/data.bin', 'wb') as f:
-...     f.write(b'\xf1\xf2\xf3\xf4\xf5')
-... 
-5
->>>
-```
+```python
+with open("./data.bin", "w") as f:
+    f.write(b"\xf1\xf2\xf3\xf4\xf5")
+# TypeError: write() argument must be str, not bytes
 
-```
->>> with open('./temp/data.bin', 'r') as f:
-...     data = f.read()
-... 
-Traceback (most recent call last):
-  File "<stdin>", line 2, in <module>
-  File "/usr/local/lib/python3.9/codecs.py", line 322, in decode
-    (result, consumed) = self._buffer_decode(data, self.errors, final)
-UnicodeDecodeError: 'utf-8' codec can't decode byte 0xf1 in position 0: invalid continuation byte
->>> 
->>> 
->>> with open('./temp/data.bin', 'rb') as f:
-...     data = f.read()
-... 
->>> assert data == b'\xf1\xf2\xf3\xf4\xf5'
->>> 
+with open("./data.bin", "r") as f:
+    data = f.read()
+# UnicodeDecodeError: 'utf-8' codec can't decode byte 0xf1 in position 0: invalid continuation byte
+
+with open("data.bin", "wb") as f:
+    f.write(b"\xf1\xf2\xf3\xf4\xf5")
+
+
+with open("data.bin", "rb") as f:
+    data = f.read()
+
+assert data == b"\xf1\xf2\xf3\xf4\xf5"
 ```
 
 如果要从文件中读取（或者要写入文件之中）的是Unicode数据，那么必须注意系统默认的文本编码方案。若无法肯定，可通过encoding参数明确指定。
 
-```
->>> with open('./temp/data.bin', 'r', encoding='cp1252') as f:
-...     data = f.read()
-... 
->>> assert data == b'\xf1\xf2\xf3\xf4\xf5'
-Traceback (most recent call last):
-  File "<stdin>", line 1, in <module>
-AssertionError
+```python
+with open("data.bin", "wb") as f:
+    f.write(b"\xf1\xf2\xf3\xf4\xf5")
+
+with open("data.bin", "r", encoding="cp1252") as f:
+    data = f.read()
+
+assert data == b"\xf1\xf2\xf3\xf4\xf5"
+# AssertionError
 ```
 
 查看当前操作系统默认的编码标准
 
+```python
+import locale
+
+print(locale.getpreferredencoding())
+# UTF-8
 ```
->>> import locale
->>> locale.getpreferredencoding()
-'UTF-8'
->>> 
-```
-
-
-
-
-

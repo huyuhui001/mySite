@@ -1,8 +1,6 @@
 # 第2条　遵循PEP 8风格指南
 
-Python Enhancement Proposal #8叫作PEP 8，它是一份针对Python代码格式而编订的风格指南。
-
-完整指南：https://www.python.org/dev/peps/pep-0008
+Python Enhancement Proposal #8叫作PEP 8，它是一份针对Python代码格式而编订的风格指南。参考[完整指南](https://www.python.org/dev/peps/pep-0008)。
 
 ## 与空白有关的建议
 
@@ -33,25 +31,21 @@ Python Enhancement Proposal #8叫作PEP 8，它是一份针对Python代码格式
 
 The Zen of Python中提到：“每件事都应该有简单的做法，而且最好只有一种。”PEP 8就试着运用这个理念，来规范表达式和语句的写法。
 
-* 采用行内否定，即把否定词直接写在要否定的内容前面，而不要放在整个表达式的前面，例如应该写if a is not b，而不是if not a is b。
-* 不要通过长度判断容器或序列是不是空的，例如不要通过if len(somelist) == 0判断somelist是否为[]或''等空值，而是应该采用if not
-  somelist这样的写法来判断，因为Python会把空值自动评估为False。
-* 如果要判断容器或序列里面有没有内容（比如要判断 somelist 是否为[1]或'hi'这样非空的值），也不应该通过长度来判断，而是应该采用if somelist 语句，因为Python会把非空的值自动判定为True。
-* 不要把if语句、for循环、while循环及except复合语句挤在一行。应该把这些语句分成多行来写，这样更加清晰。
-* 如果表达式一行写不下，可以用括号将其括起来，而且要适当地添加换行与缩进以便于阅读。多行的表达式，应该用括号括起来，而不要用
+* 采用行内否定，即把否定词直接写在要否定的内容前面，而不要放在整个表达式的前面，例如应该写`if a is not b`，而不是`if not a is b`。
+* 不要通过长度判断容器或序列是不是空的，例如不要通过`if len(somelist) == 0`判断`somelist`是否为`[]`或`''`等空值，而是应该采用`if not somelist`这样的写法来判断，因为Python会把空值自动评估为`False`。
+* 如果要判断容器或序列里面有没有内容（比如要判断 `somelist` 是否为`[1]`或`'hi'`这样非空的值），也不应该通过长度来判断，而是应该采用`if somelist` 语句，因为Python会把非空的值自动判定为`True`。
+* 不要把`if`语句、`for`循环、`while`循环及`except`复合语句挤在一行。应该把这些语句分成多行来写，这样更加清晰。
+* 如果表达式一行写不下，可以用括号将其括起来，而且要适当地添加换行与缩进以便于阅读。多行的表达式，应该用括号括起来。
 
 ## 与引入有关的建议
 
 PEP 8对于怎样在代码中引入并使用模块，给出了下面几条建议。
 
-* import语句（含from x import y）总是应该放在文件开头。
-* 引入模块时，总是应该使用绝对名称，而不应该根据当前模块路径来使用相对名称。例如，要引入bar包中的foo模块，应该完整地写出from bar import foo，即便当前路径为bar包里，也不应该简写为import foo。
-* 如果一定要用相对名称来编写import语句，那就应该明确地写成：from . import foo。
-* 文件中的import语句应该按顺序划分成三个部分：首先引入标准库里的模块，然后引入第三方模块，最后引入自己的模块。属于同一个部分的import语句按字母顺序排列。
+* `import`语句（含`from x import y`）总是应该放在文件开头。
+* 引入模块时，总是应该使用绝对名称，而不应该根据当前模块路径来使用相对名称。例如，要引入`bar`包中的`foo`模块，应该完整地写出`from bar import foo`，即便当前路径为`bar`包里，也不应该简写为`import foo`。
+* 如果一定要用相对名称来编写`import`语句，那就应该明确地写成：`from . import foo`。
+* 文件中的`import`语句应该按顺序划分成三个部分：首先引入标准库里的模块，然后引入第三方模块，最后引入自己的模块。属于同一个部分的`import`语句按字母顺序排列。
 
 ## 提示
 
-Pylint（https://www.pylint.org/）是一款流行的Python源码静态分析工具。
-
-
-
+[Pylint](https://www.pylint.org/)是一款流行的Python源码静态分析工具。
