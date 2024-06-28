@@ -1,4 +1,4 @@
-# 第7条　尽量用enumerate取代range
+# 高效Python90条之第7条　尽量用enumerate取代range
 
 Python内置的`range`函数适合用来迭代一系列整数。
 

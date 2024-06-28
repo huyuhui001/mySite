@@ -1,4 +1,4 @@
-# 第2条　遵循PEP 8风格指南
+# 高效Python90条之第2条　遵循PEP 8风格指南
 
 Python Enhancement Proposal #8叫作PEP 8，它是一份针对Python代码格式而编订的风格指南。参考[完整指南](https://www.python.org/dev/peps/pep-0008)。
 

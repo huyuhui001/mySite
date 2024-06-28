@@ -1,4 +1,4 @@
-# 第1条　查询自己使用的Python版本
+# 高效Python90条之第1条　查询自己使用的Python版本
 
 ```python
 import sys

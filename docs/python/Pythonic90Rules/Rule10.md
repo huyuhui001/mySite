@@ -1,4 +1,4 @@
-# 第10条　用赋值表达式减少重复代码
+# 高效Python90条之第10条　用赋值表达式减少重复代码
 
 赋值表达式（assignment expression）是Python 3.8新引入的语法，它会用到**海象操作符**（walrusoperator）。
 
