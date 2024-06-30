@@ -7,11 +7,13 @@
 ```python
 import random
 
+
 def main():
     smaller = int(input("输入最小值: "))
     larger = int(input("输入最大值: "))
     myNumber = random.randint(smaller, larger)
     count = 0
+
     while True:
         count += 1
         userNumber = int(input("输入你猜的值: "))
@@ -23,28 +25,24 @@ def main():
             print("恭喜，你在第", count, "次猜对了!")
             break
 
+
 if __name__ == "__main__":
     main()
-```
 
-运行代码：
-
-```bash
-$ python3 numberguess.py 
-Enter the smaller number: 10
-Enter the larger number: 60
-Enter your guess: 50
-Too large
-Enter your guess: 40
-Too large
-Enter your guess: 30
-Too large
-Enter your guess: 20
-Too large
-Enter your guess: 10
-Too small
-Enter your guess: 15
-You’ve got it in 6 tries!
+# Enter the smaller number: 10
+# Enter the larger number: 60
+# Enter your guess: 50
+# Too large
+# Enter your guess: 40
+# Too large
+# Enter your guess: 30
+# Too large
+# Enter your guess: 20
+# Too large
+# Enter your guess: 10
+# Too small
+# Enter your guess: 15
+# You’ve got it in 6 tries!
 ```
 
 ### 1.1.1.拼写和命名惯例
@@ -73,10 +71,10 @@ You’ve got it in 6 tries!
 
 - 标准运算符：`+`、`-`、`*`、`/`、`%`
 - 算术表达式是用标准运算符和中缀表示法
-- 比较运算符：`<`、`<=`、`>`、`>=`、`==`、`!=`，用于比较数字或字符串，返回True或False
+- 比较运算符：`<`、`<=`、`>`、`>=`、`==`、`!=`，用于比较数字或字符串，返回`True`或`False`
 - 运算符`==`用于比较数据结构里的内容，运算符`is`用于比较两个对象的标识是否一致
-- 逻辑运算符：`and`、`or`、`not`。把0、None、空字符串、空列表等视为False，大多数其他值是为True
-- 下标运算符：`[]`，与多项集collection对象一起使用
+- 逻辑运算符：`and`、`or`、`not`。把`0`、`None`、空字符串、空列表等视为`False`，大多数其他值是为`True`
+- 下标运算符：`[]`，与多项集`collection`对象一起使用
 - 选择器运算符：`.`，用于引用一个模块、类或对象中的一个具名的项
 
 运算符优先级，依次是选择运算符、函数调用运算符、下标运算符、算术运算符、比较运算符、逻辑运算符、赋值运算符。括号用于让子表达式优先运行。
