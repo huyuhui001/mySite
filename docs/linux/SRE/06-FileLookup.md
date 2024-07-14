@@ -97,4 +97,32 @@ find /etc -maxdepth 2 -mindepth 2
 * `-links N`：链接数为`N`的文件。
 * `-regex "PATTERN"`：以PATTERN匹配整个文件路径，而非文件名称。
 
+根据属主、属组查找：
+
+查找用户`wang`和`root`的文件。
+
+```bash
+find /home -user wang -o -user root
+```
+
+根据文件类型查找：
+
+空文件或目录：
+
+组合条件：
+
+排除目录：
+
+根据文件大小查找：
+
+根据时间戳查找：
+
+根据权限查找：
+
+正则表达式：
+
+处理动作：
+
 ## xargs命令
+
+xargs可以读如stdin的数据，并根据空格或者回车符将stdin的数据分隔成参数。

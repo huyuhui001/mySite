@@ -913,7 +913,9 @@ $ ls
 3file.txt  5file.txt  7file.txt
 ```
 
-后向引用`\0` `\1` `\2`等。
+### 后向引用
+
+后向引用`\0` `\1` `\2`等示例。
 
 ```bash
 $ $echo 123456789 | sed -nE 's/(123)(456)(789)/\1/p'
@@ -1172,7 +1174,9 @@ Tesetfile
 Wiki
 ```
 
-`sed`保持空间（hold space）的例子：
+### 保持空间hold space
+
+例子：
 
 * `d`：删除pattern space的内容，开始下一个循环。
 
