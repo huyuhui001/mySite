@@ -80,6 +80,9 @@ nav:
     - 第五章 正则表达式: linux/SRE/05-RegExpress.md
     - 第六章 文件查找: linux/SRE/06-FileLookup.md
     - 第七章 文件打包和解包: linux/SRE/07-FilePacking.md
+    - 第八章 shell编程: linux/SRE/08-ShellProgramming.md
+    - 第九章 磁盘和存储管理: linux/SRE/09-Disk&Storage.md
+    - 第十章 软件管理: linux/SRE/10-PackageMgr.md
   - SUSE Linux Administration: 
     - Linux File System Overview: linux/Administration/01.md
     - Useful Commands: linux/Administration/02.md
