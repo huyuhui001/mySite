@@ -1,6 +1,5 @@
 # SUSE Enterprise Storage 6 Installation and Basic Operation
 
-
 ## 1. Installation
 
 ### 1.1. Environment Setup
@@ -32,60 +31,58 @@ All VMs installed here was built on a physical host `10.58.121.68`.
         ind.me.corp
         bgr.me.corp
 
-
 SUSE Server 15 SP1 Extensions and Modules were installed as below.
 
-	[x] SUSE Enterprise Storage 6 
+    [x] SUSE Enterprise Storage 6 
     [x] Basesystem Module 15 SP1 x86_64
     [x] Server Applications Module 15 SP1 x86_64
 
 Disable Services is as below:
 
-	AppArmor
-	Firewall
+    AppArmor
+    Firewall
 
 Enable Services is as below.
     SSH
 
-
 Register SLES15.1 to local SMT.
 
-    # SUSEConnect --url https://smtproxy.ind.me.corp
-
+```bash
+SUSEConnect --url https://smtproxy.ind.me.corp
+```
 
 Demo Environment summary is below.
 
-Alias   |Host Name              | Memory    | Disk          | eth0              | eth0 mac address 
---------|-----------------------|-----------|---------------|-------------------|------------------
-sles01  | admin (salt-master)	| 16GB	    | Disk1: 20G	| 10.58.121.181/23  | 52:54:00:23:7d:cd
-sles02	| data1	                | 16GB	    | Disk1: 20G	| 10.58.121.182/23	| 52:54:00:5f:ce:6f
-		| 	                    |           | Disk2: 8G     |                   | 
-		| 	                    |           | Disk3: 8G     |                   | 
-		| 	                    |           | Disk4: 8G     |                   | 
-sles03	| data2	                | 16GB	    | Disk1: 20G	| 10.58.121.183/23	| 52:54:00:6f:f2:23
-		| 	                    |           | Disk2: 8G     |                   | 
-		| 	                    |           | Disk3: 8G     |                   | 
-		| 	                    |           | Disk4: 8G     |                   | 
-sles04	| data3	                | 16GB	    | Disk1: 20G	| 10.58.121.184/23	| 52:54:00:93:4c:67
-		| 	                    |           | Disk2: 8G     |                   | 
-		| 	                    |           | Disk3: 8G     |                   | 
-		| 	                    |           | Disk4: 8G     |                   | 
-sles05	| data4	                | 16GB	    | Disk1: 20G	| 10.58.121.185/23	| 52:54:00:90:b0:b0
-		| 	                    |           | Disk2: 8G     |                   | 
-		| 	                    |           | Disk3: 8G     |                   | 
-		| 	                    |           | Disk4: 8G     |                   | 
-sles06	| mon1	                | 16GB	    | Disk1: 20G	| 10.58.121.186/23	| 52:54:00:46:43:7a
-sles07	| mon2	                | 16GB	    | Disk1: 20G	| 10.58.121.187/23	| 52:54:00:00:fe:6b
-sles08	| mon3	                | 16GB	    | Disk1: 20G	| 10.58.121.188/23	| 52:54:00:60:a3:92
-
+|Alias   |Host Name            | Memory   | Disk       | eth0              | eth0 mac address  |
+|--------|---------------------|----------|------------|-------------------|-------------------|
+|sles01  | admin (salt-master) | 16GB     | Disk1: 20G | 10.58.121.181/23  | 52:54:00:23:7d:cd |
+|sles02  | data1               | 16GB     | Disk1: 20G | 10.58.121.182/23  | 52:54:00:5f:ce:6f |
+|        |                     |          | Disk2: 8G  |                   |                   |
+|        |                     |          | Disk3: 8G  |                   |                   |
+|        |                     |          | Disk4: 8G  |                   |                   |
+|sles03  | data2               | 16GB     | Disk1: 20G | 10.58.121.183/23  | 52:54:00:6f:f2:23 |
+|        |                     |          | Disk2: 8G  |                   |                   |
+|        |                     |          | Disk3: 8G  |                   |                   |
+|        |                     |          | Disk4: 8G  |                   |                   |
+|sles04  | data3               | 16GB     | Disk1: 20G | 10.58.121.184/23  | 52:54:00:93:4c:67 |
+|        |                     |          | Disk2: 8G  |                   |                   |
+|        |                     |          | Disk3: 8G  |                   |                   |
+|        |                     |          | Disk4: 8G  |                   |                   |
+|sles05  | data4               | 16GB     | Disk1: 20G | 10.58.121.185/23  | 52:54:00:90:b0:b0 |
+|        |                     |          | Disk2: 8G  |                   |                   |
+|        |                     |          | Disk3: 8G  |                   |                   |
+|        |                     |          | Disk4: 8G  |                   |                   |
+|sles06  | mon1                | 16GB     | Disk1: 20G | 10.58.121.186/23  | 52:54:00:46:43:7a |
+|sles07  | mon2                | 16GB     | Disk1: 20G | 10.58.121.187/23  | 52:54:00:00:fe:6b |
+|sles08  | mon3                | 16GB     | Disk1: 20G | 10.58.121.188/23  | 52:54:00:60:a3:92 |
 
 Add hostname to file `/etc/hosts` (all nodes)
 
 * If you do not specify a cluster network during Ceph deployment, it assumes a single public network environment.
-* Make sure that the fully qualified domain name (FQDN) of each node can be resolved to the public network IP address by all other nodes. 
+* Make sure that the fully qualified domain name (FQDN) of each node can be resolved to the public network IP address by all other nodes.
 
-```
-# vi /etc/hosts
+```bash
+$ vi /etc/hosts
 10.58.121.181   admin.sha.me.corp admin salt
 10.58.121.182   data1.sha.me.corp data1
 10.58.121.183   data2.sha.me.corp data2
@@ -97,70 +94,73 @@ Add hostname to file `/etc/hosts` (all nodes)
 ```
 
 Add all nodes as trust ssh access (root account)
-```
-# cd ~
-# ssh-keygen -t rsa
-# ssh-copy-id -i ~/.ssh/id_rsa.pub root@admin
-# ssh-copy-id -i ~/.ssh/id_rsa.pub root@data1
-# ssh-copy-id -i ~/.ssh/id_rsa.pub root@data2
-# ssh-copy-id -i ~/.ssh/id_rsa.pub root@data3
-# ssh-copy-id -i ~/.ssh/id_rsa.pub root@data4
-# ssh-copy-id -i ~/.ssh/id_rsa.pub root@mon1
-# ssh-copy-id -i ~/.ssh/id_rsa.pub root@mon2
-# ssh-copy-id -i ~/.ssh/id_rsa.pub root@mon3
 
-# ssh admin.sha.me.corp
-# ssh data1.sha.me.corp
-# ssh data2.sha.me.corp
-# ssh data3.sha.me.corp
-# ssh data4.sha.me.corp
-# ssh mon1.sha.me.corp
-# ssh mon2.sha.me.corp
-# ssh mon3.sha.me.corp
-# ssh salt
-# ssh admin
-# ssh data1
-# ssh data2
-# ssh data3
-# ssh data4
-# ssh mon1
-# ssh mon2
-# ssh mon3
+```bash
+cd ~
+ssh-keygen -t rsa
+ssh-copy-id -i ~/.ssh/id_rsa.pub root@admin
+ssh-copy-id -i ~/.ssh/id_rsa.pub root@data1
+ssh-copy-id -i ~/.ssh/id_rsa.pub root@data2
+ssh-copy-id -i ~/.ssh/id_rsa.pub root@data3
+ssh-copy-id -i ~/.ssh/id_rsa.pub root@data4
+ssh-copy-id -i ~/.ssh/id_rsa.pub root@mon1
+ssh-copy-id -i ~/.ssh/id_rsa.pub root@mon2
+ssh-copy-id -i ~/.ssh/id_rsa.pub root@mon3
+
+ssh admin.sha.me.corp
+ssh data1.sha.me.corp
+ssh data2.sha.me.corp
+ssh data3.sha.me.corp
+ssh data4.sha.me.corp
+ssh mon1.sha.me.corp
+ssh mon2.sha.me.corp
+ssh mon3.sha.me.corp
+ssh salt
+ssh admin
+ssh data1
+ssh data2
+ssh data3
+ssh data4
+ssh mon1
+ssh mon2
+ssh mon3
 ```
 
 Disable firewall (all nodes)
-```
-# sudo /sbin/SuSEfirewall2 off
-# firewall-cmd --state
+
+```bash
+$ sudo /sbin/SuSEfirewall2 off
+$ firewall-cmd --state
 	not running
 
-# systemctl stop firewalld.service
-# systemctl status firewalld.service
+$ systemctl stop firewalld.service
+$ systemctl status firewalld.service
 	firewalld.service - firewalld - dynamic firewall daemon
 	Loaded: loaded (/usr/lib/systemd/system/firewalld.service; disabled; vendor preset: disabled)
 	Active: inactive (dead)
   Docs: man:firewalld(1)
-
 ```
 
 Disable IPv6 (all nodes) and Set kernel pid to max value (all nodes)
-```
-# vi /etc/sysctl.conf
+
+```bash
+$ vi /etc/sysctl.conf
 net.ipv6.conf.all.disable_ipv6 = 1
 net.ipv6.conf.default.disable_ipv6 = 1
 net.ipv6.conf.lo.disable_ipv6 = 1
 kernel.pid_max = 4194303
-# sysctl -p
+$ sysctl -p
 ```
 
 Set `DEV_ENV=true` in `/etc/profile.local` in all nodes
 
 Install basic software (all nodes)
-```
-# zypper in -y -t pattern yast2_basis base
-# zypper in -y net-tools vim man sudo tuned irqbalance
-# zypper in -y ethtool rsyslog iputils less supportutils-plugin-ses
-# zypper in -y net-tools-deprecated tree wget
+
+```bash
+$ zypper in -y -t pattern yast2_basis base
+$ zypper in -y net-tools vim man sudo tuned irqbalance
+$ zypper in -y ethtool rsyslog iputils less supportutils-plugin-ses
+$ zypper in -y net-tools-deprecated tree wget
 ```
 
 Configure NTP service (all nodes), Setting via YaST2 and add server `cn.pool.ntp.,org`. 
@@ -221,33 +221,39 @@ Make `/etc/chrony.conf` effective.
 # chronyc sources
 ```
 
-
 ### 1.2. Install Packages
 
 Install `salt-minion` on all nodes. And start the service. 
 
-```
 Hostname is in file `/etc/salt/minion_id`
-# zypper in -y salt-minion
+
+```bash
+zypper in -y salt-minion
+```
 
 Uncomment below to let all nodes know who is master
-# vi /etc/salt/minion
+
+```bash
+$ vi /etc/salt/minion
 master: salt 
 
-# systemctl enable salt-minion.service
-# systemctl start salt-minion.service
-# systemctl status salt-minion.service
+$ systemctl enable salt-minion.service
+$ systemctl start salt-minion.service
+$ systemctl status salt-minion.service
 ```
 
 Install Ceph in admin node. Check log in `/var/log/salt`
 
-```
+```bash
 admin:~ # zypper in -y salt-master
 admin:~ # systemctl enable salt-master.service
 admin:~ # systemctl start salt-master.service
 admin:~ # systemctl status salt-master.service
+```
 
 Note: ganesha will be installed on mon1, not admin node.
+
+```bash
 admin:~ # zypper se ganesha
 admin:~ # zypper in nfs-ganesha
 admin:~ # systemctl enable nfs-ganesha
@@ -255,10 +261,13 @@ admin:~ # systemctl start nfs-ganesha
 admin:~ # systemctl status nfs-ganesha
 ```
 
+```bash
 admin:~ # cd /var/log/salt
+```
 
 List fingerprints of all unaccepted minion keys on the Salt master.
-```
+
+```bash
 admin:~ # salt-key -F
 Local Keys:
 master.pem:  c0:e5:***:04:c7
@@ -317,7 +326,7 @@ Rejected Keys:
 ```
 
 Zero out all drivers which will be used as OSDs (optional)
-```
+```bash
 data1:~ lsblk
 
 data1:~ # for I in {b,c,d}; do dd if=/dev/zero of=dev/sd$i bs=512 count=40 oflag=direct; done
@@ -328,7 +337,7 @@ data3:~ # for I in {b,c,d}; do dd if=/dev/zero of=dev/sd$i bs=512 count=40 oflag
 ```
 
 Install DeepSea
-```
+```bash
 admin:~ # zypper in -y deepsea
 ```
 
@@ -348,6 +357,7 @@ deepsea_minions: 'G@deepsea:*'  #Match all Salt minions in the cluster
 Target the Minions
 
 * Affirm salt-master (admin node) can communicate with the minions. And deploy the grains from admin node to all minions.
+
 ```
 admin:~ # salt '*' test.ping
 mon1.sha.me.corp:
@@ -369,6 +379,7 @@ mon2.sha.me.corp:
 ```
 
 Apply the 'deepsea' grain to a group of minions, and target with a DeepSea Grain
+
 ```
 admin:~ # salt '*' grains.append deepsea default
 data3.sha.me.corp:
@@ -408,13 +419,13 @@ data1.sha.me.corp:
     True
 ```
 
-
 ### 1.3. Stage 0 — the preparation
 
 Run Stage 0—the preparation
 
 * During this stage, all required updates are applied and your system may be rebooted. 
 * If there are errors, re-run the stage.
+
 ```
 admin:~ # deepsea stage run ceph.stage.0 (The following commands are equivalents)
 admin:~ # salt-run state.orch ceph.stage.0
@@ -745,16 +756,13 @@ admin:~ # deepsea stage run ceph.stage.
 
 [SOLUTION]: Restart minions service
 
-
-
 [ERROR]: This server_id is computed nor by Adler32 neither by CRC32
 
-[SOLUTION]: [link](https://github.com/SUSE/DeepSea/issues/1593)
-
-
+[SOLUTION](https://github.com/SUSE/DeepSea/issues/1593)
 
 [QUESTION]: How to change new salt key
-```
+
+```bash
 Stop salt-minion service
 # systemctl stop salt-minion
 
@@ -792,10 +800,10 @@ mon2:~ # salt-key -a mon2.sha.me.corp
 mon3:~ # salt-key -a mon3.sha.me.corp
 ```
 
-
 [ERROR] ['/var/lib/ceph subvolume missing on mon3.sha.me.corp', '/var/lib/ceph subvolume missing on mon1.sha.me.corp', '/var/lib/ceph subvolume missing on mon2.sha.me.corp', 'See /srv/salt/ceph/subvolume/README.md']
 
 [SOLUTION]
+
 Edit /srv/pillar/ceph/stack/global.yml and add the following line:
 subvolume_init: disabled
 
