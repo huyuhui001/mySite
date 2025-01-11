@@ -1,9 +1,10 @@
 site/
 .idea/
 .vscode/
+myenv/
 _tmp.md
 _tmp.py
-_myscript.py
+.DS_Store
 Demo/CourseSystem/conf/__pycache__/
 Demo/CourseSystem/core/__pycache__/
 Demo/CourseSystem/db/__pycache__/
@@ -17,6 +18,6 @@ Demo/CourseSystem/lib/__pycache__/
 Demo/Spider/__pycache__
 Demo/Spider/images
 Demo/Spider/image_link.txt
-.DS_Store
+
 
 
