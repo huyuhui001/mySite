@@ -1,4 +1,4 @@
-# 知行斋
+# ByteJockey - a website for upskilling
 
 ## 1.Linux
 
