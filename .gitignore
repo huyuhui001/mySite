@@ -4,6 +4,7 @@ site/
 myenv/
 _tmp.md
 _tmp.py
+_tmp.json
 .DS_Store
 Demo/CourseSystem/conf/__pycache__/
 Demo/CourseSystem/core/__pycache__/
