@@ -6,6 +6,7 @@ _tmp.md
 _tmp.py
 _tmp.json
 .DS_Store
+__pycache__/
 Demo/CourseSystem/conf/__pycache__/
 Demo/CourseSystem/core/__pycache__/
 Demo/CourseSystem/db/__pycache__/
