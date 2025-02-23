@@ -202,7 +202,7 @@ nav:
     - 数组和链接结构: python/DataStructure/04_ArrayChain.md
     - 接口、实现和多态: python/DataStructure/05_InterfacePolymorphism.md
     - 继承与抽象类: python/DataStructure/06_InheritanceAbstractClass.md
-  - Effective Python:
+  - 编写高质量Python的90个建议:
     - 目录: python/Pythonic90Rules/List.md
     - 第01条 查询自己使用的Python版本: python/Pythonic90Rules/Rule01.md
     - 第02条 遵循PEP 8风格指南: python/Pythonic90Rules/Rule02.md
@@ -321,5 +321,12 @@ nav:
     - 读后感之：工作稳定性: Reading/Developers/20-工作稳定性.md
     - 读后感之：兼职与自由职业: Reading/Developers/21-兼职与自由职业.md
     - 读后感之：心态: Reading/Developers/22-心态.md
+    - 读后感全文: Reading/Developers/99-全文.md
   - 职业发展话题:
     - 程序员职业发展的三个模式: Reading/Career/01-程序员职业发展的三个模式.md
+  - 闲聊技术:
+    - SWE-Agent：革新软件工程的开源人工智能开发者: Reading/News/01-SWE-Agent.md
+    - GitHub Copilot的代理能力: Reading/News/02-GitHubCopilotAgentic.md
+    - 人工智能（AI）基本概念: Reading/News/03-AI_BasicConcept.md
+    - Transformer简介: Reading/News/04-TransformerIntroduction.md
+    - AgentAI简介: Reading/News/05-AgentAI_Introduction.md
