@@ -1,11 +1,14 @@
 # 高效Python90条之第10条　用赋值表达式减少重复代码
 
-赋值表达式（assignment expression）是Python 3.8新引入的语法，它会用到**海象操作符**（walrusoperator）。
+赋值表达式（assignment expression）是Python 3.8新引入的语法，它会用到 **海象操作符** （walrusoperator）。
 
 `a = b`是普通的赋值语句，读作`a equals b`，而`a := b`则是赋值表达式，读作`a walrus b`。
 这个符号为什么叫walrus呢？因为把`:=`顺时针旋转90º之后，冒号就是海象的一双眼睛，等号就是它的一对獠牙。
 
 在Python里面经常要先获取某个值，然后判断它是否非零，如果是就执行某段代码。
+
+比如下面代码，初始化了字典`fresh_fruit`，存储三种水果的库存数量，并使用字典的 `get` 方法查询 `lemon` 的库存数量。
+`get` 方法的语法是 `dict.get(key, default)`，其中 `key` 是要查询的键（这里是`lemon`），`default` 是当键不存在时返回的默认值（这里是 `0`）。
 
 ```python
 fresh_fruit = {"apple": 10, "banana": 8, "lemon": 5}
@@ -39,7 +42,7 @@ else:
 
 由于表达式紧跟着`if`，程序会根据它的值是否非零来决定该不该执行`if`块。这种先赋值再判断的做法，正是海象操作符想要表达的意思。
 
-下面的例子把赋值表达式放在一对括号里面的，因为我们要在`if`语句里面把这个表达式的结果跟`4`这个值相比较。而且，通过使用海象操作符把定义`pieces`放在`if`/`else`分支内，也能让代码变得清晰
+下面的例子把赋值表达式放在一对括号里面的，因为我们要在`if`语句里面把这个表达式的结果跟`4`这个值相比较。而且，通过使用海象操作符把定义`pieces`放在`if`/`else`分支内，也能让代码变得清晰。
 
 ```python
 fresh_fruit = {"apple": 10, "banana": 8, "lemon": 5}
@@ -126,11 +129,11 @@ n = 5
 while (n := n - 1) + 1:
     print("hello walrus: ", n)
 
-# hello walrus:  5
 # hello walrus:  4
 # hello walrus:  3
 # hello walrus:  2
 # hello walrus:  1
+# hello walrus:  0
 ```
 
 密码校验常规写法：
