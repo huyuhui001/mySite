@@ -1,4 +1,4 @@
-site_name: ByteJockey
+site_name: ByteJockey小站
 site_url: https://huyuhui001.github.io/mySite/
 repo_name: "huyuhui001/mySite"
 repo_url: https://github.com/huyuhui001/mySite
@@ -67,11 +67,11 @@ plugins:
 extra_css: [extra.css]
 
 nav:
-- Site:
-  - Index: index.md
-  - About: about.md
+- 网站概览:
+  - 目录: index.md
+  - 关于: about.md
 - Linux:
-  - Index: linux/index.md
+  - 目录: linux/index.md
   - Linux SRE:
     - 第一章 Linux基础: linux/SRE/01-fundamentals.md
     - 第二章 文件系统: linux/SRE/02-filesystem.md
@@ -91,7 +91,7 @@ nav:
     - SUSE Enterprise Storage Foundation: linux/SES/linux_ses_memo.md
     - SUSE Enterprise Storage Basic Operation: linux/SES/linux_ses_demo.md
 - Kubernetes:
-  - Index: k8s/index.md
+  - 目录: k8s/index.md
   - CKA Learning Memo:
     - Installation:
       - Single Node Installation: k8s/cka_en/installation/single-local.md
@@ -174,7 +174,7 @@ nav:
   - Demos:
     - Build CAP Application on Kyma: k8s/demo/cap_on_kyma.md
 - Python:
-  - Index: python/index.md
+  - 目录: python/index.md
   - Python基础:
     - 安装: python/Foundation/ch00.md
     - 语言基础: python/Foundation/ch01.md
@@ -296,7 +296,8 @@ nav:
     - 第90条 考虑通过typing做静态分析,以消除bug: python/Pythonic90Rules/Rule90.md
   - Demos:
     - 选课系统: python/Demo/CourseSystem.md
-- Softskill:
+- 清水斋:
+  - 目录: Reading/index.md
   - 程序员的职业和生存指南:
     - 读后感之：前言: Reading/Developers/index.md
     - 读后感之：入行: Reading/Developers/01-入行.md
@@ -322,10 +323,10 @@ nav:
     - 读后感之：兼职与自由职业: Reading/Developers/21-兼职与自由职业.md
     - 读后感之：心态: Reading/Developers/22-心态.md
     - 读后感全文: Reading/Developers/99-全文.md
-  - 职业发展话题:
+  - 闲聊职业发展:
     - 程序员职业发展的三个模式: Reading/Career/01-Three_Patterns_of_Career_Development_for_Programmers.md
     - 软件开发人员在人工智能时代该如何发展: Reading/Career/02-Software_Developer_Thrive_in_AI_age.md
-  - 闲聊技术:
+  - 技术新闻杂录:
     - SWE-Agent:革新软件工程的开源人工智能开发者: Reading/News/01-SWE-Agent.md
     - GitHub Copilot的代理能力: Reading/News/02-GitHubCopilotAgentic.md
     - 人工智能(AI)基本概念: Reading/News/03-AI_BasicConcept.md
