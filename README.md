@@ -1,7 +1,5 @@
 # 欢迎来到ByteJockey的小站
 
-Just a learning memo.
-
 欢迎访问[ByteJockey的小站](https://huyuhui001.github.io/mySite/)，
 网站是基于[mkdocs](https://www.mkdocs.org/)来构建的，
 
