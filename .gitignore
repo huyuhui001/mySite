@@ -1,11 +1,10 @@
 site/
 .idea/
 .vscode/
-myenv/
+myenv312/
 _tmp.*
 .DS_Store
 __pycache__/
-myenv312/
 Demo/CourseSystem/conf/__pycache__/
 Demo/CourseSystem/core/__pycache__/
 Demo/CourseSystem/db/__pycache__/
