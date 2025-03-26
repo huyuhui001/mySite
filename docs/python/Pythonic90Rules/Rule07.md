@@ -1,5 +1,11 @@
 # 高效Python90条之第7条　尽量用enumerate取代range
 
+要点：
+
+* enumerate函数可以用简洁的代码迭代iterator，而且可以指出当前这轮循环的序号。
+* 不要先通过range指定下标的取值范围，然后用下标去访问序列，而是应该直接用enumerate函数迭代。
+* 可以通过enumerate的第二个参数指定起始序号（默认为0）。
+
 Python内置的`range`函数适合用来迭代一系列整数。
 
 ```python
@@ -25,7 +31,11 @@ for flavor in flavor_list:
 # vanilla is delicious
 # chocolate is delicious
 # pecan is delicious
-# strawberry is delicious
+# strawberry is delicious要点：
+
+* enumerate函数可以用简洁的代码迭代iterator，而且可以指出当前这轮循环的序号。
+* 不要先通过range指定下标的取值范围，然后用下标去访问序列，而是应该直接用enumerate函数迭代。
+* 可以通过enumerate的第二个参数指定起始序号（默认为0）。
 ```
 
 通过传统的`range`方法，给每种口味添加序列号。但步骤有些太多，先得知道列表的长度，然后要根据列表长度构造取值范围，用其中的每个整数做下标，分别访问列表里的对应元素。
@@ -80,8 +90,25 @@ for i, flavor in enumerate(flavor_list, 1):
 # 4: strawberry
 ```
 
-要点：
+`enumerate`也可以用在处理二维数组上。
 
-* enumerate函数可以用简洁的代码迭代iterator，而且可以指出当前这轮循环的序号。
-* 不要先通过range指定下标的取值范围，然后用下标去访问序列，而是应该直接用enumerate函数迭代。
-* 可以通过enumerate的第二个参数指定起始序号（默认为0）。
+```python
+data = [
+    [1, 1, 1],
+    [2, 2, 2],
+    [3, 3, 3],
+    [4, 4, 4],
+    [5, 5, 5],
+    [10, 10, 10],
+    [20, 20, 20],
+    [30, 30, 30],
+    [40, 40, 40],
+    [50, 50, 50],
+]
+
+for i, row in enumerate(data):
+    if i + 5 < len(data):
+        # 对第 i 行和第 i+5 行进行加法运算
+        result = [a + b * 10 for a, b in zip(row, data[i + 5])]
+        print(f"Row {i} + Row {i+5} * 5 = {result}")
+```
