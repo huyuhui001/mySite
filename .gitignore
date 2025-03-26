@@ -2,10 +2,7 @@ site/
 .idea/
 .vscode/
 myenv/
-_tmp.md
-_tmp.py
-_tmp.json
-_tmp.txt
+_tmp.*
 .DS_Store
 __pycache__/
 myenv312/
