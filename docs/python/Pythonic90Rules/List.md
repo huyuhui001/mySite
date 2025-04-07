@@ -25,7 +25,7 @@
 - [第14条 用sort方法的key参数来表示复杂的排序逻辑](https://zhuanlan.zhihu.com/p/1887431796444075555)
 - [第15条 不要过分依赖给字典添加条目时所用的顺序](https://zhuanlan.zhihu.com/p/1890131994849027583)
 - [第16条 用get处理键不在字典中的情况,不要使用in与KeyError](https://zhuanlan.zhihu.com/p/1890514935999595282)
-- [第17条 用defaultdict处理内部状态中缺失的元素,而不要用setdefault]()
+- [第17条 用defaultdict处理内部状态中缺失的元素,而不要用setdefault](https://zhuanlan.zhihu.com/p/1892681299162009815)
 - [第18条 学会利用__missing__构造依赖键的默认值]()
 - [第19条 不要把函数返回的多个数值拆分到三个以上的变量中]()
 - [第20条 遇到意外状况时应该抛出异常,不要返回None]()
