@@ -326,6 +326,10 @@ nav:
   - 闲聊职业发展:
     - 程序员职业发展的三个模式: Reading/Career/01-Three_Patterns_of_Career_Development_for_Programmers.md
     - 软件开发人员在人工智能时代该如何发展: Reading/Career/02-Software_Developer_Thrive_in_AI_age.md
+    - 如何有效提升专注力: Reading/Career/03-Improved_Focus.md
+    - 技术从业者迟到的职业觉醒: Reading/Career/04-Learned_in_Tech_Career.md
+    - 关于倦怠与重生的讨论: Reading/Career/05-Get_Passion_Back.md
+    - 深度专注力而非人工智能: Reading/Career/06-Not_AI_But_Focus.md
   - 技术新闻杂录:
     - SWE-Agent:革新软件工程的开源人工智能开发者: Reading/News/01-SWE-Agent.md
     - GitHub Copilot的代理能力: Reading/News/02-GitHubCopilotAgentic.md
@@ -333,3 +337,4 @@ nav:
     - Transformer简介: Reading/News/04-TransformerIntroduction.md
     - Transformer Introduction: Reading/News/04-TransformerIntroduction_EN.md
     - AgentAI简介: Reading/News/05-AgentAI_Introduction.md
+
