@@ -1,7 +1,5 @@
 site/
-.idea/
-.vscode/
-myenv312/
+.*
 _tmp.*
 .DS_Store
 __pycache__/
