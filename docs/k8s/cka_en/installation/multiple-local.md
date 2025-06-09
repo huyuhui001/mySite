@@ -2,21 +2,99 @@
 
 ## Local VM setting
 
-VMWare Setting.
-
-* VMnet1: host-only, subnet: 192.168.150.0/24
-* VMnet8: NAT, subnet: 11.0.1.0/24
-
-Create guest machine with VMWare Player.
+Virtual Machines below are running on QEMU/KVM environment.
 
 * 4 GB RAM
 * 1 CPUs with 2 Cores
-* Ubuntu Server 22.04
+* Ubuntu Server 24.04
 * NAT
+* Subnet: 192.168.122.0/24
 
 Info:
 
 * Kubernetes running on Containerd.
+
+Check Libvirt network status.
+
+```bash
+sudo virsh net-list --all
+```
+
+Result like below.
+
+```console
+ Name      State    Autostart   Persistent
+-------------------------------------------
+ default   inactive no          yes
+```
+
+Start Libvirt network when the status above is `inactive`.
+
+```bash
+sudo virsh net-start default
+```
+
+Stop Libvirt netwirk
+
+```bash
+sudo virsh net-destroy default
+```
+
+Enable Libvirt autostart.
+
+```bash
+sudo virsh net-autostart default
+```
+
+Disable DHCP service of `default` Libvirt network.
+
+```bash
+sudo EDITOR=vi virsh net-edit default
+```
+
+Before:
+
+```xml
+<network>
+  <name>default</name>
+  <uuid>f14e27fd-dc88-43b7-a962-e0025e9557bd</uuid>
+  <forward mode='nat'/>
+  <bridge name='virbr0' stp='on' delay='0'/>
+  <mac address='52:54:00:d7:11:19'/>
+  <ip address='192.168.122.1' netmask='255.255.255.0'>
+    <dhcp>
+      <range start='192.168.122.2' end='192.168.122.254'/>
+    </dhcp>
+  </ip>
+</network>
+```
+
+After:
+
+```xml
+<network>
+  <name>default</name>
+  <uuid>f14e27fd-dc88-43b7-a962-e0025e9557bd</uuid>
+  <forward mode='nat'/>
+  <bridge name='virbr0' stp='on' delay='0'/>
+  <mac address='52:54:00:d7:11:19'/>
+  <ip address='192.168.122.1' netmask='255.255.255.0'>
+    <dhcp enabled='no'/>  <!-- 显式禁用 DHCP -->
+  </ip>
+</network>
+```
+
+Restart `default` to apply above change.
+
+```bash
+sudo virsh net-destroy default
+sudo virsh net-start default
+```
+
+Tips:
+
+* manualy delete unused IP by executing command `sudo ip addr del 192.168.122.206/24 dev enp1s0`
+* check details of `enp1s0` by executing command `sudo networkctl status enp1s0`
 
 ## Ubuntu Post Installation
 
@@ -54,7 +132,7 @@ PermitRootLogin yes
 Restart the sshd service.
 
 ```bash
-sudo systemctl restart sshd
+sudo systemctl restart ssh.service
 ```
 
 Change host name, e.g., `ubu1`.
@@ -65,6 +143,7 @@ sudo hostnamectl set-hostname ubu1 --pretty
 ```
 
 Verify if the hostname is set to expected name, e.g., `ubu1`.
+File `/etc/machine-info` would not exist if not run command `sudo hostnamectl set-hostname ubu1`.
 
 ```bash
 cat /etc/machine-info
@@ -76,7 +155,7 @@ Verify if the hostname is set to expected name, e.g., `ubu1`.
 cat /etc/hostname
 ```
 
-Verify if the hostname of `127.0.1.1` is set to expected name, e.g., `ubu1`. And add all nodes into the file `/etc/hosts`.
+Verify if the hostname of `127.0.1.1` is set to expected name, e.g., `127.0.1.1 ubu1`. And add all nodes into the file `/etc/hosts`.
 
 ```console
 sudo vi /etc/hosts
@@ -86,34 +165,40 @@ Related setting looks like below.
 
 ```console
 127.0.1.1 ubu1
-11.0.1.129 ubu1
-11.0.1.130 ubu2
-11.0.1.131 ubu3
-11.0.1.132 ubu4
+192.168.122.101 ubu1
+192.168.122.102 ubu2
+192.168.122.103 ubu3
 ```
 
-Create file `/etc/netplan/00-installer-config.yaml`.
+Create file `/etc/netplan/01-static-ip.yaml`
 
 ```bash
-sudo vi /etc/netplan/00-installer-config.yaml
+sudo vi /etc/netplan/01-static-ip.yaml
 ```
 
-Update it with information below to set VM with fixed IP with actual IP address, e.g, `11.0.1.129`.
+With below permission:
+
+```bash
+-rw------- 1 root root 262 Jun  9 12:00 /etc/netplan/01-static-ip.yaml
+```
+
+Update it with information below to set VM with fixed IP with actual IP address, e.g, `192.168.122.101`. Name `enp1s0` is determined by result from command `ip addr`.
 
 ```yaml
 network:
+  version: 2
+  renderer: networkd  # networkd is used for server, NetworkManager is used for desktop
   ethernets:
-    ens33:
-      dhcp4: false
+    enp1s0:           # NIC name by running `ip a` command
+      dhcp4: false    # Disable DHCP
       addresses:
-      - 11.0.1.129/24
+        - 192.168.122.101/24
+      routes:
+        - to: default
+          via: 192.168.122.1
       nameservers:
         addresses:
-        - 11.0.1.2
-      routes:
-      - to: default
-        via: 11.0.1.2
-  version: 2
+          - 192.168.122.1
 ```
 
 Effect above change.
@@ -142,7 +227,7 @@ sudo vi /etc/fstab
 
 Result likes below.
 
-```console
+```bash
 /dev/disk/by-uuid/df370d2a-83e5-4895-8c7f-633f2545e3fe / ext4 defaults 0 1
 # /swap.img     none    swap    sw      0       0
 ```
