@@ -93,8 +93,8 @@ sudo virsh net-start default
 
 Tips:
 
-* manualy delete unused IP by executing command `sudo ip addr del 192.168.122.206/24 dev enp1s0`
-* check details of `enp1s0` by executing command `sudo networkctl status enp1s0`
+* In running VM, manualy delete unused IP by executing command `sudo ip addr del 192.168.122.206/24 dev enp1s0`
+* In running VM, check details of `enp1s0` by executing command `sudo networkctl status enp1s0`
 
 ## Ubuntu Post Installation
 
@@ -114,6 +114,25 @@ Set password for `root` on all guests.
 
 ```bash
 sudo passwd root
+```
+
+Check status of `ssh` service.
+
+```bash
+sudo systemctl status ssh
+```
+
+Install `ssh` service if it's not installed.
+
+```bash
+sudo apt install ssh
+```
+
+Enable and start `ssh` service.
+
+```bash
+sudo systemctl enable --now ssh
+sudo systemctl start ssh
 ```
 
 Enable root ssh logon.
