@@ -103,15 +103,19 @@ lsmod<span class=w> </span><span class=p>|</span><span class=w> </span>grep<span
 </code></pre></div> <ul> <li>Network setting.</li> </ul> <div class=highlight><pre><span></span><code>sudo<span class=w> </span>sysctl<span class=w> </span>-a<span class=w> </span><span class=p>|</span><span class=w> </span>grep<span class=w> </span>-i<span class=w> </span>net.bridge.bridge-nf-call-ip*
 sudo<span class=w> </span>sysctl<span class=w> </span>-a<span class=w> </span><span class=p>|</span><span class=w> </span>grep<span class=w> </span>-i<span class=w> </span>net.ipv4.ip_forward
 </code></pre></div> <h2 id=install-containerd>Install Containerd<a class=headerlink href=#install-containerd title="Permanent link"> ¶</a></h2> <p>Install Containerd sevice on all nodes.</p> <p>Backup source file.</p> <div class=highlight><pre><span></span><code>sudo<span class=w> </span>cp<span class=w> </span>/etc/apt/sources.list<span class=w> </span>/etc/apt/sources.list.bak
-</code></pre></div> <p>Install Containered.</p> <div class=highlight><pre><span></span><code>sudo<span class=w> </span>apt-get<span class=w> </span>update<span class=w> </span><span class=o>&amp;&amp;</span><span class=w> </span>sudo<span class=w> </span>apt-get<span class=w> </span>install<span class=w> </span>-y<span class=w> </span>containerd
+<span class=c1># OR</span>
+sudo<span class=w> </span>cp<span class=w> </span>/etc/apt/sources.list.d/ubuntu.sources<span class=w> </span>/etc/apt/sources.list.d/ubuntu.sources.bak
+</code></pre></div> <p>Install Containered.</p> <div class=highlight><pre><span></span><code>sudo<span class=w> </span>apt<span class=w> </span>update<span class=w> </span><span class=o>&amp;&amp;</span><span class=w> </span>sudo<span class=w> </span>apt<span class=w> </span>install<span class=w> </span>-y<span class=w> </span>containerd
+</code></pre></div> <p>Check installed <code>containerd</code> version.</p> <div class=highlight><pre><span></span><code>$<span class=w> </span>containerd<span class=w> </span>--version
+containerd<span class=w> </span>github.com/containerd/containerd<span class=w> </span><span class=m>1</span>.7.27<span class=w> </span>
 </code></pre></div> <p>Configure Containerd. Modify file <code>/etc/containerd/config.toml</code>.</p> <div class=highlight><pre><span></span><code>sudo<span class=w> </span>mkdir<span class=w> </span>-p<span class=w> </span>/etc/containerd
 containerd<span class=w> </span>config<span class=w> </span>default<span class=w> </span><span class=p>|</span><span class=w> </span>sudo<span class=w> </span>tee<span class=w> </span>/etc/containerd/config.toml
 sudo<span class=w> </span>vi<span class=w> </span>/etc/containerd/config.toml
-</code></pre></div> <p>Update <code>sandbox_image</code> with new value <code>"registry.aliyuncs.com/google_containers/pause:3.6"</code>. Update <code>SystemdCgroup</code> with new value <code>true</code>.</p> <div class=highlight><pre><span></span><code><span class=go>[plugins]</span>
+</code></pre></div> <p>Update <code>sandbox_image</code> with new value <code>"registry.aliyuncs.com/google_containers/pause:3.8"</code>. Update <code>SystemdCgroup</code> with new value <code>true</code>.</p> <div class=highlight><pre><span></span><code><span class=go>[plugins]</span>
 <span class=go>  [plugins.&quot;io.containerd.gc.v1.scheduler&quot;]</span>
 
 <span class=go>  [plugins.&quot;io.containerd.grpc.v1.cri&quot;]</span>
-<span class=go>    sandbox_image = &quot;registry.aliyuncs.com/google_containers/pause:3.6&quot;</span>
+<span class=go>    sandbox_image = &quot;registry.aliyuncs.com/google_containers/pause:3.8&quot;</span>
 
 <span class=go>    [plugins.&quot;io.containerd.grpc.v1.cri&quot;.cni]</span>
 <span class=go>    [plugins.&quot;io.containerd.grpc.v1.cri&quot;.containerd]</span>
