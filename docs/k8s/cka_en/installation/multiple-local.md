@@ -349,12 +349,21 @@ Backup source file.
 
 ```bash
 sudo cp /etc/apt/sources.list /etc/apt/sources.list.bak
+# OR
+sudo cp /etc/apt/sources.list.d/ubuntu.sources /etc/apt/sources.list.d/ubuntu.sources.bak
 ```
 
 Install Containered.
 
 ```bash
-sudo apt-get update && sudo apt-get install -y containerd
+sudo apt update && sudo apt install -y containerd
+```
+
+Check installed `containerd` version.
+
+```bash
+$ containerd --version
+containerd github.com/containerd/containerd 1.7.27 
 ```
 
 Configure Containerd. Modify file `/etc/containerd/config.toml`.
@@ -365,7 +374,7 @@ containerd config default | sudo tee /etc/containerd/config.toml
 sudo vi /etc/containerd/config.toml
 ```
 
-Update `sandbox_image` with new value `"registry.aliyuncs.com/google_containers/pause:3.6"`.
+Update `sandbox_image` with new value `"registry.aliyuncs.com/google_containers/pause:3.8"`.
 Update `SystemdCgroup` with new value `true`.
 
 ```console
@@ -373,7 +382,7 @@ Update `SystemdCgroup` with new value `true`.
   [plugins."io.containerd.gc.v1.scheduler"]
 
   [plugins."io.containerd.grpc.v1.cri"]
-    sandbox_image = "registry.aliyuncs.com/google_containers/pause:3.6"
+    sandbox_image = "registry.aliyuncs.com/google_containers/pause:3.8"
     
     [plugins."io.containerd.grpc.v1.cri".cni]
     [plugins."io.containerd.grpc.v1.cri".containerd]

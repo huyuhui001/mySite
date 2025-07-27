@@ -2,9 +2,9 @@
 
 ## 摘要
 
-在本地Windows环境中，通过VMWare安装三台Ubuntu虚拟机。在Ubuntu虚拟机中安装基于Containerd的Kubernetes系统，并分别配置一个主节点Master和两个工作节点Worker。
+在本地操作系统环境中，通过虚拟机软件（VMWare，QEMU/KVM）安装三台Ubuntu虚拟机。在Ubuntu虚拟机中安装基于Containerd的Kubernetes系统，并分别配置一个主节点Master和两个工作节点Worker。
 
-## 本地虚拟机设置
+## 本地VMWare虚拟机设置
 
 VMWare 设置
 
@@ -21,6 +21,102 @@ VMWare 设置
 提示：
 
 当前练习中，Kubernetes是基于Containerd，不是Docker。
+
+## 本地QEMU/KVM虚拟机设置
+
+以下虚拟机运行在 QEMU/KVM 环境下。
+
+* 4 GB 内存
+* 1 个 CPU，2 核心
+* Ubuntu Server 24.04
+* NAT 网络
+* 子网：192.168.122.0/24
+
+说明：
+
+* Kubernetes 运行在 Containerd 上。
+
+检查 Libvirt 网络状态：
+
+```bash
+sudo virsh net-list --all
+```
+
+类似如下结果：
+
+```console
+ Name      State    Autostart   Persistent
+-------------------------------------------
+ default   inactive no          yes
+```
+
+当状态为 `inactive` 时，启动 Libvirt 网络：
+
+```bash
+sudo virsh net-start default
+```
+
+停止 Libvirt 网络：
+
+```bash
+sudo virsh net-destroy default
+```
+
+设置 Libvirt 网络开机自启：
+
+```bash
+sudo virsh net-autostart default
+```
+
+禁用 `default` Libvirt 网络的 DHCP 服务：
+
+```bash
+sudo EDITOR=vi virsh net-edit default
+```
+
+修改前：
+
+```xml
+<network>
+  <name>default</name>
+  <uuid>f14e27fd-dc88-43b7-a962-e0025e9557bd</uuid>
+  <forward mode='nat'/>
+  <bridge name='virbr0' stp='on' delay='0'/>
+  <mac address='52:54:00:d7:11:19'/>
+  <ip address='192.168.122.1' netmask='255.255.255.0'>
+    <dhcp>
+      <range start='192.168.122.2' end='192.168.122.254'/>
+    </dhcp>
+  </ip>
+</network>
+```
+
+修改后：
+
+```xml
+<network>
+  <name>default</name>
+  <uuid>f14e27fd-dc88-43b7-a962-e0025e9557bd</uuid>
+  <forward mode='nat'/>
+  <bridge name='virbr0' stp='on' delay='0'/>
+  <mac address='52:54:00:d7:11:19'/>
+  <ip address='192.168.122.1' netmask='255.255.255.0'>
+    <dhcp enabled='no'/>  <!-- 显式禁用 DHCP -->
+  </ip>
+</network>
+```
+
+重启 `default` 网络以应用上述更改。
+
+```bash
+sudo virsh net-destroy default
+sudo virsh net-start default
+```
+
+提示：
+
+* 在运行中的虚拟机内，可以通过执行命令 `sudo ip addr del 192.168.122.206/24 dev enp1s0` 手动删除未使用的IP地址。
+* 在运行中的虚拟机内，可以通过执行命令 `sudo networkctl status enp1s0` 查看 `enp1s0` 网卡的详细信息。
 
 ## Ubuntu预配置
 
@@ -41,7 +137,26 @@ sudo passwd vagrant
 sudo passwd root
 ```
 
-修改ssh服务的配置文件。开放`root`用户通过ssh登录（默认是禁用的）。
+检查 `ssh` 服务状态。
+
+```bash
+sudo systemctl status ssh
+```
+
+如果未安装 `ssh` 服务，则进行安装。
+
+```bash
+sudo apt install ssh
+```
+
+启用并启动 `ssh` 服务。
+
+```bash
+sudo systemctl enable --now ssh
+sudo systemctl start ssh
+```
+
+修改`ssh`服务的配置文件。开放`root`用户通过ssh登录（默认是禁用的）。
 
 ```bash
 sudo vi /etc/ssh/sshd_config
@@ -67,7 +182,8 @@ sudo hostnamectl set-hostname ubu1
 sudo hostnamectl set-hostname ubu1 --pretty
 ```
 
-验证主机名是否被正确修改了，比如改为`ubu1`。
+验证主机名是否已被正确修改，例如改为 `ubu1`。
+如果没有执行 `sudo hostnamectl set-hostname ubu1`，则 `/etc/machine-info` 文件不会存在。
 
 ```bash
 cat /etc/machine-info
@@ -89,41 +205,51 @@ sudo vi /etc/hosts
 
 ```console
 127.0.1.1 ubu1
-11.0.1.129 ubu1
-11.0.1.130 ubu2
-11.0.1.131 ubu3
-11.0.1.132 ubu4
+192.168.122.101 ubu1
+192.168.122.102 ubu2
+192.168.122.103 ubu3
 ```
 
-创建文件`/etc/netplan/00-installer-config.yaml`。
+创建文件 `/etc/netplan/01-static-ip.yaml`
 
 ```bash
-sudo vi /etc/netplan/00-installer-config.yaml
+sudo vi /etc/netplan/01-static-ip.yaml
 ```
 
-更新此文件，设定当前节点使用固定IP地址，比如，`11.0.1.129`。
+设置如下权限：
+
+```bash
+-rw------- 1 root root 262 Jun  9 12:00 /etc/netplan/01-static-ip.yaml
+```
+
+将以下内容写入该文件，以为虚拟机设置固定IP地址（请将 `192.168.122.101` 替换为实际IP地址）。网卡名称 `enp1s0` 可通过 `ip addr` 命令查询。
 
 ```yaml
 network:
+  version: 2
+  renderer: networkd  # server推荐使用networkd，桌面环境推荐NetworkManager
   ethernets:
-    ens33:
-      dhcp4: false
+    enp1s0:           # 网卡名称，可通过 `ip a` 命令获取
+      dhcp4: false    # 关闭DHCP
       addresses:
-      - 11.0.1.129/24
+        - 192.168.122.101/24
+      routes:
+        - to: default
+          via: 192.168.122.1
       nameservers:
         addresses:
-        - 11.0.1.2
-      routes:
-      - to: default
-        via: 11.0.1.2
-  version: 2
+          - 192.168.122.1
 ```
 
-执行下面命令时，使上述改动生效。注意，当前ssh连接会因此而断开。
+使上述配置生效：
 
 ```bash
 sudo netplan apply
 ```
+
+注意：
+
+* 由于网络配置变更，当前ssh连接可能会断开。
 
 在所有节点禁用交换分区swap和防火墙firewall。
 
@@ -241,15 +367,17 @@ sudo sysctl --system
 
 ```bash
 sudo cp /etc/apt/sources.list /etc/apt/sources.list.bak
+# OR
+sudo cp /etc/apt/sources.list.d/ubuntu.sources /etc/apt/sources.list.d/ubuntu.sources.bak
 ```
 
 安装Containered。
 
 ```bash
-sudo apt-get update && sudo apt-get install -y containerd
+sudo apt update && sudo apt install -y containerd
 ```
 
-修改文件`/etc/containerd/config.toml`来配置Contanerd服务，如果没有，就创建这个文件。
+修改文件`/etc/containerd/config.toml`来配置`Contanerd`服务，如果没有，就创建这个文件。
 
 ```bash
 sudo mkdir -p /etc/containerd
@@ -257,7 +385,7 @@ containerd config default | sudo tee /etc/containerd/config.toml
 sudo vi /etc/containerd/config.toml
 ```
 
-更新`sandbox_image`的值为`"registry.aliyuncs.com/google_containers/pause:3.6"`，以使用国内阿里云的源。
+更新`sandbox_image`的值为`"registry.aliyuncs.com/google_containers/pause:3.8"`，以使用国内阿里云的源。
 更新`SystemdCgroup` 的值为 `true`，以使用Cgroup。
 
 ```console
@@ -265,7 +393,7 @@ sudo vi /etc/containerd/config.toml
   [plugins."io.containerd.gc.v1.scheduler"]
 
   [plugins."io.containerd.grpc.v1.cri"]
-    sandbox_image = "registry.aliyuncs.com/google_containers/pause:3.6"
+    sandbox_image = "registry.aliyuncs.com/google_containers/pause:3.8"
 
     [plugins."io.containerd.grpc.v1.cri".cni]
     [plugins."io.containerd.grpc.v1.cri".containerd]
