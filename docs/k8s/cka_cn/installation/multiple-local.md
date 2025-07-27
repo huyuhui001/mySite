@@ -422,8 +422,8 @@ sudo systemctl status containerd
 二进制安装包可以通过这个链接取得: <https://github.com/containerd/nerdctl/releases> 。
 
 ```bash
-wget https://github.com/containerd/nerdctl/releases/download/v0.22.2/nerdctl-0.22.2-linux-amd64.tar.gz
-tar -zxvf nerdctl-0.22.2-linux-amd64.tar.gz
+wget https://github.com/containerd/nerdctl/releases/download/v2.1.3/nerdctl-2.1.3-linux-amd64.tar.gz
+tar -zxvf nerdctl-2.1.3-linux-amd64.tar.gz
 sudo cp nerdctl /usr/bin/
 ```
 
