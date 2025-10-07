@@ -176,7 +176,6 @@ nav:
 - Python:
   - 目录: python/index.md
   - Python基础:
-    - 安装: python/Foundation/ch00.md
     - 语言基础: python/Foundation/ch01.md
     - 打包和解包: python/Foundation/ch02.md
     - 内置函数及文件: python/Foundation/ch03.md
