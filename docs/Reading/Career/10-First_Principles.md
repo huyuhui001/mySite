@@ -1,0 +1,59 @@
+# 第一性原理
+
+第一性原理是一种哲学与科学分析方法，它强调从最基础的事实或假设出发，推导出其他结论。这种方法被查理·芒格和埃隆·马斯克等所推崇，他们将其视为一种将复杂问题拆解为基本要素，并在此基础上构建创新解决方案的途径。简而言之，它是一种“回归本源”的思考方式。
+First principles is a philosophical and scientific analytical method that emphasizes deriving other conclusions from the most fundamental facts or assumptions. This approach is highly regarded by figures such as Charlie Munger and Elon Musk, who see it as a way to deconstruct complex problems into basic elements and build innovative solutions based on them. In short, it is a way of thinking that "returns to the source."
+
+- 产品第一性原理是击穿痛点，而不是功能叠加；
+- The first principle of product development is to address pain points, not to stack functions;
+- 创业第一性原理是解决真痛点，而不是满足伪需求；
+- The first principle of entrepreneurship is to solve real pain points, not to meet pseudo-needs;
+- 创新第一性原理是范式突破，而不是参数进步；
+- The first principle of innovation is to break paradigms, not to improve parameters;
+- 利润第一性原理是成本效率，而不是高价暴利；
+- The first principle of profit is cost efficiency, not high-price profiteering;
+- 品牌第一性原理是构建信任，而不是声量轰炸；
+- The first principle of branding is to build trust, not to bombard with noise;
+- 哲学第一性原理是道德基石，而不是权宜之计；
+- The first principle of philosophy is the foundation of morality, not expediency;
+- 增长第一性原理是价值空间，而不是流量规模；
+- The first principle of growth is value space, not traffic scale;
+- 定价第一性原理是心理账户，而不是成本加成；
+- The first principle of pricing is psychological accounting, not cost markup;
+- 定位第一性原理是心智占领，而不是聚焦细分；
+- The first principle of positioning is to capture the mind, not to focus on niches;
+- 广告第一性原理是信号刺激，而不是创意精美；
+- The first principle of advertising is signal stimulation, not creative refinement;
+- 成长第一性原理是反思，而不是经历；
+- The first principle of growth is reflection, not experience;
+- 战略第一性原理是聚焦关键突破，而不是路径规划；
+- The first principle of strategy is to focus on key breakthroughs, not path planning;
+- 技术第一性原理是功能回归，而不是形式创新；
+- The first principle of technology is to return to functionality, not to focus on form innovation;
+- 投资第一性原理是风控，而不是高回报；
+- The first principle of investment is risk control, not high returns;
+- 招聘第一性原理是筛选，而不是培养；
+- The first principle of recruitment is screening, not training;
+- 教育第一性原理是内在激励，而不是外在施压；
+- The first principle of education is internal motivation, not external pressure;
+- 服务第一性原理是产生依赖，而不是言听计从；
+- The first principle of service is to create dependency, not obedience;
+- 科学第一性原理是基础定律，而不是经验推论；
+- The first principle of science is fundamental laws, not empirical inference;
+- 竞争第一性原理是赢得用户，而不是胜过对手；
+- The first principle of competition is to win users, not to beat competitors;
+- 管理第一性原理是激发善意，而不是约束员工；
+- The first principle of management is to inspire goodwill, not to restrict employees;
+- 组织第一性原理是持续进化，而不是杂构流程；
+- The first principle of organization is continuous evolution, not complex processes;
+- 职场第一性原理是价值，而不是努力；
+- The first principle of the workplace is value, not effort;
+- 营销第一性原理是缩短决策链路，而不是洗脑说服；
+- The first principle of marketing is to shorten the decision-making chain, not to brainwash;
+- 降本第一性原理是消除浪费，而不是减损品质；
+- The first principle of cost reduction is to eliminate waste, not to reduce quality;
+- 领导力第一性原理是创造信念感，而不是有人追随；
+- The first principle of leadership is to create a sense of belief, not just followers;
+- 供应链第一性原理是保证确定性，而不是追求低价；
+- The first principle of supply chain is to ensure certainty, not to pursue low prices;
+- 心理学第一性原理是基本动机，而不是表面行为；
+- The first principle of psychology is basic motivation, not superficial behavior.
