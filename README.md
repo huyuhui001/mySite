@@ -5,18 +5,18 @@ the website is built using [mkdocs](https://www.mkdocs.org/).
 
 Below is the content of the website, and you can also view the [site directory](./docs/index.md). Most of the content is in Chinese.
 
-[**1. Linux**](./linux/index.md)
+[1. Linux](./linux/index.md)
 
 - Linux SRE
 - SUSE Linux Administration
 - SUSE Enterprise Storage Foundation
 
-[**2. Kubernetes**](./k8s/index.md)
+[2. Kubernetes](./k8s/index.md)
 
 - CKA Learning Memo
 - CKA Study Notes
 
-[**3. Python**](./python/index.md)
+[3. Python](./python/index.md)
 
 - Python Basics
 - Data Analysis with Python
@@ -24,7 +24,7 @@ Below is the content of the website, and you can also view the [site directory](
 - 90 Effective Ways to Write High-Quality Python Code
 - Small Demonstrations
 
-[**4. Clear Water Studio**](./Reading/index.md)
+[4. Clear Water Studio](./Reading/index.md)
 
 - Programmer's Career and Survival Guide
 - Chatting about Career Development
