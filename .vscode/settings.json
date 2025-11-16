@@ -1,0 +1,4 @@
+{
+    "python.defaultInterpreterPath": ".mySite/bin/python3",
+    "python.terminal.activateEnvironment": true
+}
