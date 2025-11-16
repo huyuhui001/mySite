@@ -12,8 +12,8 @@ black
 pipdeptree
 python-dotenv
 flask
-mkdocs
 python-minifier
+mkdocs
 mkdocs-material
 mkdocs-material-extensions
 mkdocs-minify-plugin
