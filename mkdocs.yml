@@ -2,7 +2,7 @@ site_name: ByteJockey小站
 site_url: https://huyuhui001.github.io/mySite/
 repo_name: "huyuhui001/mySite"
 repo_url: https://github.com/huyuhui001/mySite
-edit_uri: edit/main/docs/
+edit_uri: edit/hjmain/docs/
 
 # Extensions
 markdown_extensions:
@@ -26,7 +26,10 @@ markdown_extensions:
   - pymdownx.emoji:
       emoji_index: !!python/name:material.extensions.emoji.twemoji
       emoji_generator: !!python/name:material.extensions.emoji.to_svg
-  - pymdownx.highlight
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
   - pymdownx.inlinehilite
   - pymdownx.keys
   - pymdownx.mark
@@ -38,7 +41,8 @@ markdown_extensions:
         - name: mermaid
           class: mermaid
           format: !!python/name:pymdownx.superfences.fence_code_format
-  - pymdownx.tabbed
+  - pymdownx.tabbed:
+      alternate_style: true
   - pymdownx.tasklist:
       custom_checkbox: true
   - pymdownx.tilde
@@ -46,25 +50,39 @@ markdown_extensions:
 
 theme:
   name: 'material'
+  language: zh
   logo: assets/logo.jpg
   features:
-  - navigation.tabs
-  - navigation.tabs.sticky
-  - navigation.instant
-  - navigation.top
- 
-  palette:
-    primary: 'teal'
-    accent: 'green'
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.instant
+    - navigation.top
+    - navigation.indexes
+    - content.code.copy
+    - search.suggest
+    - search.highlight
 
-  include_sidebar: true
+  palette:
+    - scheme: default
+      primary: teal
+      accent: green
+      toggle:
+        icon: material/brightness-7
+        name: 切换到深色模式
+    - scheme: slate
+      primary: teal
+      accent: green
+      toggle:
+        icon: material/brightness-4
+        name: 切换到浅色模式
 
 plugins:
   - search
   - minify:
       minify_html: true
 
-extra_css: [extra.css]
+extra_css:
+  - extra.css
 
 nav:
 - 网站概览:
