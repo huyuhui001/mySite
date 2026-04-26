@@ -39,3 +39,10 @@ mkdocs serve
 ```
 
 浏览器访问 `http://127.0.0.1:8000` 即可预览。
+
+## 构建与部署
+
+```bash
+mkdocs build        # 构建静态文件到 site/ 目录
+mkdocs gh-deploy    # 构建并推送到 GitHub Pages
+```
