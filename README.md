@@ -1,31 +1,41 @@
-# Welcome to ByteJockey's Site
+# ByteJockey's Site
 
-Welcome to [ByteJockey's Site](https://huyuhui001.github.io/mySite/),
-the website is built using [mkdocs](https://www.mkdocs.org/).
+[![MkDocs](https://img.shields.io/badge/Built%20with-MkDocs-blue)](https://www.mkdocs.org/)
+[![Material for MkDocs](https://img.shields.io/badge/Theme-Material-blue)](https://squidfunk.github.io/mkdocs-material/)
+[![GitHub Pages](https://img.shields.io/badge/Deployed%20on-GitHub%20Pages-brightgreen)](https://huyuhui001.github.io/mySite/)
 
-Below is the content of the website, and you can also view the [site directory](./docs/index.md). Most of the content is in Chinese.
+个人技术笔记站点，涵盖 Linux、Kubernetes、Python 及职业发展等内容，大部分内容为中文。
 
-[1. Linux](./linux/index.md)
+在线访问：[huyuhui001.github.io/mySite](https://huyuhui001.github.io/mySite/)
 
-- Linux SRE
-- SUSE Linux Administration
-- SUSE Enterprise Storage Foundation
+## 内容目录
 
-[2. Kubernetes](./k8s/index.md)
+- [Linux](./docs/linux/index.md)
+  - Linux SRE
+  - SUSE Linux Administration
+  - SUSE Enterprise Storage Foundation
 
-- CKA Learning Memo
-- CKA Study Notes
+- [Kubernetes](./docs/k8s/index.md)
+  - CKA Learning Memo
+  - CKA Study Notes
 
-[3. Python](./python/index.md)
+- [Python](./docs/python/index.md)
+  - Python Basics
+  - Data Analysis with Python
+  - Data Structures and Algorithms
+  - 90 Effective Ways to Write High-Quality Python Code
+  - Small Demonstrations
 
-- Python Basics
-- Data Analysis with Python
-- Data Structures and Algorithms
-- 90 Effective Ways to Write High-Quality Python Code
-- Small Demonstrations
+- [清水工作室](./docs/Reading/index.md)
+  - Programmer's Career and Survival Guide
+  - Chatting about Career Development
+  - Technical News Miscellaneous Records
 
-[4. Clear Water Studio](./Reading/index.md)
+## 本地运行
 
-- Programmer's Career and Survival Guide
-- Chatting about Career Development
-- Technical News Miscellaneous Records
+```bash
+pip install -r requirements.txt
+mkdocs serve
+```
+
+浏览器访问 `http://127.0.0.1:8000` 即可预览。
