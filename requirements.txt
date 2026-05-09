@@ -13,9 +13,9 @@ pipdeptree
 python-dotenv
 flask
 python-minifier
-mkdocs
-mkdocs-material
-mkdocs-material-extensions
-mkdocs-minify-plugin
-mkdocs-mermaid2-plugin
-mkdocs-awesome-pages-plugin
+mkdocs==1.6.1
+mkdocs-material==9.7.6
+mkdocs-material-extensions==1.3.1
+mkdocs-minify-plugin==0.8.0
+mkdocs-mermaid2-plugin==1.2.3
+mkdocs-awesome-pages-plugin==2.10.1
